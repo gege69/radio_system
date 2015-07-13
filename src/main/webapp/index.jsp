@@ -11,6 +11,7 @@
 
     <div class="row row-centered">
       <div class="col-xs-12 col-md-5 col-sm-6 col-lg-5 col-centered">
+      
         <form action="${context}/views/painel/principal.jsp">
           <div class="form-group">
             <label for="login">Login</label>
@@ -22,6 +23,7 @@
           </div>
           <button type="submit" class="btn btn-default">Entrar</button>
         </form>
+        
       </div>
     </div>
       
