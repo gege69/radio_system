@@ -50,18 +50,20 @@
                       <tbody>
                         <tr>
                           <td width="40%">
-                            Mercado Teste
+                            <a class="btn btn-link" href="${context}/views/painel/log-conexoes-ambiente.jsp?ambiente=Mercado+Teste">
+                              Mercado Teste
+                            </a>
                           </td>
                           <td width="40%">
                             Status
                           </td>
                           <td width="6.6%">
-                            <a class="btn btn-link" href="${context}/views/painel/espelhamento-ambiente.jsp">
+                            <a class="btn btn-link" href="#">
                               <i class="fa fa-lg fa-tasks"></i>
                             </a>
                           </td>
                           <td width="6.6%">
-                            <a class="btn btn-link" href="${context}/views/painel/editar-ambiente.jsp">
+                            <a class="btn btn-link" href="#">
                               <i class="fa fa-lg fa-check-square-o"></i>
                             </a>
                           </td>
@@ -73,18 +75,20 @@
                         </tr>
                         <tr>
                           <td width="40%">
-                            Outro mercado
+                            <a class="btn btn-link" href="${context}/views/painel/log-conexoes-ambiente.jsp?ambiente=Outro+mercado">
+                              Outro mercado
+                            </a>
                           </td>
                           <td width="40%">
                             Status
                           </td>
                           <td>
-                            <a class="btn btn-link" href="${context}/views/painel/espelhamento-ambiente.jsp">
+                            <a class="btn btn-link" href="#">
                               <i class="fa fa-lg fa-tasks"></i>
                             </a>
                           </td>
                           <td>
-                            <a class="btn btn-link" href="${context}/views/painel/editar-ambiente.jsp">
+                            <a class="btn btn-link" href="#">
                               <i class="fa fa-lg fa-check-square-o"></i>
                             </a>
                           </td>
