@@ -63,6 +63,8 @@ public abstract class AbstractDAO<T extends Model<ID>, ID extends Serializable> 
 		return em.createQuery(criteria).getResultList();
 	}
 	
+	
+	
 	@Override
 	public List<T> findAllWithOrderAsc( String field ) {
 
@@ -94,6 +96,39 @@ public abstract class AbstractDAO<T extends Model<ID>, ID extends Serializable> 
 		return em.createQuery(criteria).getResultList();
 	}
 
+	
+	
+	@Override
+	public List<T> findAll( String field, String value ) {
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		
+		CriteriaQuery<T> criteria = cb.createQuery(clazz);
+		
+		Root<T> root = criteria.from(clazz);
+		
+		criteria.where(cb.equal(root.<String>get( field ), value));
+		
+		return em.createQuery(criteria).getResultList();
+	}
+	
+	
+	@Override
+	public T findLastResult( String field, String id, String value ) {
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		
+		CriteriaQuery<T> criteria = cb.createQuery(clazz);
+		
+		Root<T> root = criteria.from(clazz);
+		
+		criteria.where(cb.equal(root.<String>get( field ), value));
+		
+		criteria.select(root);
+		criteria.orderBy( cb.desc( root.get( id ) ) );
+		
+		return getSingleResult(em.createQuery(criteria));
+	}
 	
 	
 //	@Override

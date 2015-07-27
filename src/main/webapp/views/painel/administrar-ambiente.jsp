@@ -13,7 +13,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Administrar Ambiente<br/>
-            <small>Você possui 1 ambiente(es) cadastrado(s)</small>
+            <small>Você possui <span id="qtd-ambientes"></span> ambiente(es) cadastrado(s)</small>
           </h3>
           
           <div class="spacer-vertical40"></div>
@@ -30,49 +30,12 @@
                 </div>
                 <div class="panel-body">
                   <div class="table-responsive">
+                  
                     <table class="table table-hover">
-                      <tr>
-                        <td width="80%">
-                          Mercado Teste
-                        </td>
-                        <td>
-                          <a class="btn btn-link" href="${context}/views/painel/espelhamento-ambiente.jsp">
-                            <i class="fa fa-lg fa-files-o"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <a class="btn btn-link" href="${context}/views/painel/editar-ambiente.jsp">
-                            <i class="fa fa-lg fa-pencil-square-o"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <a class="btn btn-link" href="#">
-                            <i class="fa fa-lg fa-trash-o"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td width="80%">
-                          Outro mercado
-                        </td>
-                        <td>
-                          <a class="btn btn-link" href="${context}/views/painel/espelhamento-ambiente.jsp">
-                            <i class="fa fa-lg fa-files-o"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <a class="btn btn-link" href="${context}/views/painel/editar-ambiente.jsp">
-                            <i class="fa fa-lg fa-pencil-square-o"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <a class="btn btn-link" href="#">
-                            <i class="fa fa-lg fa-trash-o"></i>
-                          </a>
-                        </td>
-                      </tr>
+                      <tbody id="tableBody">
+                      </tbody>
+                      
                     </table>
-                    
                     
                   </div> 
                 </div>
@@ -91,7 +54,7 @@
               <div class="spacer-vertical40"></div>
               
               <div class="">
-                <a class="btn btn-default" href="${context}/views/painel/administrar-ambiente.jsp">Adicionar Novo Ambiente</a>
+                <a class="btn btn-default" href="${context}/views/painel/incluir-ambiente.jsp">Adicionar Novo Ambiente</a>
               </div>            
             </div>
           </div>
@@ -109,5 +72,71 @@
     </div>
       
   </div> <!-- /container -->
+
+
+
+  
+  
+<script id="GridBodyTmpl" type="text/x-jsrender">
+<tr>
+  <td width="80%">
+     {{:nm_ambiente_amb}}
+  </td>
+  <td>
+    <a class="btn btn-link" href="${context}/gerenciador/espelhar_ambientes/{{:id_ambiente_amb}}">
+      <i class="fa fa-lg fa-files-o"></i>
+    </a>
+  </td>
+  <td>
+    <a class="btn btn-link" href="${context}/gerenciador/editar_ambientes/{{:id_ambiente_amb}}">
+      <i class="fa fa-lg fa-pencil-square-o"></i>
+    </a>
+  </td>
+  <td>
+    <a class="btn btn-link" href="#">
+      <i class="fa fa-lg fa-trash-o"></i>
+    </a>
+  </td>
+</tr>
+</script>  
+
+<script type="text/javascript">
+
+    var pagina = 0, limit = 6;
+
+    var listaAmbientes = function( doJump ){
+        
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: '${context}/gerenciador/ambientes',
+            dataType: 'json',
+            data: {'pagina': pagina},
+            success: function(json){
+                
+                makeListTmpl(json);
+            }
+        });
+    }
+
+    var makeListTmpl = function(json){
+        
+        var tmpl = $.templates('#GridBodyTmpl');
+        
+        $('#tableBody').empty();
+        
+        var content = tmpl.render(json.data);
+        
+        $('#tableBody').append(content);
+    };
+
+    $(function(){
+       
+        listaAmbientes(false);
+        
+    });
+
+</script>
+
 
 <jsp:include page="/bottom.jsp" />

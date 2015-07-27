@@ -82,7 +82,7 @@ var removeErros = function( form )
 {
   form.find('.form-group').removeClass('has-error');
   form.find('#inputError2Status').remove();
-  form.find('.glyphicon-remove').remove();
+  form.find('.icone-fa-feedback').remove();
   form.find('.alert').remove();
   
   $('.alert').remove(); // limpando geral  
@@ -136,7 +136,7 @@ var validaCampoIndividual = function( nomeCampo, desc, message )
 var preencheErroField = function( msg, nomeCampo )
 {
   $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
-  $('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
+  $('<span class="fa fa-times form-control-feedback icone-fa-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
   
   if ( msg != null && msg != '' )
     $('<div class="alert alert-danger">' + msg+ '</div>').insertAfter( '#'+nomeCampo );

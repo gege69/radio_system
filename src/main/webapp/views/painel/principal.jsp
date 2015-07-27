@@ -22,7 +22,7 @@
               <div class="row row-centered">
                 <div class="container">
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md btn-md" href="${context}/views/painel/incluir-ambiente.jsp">
+                    <a class="btn btn-default btn-block btn-md btn-md" href="${context}/gerenciador/incluir_ambientes">
                       <i class="fa fa-3x icone-main fa-shopping-cart"></i>
                       <span class="label-botao-main">Incluir Ambiente</span>
                     </a>
@@ -31,12 +31,6 @@
                     <a class="btn btn-default btn-block btn-md" href="${context}/views/painel/administrar-ambiente.jsp">
                       <i class="fa fa-3x icone-main fa-random"></i>
                       <span class="label-botao-main">Administar Ambiente</span>
-                    </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/views/painel/gerenciar-ambiente.jsp">
-                      <i class="fa fa-3x icone-main fa-briefcase"></i>
-                      <span class="label-botao-main">Gerenciar Ambiente</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
@@ -57,17 +51,17 @@
                       <span class="label-botao-main">Monitoramento</span>
                     </a>
                   </li>
-                </div>              
-              </div>
-              
-              <div class="row row-centered top-buffer">
-                <div class="container">
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md" href="${context}/views/painel/fazer.jsp">
                       <i class="fa fa-3x icone-main fa-users"></i>
                       <span class="label-botao-main-duas-linhas">Chamada de</br>Funcionários</span>
                     </a>
                   </li>
+                </div>              
+              </div>
+              
+              <div class="row row-centered top-buffer">
+                <div class="container">
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md" href="${context}/views/painel/fazer.jsp">
                       <i class="fa fa-3x icone-main fa-cloud-upload"></i>
@@ -95,8 +89,11 @@
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md" href="${context}/views/painel/fazer.jsp">
                       <i class="fa fa-3x icone-main fa-android"></i>
-                      <span class="label-botao-main">Administradores</span>
+                      <span class="label-botao-main">Mobile</span>
                     </a> 
+                  </li>
+                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                     
                   </li>
                 </div>              
               </div>

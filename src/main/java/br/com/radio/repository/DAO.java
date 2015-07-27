@@ -13,6 +13,10 @@ public interface DAO<T extends Model<ID>, ID extends Serializable> {
 	
 	List<T> findAll();
 	
+	List<T> findAll( String field, String value );
+	
+	T findLastResult( String field, String id, String value );
+	
 	List<T> findAllWithOrderAsc( String field );
 	
 	List<T> findAllWithOrderDesc( String field );
