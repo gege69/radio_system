@@ -3,7 +3,6 @@ package br.com.radio.model;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,16 +17,16 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
-import br.com.radio.json.JSONAmbienteDeserializer;
+import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 @Entity
 @Table(name="ambiente")
-@JsonDeserialize(using=JSONAmbienteDeserializer.class)
+//@JsonDeserialize(using=JSONAmbienteDeserializer.class)
 public class Ambiente implements Model<Long> {
 
 	private static final long serialVersionUID = -703457623897298000L;
@@ -46,8 +45,8 @@ public class Ambiente implements Model<Long> {
 	
 	private String cd_telefone2_amb;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ambiente" )
-	private List<AmbienteEmail> emails;
+//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ambiente" )
+//	private List<AmbienteEmail> emails;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ambiente" )
 	private List<AmbienteEndereco> enderecos;
@@ -70,7 +69,8 @@ public class Ambiente implements Model<Long> {
 	private Boolean fl_sincronizar_amb;
 
 	private Boolean fl_download_amb;
-
+	
+	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@NotNull( message = "A data de criação do Ambiente é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
@@ -81,6 +81,7 @@ public class Ambiente implements Model<Long> {
 	@JoinColumn(name = "id_usuario_usu", referencedColumnName = "id_usuario_usu")
 	private Usuario usuarioCriacao;
 	
+	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_alteracao_amb" )
@@ -137,16 +138,6 @@ public class Ambiente implements Model<Long> {
 	public void setCd_telefone2_amb( String cd_telefone2_amb )
 	{
 		this.cd_telefone2_amb = cd_telefone2_amb;
-	}
-
-	public List<AmbienteEmail> getEmails()
-	{
-		return emails;
-	}
-
-	public void setEmails( List<AmbienteEmail> emails )
-	{
-		this.emails = emails;
 	}
 
 	public List<AmbienteEndereco> getEnderecos()
@@ -257,7 +248,6 @@ public class Ambiente implements Model<Long> {
 		this.fl_download_amb = false;
 		this.dt_criacao_amb = new Date();
 	}
-	
 
 	
 

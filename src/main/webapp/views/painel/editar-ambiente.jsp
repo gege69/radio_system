@@ -17,7 +17,7 @@
           <div class="spacer-vertical40"></div>
 
           <form class="form-horizontal" id="ambiente-form" action="#" method="PUT">
-            <input type="hidden" id="id_ambiente_amb" name="ambiente.id_ambiente_amb" value="${id_ambiente_amb}" >
+            <input type="hidden" id="id_ambiente_amb" name="id_ambiente_amb" value="${id_ambiente_amb}" >
   
             <div class="row">
               <div class="col-lg-6 col-md-6">
@@ -25,7 +25,7 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Nome do Ambiente:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_ambiente_amb" name="ambiente.nm_ambiente_amb">
+                    <input type="text" class="form-control" id="nm_ambiente_amb" name="nm_ambiente_amb">
                   </div>
                 </div>
                 
@@ -39,34 +39,34 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Telefones:</label>
                   <div class="col-sm-5 col-md-4">
-                    <input type="text" class="form-control" id="cd_telefone1_amb" name="ambiente.cd_telefone1_amb">
+                    <input type="text" class="form-control" id="cd_telefone1_amb" name="cd_telefone1_amb">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-md-offset-4 col-sm-5 col-md-4">
-                    <input type="text" class="form-control" id="cd_telefone2_amb" name="ambiente.cd_telefone2_amb">
+                    <input type="text" class="form-control" id="dt_alteracao_amb" name="dt_alteracao_amb">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Endereço:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_logradouro_aen" name="ambiente.nm_logradouro_aen">
+                    <input type="text" class="form-control" id="nm_logradouro_aen" name="nm_logradouro_aen">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Bairro:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_bairro_aen" name="ambiente.nm_bairro_aen">
+                    <input type="text" class="form-control" id="nm_bairro_aen" name="nm_bairro_aen">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Estado:</label>
                   <div class="col-sm-10 col-md-8">
-                    <select class="form-control" id="nm_estado_aen" name="ambiente.nm_estado_aen">
+                    <select class="form-control" id="nm_estado_aen" name="nm_estado_aen">
                       <option value="AC">Acre </option>
                       <option value="AL">Alagoas </option>
                       <option value="AP">Amapá </option>
@@ -101,14 +101,14 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Cidade:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_cidade_aen" name="ambiente.nm_cidade_aen">
+                    <input type="text" class="form-control" id="nm_cidade_aen" name="nm_cidade_aen">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="control-label col-sm-2 col-md-4" for="chave">Anotações:</label>
                   <div class="col-sm-10 col-md-8">
-                    <textarea class="form-control" rows="5" id="ds_anotacoes_amb" name="ambiente.ds_anotacoes_amb"></textarea>
+                    <textarea class="form-control" rows="5" id="ds_anotacoes_amb" name="ds_anotacoes_amb"></textarea>
                   </div>
                 </div>
               </div>
@@ -118,14 +118,14 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Login:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="text" class="form-control" id="cd_login_amb" name="ambiente.cd_login_amb" placeholder="Login">
+                    <input type="text" class="form-control" id="cd_login_amb" name="cd_login_amb" placeholder="Login">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Senha:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="password" class="form-control" id="cd_password_amb" name="ambiente.cd_password_amb" placeholder="Senha">
+                    <input type="password" class="form-control" id="cd_password_amb" name="cd_password_amb" placeholder="Senha">
                   </div>
                 </div>
                 
@@ -142,12 +142,12 @@
                   <label class="control-label col-sm-2 col-md-4" for="exampleInputAmount">Opcionais:</label>
                   <div class="checkbox col-sm-8">
                     <label>
-                      <input type="checkbox" id="fl_opcionais_amb" name="ambiente.fl_opcionais_amb"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
+                      <input type="checkbox" id="fl_opcionais_amb" name="fl_opcionais_amb"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
                     </label>
                   </div>
 <!--                   <div class="checkbox col-sm-8"> -->
 <!--                     <label> -->
-<!--                       <input type="checkbox" id="fl_opcionais_amb" name="ambiente.fl_opcionais_amb"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais. -->
+<!--                       <input type="checkbox" id="fl_opcionais_amb" name="fl_opcionais_amb"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais. -->
 <!--                     </label> -->
 <!--                   </div> -->
                 </div>
@@ -258,13 +258,21 @@
 
     var salvar = function(){
         
+        
+        
         if ( validaForm() ){
+            
+            var formobj = $('#ambiente-form').serializeArray();
+            
+            // TODO ver como serializar lista....
+            
+            
             $.ajax({
                 type: 'PUT',
                 contentType: 'application/json',
                 url: '${context}/gerenciador/ambientes',
                 dataType: 'json',
-                data: toJSON($('#ambiente-form').serializeArray()),
+                data: toJSON( formobj ),
                 success: function(json){
                   
                     if (json.id != null){

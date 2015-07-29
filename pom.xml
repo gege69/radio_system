@@ -14,7 +14,7 @@
 		<version.standard.taglibs>1.1.2</version.standard.taglibs>
 		<version.commons.logging>1.1.1</version.commons.logging>
 		<version.postgres.jdbc>9.4-1201-jdbc41</version.postgres.jdbc>
-		<version.spring>4.0.5.RELEASE</version.spring>
+		<version.spring>4.1.6.RELEASE</version.spring>
 		<version.hibernate>4.3.5.Final</version.hibernate>
 
 	</properties>
@@ -216,20 +216,16 @@
 
 		<!-- Add JSON dependency -->
     
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.3</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.9.3</version>
-			<scope>compile</scope>
-		</dependency>
-    
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.6.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.6.0</version>
+    </dependency>
 
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>

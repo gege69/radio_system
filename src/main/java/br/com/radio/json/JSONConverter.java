@@ -3,12 +3,13 @@ package br.com.radio.json;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.codehaus.jackson.JsonNode;
 import org.springframework.stereotype.Component;
 
 import br.com.radio.util.UtilsDates;
 import br.com.radio.util.UtilsNumbers;
 import br.com.radio.util.UtilsStr;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class JSONConverter {
