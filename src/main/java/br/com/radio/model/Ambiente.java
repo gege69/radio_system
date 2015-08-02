@@ -1,16 +1,13 @@
 package br.com.radio.model;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -40,28 +37,39 @@ public class Ambiente implements Model<Long> {
 	@Column( name = "nm_ambiente_amb", nullable = false, length = 200 )
 	private String nm_ambiente_amb;
 	
-	// Depois mudar esses telefones para tabelas
 	private String cd_telefone1_amb;
 	
 	private String cd_telefone2_amb;
-
-//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ambiente" )
-//	private List<AmbienteEmail> emails;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ambiente" )
-	private List<AmbienteEndereco> enderecos;
+	@Column( name = "cd_email1_amb", nullable = true )
+	private String cd_email1_amb;
 	
-	@Column( name = "ds_anotacoes_amb", length = 4000 )
+	private String cd_email2_amb;
+	
+	@Column( name = "ds_anotacoes_amb", columnDefinition = "TEXT" )
 	private String ds_anotacoes_amb;
+
+	@Column( name = "nm_logradouro_amb", length = 200 )
+	private String nm_logradouro_amb;
+
+	@Column( name = "cd_numero_amb", length = 20 )
+	private String cd_numero_amb;
 	
-	// incluir o fuso horário
+	@Column( name = "nm_bairro_amb", length = 100 )
+	private String nm_bairro_amb;
+
+	@Column( name = "nm_cidade_amb", length = 100 )
+	private String nm_cidade_amb;
+
+	@Column( name = "nm_estado_amb", length = 200 )
+	private String nm_estado_amb;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
 	@Column( name = "cd_login_amb", nullable = false, length = 40 )
 	private String cd_login_amb;
 	
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
-	@Column( name = "cd_password_amb", nullable = false, length = 200 )
+	@Column( name = "cd_password_amb", length = 200 )
 	private String cd_password_amb;
 	
 	private Boolean fl_opcionais_amb;
@@ -78,7 +86,7 @@ public class Ambiente implements Model<Long> {
 	private Date dt_criacao_amb;
 	
 	@OneToOne
-	@JoinColumn(name = "id_usuario_usu", referencedColumnName = "id_usuario_usu")
+	@JoinColumn(name = "id_usuario_usu" )
 	private Usuario usuarioCriacao;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
@@ -140,16 +148,7 @@ public class Ambiente implements Model<Long> {
 		this.cd_telefone2_amb = cd_telefone2_amb;
 	}
 
-	public List<AmbienteEndereco> getEnderecos()
-	{
-		return enderecos;
-	}
-
-	public void setEnderecos( List<AmbienteEndereco> enderecos )
-	{
-		this.enderecos = enderecos;
-	}
-
+	
 	public String getDs_anotacoes_amb()
 	{
 		return ds_anotacoes_amb;
@@ -247,6 +246,76 @@ public class Ambiente implements Model<Long> {
 		this.fl_sincronizar_amb = false;
 		this.fl_download_amb = false;
 		this.dt_criacao_amb = new Date();
+	}
+
+	public String getCd_email1_amb()
+	{
+		return cd_email1_amb;
+	}
+
+	public void setCd_email1_amb( String cd_email1_amb )
+	{
+		this.cd_email1_amb = cd_email1_amb;
+	}
+
+	public String getCd_email2_amb()
+	{
+		return cd_email2_amb;
+	}
+
+	public void setCd_email2_amb( String cd_email2_amb )
+	{
+		this.cd_email2_amb = cd_email2_amb;
+	}
+
+	public String getNm_logradouro_amb()
+	{
+		return nm_logradouro_amb;
+	}
+
+	public void setNm_logradouro_amb( String nm_logradouro_amb )
+	{
+		this.nm_logradouro_amb = nm_logradouro_amb;
+	}
+
+	public String getCd_numero_amb()
+	{
+		return cd_numero_amb;
+	}
+
+	public void setCd_numero_amb( String cd_numero_amb )
+	{
+		this.cd_numero_amb = cd_numero_amb;
+	}
+
+	public String getNm_bairro_amb()
+	{
+		return nm_bairro_amb;
+	}
+
+	public void setNm_bairro_amb( String nm_bairro_amb )
+	{
+		this.nm_bairro_amb = nm_bairro_amb;
+	}
+
+	public String getNm_cidade_amb()
+	{
+		return nm_cidade_amb;
+	}
+
+	public void setNm_cidade_amb( String nm_cidade_amb )
+	{
+		this.nm_cidade_amb = nm_cidade_amb;
+	}
+
+	public String getNm_estado_amb()
+	{
+		return nm_estado_amb;
+	}
+
+	public void setNm_estado_amb( String nm_estado_amb )
+	{
+		this.nm_estado_amb = nm_estado_amb;
 	}
 
 	

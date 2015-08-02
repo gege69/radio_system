@@ -1,13 +1,11 @@
 package br.com.radio.web;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -21,11 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import br.com.radio.business.AmbienteBusiness;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
-import br.com.radio.model.AmbienteEndereco;
 import br.com.radio.repository.AmbienteDAO;
 
 /**
- * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerenciador.
+ * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial.
  *
  * Existe um nível ainda maior que é o de Administrador que pode ter vários Gerenciadores clientes abaixo dele.
  * 
@@ -38,10 +35,6 @@ public class GerenciadorController extends AbstractController {
 
 	@Autowired
 	private AmbienteDAO ambienteDAO;
-	
-	@Autowired
-	private AmbienteBusiness ambienteBiz;
-	
 	
 	
 	@RequestMapping(value="/incluir_ambientes", method=RequestMethod.GET)
@@ -97,28 +90,9 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes", method={RequestMethod.POST, RequestMethod.PUT} , consumes = "application/json", produces=APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String save( @RequestBody Ambiente ambiente, BindingResult result )
+	public @ResponseBody String save( @RequestBody @Valid Ambiente ambiente, BindingResult result )
 	{
 		String jsonResult = null;
-
-		List<AmbienteEndereco> listalouca = new ArrayList<AmbienteEndereco>();
-		
-		AmbienteEndereco ae = new AmbienteEndereco();
-		ae.setId_endereco_aen( 1l );
-		
-		
-		AmbienteEndereco ae2 = new AmbienteEndereco();
-		ae2.setId_endereco_aen( 2l );
-
-		listalouca.add( ae );
-		listalouca.add( ae2 );
-		
-		ambiente.setEnderecos( listalouca );
-		
-		
-		
-		writeObjectAsString( ambiente );
-		
 		
 		if ( result.hasErrors() ){
 			
@@ -128,7 +102,7 @@ public class GerenciadorController extends AbstractController {
 
 			try
 			{
-				ambienteBiz.saveAmbiente( ambiente );
+				ambienteDAO.save( ambiente );
 				
 				jsonResult = writeObjectAsString( ambiente );
 			}

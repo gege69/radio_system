@@ -10,6 +10,11 @@
     </div>
 
     <div class="row">
+    
+      <div class="row" id="alertArea">
+      </div>
+    
+    
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Editar Ambiente</h3>
@@ -32,7 +37,7 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">E-mail:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="email" class="form-control" id="ds_email_aml" name="email.ds_email_aml">
+                    <input type="email" class="form-control" id="cd_email1_amb" name="cd_email1_amb">
                   </div>
                 </div>
                 
@@ -52,21 +57,21 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Endereço:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_logradouro_aen" name="nm_logradouro_aen">
+                    <input type="text" class="form-control" id="nm_logradouro_amb" name="nm_logradouro_amb">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Bairro:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_bairro_aen" name="nm_bairro_aen">
+                    <input type="text" class="form-control" id="nm_bairro_amb" name="nm_bairro_amb">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Estado:</label>
                   <div class="col-sm-10 col-md-8">
-                    <select class="form-control" id="nm_estado_aen" name="nm_estado_aen">
+                    <select class="form-control" id="nm_estado_amb" name="nm_estado_amb">
                       <option value="AC">Acre </option>
                       <option value="AL">Alagoas </option>
                       <option value="AP">Amapá </option>
@@ -101,7 +106,7 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Cidade:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_cidade_aen" name="nm_cidade_aen">
+                    <input type="text" class="form-control" id="nm_cidade_amb" name="nm_cidade_amb">
                   </div>
                 </div>
                 
@@ -142,7 +147,7 @@
                   <label class="control-label col-sm-2 col-md-4" for="exampleInputAmount">Opcionais:</label>
                   <div class="checkbox col-sm-8">
                     <label>
-                      <input type="checkbox" id="fl_opcionais_amb" name="fl_opcionais_amb"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
+                      <input type="checkbox" id="fl_opcionais_amb" name="fl_opcionais_amb" value="true"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
                     </label>
                   </div>
 <!--                   <div class="checkbox col-sm-8"> -->
@@ -193,25 +198,15 @@
         $('#id_ambiente_amb').val( json.id_ambiente_amb );
         $('#nm_ambiente_amb').val( json.nm_ambiente_amb );
         
-        var emails = json.emails;
-        
-        if ( emails != null && emails.length > 0 )
-        {
-            $('#ds_email_aml').val( emails[0].ds_email_aml );        
-        }
+        $('#ds_email_aml').val( json.cd_email1_amb );        
       
         $('#cd_telefone1_amb').val( json.cd_telefone1_amb );
         $('#cd_telefone2_amb').val( json.cd_telefone2_amb );
         
-        var enderecos = json.enderecos;
-        
-        if ( enderecos != null && enderecos.length > 0 )
-        {
-            $('#nm_logradouro_aen').val( json.nm_logradouro_aen );
-            $('#nm_bairro_aen').val( json.nm_bairro_aen );
-            $('#nm_estado_aen').val( json.nm_estado_aen );
-            $('#nm_cidade_aen').val( json.nm_cidade_aen );
-        }
+        $('#nm_logradouro_amb').val( json.nm_logradouro_amb );
+        $('#nm_bairro_amb').val( json.nm_bairro_amb );
+        $('#nm_estado_amb').val( json.nm_estado_amb );
+        $('#nm_cidade_amb').val( json.nm_cidade_amb );
 
         $('#ds_anotacoes_amb').val( json.ds_anotacoes_amb );
         $('#cd_login_amb').val( json.cd_login_amb );
@@ -263,9 +258,6 @@
         if ( validaForm() ){
             
             var formobj = $('#ambiente-form').serializeArray();
-            
-            // TODO ver como serializar lista....
-            
             
             $.ajax({
                 type: 'PUT',

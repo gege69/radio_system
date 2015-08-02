@@ -16,34 +16,15 @@ public class AmbienteBusiness {
 	/**
 	 * Esse método salva o ambiente tomando cuidado para verificar os emails e endereços.
 	 * 
-	 * Nessa primeira etapa serão apenas atualizados os emails e endereços... as listas estão programadas para poder das flexibilidade no futuro. 
-	 * 
 	 * @param ambiente
 	 */
 	public void saveAmbiente( Ambiente ambiente )
 	{
-//		List<AmbienteEmail> emails = new ArrayList<AmbienteEmail>();
-//		List<AmbienteEndereco> enderecos = new ArrayList<AmbienteEndereco>();
-//		
-//		emails = ambiente.getEmails();
-//		enderecos = ambiente.getEnderecos();
-//		
-//		ambiente.setEmails( null );  // apenas precaução para o hibernate não persistir
-//		ambiente.setEnderecos( null );  // apenas precaução para o hibernate não persistir
-//		
-//		ambienteDAO.save( ambiente );
-//		
-//		if ( ambiente != null && ambiente.getId_ambiente_amb() != null && ambiente.getId_ambiente_amb() > 0 )
-//		{
-//			// Por enquanto trata como apenas 1 email e 1 endereço
-//			AmbienteEmail emailTela = null;
-//			AmbienteEndereco enderecoTela = null;
-//			
-//			emailTela = emails.get( 0 );
-//			enderecoTela = enderecos.get( 0 );
-//			
-////			AmbienteEmail emailBanco = ambienteEmailDAO.findLastResult( "ds_email_aml", "id_email_aml", emailTela.getDs_email_aml() );
-//		}
+		
+		// colocar aqui validações de endereço antes de salvar...
+				
+		ambienteDAO.save( ambiente );
+		
 	}
 	
 }
