@@ -1,5 +1,6 @@
 package br.com.radio.web;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import javax.json.JsonObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+
+import br.com.radio.model.Ambiente;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -68,6 +71,25 @@ public abstract class AbstractController {
 		}
 		
 		return jsonResult;
+	}
+	
+	public static void main(String[] aaa)
+	{
+		String str = "{\"id_ambiente_amb\":1,\"nm_ambiente_amb\":\"Cacau Show Afonso Brás\",\"cd_telefone1_amb\":\"+5511982616180\",\"cd_telefone2_amb\":null,\"cd_email1_amb\":\"pazinfernando@gmail.com\",\"cd_email2_amb\":null,\"ds_anotacoes_amb\":\"asfasdfasdf\",\"nm_logradouro_amb\":\"Rua Vitorio Azalin 655\",\"cd_numero_amb\":null,\"nm_bairro_amb\":\"asdfasdf\",\"nm_cidade_amb\":\"São Paulo\",\"nm_estado_amb\":\"SP\",\"cd_login_amb\":\"afonso\",\"cd_password_amb\":\"123456\",\"fl_opcionais_amb\":false,\"fl_sincronizar_amb\":false,\"fl_download_amb\":false,\"dt_criacao_amb\":\"02/08/2015 21:03\",\"usuarioCriacao\":null,\"dt_alteracao_amb\":null,\"fusoHorario\":{\"id_fusohorario_fuh\":3},\"id\":1}";
+		ObjectMapper mapper = new ObjectMapper();
+		
+		try
+		{
+			Ambiente a = mapper.readValue( str, Ambiente.class );
+			
+			System.out.println(a);
+		}
+		catch ( IOException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	protected String getErrorsAsJSONErroMessage(BindingResult result){

@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import br.com.radio.business.AmbienteBusiness;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.FusoHorario;
 import br.com.radio.repository.AmbienteDAO;
+import br.com.radio.repository.FusoHorarioDAO;
 
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial.
@@ -36,6 +37,8 @@ public class GerenciadorController extends AbstractController {
 	@Autowired
 	private AmbienteDAO ambienteDAO;
 	
+	@Autowired
+	private FusoHorarioDAO fusoDAO;
 	
 	@RequestMapping(value="/incluir_ambientes", method=RequestMethod.GET)
 	public String cadastro( ModelMap model )
@@ -65,6 +68,10 @@ public class GerenciadorController extends AbstractController {
 	public @ResponseBody Ambiente get( @PathVariable Long id_ambiente_amb, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteDAO.findById( id_ambiente_amb );
+		
+		String jsonResult = writeObjectAsString( ambiente );
+		
+		System.out.println(jsonResult);
 		
 		return ambiente;
 	}
@@ -115,5 +122,19 @@ public class GerenciadorController extends AbstractController {
 
 		return jsonResult;
 	}
+	
+	
+	@RequestMapping(value="/fusohorarios", method=RequestMethod.GET, produces=APPLICATION_JSON_CHARSET_UTF_8)
+	public @ResponseBody JSONListWrapper<FusoHorario> listFusos()
+	{
+		List<FusoHorario> ncmList = fusoDAO.findAllWithOrderAsc("id_ordercomum_fuh");
+		
+		int total = ncmList.size();
+		
+		JSONListWrapper<FusoHorario> jsonList = new JSONListWrapper<FusoHorario>(ncmList, total);
+
+		return jsonList;
+	}	
+	
 	
 }

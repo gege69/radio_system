@@ -50,7 +50,7 @@
                 
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-md-offset-4 col-sm-5 col-md-4">
-                    <input type="text" class="form-control" id="dt_alteracao_amb" name="dt_alteracao_amb">
+                    <input type="text" class="form-control" id="cd_telefone2_amb" name="cd_telefone2_amb">
                   </div>
                 </div>
                 
@@ -137,8 +137,7 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Fuso-horário:</label>
                   <div class="col-sm-4 col-md-6">
-                    <select class="form-control" id="fuso" name="">
-                      <option value="">Implementar...</option>
+                    <select class="form-control" id="id_fusohorario_fuh" name="fusoHorario[id_fusohorario_fuh]">
                     </select>
                   </div>
                 </div>
@@ -198,7 +197,7 @@
         $('#id_ambiente_amb').val( json.id_ambiente_amb );
         $('#nm_ambiente_amb').val( json.nm_ambiente_amb );
         
-        $('#ds_email_aml').val( json.cd_email1_amb );        
+        $('#cd_email1_amb').val( json.cd_email1_amb );        
       
         $('#cd_telefone1_amb').val( json.cd_telefone1_amb );
         $('#cd_telefone2_amb').val( json.cd_telefone2_amb );
@@ -211,6 +210,11 @@
         $('#ds_anotacoes_amb').val( json.ds_anotacoes_amb );
         $('#cd_login_amb').val( json.cd_login_amb );
         $('#cd_password_amb').val( json.cd_password_amb );
+        
+        if ( json.fusoHorario != null )
+            $('#id_fusohorario_fuh').val( json.fusoHorario.id_fusohorario_fuh );
+
+        $('#fl_opcionais_amb').prop('checked', json.fl_opcionais_amb );
 
     }  
 
@@ -231,6 +235,31 @@
                 jump('ncmForm');
             }
           });
+    }
+    
+    var getFusos = function()
+    {
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: '${context}/gerenciador/fusohorarios',
+            dataType: 'json',
+            success: function(json){
+                  
+                $.each( json.data , function (i, ato){
+                    
+                    var text_str = ato.ds_offset_fuh + " - " + ato.nm_alias_fuh
+                    
+                    $('#id_fusohorario_fuh').append($('<option>', { 
+                        value: ato.id_fusohorario_fuh,
+                        text : text_str  
+                    }));
+                });
+                
+                jump('ncmForm');
+            }
+        });
+        
     }
 
 
@@ -257,14 +286,14 @@
         
         if ( validaForm() ){
             
-            var formobj = $('#ambiente-form').serializeArray();
+            var obj = $('#ambiente-form').serializeJSON();
             
             $.ajax({
                 type: 'PUT',
                 contentType: 'application/json',
                 url: '${context}/gerenciador/ambientes',
                 dataType: 'json',
-                data: toJSON( formobj ),
+                data:  JSON.stringify(obj),
                 success: function(json){
                   
                     if (json.id != null){
@@ -294,6 +323,8 @@
         $('#btnSalvar').on('click', salvar);
         
         getDados( $('#id_ambiente_amb').val() );
+        
+        getFusos();
         
     });
 

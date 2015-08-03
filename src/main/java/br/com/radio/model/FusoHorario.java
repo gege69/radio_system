@@ -38,6 +38,8 @@ public class FusoHorario implements Model<Long> {
 	@NotNull( message = "O alias do Fuso Horário é de preenchimento obrigatório" )
 	@Column( name = "nm_alias_fuh", nullable = false, length = 300 )
 	private String nm_alias_fuh;
+	
+	private Integer id_ordercomum_fuh;  // atribui uma prioridade de mais utilizados para poder ordenar. Brasilia por exemplo será inserido com 0, Manaus como 1, etc
 
 	@Override
 	public Long getId()
@@ -90,6 +92,24 @@ public class FusoHorario implements Model<Long> {
 	{
 		this.nm_alias_fuh = nm_alias_fuh;
 	}
+
+	public Integer getId_ordercomum_fuh()
+	{
+		return id_ordercomum_fuh;
+	}
+
+	public void setId_ordercomum_fuh( Integer id_ordercomum_fuh )
+	{
+		this.id_ordercomum_fuh = id_ordercomum_fuh;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "FusoHorario [id_fusohorario_fuh=" + id_fusohorario_fuh + ", ds_offset_fuh=" + ds_offset_fuh + ", ds_canonid_fuh=" + ds_canonid_fuh + ", nm_alias_fuh=" + nm_alias_fuh
+				+ ", id_ordercomum_fuh=" + id_ordercomum_fuh + "]";
+	}
+	
 	
 	
 

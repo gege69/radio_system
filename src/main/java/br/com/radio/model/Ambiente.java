@@ -94,6 +94,11 @@ public class Ambiente implements Model<Long> {
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_alteracao_amb" )
 	private Date dt_alteracao_amb;
+
+	
+	@OneToOne
+	@JoinColumn(name="id_fusohorario_fuh")
+	private FusoHorario fusoHorario;
 	
 	
 	@Override
@@ -318,6 +323,27 @@ public class Ambiente implements Model<Long> {
 		this.nm_estado_amb = nm_estado_amb;
 	}
 
+	public FusoHorario getFusoHorario()
+	{
+		return fusoHorario;
+	}
+
+	public void setFusoHorario( FusoHorario fusoHorario )
+	{
+		this.fusoHorario = fusoHorario;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Ambiente [id_ambiente_amb=" + id_ambiente_amb + ", nm_ambiente_amb=" + nm_ambiente_amb + ", cd_telefone1_amb=" + cd_telefone1_amb + ", cd_telefone2_amb=" + cd_telefone2_amb
+				+ ", cd_email1_amb=" + cd_email1_amb + ", cd_email2_amb=" + cd_email2_amb + ", ds_anotacoes_amb=" + ds_anotacoes_amb + ", nm_logradouro_amb=" + nm_logradouro_amb + ", cd_numero_amb="
+				+ cd_numero_amb + ", nm_bairro_amb=" + nm_bairro_amb + ", nm_cidade_amb=" + nm_cidade_amb + ", nm_estado_amb=" + nm_estado_amb + ", cd_login_amb=" + cd_login_amb
+				+ ", cd_password_amb=" + cd_password_amb + ", fl_opcionais_amb=" + fl_opcionais_amb + ", fl_sincronizar_amb=" + fl_sincronizar_amb + ", fl_download_amb=" + fl_download_amb
+				+ ", dt_criacao_amb=" + dt_criacao_amb + ", usuarioCriacao=" + usuarioCriacao + ", dt_alteracao_amb=" + dt_alteracao_amb + ", fusoHorario=" + fusoHorario + "]";
+	}
+
+	
 	
 
 }

@@ -51,6 +51,8 @@
     <script src="${context}/js/bootstrap-datepicker.js"></script>
     <script src="${context}/js/jsrender.js"></script>
     <script src="${context}/js/radio.js" charset="UTF-8" ></script>  
+    <script src="${context}/js/jquery.serializejson.js"></script>
+    <script src="${context}/js/json2.js"></script>
     
   </head>
 
