@@ -27,6 +27,24 @@ public class UtilsNumbers {
 		return i;
 	}
 
+	
+	public static String toStr( int valor )
+	{
+		String result = "";
+		try{
+			result = Integer.toString( valor );
+		}
+		catch (Exception ex){
+			result = "";
+		}
+		
+		return result;
+	}
+	
+	
+
+	
+	
 	public static Long toLong(String value){
 
 		if ( StringUtils.isBlank( value ) )

@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,27 +25,27 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 /**
  * Tabela de Ligação
  * 
- * UsuarioPerfil x Permissao = UPP
+ * Usuario x Permissao = USP
  * 
  * @author pazin
  *
  */
 @Entity
-@Table(name="usuario_perfil_permissao")
-public class UsuarioPerfilPermissao implements Model<Long> {
+@Table(name="usuario_permissao")
+public class UsuarioPermissao implements Model<Long> {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_usuperfperm_upp", nullable = false )
-	private Long id_usuperfperm_upp;
+	@Column( name = "id_usuperm_upp", nullable = false )
+	private Long id_usuperm_upp;
 
-	@OneToOne
-	@JoinColumn(name="id_usuperf_upf")
-	private UsuarioPerfil usuarioPerfil;
+	@ManyToOne
+	@JoinColumn(name="id_usuario_usu")
+	private Usuario usuario;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="id_permissao_prm")
 	private Permissao permissao;
 
@@ -59,33 +59,33 @@ public class UsuarioPerfilPermissao implements Model<Long> {
 	@Override
 	public Long getId()
 	{
-		return id_usuperfperm_upp;
+		return id_usuperm_upp;
 	}
 
 	@Override
 	public void setId( Long id )
 	{
-		this.id_usuperfperm_upp = id;
+		this.id_usuperm_upp = id;
 	}
 
-	public Long getId_usuperfperm_upp()
+	public Long getId_usuperm_upp()
 	{
-		return id_usuperfperm_upp;
+		return id_usuperm_upp;
 	}
 
-	public void setId_usuperfperm_upp( Long id_usuperfperm_upp )
+	public void setId_usuperm_upp( Long id_usuperm_upp )
 	{
-		this.id_usuperfperm_upp = id_usuperfperm_upp;
+		this.id_usuperm_upp = id_usuperm_upp;
 	}
 
-	public UsuarioPerfil getUsuarioPerfil()
+	public Usuario getUsuario()
 	{
-		return usuarioPerfil;
+		return usuario;
 	}
 
-	public void setUsuarioPerfil( UsuarioPerfil usuarioPerfil )
+	public void setUsuario( Usuario usuario )
 	{
-		this.usuarioPerfil = usuarioPerfil;
+		this.usuario = usuario;
 	}
 
 	public Permissao getPermissao()
@@ -98,7 +98,17 @@ public class UsuarioPerfilPermissao implements Model<Long> {
 		this.permissao = permissao;
 	}
 
-	public UsuarioPerfilPermissao()
+	public Date getDt_criacao_upp()
+	{
+		return dt_criacao_upp;
+	}
+
+	public void setDt_criacao_upp( Date dt_criacao_upp )
+	{
+		this.dt_criacao_upp = dt_criacao_upp;
+	}
+
+	public UsuarioPermissao()
 	{
 		super();
 		this.dt_criacao_upp = new Date();
