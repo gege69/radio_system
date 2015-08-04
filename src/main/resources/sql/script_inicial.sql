@@ -56,6 +56,8 @@ values ( nextval('usuario_id_usuario_usu_seq'), 'gaugusto', '12456', null, now()
 insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'DESENVOLVEDOR' );
 insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'ADMINISTRADOR' );
 insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'GERENTE' );
+insert into perfil values (nextval('perfil_id_perfil_per_seq'), 'SUPERVISOR' );
+insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'USUARIO' );
 
 
 -- dando as permissões padrão do perfil...
