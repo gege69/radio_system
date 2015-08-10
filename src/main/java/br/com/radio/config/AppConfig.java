@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class AppConfig {
 
 	@Bean
-	public DataSource dataSource() throws NamingException{
+	public DataSource getDataSource() throws NamingException{
 		
 		Context context = new InitialContext();
 		
@@ -36,7 +36,7 @@ public class AppConfig {
 		DataSource dataSource;
 		
 		try {
-			dataSource = dataSource();
+			dataSource = getDataSource();
 		} catch (NamingException e) {
 			throw new RuntimeException(e);
 		}

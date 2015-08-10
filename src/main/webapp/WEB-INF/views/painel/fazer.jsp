@@ -1,4 +1,4 @@
-<jsp:include page="/main.jsp" />    
+<jsp:include page="/WEB-INF/views/main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
@@ -33,10 +33,10 @@
     
     <div class="row">
       <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/views/painel/principal.jsp">Painel Gerencial</a>
+        <a class="btn btn-default" href="principal">Painel Gerencial</a>
       </div>
     </div>
       
   </div> <!-- /container -->
 
-<jsp:include page="/bottom.jsp" />
+<jsp:include page="/WEB-INF/views/bottom.jsp" />

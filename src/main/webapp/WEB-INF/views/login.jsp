@@ -12,7 +12,8 @@
     <div class="row row-centered">
       <div class="col-xs-12 col-md-5 col-sm-6 col-lg-5 col-centered">
       
-        <form action="${context}/views/painel/principal.jsp">
+        <form action="login" method="POST">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
           <div class="form-group">
             <label for="login">Login</label>
             <input type="email" class="form-control" id="login" placeholder="Login">

@@ -36,12 +36,12 @@ public class Permissao implements Model<Long> {
 	private Long id_permissao_prm;
 	
 	@NotNull( message = "O alias da Permissão é de preenchimento obrigatório" )
-	@Column( name = "cd_permiss_per", nullable = false, length = 100 )
-	private String cd_permiss_per;
+	@Column( name = "cd_permiss_prm", nullable = false, length = 100 )
+	private String cd_permiss_prm;
 
 	@NotNull( message = "A descrição da Permissão é de preenchimento obrigatório" )
-	@Column( name = "ds_permiss_per", nullable = false, length = 400 )
-	private String ds_permiss_per;
+	@Column( name = "ds_permiss_prm", nullable = false, length = 400 )
+	private String ds_permiss_prm;
 	
 	@ManyToOne
 	@JoinColumn(name="id_permissaopai_prm")
@@ -72,24 +72,24 @@ public class Permissao implements Model<Long> {
 		this.id_permissao_prm = id_permissao_prm;
 	}
 
-	public String getCd_permiss_per()
+	public String getCd_permiss_prm()
 	{
-		return cd_permiss_per;
+		return cd_permiss_prm;
 	}
 
-	public void setCd_permiss_per( String cd_permiss_per )
+	public void setCd_permiss_prm( String cd_permiss_prm )
 	{
-		this.cd_permiss_per = cd_permiss_per;
+		this.cd_permiss_prm = cd_permiss_prm;
 	}
 
-	public String getDs_permiss_per()
+	public String getDs_permiss_prm()
 	{
-		return ds_permiss_per;
+		return ds_permiss_prm;
 	}
 
-	public void setDs_permiss_per( String ds_permiss_per )
+	public void setDs_permiss_prm( String ds_permiss_prm )
 	{
-		this.ds_permiss_per = ds_permiss_per;
+		this.ds_permiss_prm = ds_permiss_prm;
 	}
 
 	public Permissao getPermissaoPai()
@@ -144,10 +144,11 @@ public class Permissao implements Model<Long> {
 	@Override
 	public String toString()
 	{
-		return "Permissao [id_permissao_prm=" + id_permissao_prm + ", cd_permiss_per=" + cd_permiss_per + 
-				", ds_permiss_per=" + ds_permiss_per + ", permissaoPai=" + permissaoPai
-				+ ", permissoesFilhas=" + permissoesFilhas != null ? UtilsNumbers.toStr( permissoesFilhas.size() ) : "0" + "]";
+		return "Permissao [id_permissao_prm=" + id_permissao_prm + ", cd_permiss_prm=" + cd_permiss_prm + ", ds_permiss_prm=" + ds_permiss_prm + ", permissaoPai=" + permissaoPai
+				+ ", permissoesFilhas=" + permissoesFilhas + "]";
 	}
+
+
 
 	
 

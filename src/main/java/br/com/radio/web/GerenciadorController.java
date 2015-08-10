@@ -39,28 +39,56 @@ public class GerenciadorController extends AbstractController {
 	
 	@Autowired
 	private FusoHorarioDAO fusoDAO;
+
 	
-	@RequestMapping(value="/incluir_ambientes", method=RequestMethod.GET)
-	public String cadastro( ModelMap model )
+	@RequestMapping(value="/principal", method=RequestMethod.GET)
+	public String principal( ModelMap model )
 	{
-		return "/views/painel/incluir-ambiente.jsp";
+		return "painel/principal";
+	}
+	
+	
+	@RequestMapping(value="/fazer")
+	public String fazer( ModelMap model )
+	{
+		return "painel/fazer";
+	}
+
+
+	@RequestMapping(value="/alterar-senha")
+	public String alterarSenha( ModelMap model )
+	{
+		return "painel/alterar-senha";
 	}
 
 	
-	@RequestMapping(value="/espelhar_ambientes/{id_ambiente_amb}", method=RequestMethod.GET)
+	@RequestMapping(value="/administrar-ambientes")
+	public String administrar( ModelMap model )
+	{
+		return "painel/administrar-ambiente";
+	}
+	
+	@RequestMapping(value="/incluir-ambientes")
+	public String cadastro( ModelMap model )
+	{
+		return "painel/incluir-ambiente";
+	}
+
+	
+	@RequestMapping(value="/espelhar-ambiente/{id_ambiente_amb}", method=RequestMethod.GET)
 	public String espelhar( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )
 	{
 		model.addAttribute( "quantidade", 1 );
 		
-		return "/views/painel/espelhamento-ambiente.jsp";
+		return "painel/espelhamento-ambiente";
 	}
 	
-	@RequestMapping(value="/editar_ambientes/{id_ambiente_amb}", method=RequestMethod.GET)
+	@RequestMapping(value="/editar-ambiente/{id_ambiente_amb}", method=RequestMethod.GET)
 	public String editar( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )
 	{
 		model.addAttribute( "id_ambiente_amb", id_ambiente_amb );
 		
-		return "/views/painel/editar-ambiente.jsp";
+		return "painel/editar-ambiente";
 	}
 	
 	
@@ -68,10 +96,6 @@ public class GerenciadorController extends AbstractController {
 	public @ResponseBody Ambiente get( @PathVariable Long id_ambiente_amb, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteDAO.findById( id_ambiente_amb );
-		
-		String jsonResult = writeObjectAsString( ambiente );
-		
-		System.out.println(jsonResult);
 		
 		return ambiente;
 	}

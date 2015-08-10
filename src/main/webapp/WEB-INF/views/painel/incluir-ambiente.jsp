@@ -1,4 +1,4 @@
-<jsp:include page="/main.jsp" />    
+<jsp:include page="/WEB-INF/views/main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
@@ -23,7 +23,11 @@
           
           <div class="spacer-vertical40"></div>
           
-          <form class="form-horizontal" id="ambiente-form" action="${context}/views/painel/incluir-ambiente.jsp" role="form"> 
+          <form class="form-horizontal" id="ambiente-form" action="#" role="form">
+            
+            <!-- Necessário pro Spring -->
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+           
             <div class="form-group">
               <label for="login" class="control-label col-sm-2 col-md-3">Nome do Ambiente:</label>
               <div class="col-sm-10 col-md-8">
@@ -58,7 +62,7 @@
     
     <div class="row">
       <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/views/painel/principal.jsp">Painel Gerencial</a>
+        <a class="btn btn-default" href="${context}/gerenciador/principal">Painel Gerencial</a>
       </div>
     </div>
       
@@ -126,4 +130,4 @@
 </script>
   
 
-<jsp:include page="/bottom.jsp" />
+<jsp:include page="/WEB-INF/views/bottom.jsp" />

@@ -1,4 +1,4 @@
-<jsp:include page="/main.jsp" />    
+<jsp:include page="/WEB-INF/views/main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
@@ -22,7 +22,7 @@
             <div class="spacer-vertical40"></div>
             
             <div>
-              <form class="form-horizontal" action="${context}/views/painel/incluir-ambiente.jsp">
+              <form class="form-horizontal" action="#">
     
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-3 col-md-4">Senha Atual:</label>
@@ -61,10 +61,10 @@
     
     <div class="row">
       <div class="col-md-offset-8 col-sm-offset-7 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/views/painel/principal.jsp">Painel Gerencial</a>
+        <a class="btn btn-default" href="${context}/gerenciador/principal">Painel Gerencial</a>
       </div>
     </div>
       
   </div> <!-- /container -->
 
-<jsp:include page="/bottom.jsp" />
+<jsp:include page="/WEB-INF/views/bottom.jsp" />

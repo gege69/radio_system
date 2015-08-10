@@ -1,4 +1,4 @@
-<jsp:include page="/main.jsp" />    
+<jsp:include page="/WEB-INF/views/main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
@@ -54,7 +54,7 @@
               <div class="spacer-vertical40"></div>
               
               <div class="">
-                <a class="btn btn-default" href="${context}/views/painel/incluir-ambiente.jsp">Adicionar Novo Ambiente</a>
+                <a class="btn btn-default" href="${context}/gerenciador/incluir-ambiente">Adicionar Novo Ambiente</a>
               </div>            
             </div>
           </div>
@@ -67,7 +67,7 @@
     
     <div class="row">
       <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/views/painel/principal.jsp">Painel Gerencial</a>
+        <a class="btn btn-default" href="${context}/gerenciador/principal">Painel Gerencial</a>
       </div>
     </div>
       
@@ -83,12 +83,12 @@
      {{:nm_ambiente_amb}}
   </td>
   <td>
-    <a class="btn btn-link" href="${context}/gerenciador/espelhar_ambientes/{{:id_ambiente_amb}}">
+    <a class="btn btn-link" href="${context}/gerenciador/espelhar-ambiente/{{:id_ambiente_amb}}">
       <i class="fa fa-lg fa-files-o"></i>
     </a>
   </td>
   <td>
-    <a class="btn btn-link" href="${context}/gerenciador/editar_ambientes/{{:id_ambiente_amb}}">
+    <a class="btn btn-link" href="${context}/gerenciador/editar-ambiente/{{:id_ambiente_amb}}">
       <i class="fa fa-lg fa-pencil-square-o"></i>
     </a>
   </td>
@@ -139,4 +139,4 @@
 </script>
 
 
-<jsp:include page="/bottom.jsp" />
+<jsp:include page="/WEB-INF/views/bottom.jsp" />
