@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -21,6 +23,7 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.repository.AmbienteDAO;
 import br.com.radio.repository.FusoHorarioDAO;
+import br.com.radio.service.UsuarioService;
 
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial.
@@ -55,25 +58,26 @@ public class GerenciadorController extends AbstractController {
 	}
 
 
-	@RequestMapping(value="/alterar-senha")
-	public String alterarSenha( ModelMap model )
+	@RequestMapping(value="/incluir-ambiente")
+	@PreAuthorize("hasAuthority('INCLUIR_AMB')")
+	public String cadastro( ModelMap model )
 	{
-		return "painel/alterar-senha";
+		return "painel/incluir-ambiente";
 	}
-
 	
-	@RequestMapping(value="/administrar-ambientes")
+	@RequestMapping(value="/administrar-ambiente")
+	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
 	public String administrar( ModelMap model )
 	{
 		return "painel/administrar-ambiente";
 	}
 	
-	@RequestMapping(value="/incluir-ambientes")
-	public String cadastro( ModelMap model )
+	@RequestMapping(value="/alterar-senha")
+	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
+	public String alterarSenha( ModelMap model )
 	{
-		return "painel/incluir-ambiente";
+		return "painel/alterar-senha";
 	}
-
 	
 	@RequestMapping(value="/espelhar-ambiente/{id_ambiente_amb}", method=RequestMethod.GET)
 	public String espelhar( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )

@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -15,9 +16,13 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import br.com.radio.security.config.SecurityConfig;
+import br.com.radio.web.config.WebAppConfig;
+
 @Configuration
-@ComponentScan(basePackages={"br.com.radio"})
+@ComponentScan(basePackages={"br.com.radio.*"})
 @EnableTransactionManagement
+@Import({ WebAppConfig.class, SecurityConfig.class })
 public class AppConfig {
 
 	@Bean

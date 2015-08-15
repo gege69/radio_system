@@ -29,4 +29,12 @@ public class LoginPageController extends AbstractController {
 		return "login";
 	}
 	
+	
+	@RequestMapping(value="/403", method=RequestMethod.GET)
+	public String acessoNegado( HttpServletRequest request, ModelMap model )
+	{
+		return "system/403";
+	}
+
+	
 }

@@ -22,13 +22,13 @@
               <div class="row row-centered">
                 <div class="container">
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md btn-md" href="${context}/gerenciador/incluir-ambientes">
+                    <a class="btn btn-default btn-block btn-md btn-md" href="${context}/gerenciador/incluir-ambiente">
                       <i class="fa fa-3x icone-main fa-shopping-cart"></i>
                       <span class="label-botao-main">Incluir Ambiente</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/administrar-ambientes">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/administrar-ambiente">
                       <i class="fa fa-3x icone-main fa-random"></i>
                       <span class="label-botao-main">Administar Ambiente</span>
                     </a>
@@ -108,7 +108,11 @@
               Você possui XX ambientes cadastrados
             </div>
             <div class="col-md-3 col-md-offset-10   col-sm-2 col-sm-offset-7   col-xs-4 col-xs-offset-5">
-              <a href="${context}/">Logout</a>
+              <c:url var="logoutUrl" value="/logout"/>
+              <form action="${logoutUrl}" method="post">
+                <input type="submit" class="btn btn-link" value="Log out" />
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+              </form>
             </div>
           </div>
           
