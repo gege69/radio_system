@@ -86,7 +86,7 @@ public class AuthenticationController extends AbstractController {
 		if ( usuario == null )
 		{
 			modelAndView.setViewName( "auth/register" );
-			modelAndView.addObject( "erro", msgErro );
+			result.reject( "message.regError", msgErro );
 		}
 		else
 		{

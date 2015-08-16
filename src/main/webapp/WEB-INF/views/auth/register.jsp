@@ -43,6 +43,8 @@
           </div>
           <button type="submit" class="btn btn-default">Gravar</button>
           
+          <div class="spacer-vertical20"></div>
+          
           <form:errors element="div" class="alert alert-danger"/>
         </form:form>
         
