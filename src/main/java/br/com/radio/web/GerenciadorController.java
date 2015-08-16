@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,7 +22,6 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.repository.AmbienteDAO;
 import br.com.radio.repository.FusoHorarioDAO;
-import br.com.radio.service.UsuarioService;
 
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial.

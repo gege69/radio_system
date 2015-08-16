@@ -1,4 +1,4 @@
-<jsp:include page="main.jsp" />    
+<jsp:include page="../main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
@@ -27,7 +27,16 @@
         
       </div>
     </div>
+    
+    <div class="spacer-vertical80"></div>
+    
+    
+    <div class="row">
+      <div class="col-xs-12 col-md-5 col-sm-6 col-lg-5 col-centered">
+        <a href="${context}/register">Clique aqui para se cadastrar</a>
+      </div>
+    </div>
       
   </div> <!-- /container -->
 
-<jsp:include page="bottom.jsp" />
+<jsp:include page="../bottom.jsp" />

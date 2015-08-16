@@ -1,7 +1,7 @@
 <jsp:include page="/WEB-INF/views/main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
-
+<meta name="_csrf" th:content="${_csrf.token}"/>
 
   <div class="container">
   
@@ -23,7 +23,7 @@
 
           <form class="form-horizontal" id="ambiente-form" action="#" method="PUT">
           
-          
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <input type="hidden" id="id_ambiente_amb" name="id_ambiente_amb" value="${id_ambiente_amb}" >
   
             <div class="row">
@@ -319,6 +319,12 @@
     };
 
     $(function(){
+        
+        var token = $("input[name='_csrf']").val();
+        var header = "X-CSRF-TOKEN";
+        $(document).ajaxSend(function(e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
        
         $('#btnSalvar').on('click', salvar);
         

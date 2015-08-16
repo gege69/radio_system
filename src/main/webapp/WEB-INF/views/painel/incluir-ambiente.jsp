@@ -1,6 +1,7 @@
 <jsp:include page="/WEB-INF/views/main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
+<meta name="_csrf" th:content="${_csrf.token}"/>
 
 
   <div class="container">
@@ -91,6 +92,7 @@
     var salvar = function(){
         
         if ( validaForm() ){
+            
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
@@ -123,6 +125,12 @@
 
     $(function(){
        
+        var token = $("input[name='_csrf']").val();
+        var header = "X-CSRF-TOKEN";
+        $(document).ajaxSend(function(e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+        
         $('#btnAdicionar').on('click', salvar);
         
     });

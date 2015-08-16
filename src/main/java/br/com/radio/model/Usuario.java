@@ -32,6 +32,10 @@ public class Usuario implements Model<Long> {
 	@Column( name = "nm_usuario_usu", nullable = false, length = 200 )
 	private String nm_usuario_usu;
 	
+	@NotNull( message = "O email do usuário é de preenchimento obrigatório" )
+	@Column( name = "cd_email_usu", nullable = false, length = 200 )
+	private String cd_email_usu;
+	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
 	@Column( name = "cd_login_usu", nullable = false, length = 40 )
 	private String cd_login_usu;
@@ -144,5 +148,17 @@ public class Usuario implements Model<Long> {
 		this.dt_criacao_usu = new Date();
 	}
 
+	public String getCd_email_usu()
+	{
+		return cd_email_usu;
+	}
+
+	public void setCd_email_usu( String cd_email_usu )
+	{
+		this.cd_email_usu = cd_email_usu;
+	}
+
+	
+	
 	
 }
