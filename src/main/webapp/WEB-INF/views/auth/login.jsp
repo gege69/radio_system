@@ -1,7 +1,7 @@
 <jsp:include page="../main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
-
 
   <div class="container theme-showcase">
   
@@ -23,6 +23,14 @@
             <input type="password" class="form-control" id="password" name="password" placeholder="Senha">
           </div>
           <button type="submit" class="btn btn-default">Entrar</button>
+          
+          <div class="spacer-vertical20"></div>
+          
+          <c:if test="${not empty param.err}">
+              <div class="alert alert-danger">
+                  <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+              </div>
+          </c:if> 
         </form>
         
       </div>

@@ -1,10 +1,14 @@
 package br.com.radio.web;
 
+import java.security.Principal;
 import java.util.List;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,11 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.FusoHorario;
+import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteDAO;
 import br.com.radio.repository.FusoHorarioDAO;
+import br.com.radio.repository.UsuarioDAO;
+import br.com.radio.service.IUserService;
 
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial.
@@ -40,6 +48,12 @@ public class GerenciadorController extends AbstractController {
 	
 	@Autowired
 	private FusoHorarioDAO fusoDAO;
+	
+	@Autowired
+	private UsuarioDAO usuarioDAO;
+	
+	@Autowired
+	private IUserService userService;
 
 	
 	@RequestMapping(value="/principal", method=RequestMethod.GET)
@@ -70,12 +84,48 @@ public class GerenciadorController extends AbstractController {
 		return "painel/administrar-ambiente";
 	}
 	
-	@RequestMapping(value="/alterar-senha")
+	@RequestMapping(value="/alterar-senha", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
 	public String alterarSenha( ModelMap model )
 	{
 		return "painel/alterar-senha";
 	}
+	
+	
+	@RequestMapping(value="/alterar-senha", method=RequestMethod.POST, produces=APPLICATION_JSON_CHARSET_UTF_8)
+	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
+	public @ResponseBody String gravaNovaSenha( @RequestBody @Valid AlterarSenhaDTO senhaDTO, BindingResult result, Principal principal )
+	{
+		String jsonResult = "";
+
+		if ( result.hasErrors() ){
+			
+			jsonResult = getErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			String name = principal.getName(); //get logged in username
+			
+			try
+			{
+				userService.changeUserPassword( name, senhaDTO );
+			}
+			catch ( Exception e )
+			{
+				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+			
+			if ( StringUtils.isBlank( jsonResult ) )
+			{
+				JsonObject obj = Json.createObjectBuilder().add("ok", true).build();
+				
+				jsonResult = obj.toString();
+			}
+		}
+		
+		return jsonResult;
+	}
+	
 	
 	@RequestMapping(value="/espelhar-ambiente/{id_ambiente_amb}", method=RequestMethod.GET)
 	public String espelhar( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )

@@ -108,14 +108,7 @@
                         jump(''); // topo da pagina
                     }
                     else{
-                        
-                        $.each(json.errors, function(pos){
-                            
-                            var obj = json.errors[pos];
-                            
-                            preencheErroField( obj.message, obj.field );
-                            
-                        });    
+                        preencheErros( json.errors );
                     }
                 }
             });

@@ -160,17 +160,31 @@ public abstract class AbstractDAO<T extends Model<ID>, ID extends Serializable> 
 			this.remove(t);
 	}
 	
+	
 	@Override
-	public T findByHash(String field, String hash)
+	public T findByField(String field, String value)
 	{
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = builder.createQuery(clazz);
 		Root<T> obj = criteria.from(clazz);
 
-		criteria.where(builder.equal(obj.<String>get( field ), hash));
+		criteria.where(builder.equal(obj.<String>get( field ), value));
 		
 		return getSingleResult(em.createQuery(criteria));
 	}
+	
+	
+//	@Override
+//	public T findByHash(String field, String hash)
+//	{
+//		CriteriaBuilder builder = em.getCriteriaBuilder();
+//		CriteriaQuery<T> criteria = builder.createQuery(clazz);
+//		Root<T> obj = criteria.from(clazz);
+//
+//		criteria.where(builder.equal(obj.<String>get( field ), hash));
+//		
+//		return getSingleResult(em.createQuery(criteria));
+//	}
 
 	
 	public T getSingleResult(TypedQuery<T> query) 

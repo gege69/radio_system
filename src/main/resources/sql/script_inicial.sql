@@ -49,13 +49,15 @@ insert into permissao ( id_permissao_prm, cd_permiss_prm, ds_permiss_prm, id_per
 
 -- Usuários Padrão
 insert into usuario ( id_usuario_usu, cd_login_usu, cd_password_usu, dt_alteracao_usu, dt_criacao_usu, fl_ativo_usu, nm_usuario_usu, cd_email_usu ) 
-values ( nextval('usuario_id_usuario_usu_seq'), 'fpazin', '12456', null, now(), true, 'Fernando Pazin', 'pazinfernando@gmail.com');
+values ( nextval('usuario_id_usuario_usu_seq'), 'fpazin', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', null, now(), true, 'Fernando Pazin', 'pazinfernando@gmail.com');
 insert into usuario ( id_usuario_usu, cd_login_usu, cd_password_usu, dt_alteracao_usu, dt_criacao_usu, fl_ativo_usu, nm_usuario_usu, cd_email_usu ) 
-values ( nextval('usuario_id_usuario_usu_seq'), 'gaugusto', '12456', null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
+values ( nextval('usuario_id_usuario_usu_seq'), 'gaugusto', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
 
 insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'DESENVOLVEDOR' );
 insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'ADMINISTRADOR' );
 insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'GERENTE' );
+insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'SUPERVISOR' );
+insert into perfil values ( nextval('perfil_id_perfil_per_seq'), 'USUARIO' );
 
 
 -- dando as permissões padrão do perfil...

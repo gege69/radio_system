@@ -8,7 +8,7 @@ import br.com.radio.validation.PasswordMatches;
 import br.com.radio.validation.ValidacaoEmail;
 
 @PasswordMatches
-public class UserDTO {
+public class UserDTO implements IPasswordMatch {
 	
 	@NotNull
     @NotEmpty

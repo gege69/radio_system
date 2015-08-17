@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateSerializer;
@@ -37,11 +38,11 @@ public class Usuario implements Model<Long> {
 	private String cd_email_usu;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
-	@Column( name = "cd_login_usu", nullable = false, length = 40 )
+	@Column( name = "cd_login_usu", nullable = false, length = 40, unique = true )
 	private String cd_login_usu;
 	
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
-	@Column( name = "cd_password_usu", nullable = false, length = 200 )
+	@Column( name = "cd_password_usu", nullable = false )
 	private String cd_password_usu;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)

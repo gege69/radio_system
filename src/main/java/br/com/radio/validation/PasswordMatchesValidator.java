@@ -3,7 +3,7 @@ package br.com.radio.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import br.com.radio.dto.UserDTO;
+import br.com.radio.dto.IPasswordMatch;
 
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 	
@@ -13,7 +13,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
     @Override
 	public boolean isValid( Object obj, ConstraintValidatorContext context )
 	{
-		UserDTO user = (UserDTO) obj;
+		IPasswordMatch user = (IPasswordMatch) obj;
 		return user.getPassword().equals( user.getMatchingPassword() );
 	}
 }

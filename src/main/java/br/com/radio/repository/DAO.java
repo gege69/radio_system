@@ -25,6 +25,8 @@ public interface DAO<T extends Model<ID>, ID extends Serializable> {
 	
 	void removeById(ID id);
 	
-	T findByHash(String field, String hash);
+	T findByField(String field, String value);
+	
+//	T findByHash(String field, String hash);
 	
 }

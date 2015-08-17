@@ -63,12 +63,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 	  auth
 	    .jdbcAuthentication()
+	      .passwordEncoder( getPasswordEncoder() )
 	      .dataSource(dataSource)
 	      .usersByUsernameQuery(DEF_USERS_BY_USERNAME_QUERY)
 	      .authoritiesByUsernameQuery(DEF_AUTHORITIES_BY_USERNAME_QUERY)
 	      .groupAuthoritiesByUsername( DEF_GROUP_AUTHORITIES_BY_USERNAME_QUERY );
 	  
-//	  auth.passwordEncoder( new BCryptPasswordEncoder( 8 ) );
+	  
 	  
 	}
 	

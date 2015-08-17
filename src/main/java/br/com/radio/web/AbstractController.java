@@ -10,6 +10,7 @@ import javax.json.JsonObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -79,6 +80,16 @@ public abstract class AbstractController {
 			
 			JsonObject obj = Json.createObjectBuilder()
 					.add("field", error.getField())
+					.add("message", error.getDefaultMessage())
+					.build();
+				
+			jsonArrayBuilder.add(obj);
+		}
+
+		for ( ObjectError error : result.getGlobalErrors() )
+		{
+			JsonObject obj = Json.createObjectBuilder()
+					.add("field", "alertArea")
 					.add("message", error.getDefaultMessage())
 					.build();
 				

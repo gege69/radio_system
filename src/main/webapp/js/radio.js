@@ -132,8 +132,35 @@ var validaCampoIndividual = function( nomeCampo, desc, message )
 	return isOk;
 }
 
+var preencheErros = function( errors )
+{
+    if ( errors == null ) 
+        return;
+    
+    var isGeral = false;
+    var erro = null;
+    
+    if ( errors.length == 1 )
+        erro = errors[0];
+    
+    if ( errors.length == 1 && erro.field == "alertArea" )
+    {
+        preencheAlertGeral( erro.field, erro.message );
+    }
+    else
+    {
+        $.each(json.errors, function(pos){
+            
+            var obj = json.errors[pos];
+            
+            preencheErroField( obj.field, obj.message );
+            
+        });  
+    }
+}
 
-var preencheErroField = function( msg, nomeCampo )
+
+var preencheErroField = function( nomeCampo, msg )
 {
   $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
   $('<span class="fa fa-times form-control-feedback icone-fa-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
@@ -165,7 +192,7 @@ var preencheAlertGeral = function( nomeCampo, msg, type )
     var duration = 3000; // default
     
     if ( "danger" == type )
-        duration = 7000;
+        duration = 8000;
     
     $("#alert" + nomeCampo ).fadeTo( duration , 500).slideUp(500, function(){
       $("#alert" + nomeCampo ).alert('close');
