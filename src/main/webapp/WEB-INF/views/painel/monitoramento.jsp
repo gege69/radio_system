@@ -1,4 +1,4 @@
-<jsp:include page="/main.jsp" />    
+<jsp:include page="/WEB-INF/views/main.jsp" />     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
@@ -140,4 +140,4 @@
       
   </div> <!-- /container -->
 
-<jsp:include page="/bottom.jsp" />
+<jsp:include page="/WEB-INF/views/bottom.jsp" />
