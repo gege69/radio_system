@@ -12,11 +12,11 @@ public class UserDTO implements IPasswordMatch {
 	
 	@NotNull
     @NotEmpty
-    private String nm_usuario_usu;
+    private String nmUsuario;
      
     @NotNull
     @NotEmpty
-    private String cd_login_usu;
+    private String cdLogin;
      
     @NotNull
     @NotEmpty
@@ -26,26 +26,26 @@ public class UserDTO implements IPasswordMatch {
     @ValidacaoEmail
     @NotNull
     @NotEmpty
-    private String cd_email_usu;
+    private String cdEmail;
 
-	public String getNm_usuario_usu()
+	public String getNmUsuario()
 	{
-		return nm_usuario_usu;
+		return nmUsuario;
 	}
 
-	public void setNm_usuario_usu( String nm_usuario_usu )
+	public void setNmUsuario( String nmUsuario )
 	{
-		this.nm_usuario_usu = nm_usuario_usu;
+		this.nmUsuario = nmUsuario;
 	}
 
-	public String getCd_login_usu()
+	public String getCdLogin()
 	{
-		return cd_login_usu;
+		return cdLogin;
 	}
 
-	public void setCd_login_usu( String cd_login_usu )
+	public void setCdLogin( String cdLogin )
 	{
-		this.cd_login_usu = cd_login_usu;
+		this.cdLogin = cdLogin;
 	}
 
 	public String getPassword()
@@ -68,16 +68,16 @@ public class UserDTO implements IPasswordMatch {
 		this.matchingPassword = matchingPassword;
 	}
 
-	public String getCd_email_usu()
+	public String getCdEmail()
 	{
-		return cd_email_usu;
+		return cdEmail;
 	}
 
-	public void setCd_email_usu( String cd_email_usu )
+	public void setCdEmail( String cdEmail )
 	{
-		this.cd_email_usu = cd_email_usu;
+		this.cdEmail = cdEmail;
 	}
-    
-    
+
+	
 
 }

@@ -1,5 +1,6 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -28,21 +29,21 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @Entity
 @Table(name="genero")
-public class Genero implements Model<Long> {
+public class Genero implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_genero_gen", nullable = false )
-	private Long id_genero_gen;
+	private Long id;
 
 	@NotNull( message = "O nome do Gênero é de preenchimento obrigatório" )
 	@Column( name = "nm_genero_gen", nullable = false, length = 100 )
-	private String nm_genero_gen;
+	private String nome;
 
 	@Column( name = "ds_descricao_gen", nullable = true, columnDefinition = "TEXT" )
-	private String ds_descricao_gen;
+	private String descricao;
 	
 	// No futuro adicionar algum tipo de hierarquia / árvore de subgêneros
 
@@ -51,62 +52,47 @@ public class Genero implements Model<Long> {
 	@NotNull( message = "A data de criação do Gênero é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_criacao_gen", nullable = false )
-	private Date dt_criacao_gen;
-	
+	private Date dataCriacao;
 
-	@Override
 	public Long getId()
 	{
-		return id_genero_gen;
+		return id;
 	}
 
-	@Override
 	public void setId( Long id )
 	{
-		this.id_genero_gen = id;
+		this.id = id;
 	}
 
-	public Long getId_genero_gen()
+	public String getNome()
 	{
-		return id_genero_gen;
+		return nome;
 	}
 
-	public void setId_genero_gen( Long id_genero_gen )
+	public void setNome( String nome )
 	{
-		this.id_genero_gen = id_genero_gen;
+		this.nome = nome;
 	}
 
-	public String getNm_genero_gen()
+	public String getDescricao()
 	{
-		return nm_genero_gen;
+		return descricao;
 	}
 
-	public void setNm_genero_gen( String nm_genero_gen )
+	public void setDescricao( String descricao )
 	{
-		this.nm_genero_gen = nm_genero_gen;
+		this.descricao = descricao;
 	}
 
-	public String getDs_descricao_gen()
+	public Date getDataCriacao()
 	{
-		return ds_descricao_gen;
+		return dataCriacao;
 	}
 
-	public void setDs_descricao_gen( String ds_descricao_gen )
+	public void setDataCriacao( Date dataCriacao )
 	{
-		this.ds_descricao_gen = ds_descricao_gen;
+		this.dataCriacao = dataCriacao;
 	}
-
-	public Date getDt_criacao_gen()
-	{
-		return dt_criacao_gen;
-	}
-
-	public void setDt_criacao_gen( Date dt_criacao_gen )
-	{
-		this.dt_criacao_gen = dt_criacao_gen;
-	}
-
-	
 	
 	
 

@@ -1,5 +1,7 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,14 +23,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="midia_genero")
-public class MidiaGenero implements Model<Long> {
+public class MidiaGenero implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_mediagen_mgn", nullable = false )
-	private Long id_mediagen_mgn;
+	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name="id_genero_gen")
@@ -38,27 +40,14 @@ public class MidiaGenero implements Model<Long> {
 	@JoinColumn(name="id_midia_mid")
 	private Midia midia;
 
-	
-	@Override
 	public Long getId()
 	{
-		return id_mediagen_mgn;
+		return id;
 	}
 
-	@Override
 	public void setId( Long id )
 	{
-		this.id_mediagen_mgn = id;
-	}
-
-	public Long getId_mediagen_mgn()
-	{
-		return id_mediagen_mgn;
-	}
-
-	public void setId_mediagen_mgn( Long id_mediagen_mgn )
-	{
-		this.id_mediagen_mgn = id_mediagen_mgn;
+		this.id = id;
 	}
 
 	public Genero getGenero()
@@ -82,5 +71,6 @@ public class MidiaGenero implements Model<Long> {
 	}
 
 	
+
 
 }

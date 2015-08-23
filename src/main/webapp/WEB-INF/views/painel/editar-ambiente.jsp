@@ -32,48 +32,48 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Nome do Ambiente:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_ambiente_amb" name="nm_ambiente_amb">
+                    <input type="text" class="form-control" id="nm_ambiente_amb" name="nome">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">E-mail:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="email" class="form-control" id="cd_email1_amb" name="cd_email1_amb">
+                    <input type="email" class="form-control" id="cd_email1_amb" name="email1">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Telefones:</label>
                   <div class="col-sm-5 col-md-4">
-                    <input type="text" class="form-control" id="cd_telefone1_amb" name="cd_telefone1_amb">
+                    <input type="text" class="form-control" id="cd_telefone1_amb" name="telefone1">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-md-offset-4 col-sm-5 col-md-4">
-                    <input type="text" class="form-control" id="cd_telefone2_amb" name="cd_telefone2_amb">
+                    <input type="text" class="form-control" id="cd_telefone2_amb" name="telefone2">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Endereço:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_logradouro_amb" name="nm_logradouro_amb">
+                    <input type="text" class="form-control" id="nm_logradouro_amb" name="logradouro">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Bairro:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_bairro_amb" name="nm_bairro_amb">
+                    <input type="text" class="form-control" id="nm_bairro_amb" name="bairro">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Estado:</label>
                   <div class="col-sm-10 col-md-8">
-                    <select class="form-control" id="nm_estado_amb" name="nm_estado_amb">
+                    <select class="form-control" id="nm_estado_amb" name="estado">
                       <option value="AC">Acre </option>
                       <option value="AL">Alagoas </option>
                       <option value="AP">Amapá </option>
@@ -108,14 +108,14 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Cidade:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_cidade_amb" name="nm_cidade_amb">
+                    <input type="text" class="form-control" id="nm_cidade_amb" name="cidade">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="control-label col-sm-2 col-md-4" for="chave">Anotações:</label>
                   <div class="col-sm-10 col-md-8">
-                    <textarea class="form-control" rows="5" id="ds_anotacoes_amb" name="ds_anotacoes_amb"></textarea>
+                    <textarea class="form-control" rows="5" id="ds_anotacoes_amb" name="anotacoes"></textarea>
                   </div>
                 </div>
               </div>
@@ -125,21 +125,21 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Login:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="text" class="form-control" id="cd_login_amb" name="cd_login_amb" placeholder="Login">
+                    <input type="text" class="form-control" id="cd_login_amb" name="login" placeholder="Login">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Senha:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="password" class="form-control" id="cd_password_amb" name="cd_password_amb" placeholder="Senha">
+                    <input type="password" class="form-control" id="cd_password_amb" name="password" placeholder="Senha">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Fuso-horário:</label>
                   <div class="col-sm-4 col-md-6">
-                    <select class="form-control" id="id_fusohorario_fuh" name="fusoHorario[id_fusohorario_fuh]">
+                    <select class="form-control" id="id_fusohorario_fuh" name="fusoHorario[id]">
                     </select>
                   </div>
                 </div>
@@ -148,7 +148,7 @@
                   <label class="control-label col-sm-2 col-md-4" for="exampleInputAmount">Opcionais:</label>
                   <div class="checkbox col-sm-8">
                     <label>
-                      <input type="checkbox" id="fl_opcionais_amb" name="fl_opcionais_amb" value="true"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
+                      <input type="checkbox" id="fl_opcionais_amb" name="flagOpcionais" value="true"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
                     </label>
                   </div>
 <!--                   <div class="checkbox col-sm-8"> -->

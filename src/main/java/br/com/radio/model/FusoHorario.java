@@ -25,90 +25,79 @@ public class FusoHorario implements Model<Long> {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_fusohorario_fuh", nullable = false )
-	private Long id_fusohorario_fuh;
+	private Long id;
 
 	@NotNull( message = "O offset do Fuso Horário é de preenchimento obrigatório" )
 	@Column( name = "ds_offset_fuh", nullable = false, length = 20 )
-	private String ds_offset_fuh;
+	private String offset;
 
 	@NotNull( message = "O ID canônico do Fuso Horário é de preenchimento obrigatório" )
 	@Column( name = "ds_canonid_fuh", nullable = false, length = 100 )
-	private String ds_canonid_fuh;
+	private String canonid;
 	
 	@NotNull( message = "O alias do Fuso Horário é de preenchimento obrigatório" )
 	@Column( name = "nm_alias_fuh", nullable = false, length = 300 )
-	private String nm_alias_fuh;
-	
-	private Integer id_ordercomum_fuh;  // atribui uma prioridade de mais utilizados para poder ordenar. Brasilia por exemplo será inserido com 0, Manaus como 1, etc
+	private String alias;
 
-	@Override
+	@Column( name = "id_ordercomum_fuh" )
+	private Integer orderComum;  // atribui uma prioridade de mais utilizados para poder ordenar. Brasilia por exemplo será inserido com 0, Manaus como 1, etc
+
 	public Long getId()
 	{
-		return id_fusohorario_fuh;
+		return id;
 	}
 
-	@Override
 	public void setId( Long id )
 	{
-		this.id_fusohorario_fuh = id;
+		this.id = id;
 	}
 
-	public Long getId_fusohorario_fuh()
+	public String getOffset()
 	{
-		return id_fusohorario_fuh;
+		return offset;
 	}
 
-	public void setId_fusohorario_fuh( Long id_fusohorario_fuh )
+	public void setOffset( String offset )
 	{
-		this.id_fusohorario_fuh = id_fusohorario_fuh;
+		this.offset = offset;
 	}
 
-	public String getDs_offset_fuh()
+	public String getCanonid()
 	{
-		return ds_offset_fuh;
+		return canonid;
 	}
 
-	public void setDs_offset_fuh( String ds_offset_fuh )
+	public void setCanonid( String canonid )
 	{
-		this.ds_offset_fuh = ds_offset_fuh;
+		this.canonid = canonid;
 	}
 
-	public String getDs_canonid_fuh()
+	public String getAlias()
 	{
-		return ds_canonid_fuh;
+		return alias;
 	}
 
-	public void setDs_canonid_fuh( String ds_canonid_fuh )
+	public void setAlias( String alias )
 	{
-		this.ds_canonid_fuh = ds_canonid_fuh;
+		this.alias = alias;
 	}
 
-	public String getNm_alias_fuh()
+	public Integer getOrderComum()
 	{
-		return nm_alias_fuh;
+		return orderComum;
 	}
 
-	public void setNm_alias_fuh( String nm_alias_fuh )
+	public void setOrderComum( Integer orderComum )
 	{
-		this.nm_alias_fuh = nm_alias_fuh;
+		this.orderComum = orderComum;
 	}
 
-	public Integer getId_ordercomum_fuh()
+	public FusoHorario()
 	{
-		return id_ordercomum_fuh;
+		super();
+		orderComum = 99;
 	}
 
-	public void setId_ordercomum_fuh( Integer id_ordercomum_fuh )
-	{
-		this.id_ordercomum_fuh = id_ordercomum_fuh;
-	}
-
-	@Override
-	public String toString()
-	{
-		return "FusoHorario [id_fusohorario_fuh=" + id_fusohorario_fuh + ", ds_offset_fuh=" + ds_offset_fuh + ", ds_canonid_fuh=" + ds_canonid_fuh + ", nm_alias_fuh=" + nm_alias_fuh
-				+ ", id_ordercomum_fuh=" + id_ordercomum_fuh + "]";
-	}
 	
 	
 	

@@ -1,5 +1,6 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,53 +30,46 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @Entity
 @Table(name="acesso_usuario")
-public class AcessoUsuario implements Model<Long> {
+public class AcessoUsuario implements Serializable {
 	
-	private static final long serialVersionUID = -7404421157947787150L;
-	
+	private static final long serialVersionUID = 454354660695909060L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_acesso_acu", nullable = false )
-	private Long id_acesso_acu;
+	private Long id;
 
 	@OneToOne
 	@JoinColumn( name="id_usuario_usu" )
 	private Usuario usuario;
 	
 	@Column( name = "ds_enderecoip_acu", nullable = false, length = 50 )
-	private String ds_enderecoip_acu;
+	private String enderecoIp;
 	
 	// Todos os dados da conexão 
 	@Column( name = "ds_dados_acu", columnDefinition = "TEXT" )
-	private String ds_dados_acu;
+	private String dados;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_criacao_acu", nullable = false )
-	private Date dt_criacao_acu;
-	
+	private Date dataCriacao;
+		
+	public AcessoUsuario()
+	{
+		super();
+		this.dataCriacao = new Date();
+	}
 
-	@Override
 	public Long getId()
 	{
-		return id_acesso_acu;
+		return id;
 	}
 
-	@Override
 	public void setId( Long id )
 	{
-		this.id_acesso_acu = id;
-	}
-
-	public Long getId_acesso_acu()
-	{
-		return id_acesso_acu;
-	}
-
-	public void setId_acesso_acu( Long id_acesso_acu )
-	{
-		this.id_acesso_acu = id_acesso_acu;
+		this.id = id;
 	}
 
 	public Usuario getUsuario()
@@ -88,40 +82,34 @@ public class AcessoUsuario implements Model<Long> {
 		this.usuario = usuario;
 	}
 
-	public String getDs_enderecoip_acu()
+	public String getEnderecoIp()
 	{
-		return ds_enderecoip_acu;
+		return enderecoIp;
 	}
 
-	public void setDs_enderecoip_acu( String ds_enderecoip_acu )
+	public void setEnderecoIp( String enderecoIp )
 	{
-		this.ds_enderecoip_acu = ds_enderecoip_acu;
+		this.enderecoIp = enderecoIp;
 	}
 
-	public String getDs_dados_acu()
+	public String getDados()
 	{
-		return ds_dados_acu;
+		return dados;
 	}
 
-	public void setDs_dados_acu( String ds_dados_acu )
+	public void setDados( String dados )
 	{
-		this.ds_dados_acu = ds_dados_acu;
+		this.dados = dados;
 	}
 
-	public Date getDt_criacao_acu()
+	public Date getDataCriacao()
 	{
-		return dt_criacao_acu;
+		return dataCriacao;
 	}
 
-	public void setDt_criacao_acu( Date dt_criacao_acu )
+	public void setDataCriacao( Date dataCriacao )
 	{
-		this.dt_criacao_acu = dt_criacao_acu;
-	}
-
-	public AcessoUsuario()
-	{
-		super();
-		this.dt_criacao_acu = new Date();
+		this.dataCriacao = dataCriacao;
 	}
 
 	

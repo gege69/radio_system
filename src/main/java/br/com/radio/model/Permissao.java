@@ -1,5 +1,6 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -13,9 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import br.com.radio.util.UtilsNumbers;
-import br.com.radio.util.UtilsStr;
-
 
 
 /**
@@ -26,22 +24,22 @@ import br.com.radio.util.UtilsStr;
  */
 @Entity
 @Table(name="permissao")
-public class Permissao implements Model<Long> {
+public class Permissao implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_permissao_prm", nullable = false )
-	private Long id_permissao_prm;
+	private Long id;
 	
 	@NotNull( message = "O alias da Permissão é de preenchimento obrigatório" )
 	@Column( name = "cd_permiss_prm", nullable = false, length = 100 )
-	private String cd_permiss_prm;
+	private String codigo;
 
 	@NotNull( message = "A descrição da Permissão é de preenchimento obrigatório" )
 	@Column( name = "ds_permiss_prm", nullable = false, length = 400 )
-	private String ds_permiss_prm;
+	private String descricao;
 	
 	@ManyToOne
 	@JoinColumn(name="id_permissaopai_prm")
@@ -51,45 +49,62 @@ public class Permissao implements Model<Long> {
     private List<Permissao> permissoesFilhas;
 	
 	@Override
-	public Long getId()
+	public int hashCode()
 	{
-		return id_permissao_prm;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( id == null ) ? 0 : id.hashCode() );
+		return result;
 	}
 
 	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Permissao other = (Permissao) obj;
+		if ( id == null )
+		{
+			if ( other.id != null )
+				return false;
+		}
+		else if ( !id.equals( other.id ) )
+			return false;
+		return true;
+	}
+
+	public Long getId()
+	{
+		return id;
+	}
+
 	public void setId( Long id )
 	{
-		this.id_permissao_prm = id;
+		this.id = id;
 	}
 
-	public Long getId_permissao_prm()
+	public String getCodigo()
 	{
-		return id_permissao_prm;
+		return codigo;
 	}
 
-	public void setId_permissao_prm( Long id_permissao_prm )
+	public void setCodigo( String codigo )
 	{
-		this.id_permissao_prm = id_permissao_prm;
+		this.codigo = codigo;
 	}
 
-	public String getCd_permiss_prm()
+	public String getDescricao()
 	{
-		return cd_permiss_prm;
+		return descricao;
 	}
 
-	public void setCd_permiss_prm( String cd_permiss_prm )
+	public void setDescricao( String descricao )
 	{
-		this.cd_permiss_prm = cd_permiss_prm;
-	}
-
-	public String getDs_permiss_prm()
-	{
-		return ds_permiss_prm;
-	}
-
-	public void setDs_permiss_prm( String ds_permiss_prm )
-	{
-		this.ds_permiss_prm = ds_permiss_prm;
+		this.descricao = descricao;
 	}
 
 	public Permissao getPermissaoPai()
@@ -111,43 +126,6 @@ public class Permissao implements Model<Long> {
 	{
 		this.permissoesFilhas = permissoesFilhas;
 	}
-
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ( ( id_permissao_prm == null ) ? 0 : id_permissao_prm.hashCode() );
-		return result;
-	}
-
-	@Override
-	public boolean equals( Object obj )
-	{
-		if ( this == obj )
-			return true;
-		if ( obj == null )
-			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
-		Permissao other = (Permissao) obj;
-		if ( id_permissao_prm == null )
-		{
-			if ( other.id_permissao_prm != null )
-				return false;
-		}
-		else if ( !id_permissao_prm.equals( other.id_permissao_prm ) )
-			return false;
-		return true;
-	}
-
-	@Override
-	public String toString()
-	{
-		return "Permissao [id_permissao_prm=" + id_permissao_prm + ", cd_permiss_prm=" + cd_permiss_prm + ", ds_permiss_prm=" + ds_permiss_prm + ", permissaoPai=" + permissaoPai
-				+ ", permissoesFilhas=" + permissoesFilhas + "]";
-	}
-
 
 
 	

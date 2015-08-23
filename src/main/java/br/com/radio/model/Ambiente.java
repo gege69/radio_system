@@ -1,5 +1,6 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -23,66 +24,72 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @Table(name="ambiente")
-public class Ambiente implements Model<Long> {
+public class Ambiente implements Serializable {
 
 	private static final long serialVersionUID = -703457623897298000L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_ambiente_amb", nullable = false )
-	private Long id_ambiente_amb;
+	private Long id;
 
 	@NotNull( message = "O nome do Ambiente é de preenchimento obrigatório" )
 	@Column( name = "nm_ambiente_amb", nullable = false, length = 200 )
-	private String nm_ambiente_amb;
+	private String nome;
+
+	@Column( name = "cd_telefone1_amb" )
+	private String telefone1;
 	
-	private String cd_telefone1_amb;
-	
-	private String cd_telefone2_amb;
+	@Column( name = "cd_telefone2_amb" )
+	private String telefone2;
 	
 	@Column( name = "cd_email1_amb", nullable = true )
-	private String cd_email1_amb;
+	private String email1;
 	
-	private String cd_email2_amb;
+	@Column( name = "cd_email2_amb" )
+	private String email2;
 	
 	@Column( name = "ds_anotacoes_amb", columnDefinition = "TEXT" )
-	private String ds_anotacoes_amb;
+	private String anotacoes;
 
 	@Column( name = "nm_logradouro_amb", length = 200 )
-	private String nm_logradouro_amb;
+	private String logradouro;
 
 	@Column( name = "cd_numero_amb", length = 20 )
-	private String cd_numero_amb;
+	private String numero;
 	
 	@Column( name = "nm_bairro_amb", length = 100 )
-	private String nm_bairro_amb;
+	private String bairro;
 
 	@Column( name = "nm_cidade_amb", length = 100 )
-	private String nm_cidade_amb;
+	private String cidade;
 
 	@Column( name = "nm_estado_amb", length = 200 )
-	private String nm_estado_amb;
+	private String estado;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
 	@Column( name = "cd_login_amb", nullable = false, length = 40 )
-	private String cd_login_amb;
+	private String login;
 	
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
 	@Column( name = "cd_password_amb", length = 200 )
-	private String cd_password_amb;
+	private String password;
 	
-	private Boolean fl_opcionais_amb;
+	@Column( name = "fl_opcionais_amb" )
+	private Boolean flagOpcionais;
 
-	private Boolean fl_sincronizar_amb;
+	@Column( name = "fl_sincronizar_amb" )
+	private Boolean flagSincronizar;
 
-	private Boolean fl_download_amb;
+	@Column( name = "fl_download_amb" )
+	private Boolean flagDownload;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@NotNull( message = "A data de criação do Ambiente é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_criacao_amb", nullable = false )
-	private Date dt_criacao_amb;
+	private Date dataCriacao;
 	
 	@OneToOne
 	@JoinColumn(name = "id_usuario_usu" )
@@ -92,257 +99,275 @@ public class Ambiente implements Model<Long> {
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_alteracao_amb" )
-	private Date dt_alteracao_amb;
+	private Date dataAlteracao;
 
 	
 	@OneToOne
 	@JoinColumn(name="id_fusohorario_fuh")
 	private FusoHorario fusoHorario;
 	
-	
-	@Override
+
+	public Ambiente()
+	{
+		super();
+		this.flagOpcionais = false;
+		this.flagSincronizar = false;
+		this.flagDownload = false;
+		this.dataCriacao = new Date();
+	}
+
+
 	public Long getId()
 	{
-		return this.id_ambiente_amb;
+		return id;
 	}
 
-	@Override
+
 	public void setId( Long id )
 	{
-		this.id_ambiente_amb = id;
+		this.id = id;
 	}
 
-	public Long getId_ambiente_amb()
+
+	public String getNome()
 	{
-		return id_ambiente_amb;
+		return nome;
 	}
 
-	public void setId_ambiente_amb( Long id_ambiente_amb )
+
+	public void setNome( String nome )
 	{
-		this.id_ambiente_amb = id_ambiente_amb;
+		this.nome = nome;
 	}
 
-	public String getNm_ambiente_amb()
+
+	public String getTelefone1()
 	{
-		return nm_ambiente_amb;
+		return telefone1;
 	}
 
-	public void setNm_ambiente_amb( String nm_ambiente_amb )
+
+	public void setTelefone1( String telefone1 )
 	{
-		this.nm_ambiente_amb = nm_ambiente_amb;
+		this.telefone1 = telefone1;
 	}
 
-	public String getCd_telefone1_amb()
+
+	public String getTelefone2()
 	{
-		return cd_telefone1_amb;
+		return telefone2;
 	}
 
-	public void setCd_telefone1_amb( String cd_telefone1_amb )
+
+	public void setTelefone2( String telefone2 )
 	{
-		this.cd_telefone1_amb = cd_telefone1_amb;
+		this.telefone2 = telefone2;
 	}
 
-	public String getCd_telefone2_amb()
+
+	public String getEmail1()
 	{
-		return cd_telefone2_amb;
+		return email1;
 	}
 
-	public void setCd_telefone2_amb( String cd_telefone2_amb )
+
+	public void setEmail1( String email1 )
 	{
-		this.cd_telefone2_amb = cd_telefone2_amb;
+		this.email1 = email1;
 	}
 
-	
-	public String getDs_anotacoes_amb()
+
+	public String getEmail2()
 	{
-		return ds_anotacoes_amb;
+		return email2;
 	}
 
-	public void setDs_anotacoes_amb( String ds_anotacoes_amb )
+
+	public void setEmail2( String email2 )
 	{
-		this.ds_anotacoes_amb = ds_anotacoes_amb;
+		this.email2 = email2;
 	}
 
-	public String getCd_login_amb()
+
+	public String getAnotacoes()
 	{
-		return cd_login_amb;
+		return anotacoes;
 	}
 
-	public void setCd_login_amb( String cd_login_amb )
+
+	public void setAnotacoes( String anotacoes )
 	{
-		this.cd_login_amb = cd_login_amb;
+		this.anotacoes = anotacoes;
 	}
 
-	public String getCd_password_amb()
+
+	public String getLogradouro()
 	{
-		return cd_password_amb;
+		return logradouro;
 	}
 
-	public void setCd_password_amb( String cd_password_amb )
+
+	public void setLogradouro( String logradouro )
 	{
-		this.cd_password_amb = cd_password_amb;
+		this.logradouro = logradouro;
 	}
 
-	public Boolean getFl_opcionais_amb()
+
+	public String getNumero()
 	{
-		return fl_opcionais_amb;
+		return numero;
 	}
 
-	public void setFl_opcionais_amb( Boolean fl_opcionais_amb )
+
+	public void setNumero( String numero )
 	{
-		this.fl_opcionais_amb = fl_opcionais_amb;
+		this.numero = numero;
 	}
 
-	public Boolean getFl_sincronizar_amb()
+
+	public String getBairro()
 	{
-		return fl_sincronizar_amb;
+		return bairro;
 	}
 
-	public void setFl_sincronizar_amb( Boolean fl_sincronizar_amb )
+
+	public void setBairro( String bairro )
 	{
-		this.fl_sincronizar_amb = fl_sincronizar_amb;
+		this.bairro = bairro;
 	}
 
-	public Boolean getFl_download_amb()
+
+	public String getCidade()
 	{
-		return fl_download_amb;
+		return cidade;
 	}
 
-	public void setFl_download_amb( Boolean fl_download_amb )
+
+	public void setCidade( String cidade )
 	{
-		this.fl_download_amb = fl_download_amb;
-	}
-	
-	public Date getDt_criacao_amb()
-	{
-		return dt_criacao_amb;
+		this.cidade = cidade;
 	}
 
-	public void setDt_criacao_amb( Date dt_criacao_amb )
+
+	public String getEstado()
 	{
-		this.dt_criacao_amb = dt_criacao_amb;
+		return estado;
 	}
+
+
+	public void setEstado( String estado )
+	{
+		this.estado = estado;
+	}
+
+
+	public String getLogin()
+	{
+		return login;
+	}
+
+
+	public void setLogin( String login )
+	{
+		this.login = login;
+	}
+
+
+	public String getPassword()
+	{
+		return password;
+	}
+
+
+	public void setPassword( String password )
+	{
+		this.password = password;
+	}
+
+
+	public Boolean getFlagOpcionais()
+	{
+		return flagOpcionais;
+	}
+
+
+	public void setFlagOpcionais( Boolean flagOpcionais )
+	{
+		this.flagOpcionais = flagOpcionais;
+	}
+
+
+	public Boolean getFlagSincronizar()
+	{
+		return flagSincronizar;
+	}
+
+
+	public void setFlagSincronizar( Boolean flagSincronizar )
+	{
+		this.flagSincronizar = flagSincronizar;
+	}
+
+
+	public Boolean getFlagDownload()
+	{
+		return flagDownload;
+	}
+
+
+	public void setFlagDownload( Boolean flagDownload )
+	{
+		this.flagDownload = flagDownload;
+	}
+
+
+	public Date getDataCriacao()
+	{
+		return dataCriacao;
+	}
+
+
+	public void setDataCriacao( Date dataCriacao )
+	{
+		this.dataCriacao = dataCriacao;
+	}
+
 
 	public Usuario getUsuarioCriacao()
 	{
 		return usuarioCriacao;
 	}
 
+
 	public void setUsuarioCriacao( Usuario usuarioCriacao )
 	{
 		this.usuarioCriacao = usuarioCriacao;
 	}
 
-	public Date getDt_alteracao_amb()
+
+	public Date getDataAlteracao()
 	{
-		return dt_alteracao_amb;
+		return dataAlteracao;
 	}
 
-	public void setDt_alteracao_amb( Date dt_alteracao_amb )
+
+	public void setDataAlteracao( Date dataAlteracao )
 	{
-		this.dt_alteracao_amb = dt_alteracao_amb;
+		this.dataAlteracao = dataAlteracao;
 	}
 
-	public Ambiente()
-	{
-		super();
-		this.fl_opcionais_amb = false;
-		this.fl_sincronizar_amb = false;
-		this.fl_download_amb = false;
-		this.dt_criacao_amb = new Date();
-	}
-
-	public String getCd_email1_amb()
-	{
-		return cd_email1_amb;
-	}
-
-	public void setCd_email1_amb( String cd_email1_amb )
-	{
-		this.cd_email1_amb = cd_email1_amb;
-	}
-
-	public String getCd_email2_amb()
-	{
-		return cd_email2_amb;
-	}
-
-	public void setCd_email2_amb( String cd_email2_amb )
-	{
-		this.cd_email2_amb = cd_email2_amb;
-	}
-
-	public String getNm_logradouro_amb()
-	{
-		return nm_logradouro_amb;
-	}
-
-	public void setNm_logradouro_amb( String nm_logradouro_amb )
-	{
-		this.nm_logradouro_amb = nm_logradouro_amb;
-	}
-
-	public String getCd_numero_amb()
-	{
-		return cd_numero_amb;
-	}
-
-	public void setCd_numero_amb( String cd_numero_amb )
-	{
-		this.cd_numero_amb = cd_numero_amb;
-	}
-
-	public String getNm_bairro_amb()
-	{
-		return nm_bairro_amb;
-	}
-
-	public void setNm_bairro_amb( String nm_bairro_amb )
-	{
-		this.nm_bairro_amb = nm_bairro_amb;
-	}
-
-	public String getNm_cidade_amb()
-	{
-		return nm_cidade_amb;
-	}
-
-	public void setNm_cidade_amb( String nm_cidade_amb )
-	{
-		this.nm_cidade_amb = nm_cidade_amb;
-	}
-
-	public String getNm_estado_amb()
-	{
-		return nm_estado_amb;
-	}
-
-	public void setNm_estado_amb( String nm_estado_amb )
-	{
-		this.nm_estado_amb = nm_estado_amb;
-	}
 
 	public FusoHorario getFusoHorario()
 	{
 		return fusoHorario;
 	}
 
+
 	public void setFusoHorario( FusoHorario fusoHorario )
 	{
 		this.fusoHorario = fusoHorario;
 	}
 
-	@Override
-	public String toString()
-	{
-		return "Ambiente [id_ambiente_amb=" + id_ambiente_amb + ", nm_ambiente_amb=" + nm_ambiente_amb + ", cd_telefone1_amb=" + cd_telefone1_amb + ", cd_telefone2_amb=" + cd_telefone2_amb
-				+ ", cd_email1_amb=" + cd_email1_amb + ", cd_email2_amb=" + cd_email2_amb + ", ds_anotacoes_amb=" + ds_anotacoes_amb + ", nm_logradouro_amb=" + nm_logradouro_amb + ", cd_numero_amb="
-				+ cd_numero_amb + ", nm_bairro_amb=" + nm_bairro_amb + ", nm_cidade_amb=" + nm_cidade_amb + ", nm_estado_amb=" + nm_estado_amb + ", cd_login_amb=" + cd_login_amb
-				+ ", cd_password_amb=" + cd_password_amb + ", fl_opcionais_amb=" + fl_opcionais_amb + ", fl_sincronizar_amb=" + fl_sincronizar_amb + ", fl_download_amb=" + fl_download_amb
-				+ ", dt_criacao_amb=" + dt_criacao_amb + ", usuarioCriacao=" + usuarioCriacao + ", dt_alteracao_amb=" + dt_alteracao_amb + ", fusoHorario=" + fusoHorario + "]";
-	}
-
-	
 	
 
 }

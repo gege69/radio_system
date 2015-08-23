@@ -29,5 +29,10 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 //    )
 //    public Optional<Todo> findByTitleAndDescription(@Param("title") String title, 
 //                                                    @Param("description") String description);
+//	
+//	@Query( value="select count(*) qtd from usuario where cd_email_usu = :email or cd_login_usu = :login", nativeQuery=true )
+//	public Optional<BigInteger> countByEmailOrLogin( @Param("email") String email, @Param("login") String login);
+//	
+
 	
 }

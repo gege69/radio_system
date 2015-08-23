@@ -1,5 +1,6 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -32,14 +33,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @Entity
 @Table(name="perfil_permissao")
-public class PerfilPermissao implements Model<Long> {
+public class PerfilPermissao implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_perfperm_prp", nullable = false )
-	private Long id_perfperm_prp;
+	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name="id_perfil_per")
@@ -54,28 +55,50 @@ public class PerfilPermissao implements Model<Long> {
 	@NotNull( message = "A data de criação da permisão de Perfil é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_criacao_prp", nullable = false )
-	private Date dt_criacao_prp;
-	
+	private Date dataCriacao;
 
-	@Override
 	public Long getId()
 	{
-		return id_perfperm_prp;
+		return id;
 	}
 
-	@Override
 	public void setId( Long id )
 	{
-		this.id_perfperm_prp = id;
+		this.id = id;
 	}
 
-	public PerfilPermissao()
+	public Perfil getPerfil()
 	{
-		super();
-		this.dt_criacao_prp = new Date();
+		return perfil;
 	}
 
+	public void setPerfil( Perfil perfil )
+	{
+		this.perfil = perfil;
+	}
+
+	public Permissao getPermissao()
+	{
+		return permissao;
+	}
+
+	public void setPermissao( Permissao permissao )
+	{
+		this.permissao = permissao;
+	}
+
+	public Date getDataCriacao()
+	{
+		return dataCriacao;
+	}
+
+	public void setDataCriacao( Date dataCriacao )
+	{
+		this.dataCriacao = dataCriacao;
+	}
 	
+
+
 	
 
 }

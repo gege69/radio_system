@@ -1,5 +1,6 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -31,14 +32,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @Entity
 @Table(name="midia_ambiente")
-public class MidiaAmbiente implements Model<Long> {
+public class MidiaAmbiente implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_midiaamb_mia", nullable = false )
-	private Long id_midiaamb_mia;
+	private Long id;
 	
 	@ManyToOne
 	@JoinColumn(name="id_ambiente_amb")
@@ -52,31 +53,21 @@ public class MidiaAmbiente implements Model<Long> {
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_associacao_mia" )
-	private Date dt_associacao_mia;
+	private Date dataAssociacao;
 	
+
 	// talvez guardar o usuário que associou?
 
 
-	@Override
+
 	public Long getId()
 	{
-		return id_midiaamb_mia;
+		return id;
 	}
 
-	@Override
 	public void setId( Long id )
 	{
-		this.id_midiaamb_mia = id;
-	}
-
-	public Long getId_midiaamb_mia()
-	{
-		return id_midiaamb_mia;
-	}
-
-	public void setId_midiaamb_mia( Long id_midiaamb_mia )
-	{
-		this.id_midiaamb_mia = id_midiaamb_mia;
+		this.id = id;
 	}
 
 	public Ambiente getAmbiente()
@@ -99,16 +90,17 @@ public class MidiaAmbiente implements Model<Long> {
 		this.midia = midia;
 	}
 
-	public Date getDt_associacao_mia()
+	public Date getDataAssociacao()
 	{
-		return dt_associacao_mia;
+		return dataAssociacao;
 	}
 
-	public void setDt_associacao_mia( Date dt_associacao_mia )
+	public void setDataAssociacao( Date dataAssociacao )
 	{
-		this.dt_associacao_mia = dt_associacao_mia;
+		this.dataAssociacao = dataAssociacao;
 	}
-
+	
+	
 
 	
 

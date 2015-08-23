@@ -1,5 +1,6 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -30,14 +31,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @Entity
 @Table(name="mensagem")
-public class Mensagem implements Model<Long> {
+public class Mensagem implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_mensagem_msg", nullable = false )
-	private Long id_mensagem_msg;
+	private Long id;
 
 	@OneToOne
 	@JoinColumn(name="id_usuario_usu")
@@ -45,10 +46,10 @@ public class Mensagem implements Model<Long> {
 	
 	@NotNull( message = "O assunto da mensagem é de preenchimento obrigatório" )
 	@Column( name = "ds_assunto_msg", nullable = false, length = 200 )
-	private String ds_assunto_msg;
+	private String assunto;
 	
 	@Column( name = "ds_emailcopia_msg", nullable = true, length = 200 )
-	private String ds_emailcopia_msg;
+	private String emailCopia;
 	
 	@OneToOne
 	@JoinColumn(name="id_ambiente_amb")
@@ -56,35 +57,22 @@ public class Mensagem implements Model<Long> {
 	
 	@NotNull( message = "O conteúdo da mensagem é de preenchimento obrigatório" )
 	@Column( name = "ds_conteudo_msg", nullable = false, columnDefinition = "TEXT" )
-	private String ds_conteudo_msg;
+	private String conteudo;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_criacao_msg", nullable = false )
-	private Date dt_criacao_msg;
-	
-	
-	@Override
+	private Date dataCriacao;
+
 	public Long getId()
 	{
-		return id_mensagem_msg;
+		return id;
 	}
 
-	@Override
 	public void setId( Long id )
 	{
-		this.id_mensagem_msg = id;
-	}
-
-	public Long getId_mensagem_msg()
-	{
-		return id_mensagem_msg;
-	}
-
-	public void setId_mensagem_msg( Long id_mensagem_msg )
-	{
-		this.id_mensagem_msg = id_mensagem_msg;
+		this.id = id;
 	}
 
 	public Usuario getUsuario()
@@ -97,24 +85,24 @@ public class Mensagem implements Model<Long> {
 		this.usuario = usuario;
 	}
 
-	public String getDs_assunto_msg()
+	public String getAssunto()
 	{
-		return ds_assunto_msg;
+		return assunto;
 	}
 
-	public void setDs_assunto_msg( String ds_assunto_msg )
+	public void setAssunto( String assunto )
 	{
-		this.ds_assunto_msg = ds_assunto_msg;
+		this.assunto = assunto;
 	}
 
-	public String getDs_emailcopia_msg()
+	public String getEmailCopia()
 	{
-		return ds_emailcopia_msg;
+		return emailCopia;
 	}
 
-	public void setDs_emailcopia_msg( String ds_emailcopia_msg )
+	public void setEmailCopia( String emailCopia )
 	{
-		this.ds_emailcopia_msg = ds_emailcopia_msg;
+		this.emailCopia = emailCopia;
 	}
 
 	public Ambiente getAmbiente()
@@ -127,26 +115,25 @@ public class Mensagem implements Model<Long> {
 		this.ambiente = ambiente;
 	}
 
-	public String getDs_conteudo_msg()
+	public String getConteudo()
 	{
-		return ds_conteudo_msg;
+		return conteudo;
 	}
 
-	public void setDs_conteudo_msg( String ds_conteudo_msg )
+	public void setConteudo( String conteudo )
 	{
-		this.ds_conteudo_msg = ds_conteudo_msg;
+		this.conteudo = conteudo;
 	}
 
-	public Date getDt_criacao_msg()
+	public Date getDataCriacao()
 	{
-		return dt_criacao_msg;
+		return dataCriacao;
 	}
 
-	public void setDt_criacao_msg( Date dt_criacao_msg )
+	public void setDataCriacao( Date dataCriacao )
 	{
-		this.dt_criacao_msg = dt_criacao_msg;
+		this.dataCriacao = dataCriacao;
 	}
-
 	
 	
 

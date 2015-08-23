@@ -9,7 +9,7 @@ import br.com.radio.model.FusoHorario;
 
 public interface FusoHorarioRepository extends JpaRepository<FusoHorario, Long> {
 
-	 @Query("SELECT f FROM FusoHorario f order by f.id_ordercomum_fuh ")
+	 @Query("SELECT f FROM FusoHorario f order by f.orderComum ")
 	 public List<FusoHorario> findAllWithSortByOrderComum();
 	
 }

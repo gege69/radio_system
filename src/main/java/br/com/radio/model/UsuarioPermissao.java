@@ -1,5 +1,6 @@
 package br.com.radio.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -32,14 +33,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @Entity
 @Table(name="usuario_permissao")
-public class UsuarioPermissao implements Model<Long> {
+public class UsuarioPermissao implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_usuperm_upp", nullable = false )
-	private Long id_usuperm_upp;
+	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name="id_usuario_usu")
@@ -54,28 +55,17 @@ public class UsuarioPermissao implements Model<Long> {
 	@NotNull( message = "A data de criação da permisão de usuário é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_criacao_upp", nullable = false )
-	private Date dt_criacao_upp;
+	private Date dataCriacao;
+
 	
-	@Override
-	public Long getId()
-	{
-		return id_usuperm_upp;
-	}
-
-	@Override
-	public void setId( Long id )
-	{
-		this.id_usuperm_upp = id;
-	}
-
 	public Long getId_usuperm_upp()
 	{
-		return id_usuperm_upp;
+		return id;
 	}
 
 	public void setId_usuperm_upp( Long id_usuperm_upp )
 	{
-		this.id_usuperm_upp = id_usuperm_upp;
+		this.id = id_usuperm_upp;
 	}
 
 	public Usuario getUsuario()
@@ -100,20 +90,13 @@ public class UsuarioPermissao implements Model<Long> {
 
 	public Date getDt_criacao_upp()
 	{
-		return dt_criacao_upp;
+		return dataCriacao;
 	}
 
 	public void setDt_criacao_upp( Date dt_criacao_upp )
 	{
-		this.dt_criacao_upp = dt_criacao_upp;
+		this.dataCriacao = dt_criacao_upp;
 	}
-
-	public UsuarioPermissao()
-	{
-		super();
-		this.dt_criacao_upp = new Date();
-	}
-
-		
+	
 	
 }

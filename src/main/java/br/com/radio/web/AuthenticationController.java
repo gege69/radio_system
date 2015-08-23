@@ -91,7 +91,7 @@ public class AuthenticationController extends AbstractController {
 		else
 		{
 			modelAndView.setViewName( "auth/register-success" );
-			modelAndView.addObject( "username", usuario.getNmUsuario() );
+			modelAndView.addObject( "username", usuario.getNome() );
 		}
 		
 		return modelAndView;

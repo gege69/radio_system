@@ -32,21 +32,21 @@
             <div class="form-group">
               <label for="login" class="control-label col-sm-2 col-md-3">Nome do Ambiente:</label>
               <div class="col-sm-10 col-md-8">
-                <input type="text" class="form-control" id="nm_ambiente_amb" name="nm_ambiente_amb">
+                <input type="text" class="form-control" id="nm_ambiente_amb" name="nome">
               </div>
             </div>
             
             <div class="form-group">
               <label for="login" class="control-label col-sm-2 col-md-3">Login:</label>
               <div class="col-sm-5 col-md-4">
-                <input type="email" class="form-control" id="cd_login_amb" placeholder="Login" name="cd_login_amb" >
+                <input type="email" class="form-control" id="cd_login_amb" placeholder="Login" name="login" >
               </div>
             </div>
             
             <div class="form-group">
               <label for="login" class="control-label col-sm-2 col-md-3">Senha:</label>
               <div class="col-sm-5 col-md-4">
-                <input type="password" class="form-control" id="cd_password_amb" placeholder="Senha" name="cd_password_amb">
+                <input type="password" class="form-control" id="cd_password_amb" placeholder="Senha" name="password">
               </div>
             </div>
             
