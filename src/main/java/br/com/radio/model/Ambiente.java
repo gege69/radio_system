@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @Table(name="ambiente")
-//@JsonDeserialize(using=JSONAmbienteDeserializer.class)
 public class Ambiente implements Model<Long> {
 
 	private static final long serialVersionUID = -703457623897298000L;

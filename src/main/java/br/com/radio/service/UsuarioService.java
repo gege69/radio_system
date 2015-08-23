@@ -1,5 +1,8 @@
 package br.com.radio.service;
 
+import java.math.BigInteger;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,13 +12,13 @@ import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.UserDTO;
 import br.com.radio.exception.EmailExistsException;
 import br.com.radio.model.Usuario;
-import br.com.radio.repository.UsuarioDAO;
+import br.com.radio.repository.UsuarioRepository;
 
 @Service
-public class UserService implements IUserService {
+public class UsuarioService implements IUsuarioService {
 
 	@Autowired
-	private UsuarioDAO usuarioDAO;
+	private UsuarioRepository usuarioRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -33,8 +36,6 @@ public class UserService implements IUserService {
 //		Boolean existe usuarioDAO.existsUsuarioByEmailOrLogin( email, login )
 		
 		
-		
-		
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -49,24 +50,25 @@ public class UserService implements IUserService {
 	@Override
 	public void changeUserPassword( String name, AlterarSenhaDTO alterarSenhaDTO )
 	{
-		Usuario usuario = usuarioDAO.findByField( "cd_login_usu", name );
+		
+		Usuario usuario = usuarioRepository.findByCdLogin( name );
 
 		if ( usuario == null )
 			throw new RuntimeException( "Usuário não encontrado" );
 		else
 		{
 			// Já foi verificado se os passwords batem no validator durante o request...
-			if ( !passwordEncoder.matches( alterarSenhaDTO.getSenha_atual(), usuario.getCd_password_usu() ) )
+			if ( !passwordEncoder.matches( alterarSenhaDTO.getSenha_atual(), usuario.getCdPassword() ) )
 				throw new RuntimeException( "Senha atual não confere" );
 
 			String novaSenhaEncriptada = passwordEncoder.encode( alterarSenhaDTO.getPassword() );
 			
-			if ( passwordEncoder.matches(alterarSenhaDTO.getPassword(), usuario.getCd_password_usu() ) )
+			if ( passwordEncoder.matches(alterarSenhaDTO.getPassword(), usuario.getCdPassword() ) )
 				throw new RuntimeException( "A nova senha precisa ser diferente da atual" );
 			
-			usuario.setCd_password_usu( novaSenhaEncriptada );
+			usuario.setCdPassword( novaSenhaEncriptada );
 			
-			usuarioDAO.save( usuario );
+			usuarioRepository.save( usuario );
 		}
 	}
 
@@ -82,20 +84,22 @@ public class UserService implements IUserService {
 	{
 		// Proteger de algum jeito contra brute force com memoization talvez
 		
-		if ( usuarioDAO.existsUsuarioByEmailOrLogin( dto.getCd_email_usu(), dto.getCd_login_usu() ) )
+		Optional<BigInteger> countUsuarios = usuarioRepository.countByEmailOrLogin( dto.getCd_email_usu(), dto.getCd_login_usu() ); 
+		
+		if ( countUsuarios.isPresent() && countUsuarios.get().intValue() > 0 )
 			throw new EmailExistsException( "Email ou Login já existe." );
 
 		Usuario usuario = new Usuario();
 		
-		usuario.setCd_email_usu( dto.getCd_email_usu() );
-		usuario.setCd_login_usu( dto.getCd_login_usu() );
-		usuario.setNm_usuario_usu( dto.getNm_usuario_usu() );		
+		usuario.setCdEmail( dto.getCd_email_usu() );
+		usuario.setCdLogin( dto.getCd_login_usu() );
+		usuario.setNmUsuario( dto.getNm_usuario_usu() );		
 	
-		usuario.setCd_password_usu( passwordEncoder.encode( dto.getPassword() ) );
+		usuario.setCdPassword( passwordEncoder.encode( dto.getPassword() ) );
 		
-		usuario.setFl_ativo_usu( true );
+		usuario.setFlAtivo( true );
 		
-		usuarioDAO.save( usuario );
+		usuarioRepository.saveAndFlush( usuario );
 		
 		return usuario;
 	}
@@ -106,9 +110,9 @@ public class UserService implements IUserService {
 	    return new BCryptPasswordEncoder().encode(plainPassword);
 	}
 	
-	public static void main(String[] aaaa)
-	{
-		System.out.println(encodePasswordWithBCrypt( "Fernando Pazin" ));
-	}
+//	public static void main(String[] aaaa)
+//	{
+//		System.out.println(encodePasswordWithBCrypt( "Fernando Pazin" ));
+//	}
 	
 }

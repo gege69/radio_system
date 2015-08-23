@@ -17,13 +17,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.radio.dto.UserDTO;
 import br.com.radio.model.Usuario;
-import br.com.radio.service.IUserService;
+import br.com.radio.service.IUsuarioService;
 
 @Controller
 public class AuthenticationController extends AbstractController {
 
 	@Autowired
-	private IUserService userService;
+	private IUsuarioService userService;
 	
 	
 	@RequestMapping(value="/", method=RequestMethod.GET)
@@ -91,7 +91,7 @@ public class AuthenticationController extends AbstractController {
 		else
 		{
 			modelAndView.setViewName( "auth/register-success" );
-			modelAndView.addObject( "username", usuario.getNm_usuario_usu() );
+			modelAndView.addObject( "username", usuario.getNmUsuario() );
 		}
 		
 		return modelAndView;

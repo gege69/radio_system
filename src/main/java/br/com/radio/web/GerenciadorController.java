@@ -25,11 +25,10 @@ import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.FusoHorario;
-import br.com.radio.model.Usuario;
-import br.com.radio.repository.AmbienteDAO;
-import br.com.radio.repository.FusoHorarioDAO;
+import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.UsuarioDAO;
-import br.com.radio.service.IUserService;
+import br.com.radio.service.IUsuarioService;
 
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial.
@@ -44,18 +43,17 @@ import br.com.radio.service.IUserService;
 public class GerenciadorController extends AbstractController {
 
 	@Autowired
-	private AmbienteDAO ambienteDAO;
-	
-	@Autowired
-	private FusoHorarioDAO fusoDAO;
+	private FusoHorarioRepository fusoRepository;
 	
 	@Autowired
 	private UsuarioDAO usuarioDAO;
 	
 	@Autowired
-	private IUserService userService;
-
+	private IUsuarioService userService;
 	
+	@Autowired
+	private AmbienteRepository ambienteRepository;
+
 	@RequestMapping(value="/principal", method=RequestMethod.GET)
 	public String principal( ModelMap model )
 	{
@@ -128,7 +126,7 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping(value="/espelhar-ambiente/{id_ambiente_amb}", method=RequestMethod.GET)
-	public String espelhar( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )
+	public String espelharAmbiente( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )
 	{
 		model.addAttribute( "quantidade", 1 );
 		
@@ -136,7 +134,7 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 	@RequestMapping(value="/editar-ambiente/{id_ambiente_amb}", method=RequestMethod.GET)
-	public String editar( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )
+	public String editarAmbiente( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )
 	{
 		model.addAttribute( "id_ambiente_amb", id_ambiente_amb );
 		
@@ -145,18 +143,18 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes/{id_ambiente_amb}", method=RequestMethod.GET, produces=APPLICATION_JSON_CHARSET_UTF_8)
-	public @ResponseBody Ambiente get( @PathVariable Long id_ambiente_amb, ModelMap model, HttpServletResponse response )
+	public @ResponseBody Ambiente getAmbiente( @PathVariable Long id_ambiente_amb, ModelMap model, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteDAO.findById( id_ambiente_amb );
+		Ambiente ambiente = ambienteRepository.findOne( id_ambiente_amb );
 		
 		return ambiente;
 	}
 	
 	
 	@RequestMapping(value="/ambientes", method=RequestMethod.GET, produces=APPLICATION_JSON_CHARSET_UTF_8)
-	public @ResponseBody JSONListWrapper<Ambiente> list( @RequestParam("pagina") int pagina )
+	public @ResponseBody JSONListWrapper<Ambiente> listAmbiente( @RequestParam("pagina") int pagina )
 	{
-		List<Ambiente> ncmList = ambienteDAO.findAll();
+		List<Ambiente> ncmList = ambienteRepository.findAll();
 		
 		int total = ncmList.size();
 		
@@ -173,7 +171,7 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes", method={RequestMethod.POST, RequestMethod.PUT} , consumes = "application/json", produces=APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String save( @RequestBody @Valid Ambiente ambiente, BindingResult result )
+	public @ResponseBody String saveAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result )
 	{
 		String jsonResult = null;
 		
@@ -185,7 +183,7 @@ public class GerenciadorController extends AbstractController {
 
 			try
 			{
-				ambienteDAO.save( ambiente );
+				ambiente = ambienteRepository.saveAndFlush( ambiente );
 				
 				jsonResult = writeObjectAsString( ambiente );
 			}
@@ -203,7 +201,7 @@ public class GerenciadorController extends AbstractController {
 	@RequestMapping(value="/fusohorarios", method=RequestMethod.GET, produces=APPLICATION_JSON_CHARSET_UTF_8)
 	public @ResponseBody JSONListWrapper<FusoHorario> listFusos()
 	{
-		List<FusoHorario> ncmList = fusoDAO.findAllWithOrderAsc("id_ordercomum_fuh");
+		List<FusoHorario> ncmList = fusoRepository.findAllWithSortByOrderComum();
 		
 		int total = ncmList.size();
 		

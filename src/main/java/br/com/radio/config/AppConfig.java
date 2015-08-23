@@ -1,16 +1,18 @@
 package br.com.radio.config;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.util.Properties;
+
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -20,52 +22,59 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import br.com.radio.security.config.SecurityConfig;
 import br.com.radio.web.config.WebAppConfig;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 @Configuration
 @ComponentScan(basePackages={"br.com.radio.*"})
+@EnableJpaRepositories(basePackages = { "br.com.radio.*" })
 @EnableTransactionManagement
 @Import({ WebAppConfig.class, SecurityConfig.class })
 public class AppConfig {
 
-	@Bean
-	public DataSource getDataSource() throws NamingException{
-		
-		Context context = new InitialContext();
-		
-		DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc/radio");
-		
-		return dataSource;
+	@Autowired
+	private Environment env;
+	
+	@Bean(destroyMethod="close")
+	public DataSource getDataSource()
+	{
+		HikariConfig dataSourceConfig = new HikariConfig();
+		dataSourceConfig.setDriverClassName( env.getRequiredProperty( "db.driver" ) );
+		dataSourceConfig.setJdbcUrl( env.getRequiredProperty( "db.url" ) );
+		dataSourceConfig.setUsername( env.getRequiredProperty( "db.username" ) );
+		dataSourceConfig.setPassword( env.getRequiredProperty( "db.password" ) );
+ 
+        return new HikariDataSource(dataSourceConfig);
 	}
 	
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(){
 		
-		DataSource dataSource;
-		
-		try {
-			dataSource = getDataSource();
-		} catch (NamingException e) {
-			throw new RuntimeException(e);
-		}
-		
-		HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
-		jpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQLDialect");
-		jpaVendorAdapter.setShowSql(false);
-		jpaVendorAdapter.setGenerateDdl(true);
+		DataSource dataSource = getDataSource();
 		
 		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactoryBean.setDataSource(dataSource);
-		entityManagerFactoryBean.setPackagesToScan("br.com.radio.model");
-		entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
-		entityManagerFactoryBean.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
-		
+		entityManagerFactoryBean.setDataSource( dataSource );
+		entityManagerFactoryBean.setPackagesToScan( "br.com.radio.model" );
+		entityManagerFactoryBean.setJpaVendorAdapter( new HibernateJpaVendorAdapter() );
+		entityManagerFactoryBean.setLoadTimeWeaver( new InstrumentationLoadTimeWeaver() );
+
+		Properties jpaProperties = new Properties();
+
+		jpaProperties.put( "hibernate.dialect", env.getRequiredProperty( "hibernate.dialect" ) );
+		jpaProperties.put( "hibernate.hbm2ddl.auto", env.getRequiredProperty( "hibernate.hbm2ddl.auto" ) );
+		jpaProperties.put( "hibernate.show_sql", env.getRequiredProperty( "hibernate.show_sql" ) );
+		jpaProperties.put( "hibernate.format_sql", env.getRequiredProperty( "hibernate.format_sql" ) );
+
+		entityManagerFactoryBean.setJpaProperties( jpaProperties );
+
 		return entityManagerFactoryBean;
 	}
 	
 	@Bean
-	public JpaTransactionManager transactionManager(){
+	public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory){
 		
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+		transactionManager.setEntityManagerFactory( entityManagerFactory );
 		
 		return transactionManager;
 	}

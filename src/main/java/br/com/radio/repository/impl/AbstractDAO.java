@@ -10,14 +10,15 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.model.Model;
 import br.com.radio.repository.DAO;
 
 @Repository
+//@Transactional(propagation = Propagation.MANDATORY)    // no futuro... pra garantir que chegou no DAO com uma transação criada
 @Transactional
 public abstract class AbstractDAO<T extends Model<ID>, ID extends Serializable> implements DAO<T, ID> {
 
@@ -130,20 +131,6 @@ public abstract class AbstractDAO<T extends Model<ID>, ID extends Serializable> 
 		return getSingleResult(em.createQuery(criteria));
 	}
 	
-	
-//	@Override
-//	public T findAllAtivos(String field, String hash)
-//	{
-//		CriteriaBuilder builder = em.getCriteriaBuilder();
-//		CriteriaQuery<T> criteria = builder.createQuery(clazz);
-//		Root<T> obj = criteria.from(clazz);
-//
-//		criteria.where(builder.equal(obj.<String>get( field ), hash));
-//		
-//		return getSingleResult(em.createQuery(criteria));
-//	}
-
-	
 
 	@Override
 	public void remove(T t) {
@@ -173,19 +160,6 @@ public abstract class AbstractDAO<T extends Model<ID>, ID extends Serializable> 
 		return getSingleResult(em.createQuery(criteria));
 	}
 	
-	
-//	@Override
-//	public T findByHash(String field, String hash)
-//	{
-//		CriteriaBuilder builder = em.getCriteriaBuilder();
-//		CriteriaQuery<T> criteria = builder.createQuery(clazz);
-//		Root<T> obj = criteria.from(clazz);
-//
-//		criteria.where(builder.equal(obj.<String>get( field ), hash));
-//		
-//		return getSingleResult(em.createQuery(criteria));
-//	}
-
 	
 	public T getSingleResult(TypedQuery<T> query) 
 	{

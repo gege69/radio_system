@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.radio.model.Ambiente;
-import br.com.radio.repository.AmbienteDAO;
+import br.com.radio.repository.AmbienteRepository;
 
 @Component
 public class AmbienteBusiness {
 
 	@Autowired
-	private AmbienteDAO ambienteDAO;
+	private AmbienteRepository ambienteRepository;
 	
 
 	/**
@@ -20,10 +20,9 @@ public class AmbienteBusiness {
 	 */
 	public void saveAmbiente( Ambiente ambiente )
 	{
-		
 		// colocar aqui validações de endereço antes de salvar...
 				
-		ambienteDAO.save( ambiente );
+		ambienteRepository.saveAndFlush( ambiente );
 		
 	}
 	

@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateSerializer;
@@ -27,136 +26,135 @@ public class Usuario implements Model<Long> {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_usuario_usu", nullable = false )
-	private Long id_usuario_usu;
+	private Long idUsuario;
 	
 	@NotNull( message = "O nome do usuário é de preenchimento obrigatório" )
 	@Column( name = "nm_usuario_usu", nullable = false, length = 200 )
-	private String nm_usuario_usu;
+	private String nmUsuario;
 	
 	@NotNull( message = "O email do usuário é de preenchimento obrigatório" )
 	@Column( name = "cd_email_usu", nullable = false, length = 200 )
-	private String cd_email_usu;
+	private String cdEmail;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
 	@Column( name = "cd_login_usu", nullable = false, length = 40, unique = true )
-	private String cd_login_usu;
+	private String cdLogin;
 	
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
 	@Column( name = "cd_password_usu", nullable = false )
-	private String cd_password_usu;
+	private String cdPassword;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@NotNull( message = "A data de criação do usuário é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_criacao_usu", nullable = false )
-	private Date dt_criacao_usu;
+	private Date dtCriacao;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dt_alteracao_usu" )
-	private Date dt_alteracao_usu;
+	private Date dtAlteracao;
 	
 	@NotNull
-	private Boolean fl_ativo_usu;
+	@Column( name = "fl_ativo_usu" )
+	private Boolean flAtivo;
 	
 	@Override
 	public Long getId()
 	{
-		return this.id_usuario_usu;
+		return this.idUsuario;
 	}
 
 	@Override
 	public void setId( Long id )
 	{
-		this.id_usuario_usu = id;
+		this.idUsuario = id;
 	}
 
-	
-
-	public Long getId_usuario_usu()
+	public Long getIdUsuario()
 	{
-		return id_usuario_usu;
+		return idUsuario;
 	}
 
-	public void setId_usuario_usu( Long id_usuario_usu )
+	public void setIdUsuario( Long idUsuario )
 	{
-		this.id_usuario_usu = id_usuario_usu;
+		this.idUsuario = idUsuario;
 	}
 
-	public String getNm_usuario_usu()
+	public String getNmUsuario()
 	{
-		return nm_usuario_usu;
+		return nmUsuario;
 	}
 
-	public void setNm_usuario_usu( String nm_usuario_usu )
+	public void setNmUsuario( String nmUsuario )
 	{
-		this.nm_usuario_usu = nm_usuario_usu;
+		this.nmUsuario = nmUsuario;
 	}
 
-	public String getCd_login_usu()
+	public String getCdEmail()
 	{
-		return cd_login_usu;
+		return cdEmail;
 	}
 
-	public void setCd_login_usu( String cd_login_usu )
+	public void setCdEmail( String cdEmail )
 	{
-		this.cd_login_usu = cd_login_usu;
+		this.cdEmail = cdEmail;
 	}
 
-	public String getCd_password_usu()
+	public String getCdLogin()
 	{
-		return cd_password_usu;
+		return cdLogin;
 	}
 
-	public void setCd_password_usu( String cd_password_usu )
+	public void setCdLogin( String cdLogin )
 	{
-		this.cd_password_usu = cd_password_usu;
+		this.cdLogin = cdLogin;
 	}
 
-	public Date getDt_criacao_usu()
+	public String getCdPassword()
 	{
-		return dt_criacao_usu;
+		return cdPassword;
 	}
 
-	public void setDt_criacao_usu( Date dt_criacao_usu )
+	public void setCdPassword( String cdPassword )
 	{
-		this.dt_criacao_usu = dt_criacao_usu;
+		this.cdPassword = cdPassword;
 	}
 
-	public Date getDt_alteracao_usu()
+	public Date getDtCriacao()
 	{
-		return dt_alteracao_usu;
+		return dtCriacao;
 	}
 
-	public void setDt_alteracao_usu( Date dt_alteracao_usu )
+	public void setDtCriacao( Date dtCriacao )
 	{
-		this.dt_alteracao_usu = dt_alteracao_usu;
+		this.dtCriacao = dtCriacao;
 	}
 
-	public Boolean getFl_ativo_usu()
+	public Date getDtAlteracao()
 	{
-		return fl_ativo_usu;
+		return dtAlteracao;
 	}
 
-	public void setFl_ativo_usu( Boolean fl_ativo_usu )
+	public void setDtAlteracao( Date dtAlteracao )
 	{
-		this.fl_ativo_usu = fl_ativo_usu;
+		this.dtAlteracao = dtAlteracao;
+	}
+
+	public Boolean getFlAtivo()
+	{
+		return flAtivo;
+	}
+
+	public void setFlAtivo( Boolean flAtivo )
+	{
+		this.flAtivo = flAtivo;
 	}
 
 	public Usuario()
 	{
 		super();
-		this.dt_criacao_usu = new Date();
-	}
-
-	public String getCd_email_usu()
-	{
-		return cd_email_usu;
-	}
-
-	public void setCd_email_usu( String cd_email_usu )
-	{
-		this.cd_email_usu = cd_email_usu;
+		this.dtCriacao = new Date();
 	}
 
 	
