@@ -27,7 +27,6 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.FusoHorarioRepository;
-import br.com.radio.repository.UsuarioDAO;
 import br.com.radio.service.IUsuarioService;
 
 /**
@@ -44,9 +43,6 @@ public class GerenciadorController extends AbstractController {
 
 	@Autowired
 	private FusoHorarioRepository fusoRepository;
-	
-	@Autowired
-	private UsuarioDAO usuarioDAO;
 	
 	@Autowired
 	private IUsuarioService userService;
