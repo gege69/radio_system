@@ -18,18 +18,18 @@
         <form:form modelAttribute="user" method="POST">
           <div class="form-group">
             <label for="login">Nome</label>
-            <form:input class="form-control" path="nm_usuario_usu" value="" placeholder="Nome"/>
-            <form:errors path="nm_usuario_usu" element="div" class="alert alert-danger"/>
+            <form:input class="form-control" path="nmUsuario" value="" placeholder="Nome"/>
+            <form:errors path="nmUsuario" element="div" class="alert alert-danger"/>
           </div>
           <div class="form-group">
             <label for="login">Email</label>
-            <form:input class="form-control" path="cd_email_usu" value="" placeholder="Email"/>
-            <form:errors path="cd_email_usu" element="div" class="alert alert-danger"/>
+            <form:input class="form-control" path="cdEmail" value="" placeholder="Email"/>
+            <form:errors path="cdEmail" element="div" class="alert alert-danger"/>
           </div>
           <div class="form-group">
             <label for="login">Login</label>
-            <form:input class="form-control" path="cd_login_usu" value="" placeholder="Login"/>
-            <form:errors path="cd_login_usu" element="div" class="alert alert-danger"/>
+            <form:input class="form-control" path="cdLogin" value="" placeholder="Login"/>
+            <form:errors path="cdLogin" element="div" class="alert alert-danger"/>
           </div>
           <div class="form-group">
             <label for="senha">Senha</label>

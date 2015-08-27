@@ -53,6 +53,7 @@
     <script src="${context}/js/radio.js" charset="UTF-8" ></script>  
     <script src="${context}/js/jquery.serializejson.js"></script>
     <script src="${context}/js/json2.js"></script>
+    <script src="${context}/js/jquery.populate.js"></script>
     
   </head>
 

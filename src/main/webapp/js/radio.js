@@ -1,21 +1,21 @@
 
-var toJSON = function(data) {
-
-	var obj = {};
-
-	$.each(data, function() {
-		if (obj[this.name]) {
-			if (!obj[this.name].push) {
-				obj[this.name] = [ obj[this.name] ];
-			}
-			obj[this.name].push(this.value || '');
-		} else {
-			obj[this.name] = this.value || '';
-		}
-	});
-
-	return JSON.stringify(obj);
-};
+//var toJSON = function(data) {
+//
+//	var obj = {};
+//
+//	$.each(data, function() {
+//		if (obj[this.name]) {
+//			if (!obj[this.name].push) {
+//				obj[this.name] = [ obj[this.name] ];
+//			}
+//			obj[this.name].push(this.value || '');
+//		} else {
+//			obj[this.name] = this.value || '';
+//		}
+//	});
+//
+//	return JSON.stringify(obj);
+//};
 
 
 
@@ -80,12 +80,12 @@ var makeRodapeTmpl = function( total, paginaAtual, listFunction ){
 
 var removeErros = function( form )
 {
-  form.find('.form-group').removeClass('has-error');
-  form.find('#inputError2Status').remove();
-  form.find('.icone-fa-feedback').remove();
-  form.find('.alert').remove();
-  
-  $('.alert').remove(); // limpando geral  
+    form.find('.form-group').removeClass('has-error');
+    form.find('#inputError2Status').remove();
+    form.find('.icone-fa-feedback').remove();
+    form.find('.alert').remove();
+      
+    $('.alert').remove(); // limpando geral  
 }
 
 var formReset = function( form )
@@ -99,15 +99,15 @@ var formReset = function( form )
 
 var validaCampos = function( arrayCampos )
 {
-  var isOk = true;
-  
-  $.each( arrayCampos, function( index, value ){
-
-	  if ( validaCampoIndividual( value.field, value.desc, value.message ) == false ) 
-		  isOk = false;
-  });
-  
-  return isOk;
+    var isOk = true;
+      
+    $.each( arrayCampos, function( index, value ){
+    
+        if ( validaCampoIndividual( value.field, value.desc, value.message ) == false ) 
+            isOk = false;
+    });
+      
+    return isOk;
 }
 
 var validaCampoIndividual = function( nomeCampo, desc, message )
@@ -124,7 +124,7 @@ var validaCampoIndividual = function( nomeCampo, desc, message )
 		else if ( message != null && message != undefined )
 			msgDefault = message;
 		
-		preencheErroField( msgDefault, nomeCampo );
+		preencheErroField( nomeCampo, msgDefault );
 		
 		isOk = false;
 	}
@@ -162,43 +162,42 @@ var preencheErros = function( errors )
 
 var preencheErroField = function( nomeCampo, msg )
 {
-  $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
-  $('<span class="fa fa-times form-control-feedback icone-fa-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
-  
-  if ( msg != null && msg != '' )
-    $('<div class="alert alert-danger">' + msg+ '</div>').insertAfter( '#'+nomeCampo );
-
-  var formgroup = $('#'+nomeCampo).closest(".form-group");
-  
-  formgroup.addClass('has-error has-feedback');
+    $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
+    $('<span class="fa fa-times form-control-feedback icone-fa-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
+      
+    if ( msg != null && msg != '' )
+        $('<div class="alert alert-danger">' + msg+ '</div>').insertAfter( '#'+nomeCampo );
+    
+    var formgroup = $('#'+nomeCampo).closest(".form-group");
+      
+    formgroup.addClass('has-error has-feedback');
 }
 
 
 var preencheAlertGeral = function( nomeCampo, msg, type )
 {
-  if ( msg != null && msg != '' && nomeCampo != null && nomeCampo != '' )
-  {
-    if ( type == null || type == undefined )
-      type = 'danger';
-    
-    var alertGeral = 
-    '<div class="alert alert-'+ type +'" role="alert" id="alert'+ nomeCampo +'" >'+
-    '  <a href="#" class="close" data-dismiss="alert">&times;</a>'+
-    '  <div id="errogeral">'+ msg +'</div>'+
-    '</div>';
-    
-    $('#'+nomeCampo).append( alertGeral );
+    if ( msg != null && msg != '' && nomeCampo != null && nomeCampo != '' )
+    {
+        if ( type == null || type == undefined )
+            type = 'danger';
 
-    var duration = 3000; // default
-    
-    if ( "danger" == type )
-        duration = 8000;
-    
-    $("#alert" + nomeCampo ).fadeTo( duration , 500).slideUp(500, function(){
-      $("#alert" + nomeCampo ).alert('close');
-    });
-    
-  } 
+        var alertGeral = 
+            '<div class="alert alert-'+ type +'" role="alert" id="alert'+ nomeCampo +'" >'+
+            '  <a href="#" class="close" data-dismiss="alert">&times;</a>'+
+            '  <div id="errogeral">'+ msg +'</div>'+
+            '</div>';
+        
+        $('#'+nomeCampo).append( alertGeral );
+
+        var duration = 3000; // default
+
+        if ( "danger" == type )
+            duration = 8000;
+
+        $("#alert" + nomeCampo ).fadeTo( duration , 500).slideUp(500, function(){
+            $("#alert" + nomeCampo ).alert('close');
+        });
+    } 
 }
 
 

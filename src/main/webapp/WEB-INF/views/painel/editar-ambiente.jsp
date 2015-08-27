@@ -24,7 +24,7 @@
           <form class="form-horizontal" id="ambiente-form" action="#" method="PUT">
           
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <input type="hidden" id="id_ambiente_amb" name="id_ambiente_amb" value="${id_ambiente_amb}" >
+            <input type="hidden" id="id_ambiente_amb" name="id" value="${id}" >
   
             <div class="row">
               <div class="col-lg-6 col-md-6">
@@ -189,35 +189,6 @@
 
 <script type="text/javascript">
 
-
-    var preencheForm = function( json )
-    {
-        removeErros( $('#ambiente-form') );
-    
-        $('#id_ambiente_amb').val( json.id_ambiente_amb );
-        $('#nm_ambiente_amb').val( json.nm_ambiente_amb );
-        
-        $('#cd_email1_amb').val( json.cd_email1_amb );        
-      
-        $('#cd_telefone1_amb').val( json.cd_telefone1_amb );
-        $('#cd_telefone2_amb').val( json.cd_telefone2_amb );
-        
-        $('#nm_logradouro_amb').val( json.nm_logradouro_amb );
-        $('#nm_bairro_amb').val( json.nm_bairro_amb );
-        $('#nm_estado_amb').val( json.nm_estado_amb );
-        $('#nm_cidade_amb').val( json.nm_cidade_amb );
-
-        $('#ds_anotacoes_amb').val( json.ds_anotacoes_amb );
-        $('#cd_login_amb').val( json.cd_login_amb );
-        $('#cd_password_amb').val( json.cd_password_amb );
-        
-        if ( json.fusoHorario != null )
-            $('#id_fusohorario_fuh').val( json.fusoHorario.id_fusohorario_fuh );
-
-        $('#fl_opcionais_amb').prop('checked', json.fl_opcionais_amb );
-
-    }  
-
     var getDados = function( id )
     {
         if ( id == null || id == undefined )
@@ -227,14 +198,13 @@
             type: 'GET',
             contentType: 'application/json',
             url: '${context}/gerenciador/ambientes/'+id,
-            dataType: 'json',
-            success: function(json){
-                  
-                preencheForm( json );
-                
-                jump('ncmForm');
-            }
-          });
+            dataType: 'json'
+        }).done( function(json) {
+            
+            removeErros( $('#ambiente-form') );
+             $('#ambiente-form').populate(json);
+            jump('ncmForm');
+        });
     }
     
     var getFusos = function()
@@ -243,21 +213,17 @@
             type: 'GET',
             contentType: 'application/json',
             url: '${context}/gerenciador/fusohorarios',
-            dataType: 'json',
-            success: function(json){
-                  
-                $.each( json.data , function (i, ato){
-                    
-                    var text_str = ato.ds_offset_fuh + " - " + ato.nm_alias_fuh
-                    
-                    $('#id_fusohorario_fuh').append($('<option>', { 
-                        value: ato.id_fusohorario_fuh,
-                        text : text_str  
-                    }));
-                });
-                
-                jump('ncmForm');
-            }
+            dataType: 'json'
+        }).done( function(json) {
+            $.each( json.data , function (i, fuso){
+                var text_str = fuso.offset + " - " + fuso.alias
+                $('#id_fusohorario_fuh').append($('<option>', { 
+                    value: fuso.id,
+                    text : text_str  
+                }));
+            });
+            
+            jump('ncmForm');
         });
         
     }
@@ -282,29 +248,26 @@
 
     var salvar = function(){
         
-        
-        
         if ( validaForm() ){
             
             var obj = $('#ambiente-form').serializeJSON();
             
             $.ajax({
-                type: 'PUT',
+                
+                type: 'POST',
                 contentType: 'application/json',
                 url: '${context}/gerenciador/ambientes',
                 dataType: 'json',
-                data:  JSON.stringify(obj),
-                success: function(json){
-                  
-                    if (json.id != null){
-                      
-                        preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                          
-                        jump(''); // topo da pagina
-                    }
-                    else{
-                        preencheErros( json.errors );
-                    }
+                data:  JSON.stringify(obj)
+                
+            }).done( function(json){ 
+
+                if (json.id != null){
+                    preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
+                    jump(''); // topo da pagina
+                }
+                else{
+                    preencheErros( json.errors );
                 }
             });
         }
@@ -313,6 +276,8 @@
 
     $(function(){
         
+        getFusos();
+
         var token = $("input[name='_csrf']").val();
         var header = "X-CSRF-TOKEN";
         $(document).ajaxSend(function(e, xhr, options) {
@@ -322,8 +287,6 @@
         $('#btnSalvar').on('click', salvar);
         
         getDados( $('#id_ambiente_amb').val() );
-        
-        getFusos();
         
     });
 

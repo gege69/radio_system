@@ -19,23 +19,23 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import br.com.radio.security.config.SecurityConfig;
+import br.com.radio.security.config.SecurityConfigMulti;
 import br.com.radio.web.config.WebAppConfig;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan(basePackages={"br.com.radio.*"})
-@EnableJpaRepositories(basePackages = { "br.com.radio.*" })
+@ComponentScan( basePackages = { "br.com.radio.*" } )
+@EnableJpaRepositories( basePackages = { "br.com.radio.*" } )
 @EnableTransactionManagement
-@Import({ WebAppConfig.class, SecurityConfig.class })
+@Import( { WebAppConfig.class, SecurityConfigMulti.class } )
 public class AppConfig {
 
 	@Autowired
 	private Environment env;
-	
-	@Bean(destroyMethod="close")
+
+	@Bean( destroyMethod = "close" )
 	public DataSource getDataSource()
 	{
 		HikariConfig dataSourceConfig = new HikariConfig();
@@ -43,15 +43,16 @@ public class AppConfig {
 		dataSourceConfig.setJdbcUrl( env.getRequiredProperty( "db.url" ) );
 		dataSourceConfig.setUsername( env.getRequiredProperty( "db.username" ) );
 		dataSourceConfig.setPassword( env.getRequiredProperty( "db.password" ) );
- 
-        return new HikariDataSource(dataSourceConfig);
+
+		return new HikariDataSource( dataSourceConfig );
 	}
-	
+
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(){
-		
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory()
+	{
+
 		DataSource dataSource = getDataSource();
-		
+
 		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactoryBean.setDataSource( dataSource );
 		entityManagerFactoryBean.setPackagesToScan( "br.com.radio.model" );
@@ -69,21 +70,23 @@ public class AppConfig {
 
 		return entityManagerFactoryBean;
 	}
-	
+
 	@Bean
-	public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory){
-		
+	public JpaTransactionManager transactionManager( EntityManagerFactory entityManagerFactory )
+	{
+
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory( entityManagerFactory );
-		
+
 		return transactionManager;
 	}
-	
+
 	@Bean
-	public PersistenceExceptionTranslationPostProcessor exceptionTranslationPostProcessor(){
-		
+	public PersistenceExceptionTranslationPostProcessor exceptionTranslationPostProcessor()
+	{
+
 		PersistenceExceptionTranslationPostProcessor exceptionTranslationPostProcessor = new PersistenceExceptionTranslationPostProcessor();
-		
+
 		return exceptionTranslationPostProcessor;
 	}
 

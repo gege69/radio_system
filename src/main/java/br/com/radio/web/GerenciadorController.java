@@ -129,19 +129,19 @@ public class GerenciadorController extends AbstractController {
 		return "painel/espelhamento-ambiente";
 	}
 	
-	@RequestMapping(value="/editar-ambiente/{id_ambiente_amb}", method=RequestMethod.GET)
-	public String editarAmbiente( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )
+	@RequestMapping(value="/editar-ambiente/{id}", method=RequestMethod.GET)
+	public String editarAmbiente( @PathVariable String id, ModelMap model, HttpServletResponse response )
 	{
-		model.addAttribute( "id_ambiente_amb", id_ambiente_amb );
+		model.addAttribute( "id", id );
 		
 		return "painel/editar-ambiente";
 	}
 	
 	
-	@RequestMapping(value="/ambientes/{id_ambiente_amb}", method=RequestMethod.GET, produces=APPLICATION_JSON_CHARSET_UTF_8)
-	public @ResponseBody Ambiente getAmbiente( @PathVariable Long id_ambiente_amb, ModelMap model, HttpServletResponse response )
+	@RequestMapping(value="/ambientes/{id}", method=RequestMethod.GET, produces=APPLICATION_JSON_CHARSET_UTF_8)
+	public @ResponseBody Ambiente getAmbiente( @PathVariable Long id, ModelMap model, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepository.findOne( id_ambiente_amb );
+		Ambiente ambiente = ambienteRepository.findOne( id );
 		
 		return ambiente;
 	}
@@ -166,7 +166,7 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/ambientes", method={RequestMethod.POST, RequestMethod.PUT} , consumes = "application/json", produces=APPLICATION_JSON_CHARSET_UTF_8 )
+	@RequestMapping(value="/ambientes", method={RequestMethod.POST}, consumes = "application/json", produces=APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String saveAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result )
 	{
 		String jsonResult = null;
