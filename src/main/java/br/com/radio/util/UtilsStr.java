@@ -4,7 +4,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class UtilsStr {
 

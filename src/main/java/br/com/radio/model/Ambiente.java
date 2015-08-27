@@ -30,80 +30,80 @@ public class Ambiente implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_ambiente_amb", nullable = false )
+	@Column( name = "id_ambiente", nullable = false )
 	private Long id;
 
 	@NotNull( message = "O nome do Ambiente é de preenchimento obrigatório" )
-	@Column( name = "nm_ambiente_amb", nullable = false, length = 200 )
+	@Column( name = "nome", nullable = false, length = 200 )
 	private String nome;
 
-	@Column( name = "cd_telefone1_amb" )
+	@Column( name = "telefone1" )
 	private String telefone1;
 	
-	@Column( name = "cd_telefone2_amb" )
+	@Column( name = "telefone2" )
 	private String telefone2;
 	
-	@Column( name = "cd_email1_amb", nullable = true )
+	@Column( name = "email1", nullable = true )
 	private String email1;
 	
-	@Column( name = "cd_email2_amb" )
+	@Column( name = "email2" )
 	private String email2;
 	
-	@Column( name = "ds_anotacoes_amb", columnDefinition = "TEXT" )
+	@Column( name = "anotacoes", columnDefinition = "TEXT" )
 	private String anotacoes;
 
-	@Column( name = "nm_logradouro_amb", length = 200 )
+	@Column( name = "logradouro", length = 200 )
 	private String logradouro;
 
-	@Column( name = "cd_numero_amb", length = 20 )
+	@Column( name = "numero", length = 20 )
 	private String numero;
 	
-	@Column( name = "nm_bairro_amb", length = 100 )
+	@Column( name = "bairro", length = 100 )
 	private String bairro;
 
-	@Column( name = "nm_cidade_amb", length = 100 )
+	@Column( name = "cidade", length = 100 )
 	private String cidade;
 
-	@Column( name = "nm_estado_amb", length = 200 )
+	@Column( name = "estado", length = 200 )
 	private String estado;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
-	@Column( name = "cd_login_amb", nullable = false, length = 40 )
+	@Column( name = "login", nullable = false, length = 40 )
 	private String login;
 	
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
-	@Column( name = "cd_password_amb", length = 200 )
+	@Column( name = "password", length = 200 )
 	private String password;
 	
-	@Column( name = "fl_opcionais_amb" )
+	@Column( name = "flagopcionais" )
 	private Boolean flagOpcionais;
 
-	@Column( name = "fl_sincronizar_amb" )
+	@Column( name = "flagsincronizar" )
 	private Boolean flagSincronizar;
 
-	@Column( name = "fl_download_amb" )
+	@Column( name = "flagdownload" )
 	private Boolean flagDownload;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@NotNull( message = "A data de criação do Ambiente é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_criacao_amb", nullable = false )
+	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 	
 	@OneToOne
-	@JoinColumn(name = "id_usuario_usu" )
+	@JoinColumn(name = "id_usuario" )
 	private Usuario usuarioCriacao;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_alteracao_amb" )
+	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;
 
 	
 	@OneToOne
-	@JoinColumn(name="id_fusohorario_fuh")
+	@JoinColumn(name="id_fusohorario")
 	private FusoHorario fusoHorario;
 	
 
