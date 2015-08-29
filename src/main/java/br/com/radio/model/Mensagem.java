@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
- * Mensagem = MSG
+ * Mensagem
  * 
  * @author pazin
  *
@@ -37,32 +37,32 @@ public class Mensagem implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_mensagem_msg", nullable = false )
+	@Column( name = "id_mensagem", nullable = false )
 	private Long id;
 
 	@OneToOne
-	@JoinColumn(name="id_usuario_usu")
+	@JoinColumn(name="id_usuario")
 	private Usuario usuario;
 	
 	@NotNull( message = "O assunto da mensagem é de preenchimento obrigatório" )
-	@Column( name = "ds_assunto_msg", nullable = false, length = 200 )
+	@Column( name = "assunto", nullable = false, length = 200 )
 	private String assunto;
 	
-	@Column( name = "ds_emailcopia_msg", nullable = true, length = 200 )
+	@Column( name = "emailcopia", nullable = true, length = 200 )
 	private String emailCopia;
 	
 	@OneToOne
-	@JoinColumn(name="id_ambiente_amb")
+	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;
 	
 	@NotNull( message = "O conteúdo da mensagem é de preenchimento obrigatório" )
-	@Column( name = "ds_conteudo_msg", nullable = false, columnDefinition = "TEXT" )
+	@Column( name = "conteudo", nullable = false, columnDefinition = "TEXT" )
 	private String conteudo;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_criacao_msg", nullable = false )
+	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
 	public Long getId()

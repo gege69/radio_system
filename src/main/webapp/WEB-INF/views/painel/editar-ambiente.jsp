@@ -180,7 +180,7 @@
     
     <div class="row">
       <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/gerenciador/principal">Painel Gerencial</a>
+        <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
       </div>
     </div>
       
@@ -197,7 +197,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/gerenciador/ambientes/'+id,
+            url: '${context}/ambientes/'+id,
             dataType: 'json'
         }).done( function(json) {
             
@@ -212,7 +212,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/gerenciador/fusohorarios',
+            url: '${context}/fusohorarios',
             dataType: 'json'
         }).done( function(json) {
             $.each( json.data , function (i, fuso){
@@ -256,7 +256,7 @@
                 
                 type: 'POST',
                 contentType: 'application/json',
-                url: '${context}/gerenciador/ambientes',
+                url: '${context}/ambientes',
                 dataType: 'json',
                 data:  JSON.stringify(obj)
                 

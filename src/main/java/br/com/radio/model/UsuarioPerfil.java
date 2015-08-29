@@ -16,7 +16,7 @@ import javax.persistence.Table;
 /**
  * Tabela de Ligação 
  * 
- * Usuario Perfil = UPF
+ * Usuario Perfil
  * 
  * @author pazin
  *
@@ -29,15 +29,15 @@ public class UsuarioPerfil implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_usuperf_upf", nullable = false )
+	@Column( name = "id_usuperf", nullable = false )
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name="id_usuario_usu")
+	@JoinColumn(name="id_usuario")
 	private Usuario usuario;
 	
 	@ManyToOne
-	@JoinColumn(name="id_perfil_per")
+	@JoinColumn(name="id_perfil")
 	private Perfil perfil;
 
 	public Long getId_usuperf_upf()

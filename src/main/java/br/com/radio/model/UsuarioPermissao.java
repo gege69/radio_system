@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 /**
  * Tabela de Ligação
  * 
- * Usuario x Permissao = USP
+ * Usuario x Permissao
  * 
  * @author pazin
  *
@@ -39,22 +39,22 @@ public class UsuarioPermissao implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_usuperm_upp", nullable = false )
+	@Column( name = "id_usuperm", nullable = false )
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name="id_usuario_usu")
+	@JoinColumn(name="id_usuario")
 	private Usuario usuario;
 	
 	@ManyToOne
-	@JoinColumn(name="id_permissao_prm")
+	@JoinColumn(name="id_permissao")
 	private Permissao permissao;
 
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@NotNull( message = "A data de criação da permisão de usuário é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_criacao_upp", nullable = false )
+	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
 	

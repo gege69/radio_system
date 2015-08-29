@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * Perfil = PER
+ * Perfil
  * 
  * @author pazin
  *
@@ -26,11 +26,11 @@ public class Perfil implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_perfil_per", nullable = false )
+	@Column( name = "id_perfil", nullable = false )
 	private Long id;
 
 	@NotNull( message = "O nome do Perfil é de preenchimento obrigatório" )
-	@Column( name = "nm_perfil_per", nullable = false, length = 100 )
+	@Column( name = "nome", nullable = false, length = 100 )
 	private String nome;
 
 	public Long getId()

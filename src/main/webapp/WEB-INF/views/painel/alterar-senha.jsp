@@ -66,7 +66,7 @@
     
     <div class="row">
       <div class="col-md-offset-8 col-sm-offset-7 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/gerenciador/principal">Painel Gerencial</a>
+        <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
       </div>
     </div>
       
@@ -100,7 +100,7 @@
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
-                url: '${context}/gerenciador/alterar-senha',
+                url: '${context}/alterar-senha',
                 dataType: 'json',
                 data: toJSON($('#alterar-senha-form').serializeArray()),
                 success: function(json){

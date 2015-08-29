@@ -75,14 +75,14 @@ public class Ambiente implements Serializable {
 	@Column( name = "password", length = 200 )
 	private String password;
 	
-	@Column( name = "flagopcionais" )
-	private Boolean flagOpcionais;
+	@Column( name = "opcionais" )
+	private Boolean opcionais;
 
-	@Column( name = "flagsincronizar" )
-	private Boolean flagSincronizar;
+	@Column( name = "sincronizar" )
+	private Boolean sincronizar;
 
-	@Column( name = "flagdownload" )
-	private Boolean flagDownload;
+	@Column( name = "download" )
+	private Boolean download;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
@@ -110,9 +110,9 @@ public class Ambiente implements Serializable {
 	public Ambiente()
 	{
 		super();
-		this.flagOpcionais = false;
-		this.flagSincronizar = false;
-		this.flagDownload = false;
+		this.opcionais = false;
+		this.sincronizar = false;
+		this.download = false;
 		this.dataCriacao = new Date();
 	}
 
@@ -285,39 +285,39 @@ public class Ambiente implements Serializable {
 	}
 
 
-	public Boolean getFlagOpcionais()
+	public Boolean getOpcionais()
 	{
-		return flagOpcionais;
+		return opcionais;
 	}
 
 
-	public void setFlagOpcionais( Boolean flagOpcionais )
+	public void setOpcionais( Boolean opcionais )
 	{
-		this.flagOpcionais = flagOpcionais;
+		this.opcionais = opcionais;
 	}
 
 
-	public Boolean getFlagSincronizar()
+	public Boolean getSincronizar()
 	{
-		return flagSincronizar;
+		return sincronizar;
 	}
 
 
-	public void setFlagSincronizar( Boolean flagSincronizar )
+	public void setSincronizar( Boolean sincronizar )
 	{
-		this.flagSincronizar = flagSincronizar;
+		this.sincronizar = sincronizar;
 	}
 
 
-	public Boolean getFlagDownload()
+	public Boolean getDownload()
 	{
-		return flagDownload;
+		return download;
 	}
 
 
-	public void setFlagDownload( Boolean flagDownload )
+	public void setDownload( Boolean download )
 	{
-		this.flagDownload = flagDownload;
+		this.download = download;
 	}
 
 
@@ -368,6 +368,8 @@ public class Ambiente implements Serializable {
 		this.fusoHorario = fusoHorario;
 	}
 
+
+	
 	
 
 }

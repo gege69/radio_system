@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * Categoria = CAT
+ * Categoria
  * 
  * @author pazin
  *
@@ -26,14 +26,14 @@ public class Categoria implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_categoria_cat", nullable = false )
+	@Column( name = "id_categoria", nullable = false )
 	private Long id;
 
 	@NotNull( message = "O nome da Categoria é de preenchimento obrigatório" )
-	@Column( name = "nm_categoria_cat", nullable = false, length = 100 )
+	@Column( name = "categoria", nullable = false, length = 100 )
 	private String nome;
 	
-	@Column( name = "ds_descricao_cat", columnDefinition = "TEXT" )
+	@Column( name = "descricao", columnDefinition = "TEXT" )
 	private String descricao;
 
 	public Long getId()

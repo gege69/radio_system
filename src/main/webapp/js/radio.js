@@ -1,21 +1,21 @@
 
-//var toJSON = function(data) {
-//
-//	var obj = {};
-//
-//	$.each(data, function() {
-//		if (obj[this.name]) {
-//			if (!obj[this.name].push) {
-//				obj[this.name] = [ obj[this.name] ];
-//			}
-//			obj[this.name].push(this.value || '');
-//		} else {
-//			obj[this.name] = this.value || '';
-//		}
-//	});
-//
-//	return JSON.stringify(obj);
-//};
+var toJSON = function(data) {
+
+	var obj = {};
+
+	$.each(data, function() {
+		if (obj[this.name]) {
+			if (!obj[this.name].push) {
+				obj[this.name] = [ obj[this.name] ];
+			}
+			obj[this.name].push(this.value || '');
+		} else {
+			obj[this.name] = this.value || '';
+		}
+	});
+
+	return JSON.stringify(obj);
+};
 
 
 

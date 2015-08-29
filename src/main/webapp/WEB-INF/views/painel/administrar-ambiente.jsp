@@ -54,7 +54,7 @@
               <div class="spacer-vertical40"></div>
               
               <div class="">
-                <a class="btn btn-default" href="${context}/gerenciador/incluir-ambiente">Adicionar Novo Ambiente</a>
+                <a class="btn btn-default" href="${context}/incluir-ambiente">Adicionar Novo Ambiente</a>
               </div>            
             </div>
           </div>
@@ -67,7 +67,7 @@
     
     <div class="row">
       <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/gerenciador/principal">Painel Gerencial</a>
+        <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
       </div>
     </div>
       
@@ -83,12 +83,12 @@
      {{:nome}}
   </td>
   <td>
-    <a class="btn btn-link" href="${context}/gerenciador/espelhar-ambiente/{{:id}}">
+    <a class="btn btn-link" href="${context}/espelhar-ambiente/{{:id}}">
       <i class="fa fa-lg fa-files-o"></i>
     </a>
   </td>
   <td>
-    <a class="btn btn-link" href="${context}/gerenciador/editar-ambiente/{{:id}}">
+    <a class="btn btn-link" href="${context}/editar-ambiente/{{:id}}">
       <i class="fa fa-lg fa-pencil-square-o"></i>
     </a>
   </td>
@@ -109,7 +109,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/gerenciador/ambientes',
+            url: '${context}/ambientes',
             dataType: 'json',
             data: {'pagina': pagina},
             success: function(json){

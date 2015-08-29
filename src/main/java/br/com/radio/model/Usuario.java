@@ -26,38 +26,38 @@ public class Usuario implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_usuario_usu", nullable = false )
+	@Column( name = "id_usuario", nullable = false )
 	private Long id;
 	
 	@NotNull( message = "O nome do usuário é de preenchimento obrigatório" )
-	@Column( name = "nm_usuario_usu", nullable = false, length = 200 )
+	@Column( name = "nome", nullable = false, length = 200 )
 	private String nome;
 	
 	@NotNull( message = "O email do usuário é de preenchimento obrigatório" )
-	@Column( name = "cd_email_usu", nullable = false, length = 200 )
+	@Column( name = "email", nullable = false, length = 200 )
 	private String email;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
-	@Column( name = "cd_login_usu", nullable = false, length = 40, unique = true )
+	@Column( name = "login", nullable = false, length = 40, unique = true )
 	private String login;
 	
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
-	@Column( name = "cd_password_usu", nullable = false )
+	@Column( name = "password", nullable = false )
 	private String password;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@NotNull( message = "A data de criação do usuário é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_criacao_usu", nullable = false )
+	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_alteracao_usu" )
+	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;
 	
 	@NotNull
-	@Column( name = "fl_ativo_usu" )
+	@Column( name = "ativo" )
 	private Boolean ativo;
 
 	public Usuario()

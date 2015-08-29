@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
- * Conexao = CNX
+ * Conexao
  * 
  * @author pazin
  *
@@ -36,30 +36,30 @@ public class Conexao implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_conexao_cnx", nullable = false )
+	@Column( name = "id_conexao", nullable = false )
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="id_ambiente_amb")
+	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_conexao_cnx", nullable = false )
+	@Column( name = "dataconexao", nullable = false )
 	private Date dataConexao;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_desconexao_cnx", nullable = true )
+	@Column( name = "datadesconexao", nullable = true )
 	private Date dataDesconexao;
 	
-	@Column( name = "ds_enderecoip_acu", nullable = false, length = 50 )
+	@Column( name = "enderecoip", nullable = false, length = 50 )
 	private String enderecoIp;
 	
 	// Outros dados da conexão ... 
-	@Column( name = "ds_dados_acu", columnDefinition = "TEXT" )
+	@Column( name = "dados", columnDefinition = "TEXT" )
 	private String dados;
 
 	public Long getId()

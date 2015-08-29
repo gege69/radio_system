@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * Permissao = PRM
+ * Permissao
  * 
  * @author pazin
  *
@@ -30,19 +30,19 @@ public class Permissao implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_permissao_prm", nullable = false )
+	@Column( name = "id_permissao", nullable = false )
 	private Long id;
 	
 	@NotNull( message = "O alias da Permissão é de preenchimento obrigatório" )
-	@Column( name = "cd_permiss_prm", nullable = false, length = 100 )
+	@Column( name = "codigo", nullable = false, length = 100 )
 	private String codigo;
 
 	@NotNull( message = "A descrição da Permissão é de preenchimento obrigatório" )
-	@Column( name = "ds_permiss_prm", nullable = false, length = 400 )
+	@Column( name = "descricao", nullable = false, length = 400 )
 	private String descricao;
 	
 	@ManyToOne
-	@JoinColumn(name="id_permissaopai_prm")
+	@JoinColumn(name="id_permissaopai")
     private Permissao permissaoPai;
 	
     @OneToMany(mappedBy="permissaoPai")

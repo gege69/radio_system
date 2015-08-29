@@ -22,37 +22,37 @@
               <div class="row row-centered">
                 <div class="container">
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md btn-md" href="${context}/gerenciador/incluir-ambiente">
+                    <a class="btn btn-default btn-block btn-md btn-md" href="${context}/incluir-ambiente">
                       <i class="fa fa-3x icone-main fa-shopping-cart"></i>
                       <span class="label-botao-main">Incluir Ambiente</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/administrar-ambiente">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/administrar-ambiente">
                       <i class="fa fa-3x icone-main fa-random"></i>
                       <span class="label-botao-main">Administar Ambiente</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/alterar-senha">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/alterar-senha">
                       <i class="fa fa-3x icone-main fa-lock"></i>
                       <span class="label-botao-main">Alterar Senha</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/mensagens">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/mensagens">
                       <i class="fa fa-3x icone-main fa-envelope-o"></i>
                       <span class="label-botao-main">Mensagens</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/monitoramento">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/monitoramento">
                       <i class="fa fa-3x icone-main fa-eye"></i>
                       <span class="label-botao-main">Monitoramento</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/fazer">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-users"></i>
                       <span class="label-botao-main-duas-linhas">Chamada de</br>Funcionários</span>
                     </a>
@@ -63,31 +63,31 @@
               <div class="row row-centered top-buffer">
                 <div class="container">
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/fazer">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-cloud-upload"></i>
                       <span class="label-botao-main">Upload Ambientes</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/fazer">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-key"></i>
                       <span class="label-botao-main">Ferramentas</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/fazer">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-floppy-o"></i>
                       <span class="label-botao-main">Softwares</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/fazer">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-user-plus"></i>
                       <span class="label-botao-main">Administradores</span>
                     </a>
                   </li>
                   <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/gerenciador/fazer">
+                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-android"></i>
                       <span class="label-botao-main">Mobile</span>
                     </a> 

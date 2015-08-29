@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
- * Midia = MID
+ * Midia
  * 
  * @author pazin
  *
@@ -38,76 +38,76 @@ public class Midia implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_midia_mid", nullable = false )
+	@Column( name = "id_midia", nullable = false )
 	private Long id;
 
 	@NotNull( message = "O nome do Arquivo é de preenchimento obrigatório" )
-	@Column( name = "nm_arquivo_mid", nullable = false, length = 200 )
+	@Column( name = "nome", nullable = false, length = 200 )
 	private String nome;
 	
-	@Column( name = "nm_extensao_mid", nullable = true, length = 10 )
+	@Column( name = "extensao", nullable = true, length = 10 )
 	private String extensao;
 	
 	@NotNull( message = "O MIME Type é de preenchimento obrigatório" )
-	@Column( name = "ds_mimetype_mid", nullable = false, length = 200 )
+	@Column( name = "mimetype", nullable = false, length = 200 )
 	private String mimetype;
 
-	@Column( name = "ds_descricao_mid", nullable = true, columnDefinition = "TEXT" )
+	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )
 	private String descricao;
 	
 	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="id_categoria_cat")
+	@JoinColumn(name="id_categoria")
 	private Categoria categoria;
 
 	// Ao contrário dos outros registros essa data serve para guardar quando o arquivo (música/gravação) foi criado/gravado/lançado
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_criacao_amb" )
+	@Column( name = "datacriacao" )
 	private Date dataCriacao;
 
 	// Essa data tem mais a ver com a data do registro... quando o arquivo foi enviado ao servidor.
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_upload_amb", nullable = false )
+	@Column( name = "dataupload", nullable = false )
 	private Date dataUpload;
 
 	// Esse hash além de servir como nome do arquivo no filesystem será utilizado para verificação de consistência do arquivo... 
 	@NotNull( message = "O hash do arquivo é de preenchimento obrigatório" )
-	@Column( name = "ds_filehash_mid", nullable = false, length = 200 )
+	@Column( name = "filehash", nullable = false, length = 200 )
 	private String filehash;
 	
 	@NotNull( message = "O caminho do arquivo no servidor é de preenchimento obrigatório" )
-	@Column( name = "ds_filepath_mid", nullable = false, length = 200 )
+	@Column( name = "filepath", nullable = false, length = 200 )
 	private String filepath;
 	
 	// Se o registro existe no filesystem (e pode ser acessado pelo servidor de aplicação) então está válido.
-	@Column( name="fl_valido_mid")
+	@Column( name="valido")
 	private Boolean valido;
 
 	// Flag pra determinar se o arquivo precisa ser cacheado ou não...
-	@Column( name="fl_cached_mid")
+	@Column( name="cached")
 	private Boolean cached;
 	
 	
 	// TAGs ID3v2.3.0
-	@Column( name="ds_title_mid")
+	@Column( name="title")
 	private String title;
 
-	@Column( name="ds_artist_mid")
+	@Column( name="artist")
 	private String artist;
 
-	@Column( name="ds_album_mid")
+	@Column( name="album")
 	private String album;
 
-	@Column( name="ds_comment_mid")
+	@Column( name="comment")
 	private String comment;
 
-	@Column( name="ds_datetag_mid")
+	@Column( name="datetag")
 	private String datetag;
 
-	@Column( name="ds_genre_mid")
+	@Column( name="genre")
 	private String genre;
 	
  	

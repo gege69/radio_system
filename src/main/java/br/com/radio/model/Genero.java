@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
- * Gênero = GEN
+ * Gênero
  * 
  * @author pazin
  *
@@ -35,14 +35,14 @@ public class Genero implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_genero_gen", nullable = false )
+	@Column( name = "id_genero", nullable = false )
 	private Long id;
 
 	@NotNull( message = "O nome do Gênero é de preenchimento obrigatório" )
-	@Column( name = "nm_genero_gen", nullable = false, length = 100 )
+	@Column( name = "genero", nullable = false, length = 100 )
 	private String nome;
 
-	@Column( name = "ds_descricao_gen", nullable = true, columnDefinition = "TEXT" )
+	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )
 	private String descricao;
 	
 	// No futuro adicionar algum tipo de hierarquia / árvore de subgêneros
@@ -51,7 +51,7 @@ public class Genero implements Serializable {
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@NotNull( message = "A data de criação do Gênero é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_criacao_gen", nullable = false )
+	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
 	public Long getId()

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 /**
  * Tabela de ligação 
  * 
- * Midia x Ambiente = MIA
+ * Midia x Ambiente
  * 
  * @author pazin
  *
@@ -38,26 +38,25 @@ public class MidiaAmbiente implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_midiaamb_mia", nullable = false )
+	@Column( name = "id_midiaamb", nullable = false )
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="id_ambiente_amb")
+	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;
 	
 	@ManyToOne
-	@JoinColumn(name="id_midia_mid")
+	@JoinColumn(name="id_midia")
 	private Midia midia;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_associacao_mia" )
+	@Column( name = "dataassociacao" )
 	private Date dataAssociacao;
 	
 
 	// talvez guardar o usuário que associou?
-
 
 
 	public Long getId()

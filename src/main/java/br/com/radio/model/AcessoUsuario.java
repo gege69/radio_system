@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
- * Acesso Usuario = ACU
+ * Acesso Usuario
  * 
  * @author pazin
  *
@@ -36,24 +36,24 @@ public class AcessoUsuario implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_acesso_acu", nullable = false )
+	@Column( name = "id_acesso", nullable = false )
 	private Long id;
 
 	@OneToOne
-	@JoinColumn( name="id_usuario_usu" )
+	@JoinColumn( name="id_usuario" )
 	private Usuario usuario;
 	
-	@Column( name = "ds_enderecoip_acu", nullable = false, length = 50 )
+	@Column( name = "enderecoip", nullable = false, length = 50 )
 	private String enderecoIp;
 	
 	// Todos os dados da conexão 
-	@Column( name = "ds_dados_acu", columnDefinition = "TEXT" )
+	@Column( name = "dados", columnDefinition = "TEXT" )
 	private String dados;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "dt_criacao_acu", nullable = false )
+	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 		
 	public AcessoUsuario()

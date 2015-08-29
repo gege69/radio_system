@@ -27,21 +27,21 @@ import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeader
 public class SecurityConfigMulti {
 
 	
-	private static final String DEF_USERS_BY_USERNAME_QUERY = "SELECT CD_LOGIN_USU AS USERNAME, CD_PASSWORD_USU AS PASSWORD, FL_ATIVO_USU AS ENABLED FROM USUARIO WHERE CD_LOGIN_USU = ? ";
+	private static final String DEF_USERS_BY_USERNAME_QUERY = "SELECT LOGIN AS USERNAME, PASSWORD, ATIVO AS ENABLED FROM USUARIO WHERE LOGIN = ? ";
 	
-	private static final String DEF_AUTHORITIES_BY_USERNAME_QUERY = " SELECT CD_LOGIN_USU AS USERNAME, CD_PERMISS_PRM FROM USUARIO USU " + 
-																	" LEFT JOIN USUARIO_PERMISSAO USP ON USP.ID_USUARIO_USU = USU.ID_USUARIO_USU " +
-																	" LEFT JOIN PERMISSAO PRM ON PRM.ID_PERMISSAO_PRM = USP.ID_PERMISSAO_PRM " +
-																	" WHERE CD_LOGIN_USU = ? ";
+	private static final String DEF_AUTHORITIES_BY_USERNAME_QUERY = " SELECT LOGIN AS USERNAME, CODIGO FROM USUARIO USU" + 
+																	" LEFT JOIN USUARIO_PERMISSAO USP ON USP.ID_USUARIO = USU.ID_USUARIO" + 
+																	" LEFT JOIN PERMISSAO PRM ON PRM.ID_PERMISSAO = USP.ID_PERMISSAO" + 
+																	" WHERE LOGIN = ? ";
 	
-	private static final String DEF_GROUP_AUTHORITIES_BY_USERNAME_QUERY = 	" SELECT PER.ID_PERFIL_PER ID, PER.NM_PERFIL_PER, PRM.CD_PERMISS_PRM" +
+	private static final String DEF_GROUP_AUTHORITIES_BY_USERNAME_QUERY = 	" SELECT PER.ID_PERFIL ID, PER.NOME GROUP_NAME, PRM.CODIGO AUTHORITY" +
 																			" FROM PERFIL PER" +
-																			" LEFT JOIN USUARIO_PERFIL UPF ON UPF.ID_PERFIL_PER = PER.ID_PERFIL_PER" +
-																			" LEFT JOIN PERFIL_PERMISSAO PRP ON PRP.ID_PERFIL_PER = UPF.ID_PERFIL_PER" +
-																			" LEFT JOIN PERMISSAO PRM ON PRM.ID_PERMISSAO_PRM = PRP.ID_PERMISSAO_PRM" +
-																			" LEFT JOIN USUARIO USU ON USU.ID_USUARIO_USU = UPF.ID_USUARIO_USU" +
+																			" LEFT JOIN USUARIO_PERFIL UPF ON UPF.ID_PERFIL = PER.ID_PERFIL" +
+																			" LEFT JOIN PERFIL_PERMISSAO PRP ON PRP.ID_PERFIL = UPF.ID_PERFIL" +
+																			" LEFT JOIN PERMISSAO PRM ON PRM.ID_PERMISSAO = PRP.ID_PERMISSAO" +
+																			" LEFT JOIN USUARIO USU ON USU.ID_USUARIO = UPF.ID_USUARIO" +
 																			" WHERE " +
-																			" USU.CD_LOGIN_USU = ? ";
+																			" USU.LOGIN = ? ";
 
 	@Resource
     private Environment environment;
@@ -133,7 +133,7 @@ public class SecurityConfigMulti {
 			// password-parameter: the name of the request parameter which contains the password
 			.formLogin()
 				.loginPage( "/login" )
-				.defaultSuccessUrl("/gerenciador/principal", true)
+				.defaultSuccessUrl("/principal", true)
 				.failureUrl( "/login?err=1" )
 				.usernameParameter( "username" )
 				.passwordParameter( "password" )

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 /**
  * Tabela de ligação 
  * 
- * Midia x Gênero = MGN
+ * Midia x Gênero
  * 
  * @author pazin
  *
@@ -29,15 +29,15 @@ public class MidiaGenero implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_mediagen_mgn", nullable = false )
+	@Column( name = "id_mediagen", nullable = false )
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name="id_genero_gen")
+	@JoinColumn(name="id_genero")
 	private Genero genero;
 	
 	@ManyToOne
-	@JoinColumn(name="id_midia_mid")
+	@JoinColumn(name="id_midia")
 	private Midia midia;
 
 	public Long getId()
