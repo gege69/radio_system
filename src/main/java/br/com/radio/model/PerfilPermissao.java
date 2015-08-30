@@ -40,7 +40,7 @@ public class PerfilPermissao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_perfperm", nullable = false )
-	private Long id;
+	private Long id_perfperm;
 
 	@ManyToOne
 	@JoinColumn(name="id_perfil")
@@ -57,14 +57,14 @@ public class PerfilPermissao implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
-	public Long getId()
+	public Long getId_perfperm()
 	{
-		return id;
+		return id_perfperm;
 	}
 
-	public void setId( Long id )
+	public void setId_perfperm( Long id_perfperm )
 	{
-		this.id = id;
+		this.id_perfperm = id_perfperm;
 	}
 
 	public Perfil getPerfil()

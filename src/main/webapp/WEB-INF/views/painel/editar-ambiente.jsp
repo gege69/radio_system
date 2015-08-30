@@ -21,10 +21,10 @@
           
           <div class="spacer-vertical40"></div>
 
-          <form class="form-horizontal" id="ambiente-form" action="#" method="PUT">
+          <form class="form-horizontal" id="ambiente-form" action="#" method="POST">
           
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <input type="hidden" id="id_ambiente_amb" name="id" value="${id}" >
+            <input type="hidden" id="id_ambiente_amb" name="id_ambiente" value="${id_ambiente}" >
   
             <div class="row">
               <div class="col-lg-6 col-md-6">
@@ -32,48 +32,48 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Nome do Ambiente:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_ambiente_amb" name="nome">
+                    <input type="text" class="form-control" id="nome_amb" name="nome">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">E-mail:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="email" class="form-control" id="cd_email1_amb" name="email1">
+                    <input type="email" class="form-control" id="email1_amb" name="email1">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Telefones:</label>
                   <div class="col-sm-5 col-md-4">
-                    <input type="text" class="form-control" id="cd_telefone1_amb" name="telefone1">
+                    <input type="text" class="form-control" id="telefone1_amb" name="telefone1">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-md-offset-4 col-sm-5 col-md-4">
-                    <input type="text" class="form-control" id="cd_telefone2_amb" name="telefone2">
+                    <input type="text" class="form-control" id="telefone2_amb" name="telefone2">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Endereço:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_logradouro_amb" name="logradouro">
+                    <input type="text" class="form-control" id="logradouro_amb" name="logradouro">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Bairro:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_bairro_amb" name="bairro">
+                    <input type="text" class="form-control" id="bairro_amb" name="bairro">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Estado:</label>
                   <div class="col-sm-10 col-md-8">
-                    <select class="form-control" id="nm_estado_amb" name="estado">
+                    <select class="form-control" id="estado_amb" name="estado">
                       <option value="AC">Acre </option>
                       <option value="AL">Alagoas </option>
                       <option value="AP">Amapá </option>
@@ -108,14 +108,14 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Cidade:</label>
                   <div class="col-sm-10 col-md-8">
-                    <input type="text" class="form-control" id="nm_cidade_amb" name="cidade">
+                    <input type="text" class="form-control" id="cidade_amb" name="cidade">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="control-label col-sm-2 col-md-4" for="chave">Anotações:</label>
                   <div class="col-sm-10 col-md-8">
-                    <textarea class="form-control" rows="5" id="ds_anotacoes_amb" name="anotacoes"></textarea>
+                    <textarea class="form-control" rows="5" id="anotacoes_amb" name="anotacoes"></textarea>
                   </div>
                 </div>
               </div>
@@ -125,21 +125,21 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Login:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="text" class="form-control" id="cd_login_amb" name="login" placeholder="Login">
+                    <input type="text" class="form-control" id="login_amb" name="login" placeholder="Login">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Senha:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="password" class="form-control" id="cd_password_amb" name="password" placeholder="Senha">
+                    <input type="password" class="form-control" id="password_amb" name="password" placeholder="Senha">
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Fuso-horário:</label>
                   <div class="col-sm-4 col-md-6">
-                    <select class="form-control" id="id_fusohorario_fuh" name="fusoHorario[id]">
+                    <select class="form-control" id="id_fusohorario_fuh" name="fusoHorario[id_fusohorario]">
                     </select>
                   </div>
                 </div>
@@ -148,7 +148,7 @@
                   <label class="control-label col-sm-2 col-md-4" for="exampleInputAmount">Opcionais:</label>
                   <div class="checkbox col-sm-8">
                     <label>
-                      <input type="checkbox" id="fl_opcionais_amb" name="flagOpcionais" value="true"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
+                      <input type="checkbox" id="opcionais_amb" name="opcionais" value="true"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
                     </label>
                   </div>
 <!--                   <div class="checkbox col-sm-8"> -->
@@ -216,9 +216,9 @@
             dataType: 'json'
         }).done( function(json) {
             $.each( json.data , function (i, fuso){
-                var text_str = fuso.offset + " - " + fuso.alias
+                var text_str = fuso.offsetfuso + " - " + fuso.alias
                 $('#id_fusohorario_fuh').append($('<option>', { 
-                    value: fuso.id,
+                    value: fuso.id_fusohorario,
                     text : text_str  
                 }));
             });
@@ -236,9 +236,9 @@
         removeErros( $('#ambiente-form') );
         
         var arrayCampos = [
-                            {field: "nm_ambiente_amb",      desc : "Nome do Ambiente"},
-                            {field: "cd_login_amb",         desc : "Login" }, 
-                            {field: "cd_password_amb",      desc : "Senha"}
+                            {field: "nome_amb",      desc : "Nome do Ambiente"},
+                            {field: "login_amb",         desc : "Login" }, 
+                            {field: "password_amb",      desc : "Senha"}
                           ];
         
         isOk = validaCampos( arrayCampos );
@@ -250,15 +250,13 @@
         
         if ( validaForm() ){
             
-            var obj = $('#ambiente-form').serializeJSON();
-            
             $.ajax({
                 
                 type: 'POST',
                 contentType: 'application/json',
                 url: '${context}/ambientes',
                 dataType: 'json',
-                data:  JSON.stringify(obj)
+                data:  JSON.stringify( $('#ambiente-form').serializeJSON() )
                 
             }).done( function(json){ 
 

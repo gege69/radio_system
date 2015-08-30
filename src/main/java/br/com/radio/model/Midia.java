@@ -39,7 +39,7 @@ public class Midia implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_midia", nullable = false )
-	private Long id;
+	private Long id_midia;
 
 	@NotNull( message = "O nome do Arquivo é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, length = 200 )
@@ -116,7 +116,7 @@ public class Midia implements Serializable {
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ( ( id == null ) ? 0 : id.hashCode() );
+		result = prime * result + ( ( id_midia == null ) ? 0 : id_midia.hashCode() );
 		return result;
 	}
 
@@ -130,24 +130,24 @@ public class Midia implements Serializable {
 		if ( getClass() != obj.getClass() )
 			return false;
 		Midia other = (Midia) obj;
-		if ( id == null )
+		if ( id_midia == null )
 		{
-			if ( other.id != null )
+			if ( other.id_midia != null )
 				return false;
 		}
-		else if ( !id.equals( other.id ) )
+		else if ( !id_midia.equals( other.id_midia ) )
 			return false;
 		return true;
 	}
 
-	public Long getId()
+	public Long getId_midia()
 	{
-		return id;
+		return id_midia;
 	}
 
-	public void setId( Long id )
+	public void setId_midia( Long id_midia )
 	{
-		this.id = id;
+		this.id_midia = id_midia;
 	}
 
 	public String getNome()

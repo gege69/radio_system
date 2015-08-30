@@ -38,7 +38,7 @@ public class Mensagem implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_mensagem", nullable = false )
-	private Long id;
+	private Long id_mensagem;
 
 	@OneToOne
 	@JoinColumn(name="id_usuario")
@@ -65,14 +65,14 @@ public class Mensagem implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
-	public Long getId()
+	public Long getId_mensagem()
 	{
-		return id;
+		return id_mensagem;
 	}
 
-	public void setId( Long id )
+	public void setId_mensagem( Long id_mensagem )
 	{
-		this.id = id;
+		this.id_mensagem = id_mensagem;
 	}
 
 	public Usuario getUsuario()

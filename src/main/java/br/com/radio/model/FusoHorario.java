@@ -27,7 +27,7 @@ public class FusoHorario implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_fusohorario", nullable = false )
-	private Long id;
+	private Long id_fusohorario;
 
 	@NotNull( message = "O offset do Fuso Horário é de preenchimento obrigatório" )
 	@Column( name = "offsetfuso", nullable = false, length = 20 )
@@ -44,14 +44,14 @@ public class FusoHorario implements Serializable {
 	@Column( name = "ordercomum" )
 	private Integer orderComum;  // atribui uma prioridade de mais utilizados para poder ordenar. Brasilia por exemplo será inserido com 0, Manaus como 1, etc
 
-	public Long getId()
+	public Long getId_fusohorario()
 	{
-		return id;
+		return id_fusohorario;
 	}
 
-	public void setId( Long id )
+	public void setId_fusohorario( Long id_fusohorario )
 	{
-		this.id = id;
+		this.id_fusohorario = id_fusohorario;
 	}
 
 	public String getOffsetfuso()

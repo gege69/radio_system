@@ -28,6 +28,7 @@ public class AuthenticationController extends AbstractController {
 	@Autowired
 	private IUsuarioService userService;
 	
+//	private static final Logger logger = Logger.getLogger(AuthenticationController.class);
 	
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String home( HttpServletRequest request, ModelMap model )
@@ -43,6 +44,7 @@ public class AuthenticationController extends AbstractController {
             model.addAttribute("csrfParameterName", csrfToken.getParameterName());
             model.addAttribute("csrfToken", csrfToken.getToken());
         }
+	        
 		return "auth/login";
 	}
 	

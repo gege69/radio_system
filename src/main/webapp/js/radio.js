@@ -1,21 +1,21 @@
 
-var toJSON = function(data) {
-
-	var obj = {};
-
-	$.each(data, function() {
-		if (obj[this.name]) {
-			if (!obj[this.name].push) {
-				obj[this.name] = [ obj[this.name] ];
-			}
-			obj[this.name].push(this.value || '');
-		} else {
-			obj[this.name] = this.value || '';
-		}
-	});
-
-	return JSON.stringify(obj);
-};
+//var toJSON = function(data) {
+//
+//	var obj = {};
+//
+//	$.each(data, function() {
+//		if (obj[this.name]) {
+//			if (!obj[this.name].push) {
+//				obj[this.name] = [ obj[this.name] ];
+//			}
+//			obj[this.name].push(this.value || '');
+//		} else {
+//			obj[this.name] = this.value || '';
+//		}
+//	});
+//
+//	return JSON.stringify(obj);
+//};
 
 
 
@@ -143,7 +143,7 @@ var preencheErros = function( errors )
     if ( errors.length == 1 )
         erro = errors[0];
     
-    if ( errors.length == 1 && erro.field == "alertArea" )
+    if ( errors.length == 1 && ( erro.field == "alertArea" || erro.field == "global" ) )
     {
         preencheAlertGeral( erro.field, erro.message );
     }
@@ -162,15 +162,20 @@ var preencheErros = function( errors )
 
 var preencheErroField = function( nomeCampo, msg )
 {
-    $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
-    $('<span class="fa fa-times form-control-feedback icone-fa-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
-      
-    if ( msg != null && msg != '' )
-        $('<div class="alert alert-danger">' + msg+ '</div>').insertAfter( '#'+nomeCampo );
-    
-    var formgroup = $('#'+nomeCampo).closest(".form-group");
-      
-    formgroup.addClass('has-error has-feedback');
+    if ( $('#' + nomeCampo).length <= 0 )
+        preencheAlertGeral( 'alertArea', "Problema ao detectar o campo relacionado : " + msg );
+    else
+    {
+        $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
+        $('<span class="fa fa-times form-control-feedback icone-fa-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
+          
+        if ( msg != null && msg != '' )
+            $('<div class="alert alert-danger">' + msg+ '</div>').insertAfter( '#'+nomeCampo );
+        
+        var formgroup = $('#'+nomeCampo).closest(".form-group");
+          
+        formgroup.addClass('has-error has-feedback');
+    }
 }
 
 
@@ -187,7 +192,7 @@ var preencheAlertGeral = function( nomeCampo, msg, type )
             '  <div id="errogeral">'+ msg +'</div>'+
             '</div>';
         
-        $('#'+nomeCampo).append( alertGeral );
+        $('#alertArea').append( alertGeral );
 
         var duration = 3000; // default
 

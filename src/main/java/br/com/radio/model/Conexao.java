@@ -37,7 +37,7 @@ public class Conexao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_conexao", nullable = false )
-	private Long id;
+	private Long id_conexao;
 	
 	@ManyToOne
 	@JoinColumn(name="id_ambiente")
@@ -62,14 +62,14 @@ public class Conexao implements Serializable {
 	@Column( name = "dados", columnDefinition = "TEXT" )
 	private String dados;
 
-	public Long getId()
+	public Long getId_conexao()
 	{
-		return id;
+		return id_conexao;
 	}
 
-	public void setId( Long id )
+	public void setId_conexao( Long id_conexao )
 	{
-		this.id = id;
+		this.id_conexao = id_conexao;
 	}
 
 	public Ambiente getAmbiente()

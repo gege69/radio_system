@@ -39,7 +39,7 @@ public class MidiaAmbiente implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_midiaamb", nullable = false )
-	private Long id;
+	private Long id_midiaamb;
 	
 	@ManyToOne
 	@JoinColumn(name="id_ambiente")
@@ -59,19 +59,19 @@ public class MidiaAmbiente implements Serializable {
 	// talvez guardar o usuário que associou?
 
 
-	public Long getId()
-	{
-		return id;
-	}
-
-	public void setId( Long id )
-	{
-		this.id = id;
-	}
-
 	public Ambiente getAmbiente()
 	{
 		return ambiente;
+	}
+
+	public Long getId_midiaamb()
+	{
+		return id_midiaamb;
+	}
+
+	public void setId_midiaamb( Long id_midiaamb )
+	{
+		this.id_midiaamb = id_midiaamb;
 	}
 
 	public void setAmbiente( Ambiente ambiente )

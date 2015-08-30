@@ -37,7 +37,7 @@ public class AcessoUsuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_acesso", nullable = false )
-	private Long id;
+	private Long id_acesso;
 
 	@OneToOne
 	@JoinColumn( name="id_usuario" )
@@ -62,14 +62,14 @@ public class AcessoUsuario implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
-	public Long getId()
+	public Long getId_acesso()
 	{
-		return id;
+		return id_acesso;
 	}
 
-	public void setId( Long id )
+	public void setId_acesso( Long id_acesso )
 	{
-		this.id = id;
+		this.id_acesso = id_acesso;
 	}
 
 	public Usuario getUsuario()

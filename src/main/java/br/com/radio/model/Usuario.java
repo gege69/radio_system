@@ -27,7 +27,7 @@ public class Usuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_usuario", nullable = false )
-	private Long id;
+	private Long id_usuario;
 	
 	@NotNull( message = "O nome do usuário é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, length = 200 )
@@ -66,14 +66,14 @@ public class Usuario implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
-	public Long getId()
+	public Long getId_usuario()
 	{
-		return id;
+		return id_usuario;
 	}
 
-	public void setId( Long id )
+	public void setId_usuario( Long id_usuario )
 	{
-		this.id = id;
+		this.id_usuario = id_usuario;
 	}
 
 	public String getNome()

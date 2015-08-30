@@ -32,21 +32,21 @@
             <div class="form-group">
               <label for="login" class="control-label col-sm-2 col-md-3">Nome do Ambiente:</label>
               <div class="col-sm-10 col-md-8">
-                <input type="text" class="form-control" id="nm_ambiente_amb" name="nome">
+                <input type="text" class="form-control" id="nome_amb" name="nome">
               </div>
             </div>
             
             <div class="form-group">
               <label for="login" class="control-label col-sm-2 col-md-3">Login:</label>
               <div class="col-sm-5 col-md-4">
-                <input type="email" class="form-control" id="cd_login_amb" placeholder="Login" name="login" >
+                <input type="email" class="form-control" id="login_amb" placeholder="Login" name="login" >
               </div>
             </div>
             
             <div class="form-group">
               <label for="login" class="control-label col-sm-2 col-md-3">Senha:</label>
               <div class="col-sm-5 col-md-4">
-                <input type="password" class="form-control" id="cd_password_amb" placeholder="Senha" name="password">
+                <input type="password" class="form-control" id="password_amb" placeholder="Senha" name="password">
               </div>
             </div>
             
@@ -79,9 +79,9 @@
         removeErros( $('#ambiente-form') );
         
         var arrayCampos = [
-                            {field: "nm_ambiente_amb",      desc : "Nome do Ambiente"},
-                            {field: "cd_login_amb",         desc : "Login" }, 
-                            {field: "cd_password_amb",      desc : "Senha"}
+                            {field: "nome_amb",          desc : "Nome do Ambiente"},
+                            {field: "login_amb",         desc : "Login" }, 
+                            {field: "password_amb",      desc : "Senha"}
                           ];
         
         isOk = validaCampos( arrayCampos );
@@ -98,7 +98,7 @@
                 contentType: 'application/json',
                 url: '${context}/ambientes',
                 dataType: 'json',
-                data: toJSON($('#ambiente-form').serializeArray()),
+                data: JSON.stringify( $('#ambiente-form').serializeJSON() ),
                 success: function(json){
                   
                     if (json.id != null){

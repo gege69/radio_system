@@ -18,86 +18,84 @@
           
           <div class="row">
           
-            <ul class="glyphicon-icons" style="max-width: 100%">
               <div class="row row-centered">
                 <div class="container">
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md btn-md" href="${context}/incluir-ambiente">
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/incluir-ambiente">
                       <i class="fa fa-3x icone-main fa-shopping-cart"></i>
                       <span class="label-botao-main">Incluir Ambiente</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/administrar-ambiente">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/administrar-ambiente">
                       <i class="fa fa-3x icone-main fa-random"></i>
                       <span class="label-botao-main">Administar Ambiente</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/alterar-senha">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/alterar-senha">
                       <i class="fa fa-3x icone-main fa-lock"></i>
                       <span class="label-botao-main">Alterar Senha</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/mensagens">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/mensagens">
                       <i class="fa fa-3x icone-main fa-envelope-o"></i>
                       <span class="label-botao-main">Mensagens</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/monitoramento">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/monitoramento">
                       <i class="fa fa-3x icone-main fa-eye"></i>
                       <span class="label-botao-main">Monitoramento</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-users"></i>
-                      <span class="label-botao-main-duas-linhas">Chamada de</br>Funcionários</span>
+                      <span class="label-botao-main">Chamada de</br>Funcionários</span>
                     </a>
-                  </li>
+                  </div>
                 </div>              
               </div>
               
-              <div class="row row-centered top-buffer">
+              <div class="row row-centered">
                 <div class="container">
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-cloud-upload"></i>
                       <span class="label-botao-main">Upload Ambientes</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-key"></i>
                       <span class="label-botao-main">Ferramentas</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-floppy-o"></i>
                       <span class="label-botao-main">Softwares</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-user-plus"></i>
                       <span class="label-botao-main">Administradores</span>
                     </a>
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md" href="${context}/fazer">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-android"></i>
                       <span class="label-botao-main">Mobile</span>
                     </a> 
-                  </li>
-                  <li class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                      
-                  </li>
+                  </div>
                 </div>              
               </div>
-            </ul>
           </div>
           
           <div class="spacer-vertical40">

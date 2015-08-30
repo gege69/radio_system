@@ -27,20 +27,20 @@ public class Perfil implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_perfil", nullable = false )
-	private Long id;
+	private Long id_perfil;
 
 	@NotNull( message = "O nome do Perfil é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, length = 100 )
 	private String nome;
 
-	public Long getId()
+	public Long getId_perfil()
 	{
-		return id;
+		return id_perfil;
 	}
 
-	public void setId( Long id )
+	public void setId_perfil( Long id_perfil )
 	{
-		this.id = id;
+		this.id_perfil = id_perfil;
 	}
 
 	public String getNome()

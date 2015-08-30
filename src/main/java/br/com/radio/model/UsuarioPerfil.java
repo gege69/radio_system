@@ -30,7 +30,7 @@ public class UsuarioPerfil implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_usuperf", nullable = false )
-	private Long id;
+	private Long id_usuperf;
 
 	@ManyToOne
 	@JoinColumn(name="id_usuario")
@@ -40,14 +40,14 @@ public class UsuarioPerfil implements Serializable {
 	@JoinColumn(name="id_perfil")
 	private Perfil perfil;
 
-	public Long getId_usuperf_upf()
+	public Long getId_usuperf()
 	{
-		return id;
+		return id_usuperf;
 	}
 
-	public void setId_usuperf_upf( Long id_usuperf_upf )
+	public void setId_usuperf( Long id_usuperf )
 	{
-		this.id = id_usuperf_upf;
+		this.id_usuperf = id_usuperf;
 	}
 
 	public Usuario getUsuario()
@@ -69,6 +69,7 @@ public class UsuarioPerfil implements Serializable {
 	{
 		this.perfil = perfil;
 	}
-	
+
+		
 	
 }

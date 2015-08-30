@@ -36,7 +36,7 @@ public class Genero implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_genero", nullable = false )
-	private Long id;
+	private Long id_genero;
 
 	@NotNull( message = "O nome do Gênero é de preenchimento obrigatório" )
 	@Column( name = "genero", nullable = false, length = 100 )
@@ -54,14 +54,14 @@ public class Genero implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
-	public Long getId()
+	public Long getId_genero()
 	{
-		return id;
+		return id_genero;
 	}
 
-	public void setId( Long id )
+	public void setId_genero( Long id_genero )
 	{
-		this.id = id;
+		this.id_genero = id_genero;
 	}
 
 	public String getNome()

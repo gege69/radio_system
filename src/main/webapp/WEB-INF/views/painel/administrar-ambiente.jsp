@@ -80,15 +80,17 @@
 <script id="GridBodyTmpl" type="text/x-jsrender">
 <tr>
   <td width="80%">
+    <a class="btn btn-link" href="${context}/view-ambiente/{{:id_ambiente}}">
      {{:nome}}
+    </a>
   </td>
   <td>
-    <a class="btn btn-link" href="${context}/espelhar-ambiente/{{:id}}">
+    <a class="btn btn-link" href="${context}/espelhar-ambiente/{{:id_ambiente}}">
       <i class="fa fa-lg fa-files-o"></i>
     </a>
   </td>
   <td>
-    <a class="btn btn-link" href="${context}/editar-ambiente/{{:id}}">
+    <a class="btn btn-link" href="${context}/editar-ambiente/{{:id_ambiente}}">
       <i class="fa fa-lg fa-pencil-square-o"></i>
     </a>
   </td>
@@ -111,12 +113,10 @@
             contentType: 'application/json',
             url: '${context}/ambientes',
             dataType: 'json',
-            data: {'pagina': pagina},
-            success: function(json){
-                
-                makeListTmpl(json);
-            }
-        });
+            data: {'pagina': pagina}
+        }).done( function(json){
+            makeListTmpl(json);
+        } );
     }
 
     var makeListTmpl = function(json){

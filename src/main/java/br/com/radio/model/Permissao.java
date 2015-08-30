@@ -31,7 +31,7 @@ public class Permissao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_permissao", nullable = false )
-	private Long id;
+	private Long id_permissao;
 	
 	@NotNull( message = "O alias da Permissão é de preenchimento obrigatório" )
 	@Column( name = "codigo", nullable = false, length = 100 )
@@ -53,7 +53,7 @@ public class Permissao implements Serializable {
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ( ( id == null ) ? 0 : id.hashCode() );
+		result = prime * result + ( ( id_permissao == null ) ? 0 : id_permissao.hashCode() );
 		return result;
 	}
 
@@ -67,24 +67,24 @@ public class Permissao implements Serializable {
 		if ( getClass() != obj.getClass() )
 			return false;
 		Permissao other = (Permissao) obj;
-		if ( id == null )
+		if ( id_permissao == null )
 		{
-			if ( other.id != null )
+			if ( other.id_permissao != null )
 				return false;
 		}
-		else if ( !id.equals( other.id ) )
+		else if ( !id_permissao.equals( other.id_permissao ) )
 			return false;
 		return true;
 	}
 
-	public Long getId()
+	public Long getId_permissao()
 	{
-		return id;
+		return id_permissao;
 	}
 
-	public void setId( Long id )
+	public void setId_permissao( Long id_permissao )
 	{
-		this.id = id;
+		this.id_permissao = id_permissao;
 	}
 
 	public String getCodigo()

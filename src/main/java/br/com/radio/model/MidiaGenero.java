@@ -30,7 +30,7 @@ public class MidiaGenero implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_mediagen", nullable = false )
-	private Long id;
+	private Long id_mediagen;
 
 	@ManyToOne
 	@JoinColumn(name="id_genero")
@@ -40,14 +40,14 @@ public class MidiaGenero implements Serializable {
 	@JoinColumn(name="id_midia")
 	private Midia midia;
 
-	public Long getId()
+	public Long getId_mediagen()
 	{
-		return id;
+		return id_mediagen;
 	}
 
-	public void setId( Long id )
+	public void setId_mediagen( Long id_mediagen )
 	{
-		this.id = id;
+		this.id_mediagen = id_mediagen;
 	}
 
 	public Genero getGenero()

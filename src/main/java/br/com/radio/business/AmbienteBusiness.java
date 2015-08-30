@@ -18,11 +18,12 @@ public class AmbienteBusiness {
 	 * 
 	 * @param ambiente
 	 */
-	public void saveAmbiente( Ambiente ambiente )
+	public Ambiente saveAmbiente( Ambiente ambiente )
 	{
 		// colocar aqui validações de endereço antes de salvar...
+		
 				
-		ambienteRepository.saveAndFlush( ambiente );
+		return ambienteRepository.saveAndFlush( ambiente );
 		
 	}
 	

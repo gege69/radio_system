@@ -102,20 +102,15 @@
                 contentType: 'application/json',
                 url: '${context}/alterar-senha',
                 dataType: 'json',
-                data: toJSON($('#alterar-senha-form').serializeArray()),
-                success: function(json){
-                  
-                    if (json.ok != null && json.ok == true){
-                      
-                        preencheAlertGeral( "alertArea", "Senha alterada com sucesso.", "success" );
-                          
-                        jump(''); // topo da pagina
-                    }
-                    else{
-                        
-                        preencheErros( json.errors );
-                    }
+                data: JSON.stringify( $('#alterar-senha-form').serializeJSON() )
+            }).done( function(json){ 
+
+                if (json.ok != null && json.ok == true){
+                    preencheAlertGeral( "alertArea", "Senha alterada com sucesso.", "success" );
+                    jump(''); // topo da pagina
                 }
+                else
+                    preencheErros( json.errors );
             });
         }
         

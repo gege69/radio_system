@@ -52,8 +52,13 @@
 .spacer-vertical20 {  margin-top: 20px; }
 .spacer-vertical10 {  margin-top: 10px; }
 
+.botao-main {
+  height: 130px;
+  margin-bottom: 10px;
+}
+
 .label-botao-main {
-  padding-bottom: 20px;
+/*   padding-bottom: 20px; */
   display: block;
 }
 

@@ -27,7 +27,7 @@ public class Categoria implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_categoria", nullable = false )
-	private Long id;
+	private Long id_categoria;
 
 	@NotNull( message = "O nome da Categoria é de preenchimento obrigatório" )
 	@Column( name = "categoria", nullable = false, length = 100 )
@@ -36,14 +36,14 @@ public class Categoria implements Serializable {
 	@Column( name = "descricao", columnDefinition = "TEXT" )
 	private String descricao;
 
-	public Long getId()
+	public Long getId_categoria()
 	{
-		return id;
+		return id_categoria;
 	}
 
-	public void setId( Long id )
+	public void setId_categoria( Long id_categoria )
 	{
-		this.id = id;
+		this.id_categoria = id_categoria;
 	}
 
 	public String getNome()

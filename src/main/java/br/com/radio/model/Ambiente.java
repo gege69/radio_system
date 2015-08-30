@@ -31,7 +31,7 @@ public class Ambiente implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_ambiente", nullable = false )
-	private Long id;
+	private Long id_ambiente;
 
 	@NotNull( message = "O nome do Ambiente é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, length = 200 )
@@ -75,6 +75,9 @@ public class Ambiente implements Serializable {
 	@Column( name = "password", length = 200 )
 	private String password;
 	
+	@Column( name="urlambiente", columnDefinition = "TEXT" )
+	private String urlambiente;
+	
 	@Column( name = "opcionais" )
 	private Boolean opcionais;
 
@@ -116,24 +119,20 @@ public class Ambiente implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
-
-	public Long getId()
+	public Long getId_ambiente()
 	{
-		return id;
+		return id_ambiente;
 	}
 
-
-	public void setId( Long id )
+	public void setId_ambiente( Long id_ambiente )
 	{
-		this.id = id;
+		this.id_ambiente = id_ambiente;
 	}
-
 
 	public String getNome()
 	{
 		return nome;
 	}
-
 
 	public void setNome( String nome )
 	{
@@ -366,6 +365,18 @@ public class Ambiente implements Serializable {
 	public void setFusoHorario( FusoHorario fusoHorario )
 	{
 		this.fusoHorario = fusoHorario;
+	}
+
+
+	public String getUrlambiente()
+	{
+		return urlambiente;
+	}
+
+
+	public void setUrlambiente( String urlambiente )
+	{
+		this.urlambiente = urlambiente;
 	}
 
 

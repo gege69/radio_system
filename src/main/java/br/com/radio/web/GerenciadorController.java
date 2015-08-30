@@ -3,11 +3,9 @@ package br.com.radio.web;
 import java.security.Principal;
 
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -25,7 +23,7 @@ import br.com.radio.service.IUsuarioService;
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial. 
  * 
- * Algumas funcionalidades podem ter controles exclusivos ( Ex: Ambiente ) 
+ * Algumas funcionalidades podem ter controllers exclusivos ( Ex: Ambiente ) 
  *
  * Existe um nível ainda maior que é o de Administrador que pode ter vários Gerenciadores clientes abaixo dele.
  * 
@@ -41,6 +39,9 @@ public class GerenciadorController extends AbstractController {
 	@RequestMapping(value="/principal", method=RequestMethod.GET)
 	public String principal( ModelMap model )
 	{
+		
+		// Fazer select nas permissões e mandar uma lista com os botoes que podem ser clicados ou não... vai precisar de outro método pra retornar uma lista em json e montar com javascript 
+		
 		return "painel/principal";
 	}
 	
@@ -86,22 +87,15 @@ public class GerenciadorController extends AbstractController {
 		}
 		else
 		{
-			String name = principal.getName(); //get logged in username
-			
 			try
 			{
-				userService.changeUserPassword( name, senhaDTO );
+				userService.changeUserPassword( principal.getName(), senhaDTO );
+				
+				jsonResult = Json.createObjectBuilder().add("ok", true).build().toString();
 			}
 			catch ( Exception e )
 			{
 				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-			}
-			
-			if ( StringUtils.isBlank( jsonResult ) )
-			{
-				JsonObject obj = Json.createObjectBuilder().add("ok", true).build();
-				
-				jsonResult = obj.toString();
 			}
 		}
 		
@@ -109,18 +103,18 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/espelhar-ambiente/{id_ambiente_amb}", method=RequestMethod.GET)
-	public String espelharAmbiente( @PathVariable String id_ambiente_amb, ModelMap model, HttpServletResponse response )
+	@RequestMapping(value="/espelhar-ambiente/{id_ambiente}", method=RequestMethod.GET)
+	public String espelharAmbiente( @PathVariable String id_ambiente, ModelMap model, HttpServletResponse response )
 	{
 		model.addAttribute( "quantidade", 1 );
 		
 		return "painel/espelhamento-ambiente";
 	}
 	
-	@RequestMapping(value="/editar-ambiente/{id}", method=RequestMethod.GET)
-	public String editarAmbiente( @PathVariable String id, ModelMap model, HttpServletResponse response )
+	@RequestMapping(value="/editar-ambiente/{id_ambiente}", method=RequestMethod.GET)
+	public String editarAmbiente( @PathVariable Long id_ambiente, ModelMap model, HttpServletResponse response )
 	{
-		model.addAttribute( "id", id );
+		model.addAttribute( "id_ambiente", id_ambiente );
 		
 		return "painel/editar-ambiente";
 	}

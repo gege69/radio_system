@@ -40,7 +40,7 @@ public class UsuarioPermissao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_usuperm", nullable = false )
-	private Long id;
+	private Long id_usuperm;
 
 	@ManyToOne
 	@JoinColumn(name="id_usuario")
@@ -57,15 +57,14 @@ public class UsuarioPermissao implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
-	
-	public Long getId_usuperm_upp()
+	public Long getId_usuperm()
 	{
-		return id;
+		return id_usuperm;
 	}
 
-	public void setId_usuperm_upp( Long id_usuperm_upp )
+	public void setId_usuperm( Long id_usuperm )
 	{
-		this.id = id_usuperm_upp;
+		this.id_usuperm = id_usuperm;
 	}
 
 	public Usuario getUsuario()
@@ -88,15 +87,23 @@ public class UsuarioPermissao implements Serializable {
 		this.permissao = permissao;
 	}
 
-	public Date getDt_criacao_upp()
+	public Date getDataCriacao()
 	{
 		return dataCriacao;
 	}
 
-	public void setDt_criacao_upp( Date dt_criacao_upp )
+	public void setDataCriacao( Date dataCriacao )
 	{
-		this.dataCriacao = dt_criacao_upp;
+		this.dataCriacao = dataCriacao;
 	}
+
+	public UsuarioPermissao()
+	{
+		super();
+		this.dataCriacao = new Date();
+		// TODO Auto-generated constructor stub
+	}
+
 	
-	
+		
 }
