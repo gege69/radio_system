@@ -18,6 +18,8 @@ import javax.validation.constraints.NotNull;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -71,6 +73,7 @@ public class Ambiente implements Serializable {
 	@Column( name = "login", nullable = false, length = 40 )
 	private String login;
 	
+	@JsonIgnore
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
 	@Column( name = "password", length = 200 )
 	private String password;
@@ -271,13 +274,13 @@ public class Ambiente implements Serializable {
 		this.login = login;
 	}
 
-
+	@JsonIgnore
 	public String getPassword()
 	{
 		return password;
 	}
 
-
+	@JsonProperty
 	public void setPassword( String password )
 	{
 		this.password = password;

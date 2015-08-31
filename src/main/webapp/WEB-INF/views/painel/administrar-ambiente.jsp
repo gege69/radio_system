@@ -66,9 +66,9 @@
     </div>
     
     <div class="row">
-      <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
-      </div>
+        <div class="pull-right">
+          <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+        </div>
     </div>
       
   </div> <!-- /container -->
@@ -79,7 +79,7 @@
   
 <script id="GridBodyTmpl" type="text/x-jsrender">
 <tr>
-  <td width="80%">
+  <td width="90%">
     <a class="btn btn-link" href="${context}/view-ambiente/{{:id_ambiente}}">
      {{:nome}}
     </a>
@@ -87,16 +87,19 @@
   <td>
     <a class="btn btn-link" href="${context}/espelhar-ambiente/{{:id_ambiente}}">
       <i class="fa fa-lg fa-files-o"></i>
+      Espelhar
     </a>
   </td>
   <td>
     <a class="btn btn-link" href="${context}/editar-ambiente/{{:id_ambiente}}">
       <i class="fa fa-lg fa-pencil-square-o"></i>
+      Editar
     </a>
   </td>
   <td>
     <a class="btn btn-link" href="#">
       <i class="fa fa-lg fa-trash-o"></i>
+      Remover
     </a>
   </td>
 </tr>

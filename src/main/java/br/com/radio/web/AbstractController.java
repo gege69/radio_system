@@ -121,5 +121,13 @@ public abstract class AbstractController {
 		
 		return jsonObject.toString();
 	}
+
+	protected String getOkResponse(){
+		
+		JsonObject obj = Json.createObjectBuilder().add("ok", 1 ).build();
+		String jsonResult = obj.toString();
+		
+		return jsonResult;
+	}
 	
 }

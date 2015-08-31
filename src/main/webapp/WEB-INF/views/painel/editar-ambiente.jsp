@@ -161,25 +161,34 @@
               
               </div>
             </div>
-                        
+            
+            
             <div class="row">
-              <div class="col-md-offset-7 col-sm-offset-7">
-                <div class="form-group">
-                  <div class="col-sm-offset-5 col-sm-6 col-md-offset-6">
-                    <button type="button" class="btn btn-default" id="btnSalvar">Salvar Alterações</button>
-                  </div>
-                </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="">
+                  <a class="btn btn-default" href="${context}/administrar-ambiente" >
+                    <i class="fa fa-arrow-left"></i>
+                    Voltar para Administrar Ambientes</a>
+                </div>            
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="pull-right">
+                  <button type="button" class="btn btn-primary" id="btnSalvar">
+                    <i class="fa fa-floppy-o"></i>
+                    Salvar Alterações
+                  </button>
+                </div>            
               </div>
             </div>
-          
+                        
           </form>
-          
+          <div class="spacer-vertical40"></div>
         </div>
       </div>
     </div>
     
     <div class="row">
-      <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
+      <div class="pull-right">
         <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
       </div>
     </div>

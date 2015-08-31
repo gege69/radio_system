@@ -65,8 +65,10 @@
     </div>
     
     <div class="row">
-      <div class="col-md-offset-8 col-sm-offset-7 col-xs-offset-7">
-        <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+      <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+        <div class="pull-right">
+          <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+        </div>
       </div>
     </div>
       

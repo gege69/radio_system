@@ -18,45 +18,58 @@
           
           <div class="spacer-vertical40"></div>
 
-          <div class="col-sm-10 col-md-10">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                Utilize este recurso se você deseja que a rádio atual tenha exatamente a mesma programação de outra rádio. <br/>
-                Selecione abaixo em qual rádio ela deve se espelhar.
-              </div>
-              <div class="panel-body">
-              
-                <form class="form-horizontal" action="${context}/views/painel/editar-ambiente.jsp">
+          <div class="row">
+            <div class="col-sm-10 col-md-10">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  Utilize este recurso se você deseja que a rádio atual tenha exatamente a mesma programação de outra rádio. <br/>
+                  Selecione abaixo em qual rádio ela deve se espelhar.
+                </div>
+                <div class="panel-body">
                 
-                  <div class="form-group">
-                    <label for="login" class="control-label col-sm-2 col-md-3">Espelhar em:</label>
-                    <div class="col-sm-10 col-md-8">
-                      <select class="form-control" id="radios" name="">
-                      </select>
+                  <form class="form-horizontal" action="${context}/views/painel/editar-ambiente.jsp">
+                  
+                    <div class="form-group">
+                      <label for="login" class="control-label col-sm-2 col-md-3">Espelhar em:</label>
+                      <div class="col-sm-10 col-md-8">
+                        <select class="form-control" id="radios" name="">
+                        </select>
+                      </div>
+                      
                     </div>
                     
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="login" class="control-label col-sm-2 col-md-3">&nbsp;</label>  <!-- hack -->
-                    <div class="col-sm-10 col-md-8">
-                      <button type="submit" class="btn btn-default">Espelhar</button>
+                    <div class="form-group">
+                      <label for="login" class="control-label col-sm-2 col-md-3">&nbsp;</label>  <!-- hack -->
+                      <div class="col-sm-10 col-md-8">
+                        <button type="submit" class="btn btn-default">Espelhar</button>
+                      </div>
                     </div>
-                  </div>
-                  
-                </form>
+                    
+                  </form>
+                </div>
+              
               </div>
-            
             </div>
           </div>
           
+          <div class="spacer-vertical10"></div>
+
+          <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+              <div class="">
+                <a class="btn btn-default" href="${context}/administrar-ambiente" >
+                  <i class="fa fa-arrow-left"></i>
+                  Voltar para Administrar Ambientes</a>
+              </div>            
+            </div>
+          </div>
           
         </div>
       </div>
     </div>
     
     <div class="row">
-      <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
+      <div class="pull-right">
         <a class="btn btn-default" href="${context}/views/painel/principal.jsp">Painel Gerencial</a>
       </div>
     </div>

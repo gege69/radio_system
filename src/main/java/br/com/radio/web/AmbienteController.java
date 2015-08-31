@@ -1,6 +1,7 @@
 package br.com.radio.web;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -24,11 +25,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.com.radio.business.AmbienteBusiness;
+import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
+import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.FusoHorarioRepository;
@@ -39,16 +43,19 @@ public class AmbienteController extends AbstractController {
 
 		
 	@Autowired
-	private FusoHorarioRepository fusoRepository;
+	private FusoHorarioRepository fusoRepo;
 	
 	@Autowired
-	private AmbienteRepository ambienteRepository;
+	private AmbienteRepository ambienteRepo;
 	
 	@Autowired
-	private FuncionalidadeRepository funcionalidadeRepository;
+	private FuncionalidadeRepository funcionalidadeRepo;
 	
 	@Autowired
-	private GeneroRepository generoRepository;
+	private GeneroRepository generoRepo;
+	
+	@Autowired
+	private AmbienteGeneroRepository ambienteGeneroRepo;
 	
 	@Autowired
 	private AmbienteBusiness ambienteBusiness;
@@ -57,7 +64,7 @@ public class AmbienteController extends AbstractController {
 	@RequestMapping( value = "/view-ambiente/{id}", method = RequestMethod.GET )
 	public String viewAmbiente( @PathVariable Long id, ModelMap model, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepository.findOne( id );
+		Ambiente ambiente = ambienteRepo.findOne( id );
 
 		if ( ambiente != null )
 		{
@@ -76,7 +83,7 @@ public class AmbienteController extends AbstractController {
 	@RequestMapping( value = { "/ambientes/{id}", "/api/ambientes/{id}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody Ambiente getAmbiente( @PathVariable Long id, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepository.findOne( id );
+		Ambiente ambiente = ambienteRepo.findOne( id );
 		
 		return ambiente;
 	}
@@ -89,7 +96,7 @@ public class AmbienteController extends AbstractController {
 	{
 		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
 
-		List<Funcionalidade> funcionalidades = funcionalidadeRepository.findAll( new Sort( Sort.Direction.ASC, "ordem" ) );
+		List<Funcionalidade> funcionalidades = funcionalidadeRepo.findAll( new Sort( Sort.Direction.ASC, "ordem" ) );
 		
 		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
@@ -115,7 +122,7 @@ public class AmbienteController extends AbstractController {
 	{
 		Pageable pageable = new PageRequest( pagina, this.qtd );
 			
-		Page<Ambiente> ambientePage = ambienteRepository.findAll( pageable );
+		Page<Ambiente> ambientePage = ambienteRepo.findAll( pageable );
 		
 		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientePage.getContent(), this.qtd);
 
@@ -154,7 +161,7 @@ public class AmbienteController extends AbstractController {
 	@RequestMapping( value = { "/fusohorarios", "/api/fusohorarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<FusoHorario> listFusos()
 	{
-		List<FusoHorario> ncmList = fusoRepository.findAllWithSortByOrderComum();
+		List<FusoHorario> ncmList = fusoRepo.findAllWithSortByOrderComum();
 		
 		int total = ncmList.size();
 		
@@ -168,10 +175,8 @@ public class AmbienteController extends AbstractController {
 	@RequestMapping( value = "/ambientes/{id_ambiente}/view-generos", method = RequestMethod.GET )
 	public String viewGeneros( @PathVariable Long id_ambiente, ModelMap model, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepository.findOne( id_ambiente );
+		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
 		
-		// Ainda precisa fazer a tabela de ligação
-
 		if ( ambiente != null )
 		{
 			model.addAttribute( "id_ambiente", ambiente.getId_ambiente() );
@@ -186,18 +191,65 @@ public class AmbienteController extends AbstractController {
 
 	@RequestMapping( value = { 	"/ambientes/{id_ambiente}/generos", "/api/ambientes/{id_ambiente}/generos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Genero> getGenerosAmbiente( @PathVariable Long id_ambiente, HttpServletResponse response )
+	public @ResponseBody JSONListWrapper<Genero> getGeneros( @PathVariable Long id_ambiente, HttpServletResponse response )
 	{
 		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
-
-		List<Genero> generos = generoRepository.findAll();
+		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
 		
-//		Page<Genero> generos = generoRepository.findAll(new PageRequest( 0, 3 ) );
+		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
 
+		List<Genero> generos = generoRepo.findAll();
+		
 		JSONListWrapper<Genero> jsonList = new JSONListWrapper<Genero>( generos, this.qtd );
 		
 		return jsonList;
 	}
 		
+	
+	
+	// DEPOIS MUDAR ISSO... PRA TALVEZ FAZER APENAS 1 REQUISIÇÃO.... 
+	@RequestMapping( value = { 	"/ambientes/{id_ambiente}/generos-associacao", "/api/ambientes/{id_ambiente}/generos-associacao" }, 
+						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Long> getGenerosAssoc( @PathVariable Long id_ambiente, HttpServletResponse response )
+	{
+		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
+		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
+		
+		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
+
+		// Colecionando apenas os IDs dos gêneros que estão associados à esse ambiente
+		List<Long> ids = ambienteGeneros.stream().map( ab -> ab.getGenero().getId_genero() ).collect( Collectors.toList() );
+
+		JSONListWrapper<Long> jsonList = new JSONListWrapper<Long>( ids, this.qtd );
+		
+		return jsonList;
+	}
+	
+	
+	
+	
+	@RequestMapping( value = { 	"/ambientes/{id_ambiente}/generos", "/api/ambientes/{id_ambiente}/generos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String gravaGenerosAmbiente( @PathVariable Long id_ambiente, @RequestBody GeneroListDTO generoList, BindingResult result )
+	{
+		
+		String jsonResult = "";
+		
+		try
+		{
+			boolean saved = ambienteBusiness.saveGeneros( id_ambiente, generoList );
+				
+			if ( saved )
+				jsonResult = getOkResponse();
+			else
+				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", "Erro ao salvar associação de Gêneros do ambiente" );
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+		
+		return jsonResult;
+	}
 	
 }

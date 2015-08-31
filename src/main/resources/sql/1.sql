@@ -1,6 +1,5 @@
 
 
-
 insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval('genero_id_genero_seq'), now(), 'Top 300 - Lançamentos' ,'Top 300 - Lançamentos' );
 insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval('genero_id_genero_seq'), now(), 'Internacional' ,'Internacional' );
 insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval('genero_id_genero_seq'), now(), 'Pop Rock Nacional' ,'Pop Rock Nacional' );
@@ -28,9 +27,17 @@ insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval
 
 
 
-select * from genero
+create sequence ambiente_genero_id_ambgen_seq;
 
-
+CREATE TABLE AMBIENTE_GENERO
+(
+	id_ambgen bigint default nextval('ambiente_genero_id_ambgen_seq'),
+	id_ambiente bigint not null,
+	id_genero bigint not null,
+	constraint ambiente_genero_pkey primary key (id_ambgen),
+	constraint ambiente_genero_genero_fk foreign key (id_genero) references genero (id_genero),
+	constraint ambiente_genero_ambiente_fk foreign key (id_ambiente) references ambiente (id_ambiente)
+);
 
 
 

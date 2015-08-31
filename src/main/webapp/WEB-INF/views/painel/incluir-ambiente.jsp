@@ -50,19 +50,37 @@
               </div>
             </div>
             
-            <div class="form-group">
-              <div class="col-sm-offset-5 col-sm-6 col-md-offset-6">
-                <button type="button" class="btn btn-default" id="btnAdicionar">Adicionar</button>
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="">
+                  <a class="btn btn-default" href="${context}/administrar-ambiente" >
+                    <i class="fa fa-arrow-left"></i>
+                    Voltar para Administrar Ambientes</a>
+                </div>            
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="text-right">
+                  <button type="button" class="btn btn-primary" id="btnAdicionar">
+                    <i class="fa fa-floppy-o"></i>
+                    Adicionar
+                  </button>
+                </div>            
               </div>
             </div>
+            
+            
           </form>
           
-        </div>
+          <div class="spacer-vertical40"></div>
+          
+        </div>  <!-- panel body -->
       </div>
+      
+      
     </div>
     
     <div class="row">
-      <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
+      <div class="pull-right">
         <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
       </div>
     </div>
