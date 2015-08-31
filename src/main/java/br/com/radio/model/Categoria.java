@@ -30,7 +30,7 @@ public class Categoria implements Serializable {
 	private Long id_categoria;
 
 	@NotNull( message = "O nome da Categoria é de preenchimento obrigatório" )
-	@Column( name = "categoria", nullable = false, length = 100 )
+	@Column( name = "nome", nullable = false, length = 100 )
 	private String nome;
 	
 	@Column( name = "descricao", columnDefinition = "TEXT" )
