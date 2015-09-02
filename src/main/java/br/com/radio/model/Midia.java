@@ -2,6 +2,7 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -55,9 +57,11 @@ public class Midia implements Serializable {
 	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )
 	private String descricao;
 	
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="id_categoria")
-	private Categoria categoria;
+	@ManyToMany(fetch=FetchType.LAZY)
+	   @JoinTable(name="midia_categoria", joinColumns = { 
+	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
+	        @JoinColumn(name="id_categoria", nullable=false, updatable=false) })
+    private List<Categoria> categorias;
 
 	// Ao contrário dos outros registros essa data serve para guardar quando o arquivo (música/gravação) foi criado/gravado/lançado
 	@JsonDeserialize(using=JSONDateDeserializer.class)
@@ -190,14 +194,14 @@ public class Midia implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public Categoria getCategoria()
+	public List<Categoria> getCategorias()
 	{
-		return categoria;
+		return categorias;
 	}
 
-	public void setCategoria( Categoria categoria )
+	public void setCategorias( List<Categoria> categorias )
 	{
-		this.categoria = categoria;
+		this.categorias = categorias;
 	}
 
 	public Date getDataCriacao()

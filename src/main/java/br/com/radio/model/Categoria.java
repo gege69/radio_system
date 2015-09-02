@@ -22,6 +22,15 @@ import javax.validation.constraints.NotNull;
 @Table(name="categoria")
 public class Categoria implements Serializable {
 	
+//	public final static Categoria MUSICA = 			new Categoria( 1L, "musica" );
+//	public final static Categoria VINHETA = 		new Categoria( 2L, "vinheta" );
+//	public final static Categoria INST = 			new Categoria( 3L, "inst" );
+//	public final static Categoria COMERCIAL = 		new Categoria( 4L, "comercial" );
+//	public final static Categoria PROGRAMETE = 		new Categoria( 5L, "programete" );
+//	public final static Categoria CHAMADAFUNC = 	new Categoria( 6L, "chamada-func" );
+//	public final static Categoria CHAMADAINSTANT = 	new Categoria( 7L, "chamada-instant" );
+//	
+	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
@@ -35,6 +44,10 @@ public class Categoria implements Serializable {
 	
 	@Column( name = "descricao", columnDefinition = "TEXT" )
 	private String descricao;
+	
+	@Column( name = "codigo", columnDefinition = "TEXT" )
+	private String codigo;
+	
 
 	public Long getId_categoria()
 	{
@@ -64,6 +77,29 @@ public class Categoria implements Serializable {
 	public void setDescricao( String descricao )
 	{
 		this.descricao = descricao;
+	}
+
+	public String getCodigo()
+	{
+		return codigo;
+	}
+
+	public void setCodigo( String codigo )
+	{
+		this.codigo = codigo;
+	}
+
+	public Categoria()
+	{
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Categoria( Long id_categoria, String codigo )
+	{
+		super();
+		this.id_categoria = id_categoria;
+		this.codigo = codigo;
 	}
 	
 	

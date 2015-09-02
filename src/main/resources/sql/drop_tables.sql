@@ -8,6 +8,7 @@ drop table if exists perfil_permissao;
 drop table if exists usuario_perfil;
 drop table if exists perfil;
 drop table if exists midia_genero;
+drop table if exists ambiente_genero;
 drop table if exists genero;
 drop table if exists midia_ambiente;
 drop table if exists midia;

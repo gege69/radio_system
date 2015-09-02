@@ -16,8 +16,8 @@
     
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Upload de ${categoria}<br/>
-            <small></small>
+          <h3>Gerenciar Mídias<br/>
+            <small>Espaço para armazenamento: 0 MB em uso, 500 MB disponíveis </small>
           </h3>
           
           <div class="spacer-vertical40"></div>
@@ -25,6 +25,10 @@
           <div class="row">
             <div class="col-lg-11 col-md-12">
               <div class="panel panel-default">
+                <div class="panel-heading">
+<%--                   <h2>Upload de ${nome_categoria}</h2> --%>
+                </div>
+              
                 <div class="panel-body">
                    
                   <div class="row">
