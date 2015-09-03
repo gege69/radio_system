@@ -14,7 +14,7 @@
 		<version.standard.taglibs>1.1.2</version.standard.taglibs>
 		<version.postgres.jdbc>9.4-1201-jdbc41</version.postgres.jdbc>
 		<version.spring>4.2.0.RELEASE</version.spring>
-		<version.hibernate>5.0.0.Final</version.hibernate>
+		<version.hibernate>4.3.5.Final</version.hibernate>
 
 	</properties>
 
@@ -70,13 +70,21 @@
       <version>1.2</version>
     </dependency>
     
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <version>1.0.0.Final</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${version.hibernate}</version>
+      <scope>compile</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${version.hibernate}</version>
-			<scope>compile</scope>
-		</dependency>
+
 
 		<!-- Annotation processor that raising compilation errors whenever constraint 
 			annotations are incorrectly used. -->
@@ -87,11 +95,7 @@
 			<scope>compile</scope>
 		</dependency>
     
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
-      <version>1.0.0.Final</version>
-    </dependency>
+ 
 
 
 		<!-- Import Spring dependencies, these are either from community or versions 

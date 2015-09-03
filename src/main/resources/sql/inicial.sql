@@ -4,14 +4,13 @@
 
 -- SCRIPT INICIAL
 
-
-INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Música', 'Música' );
-INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Vinheta', 'Vinheta' );
-INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Institucional', 'Institucional' );
-INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Comercial', 'Comercial' );
-INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Programete', 'Programete' );
-INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Funcionário', 'Chamada Funcionário' );
-INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Instantânea', 'Chamada Instantânea' );
+INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Música', 'Música', 'musica' );
+INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Vinheta', 'Vinheta', 'vinheta' );
+INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Institucional', 'Institucional', 'inst' );
+INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Comercial', 'Comercial', 'comercial' );
+INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Programete', 'Programete', 'programete' );
+INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Funcionário', 'Chamada Funcionário', 'chamada-func' );
+INSERT INTO CATEGORIA VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Instantânea', 'Chamada Instantânea', 'chamada-inst' );
 
 
 INSERT INTO FUSO_HORARIO (id_fusohorario, offsetfuso, canonid, alias, ordercomum ) VALUES ( nextval('fuso_horario_id_fusohorario_seq'), '-05:00', 'America/Lima'    , 'Acre', 2 );
