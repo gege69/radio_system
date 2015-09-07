@@ -2,6 +2,8 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,11 +16,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -117,6 +122,14 @@ public class Ambiente implements Serializable {
 	@OneToOne
 	@JoinColumn(name="id_fusohorario")
 	private FusoHorario fusoHorario;
+	
+	
+	
+	// REST
+	@Transient
+	private Map<String,String> ambienteAPI = new HashMap<String,String>();
+	
+	
 	
 
 	public Ambiente()
@@ -398,6 +411,20 @@ public class Ambiente implements Serializable {
 		this.empresa = empresa;
 	}
 
+	@JsonAnyGetter
+	public Map<String, String> getAmbienteAPI()
+	{
+		return ambienteAPI;
+	}
+
+	@JsonAnySetter
+	public void setAmbienteAPI( Map<String, String> ambienteAPI )
+	{
+		this.ambienteAPI = ambienteAPI;
+	}
+
+	
+	
 
 	
 	

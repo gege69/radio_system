@@ -1,4 +1,4 @@
-package br.com.radio.business;
+package br.com.radio.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +18,7 @@ import br.com.radio.repository.EmpresaRepository;
 import br.com.radio.repository.GeneroRepository;
 
 @Service
-public class AmbienteBusiness {
+public class AmbienteService {
 
 	@Autowired
 	private AmbienteRepository ambienteRepo;

@@ -7,6 +7,8 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -29,7 +31,6 @@ public abstract class AbstractController {
 		return (page * qtd) + (qtd - 1);
 	}
 	
-	
 	protected int getPageZeroBased( Integer pageNumber )
 	{
 		if ( pageNumber == null )
@@ -40,6 +41,18 @@ public abstract class AbstractController {
 		
 		return pageNumber;
 	}
+	
+	protected Pageable getPageable( Integer pagina, Integer limit )
+	{
+		pagina = getPageZeroBased( pagina );
+		
+		if ( limit == null || limit.equals( 0 ) )
+			limit = this.qtd;
+		
+		Pageable pageable = new PageRequest( pagina, limit );
+		return pageable;
+	}
+	
 	
 	protected <T> List<T> paginacao(List<T> modelList, int start ){
 		

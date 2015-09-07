@@ -1,6 +1,7 @@
 package br.com.radio.web;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -11,7 +12,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import br.com.radio.business.AmbienteBusiness;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
@@ -39,6 +38,7 @@ import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.GeneroRepository;
+import br.com.radio.service.AmbienteService;
 
 @Controller
 public class AmbienteController extends AbstractController {
@@ -63,7 +63,7 @@ public class AmbienteController extends AbstractController {
 	private AmbienteGeneroRepository ambienteGeneroRepo;
 	
 	@Autowired
-	private AmbienteBusiness ambienteBusiness;
+	private AmbienteService ambienteBusiness;
 	
 	
 	@RequestMapping( value = "/view-ambiente/{idAmbiente}", method = RequestMethod.GET )
@@ -115,7 +115,7 @@ public class AmbienteController extends AbstractController {
 			jsonArrayBuilder.add(obj);
 		});
 		
-		JsonObject objreturn = Json.createObjectBuilder().add( "data", jsonArrayBuilder.build() ).build();
+		JsonObject objreturn = Json.createObjectBuilder().add( "rows", jsonArrayBuilder.build() ).build();
 
 		return objreturn.toString();
 	}
@@ -123,17 +123,18 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/ambientes", "/api/ambientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Ambiente> listAmbiente( @RequestParam("pagina") int pagina )
+	public @ResponseBody JSONListWrapper<Ambiente> listAmbiente( @RequestParam(value="pagina", required=false) Integer pagina, 
+																 @RequestParam(value="limit", required=false) Integer limit )
 	{
-		Pageable pageable = new PageRequest( pagina, this.qtd );
+		Pageable pageable = getPageable( pagina, limit );
 			
 		Page<Ambiente> ambientePage = ambienteRepo.findAll( pageable );
 		
-		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientePage.getContent(), this.qtd);
+		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
 
 		return jsonList;
 	}
-	
+
 	
 	@RequestMapping( value = { "/ambientes", "/api/ambientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String saveAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result )

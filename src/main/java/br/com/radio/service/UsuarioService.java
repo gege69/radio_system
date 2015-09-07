@@ -11,7 +11,7 @@ import br.com.radio.model.Usuario;
 import br.com.radio.repository.UsuarioRepository;
 
 @Service
-public class UsuarioService implements IUsuarioService {
+public class UsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -19,34 +19,8 @@ public class UsuarioService implements IUsuarioService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	@Override
-	public Usuario findUserByEmail( String email )
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Usuario findUserByEmailOrLogin( String email, String login )
-	{
-//		Boolean existe usuarioDAO.existsUsuarioByEmailOrLogin( email, login )
-		
-		
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Usuario getUserByID( long id )
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void changeUserPassword( String name, AlterarSenhaDTO alterarSenhaDTO )
 	{
-		
 		Usuario usuario = usuarioRepository.findByLogin( name );
 
 		if ( usuario == null )
@@ -68,14 +42,6 @@ public class UsuarioService implements IUsuarioService {
 		}
 	}
 
-	@Override
-	public boolean checkIfValidOldPassword( Usuario user, String password )
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public Usuario registerNewUserAccount( UserDTO dto )
 	{
 		// Proteger de algum jeito contra brute force com memoization talvez

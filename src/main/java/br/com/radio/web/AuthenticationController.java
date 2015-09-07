@@ -20,13 +20,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.radio.dto.UserDTO;
 import br.com.radio.model.Usuario;
-import br.com.radio.service.IUsuarioService;
+import br.com.radio.service.UsuarioService;
 
 @Controller
 public class AuthenticationController extends AbstractController {
 
 	@Autowired
-	private IUsuarioService userService;
+	private UsuarioService userService;
 	
 //	private static final Logger logger = Logger.getLogger(AuthenticationController.class);
 	
@@ -48,27 +48,10 @@ public class AuthenticationController extends AbstractController {
 		return "auth/login";
 	}
 	
-	@RequestMapping(value="/api/legal", method=RequestMethod.GET)
-	public @ResponseBody String api( HttpServletRequest request, ModelMap model )
-	{
-		JsonObject obj = Json.createObjectBuilder().add("ok", "true").build();
-		
-		return obj.toString(); 
-	}
-	
 	@RequestMapping(value="/api/start", method=RequestMethod.GET)
 	public @ResponseBody String apistart( HttpServletRequest request, ModelMap model )
 	{
 		JsonObject obj = Json.createObjectBuilder().add("ok", "true").build();
-		
-		return obj.toString(); 
-	}
-	
-	
-	@RequestMapping(value="/api/startpost", method=RequestMethod.POST)
-	public @ResponseBody String apistartpost( HttpServletRequest request, ModelMap model )
-	{
-		JsonObject obj = Json.createObjectBuilder().add("funfou", "true").build();
 		
 		return obj.toString(); 
 	}

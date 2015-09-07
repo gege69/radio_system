@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.com.radio.dto.AlterarSenhaDTO;
-import br.com.radio.service.IUsuarioService;
+import br.com.radio.service.UsuarioService;
 
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial. 
@@ -34,7 +34,7 @@ import br.com.radio.service.IUsuarioService;
 public class GerenciadorController extends AbstractController {
 
 	@Autowired
-	private IUsuarioService userService;
+	private UsuarioService userService;
 	
 	@RequestMapping(value="/principal", method=RequestMethod.GET)
 	public String principal( ModelMap model )

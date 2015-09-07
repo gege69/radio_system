@@ -56,7 +56,7 @@
     <script src="${context}/js/json2.js"></script>
     <script src="${context}/js/jquery.populate.js"></script>
     <script src="${context}/js/bootstrap-table/bootstrap-table.js"></script>
-    <script src="${context}/js/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>    
+    <script src="${context}/js/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
     
     
   </head>

@@ -96,7 +96,7 @@
         
         $('#view-container').empty();
         
-        var content = tmpl.render(json.data);
+        var content = tmpl.render(json.rows);
         
         $('#view-container').append(content);
     };

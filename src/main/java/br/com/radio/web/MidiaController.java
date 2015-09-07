@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.radio.business.MidiaBusiness;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
@@ -28,6 +27,7 @@ import br.com.radio.model.Midia;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
+import br.com.radio.service.MidiaService;
 
 @Controller
 public class MidiaController extends AbstractController {
@@ -42,7 +42,7 @@ public class MidiaController extends AbstractController {
 	private MidiaRepository midiaRepo;
 	
 	@Autowired
-	private MidiaBusiness midiaBusiness;
+	private MidiaService midiaBusiness;
 	
 	
 	
@@ -155,7 +155,7 @@ public class MidiaController extends AbstractController {
 			});
 		});
 		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaPage.getContent(), midiaPage.getTotalElements() );
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaList, midiaPage.getTotalElements() );
 
 		return jsonList;
 	}

@@ -180,7 +180,7 @@
         }).done( function(json){
             makeListTmpl(json);
             
-            var lista = json.data;
+            var lista = json.rows;
             
             var id_categoria_tela = $('#idCategoria').val();
 
@@ -200,7 +200,7 @@
         
         $('#checkBoxContainer').empty();
         
-        var content = tmpl.render(json.data);
+        var content = tmpl.render(json.rows);
         
         $('#checkBoxContainer').append(content);
     };

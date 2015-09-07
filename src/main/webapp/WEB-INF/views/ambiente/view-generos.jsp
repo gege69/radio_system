@@ -114,7 +114,7 @@
                 dataType: 'json'
             }).done( function(json){
                 
-                var lista = json.data;
+                var lista = json.rows;
 
                 $.each( lista, function( idx, obj ){
                     $('#genero-'+obj).prop('checked', true);
@@ -163,7 +163,7 @@
         
         $('#view-container').empty();
         
-        var content = tmpl.render(json.data);
+        var content = tmpl.render(json.rows);
         
         $('#view-container').append(content);
     };

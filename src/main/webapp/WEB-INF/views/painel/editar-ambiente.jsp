@@ -224,7 +224,7 @@
             url: '${context}/fusohorarios',
             dataType: 'json'
         }).done( function(json) {
-            $.each( json.data , function (i, fuso){
+            $.each( json.rows , function (i, fuso){
                 var text_str = fuso.offsetfuso + " - " + fuso.alias
                 $('#id_fusohorario_fuh').append($('<option>', { 
                     value: fuso.id_fusohorario,

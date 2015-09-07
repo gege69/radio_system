@@ -1,4 +1,4 @@
-package br.com.radio.business;
+package br.com.radio.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,7 +28,7 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
 @Component
-public class MidiaBusiness {
+public class MidiaService {
 
 	@Autowired
 	private MidiaRepository midiaRepo;

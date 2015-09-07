@@ -7,19 +7,26 @@ public class JSONListWrapper<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<T> data;
+	private List<T> rows;
 	
 	private int total;
 	
-	public JSONListWrapper(List<T> data, int total){
-		this.data = data;
+	public JSONListWrapper(List<T> rows, int total){
+		this.rows = rows;
 		this.total = total;
 	}
-
-	public List<T> getData() {
-		return data;
+	
+	public JSONListWrapper(List<T> rows, Long total){
+		this.rows = rows;
+		this.total = total.intValue();
 	}
 	
+
+	public List<T> getRows()
+	{
+		return rows;
+	}
+
 	public int getTotal(){
 		return total;
 	}

@@ -16,30 +16,31 @@
             <small>Você possui <span id="qtd-ambientes"></span> ambiente(es) cadastrado(s)</small>
           </h3>
           
-          <div class="spacer-vertical40"></div>
-          
+          <div class="spacer-vertical20"></div>
           
           <div class="row">
-            <div class="col-lg-10 col-md-10">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <div class="row">
-                    <div class="col-md-2 col-sm-4 col-xs-5">Ambiente</div>
-                    <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-9">Opções</div>
-                  </div>
-                </div>
-                <div class="panel-body">
-                  <div class="table-responsive">
-                  
-                    <table class="table table-hover">
-                      <tbody id="tableBody">
-                      </tbody>
-                      
-                    </table>
-                    
-                  </div> 
-                </div>
-              </div>
+            <div class="col-lg-12 col-md-12">
+            
+              <table  
+                 id="table-admin"
+                 data-toggle="table"
+                 data-url="${context}/ambientes"
+                 data-height="400"
+                 data-side-pagination="server"
+                 data-pagination="true"
+                 data-page-size=7
+                 data-locale = "pt_BR"
+                 data-query-params="queryParams" >
+                <thead>
+                  <tr>
+                      <th data-field="nome" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" data-formatter="nomeFormatter">Nome</th>
+                      <th data-field="espelhar" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="espelharFormatter" data-halign="center" data-align="center">Espelhar</th>
+                      <th data-field="editar" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="editarFormatter" data-halign="center" data-align="center">Editar</th>
+                      <th data-field="remover" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="removeFormatter" data-halign="center" data-align="center">Remover</th>
+                  </tr>
+                </thead>
+              </table>
+            
             </div>
           </div>
           
@@ -76,62 +77,54 @@
 
 
   
-  
-<script id="GridBodyTmpl" type="text/x-jsrender">
-<tr>
-  <td width="90%">
-    <a class="btn btn-link" href="${context}/view-ambiente/{{:idAmbiente}}">
-     {{:nome}}
-    </a>
-  </td>
-  <td>
-    <a class="btn btn-link" href="${context}/espelhar-ambiente/{{:idAmbiente}}">
-      <i class="fa fa-lg fa-files-o"></i>
-      Espelhar
-    </a>
-  </td>
-  <td>
-    <a class="btn btn-link" href="${context}/editar-ambiente/{{:idAmbiente}}">
-      <i class="fa fa-lg fa-pencil-square-o"></i>
-      Editar
-    </a>
-  </td>
-  <td>
-    <a class="btn btn-link" href="#">
-      <i class="fa fa-lg fa-trash-o"></i>
-      Remover
-    </a>
-  </td>
-</tr>
-</script>  
 
 <script type="text/javascript">
 
     var pagina = 0, limit = 6;
 
-    var listaAmbientes = function( doJump ){
+    function queryParams(params) {
+
+        params.pageNumber = $('#table-admin').bootstrapTable('getOptions').pageNumber;
         
-        $.ajax({
-            type: 'GET',
-            contentType: 'application/json',
-            url: '${context}/ambientes',
-            dataType: 'json',
-            data: {'pagina': pagina}
-        }).done( function(json){
-            makeListTmpl(json);
-        } );
+        return params;
     }
 
-    var makeListTmpl = function(json){
-        
-        var tmpl = $.templates('#GridBodyTmpl');
-        
-        $('#tableBody').empty();
-        
-        var content = tmpl.render(json.data);
-        
-        $('#tableBody').append(content);
-    };
+    function nomeFormatter(value, row) {
+        return '<a class="btn btn-link" href="${context}/view-ambiente/'+ row.idAmbiente +'">' + value + '</a>';
+    }
+    
+    function espelharFormatter(value, row) {
+        return '<a class="btn btn-link" href="${context}/espelhar-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-files-o"></i></a>';
+    }
+    
+    function editarFormatter(value, row) {
+        return '<a class="btn btn-link" href="${context}/editar-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
+    }
+
+    function removeFormatter(value, row) {
+        return '<a class="btn btn-link" href="${context}/remover-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-trash-o"></i></a>';
+    }
+
+    
+    
+//     var listaAmbientes = function( doJump ){
+//         $.ajax({
+//             type: 'GET',
+//             contentType: 'application/json',
+//             url: '${context}/ambientes',
+//             dataType: 'json',
+//             data: {'pagina': pagina}
+//         }).done( function(json){
+//             makeListTmpl(json);
+//         } );
+//     }
+
+//     var makeListTmpl = function(json){
+//         var tmpl = $.templates('#GridBodyTmpl');
+//         $('#tableBody').empty();
+//         var content = tmpl.render(json.rows);
+//         $('#tableBody').append(content);
+//     };
 
     $(function(){
         
@@ -141,7 +134,7 @@
             xhr.setRequestHeader(header, token);
         });
        
-        listaAmbientes(false);
+//         listaAmbientes(false);
         
     });
 
