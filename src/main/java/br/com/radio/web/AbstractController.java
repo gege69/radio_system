@@ -29,6 +29,18 @@ public abstract class AbstractController {
 		return (page * qtd) + (qtd - 1);
 	}
 	
+	
+	protected int getPageZeroBased( Integer pageNumber )
+	{
+		if ( pageNumber == null )
+			pageNumber = 0;
+
+		if ( pageNumber > 0 )
+			pageNumber--;
+		
+		return pageNumber;
+	}
+	
 	protected <T> List<T> paginacao(List<T> modelList, int start ){
 		
 		List<T> result = null;

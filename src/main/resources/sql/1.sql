@@ -59,13 +59,13 @@ CREATE TABLE FUNCIONALIDADE
 );
 
 
-insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 1,  'Gêneros' , 				'/ambientes/%d/view-generos/' , 				'fa-music'); 
-insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 2,  'Vinhetas' , 				'/ambientes/%d/view-vinhetas/' , 				'fa-sound-o'); 
-insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 3,  'Institucionais', 		'/ambientes/%d/view-institucionais/' , 			'fa-headphones'); 
-insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 4,  'Comerciais' , 			'/ambientes/%d/view-comerciais/' , 				'fa-film'); 
-insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 5,  'Programetes' , 			'/ambientes/%d/view-programetes/' , 			'fa-bullhorn'); 
-insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 6,  'Chamadas Instantâneas' , '/ambientes/%d/view-chamadas-instantaneas/' , 	'fa-bolt'); 
-insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 7,  'Configurações' , 		'/ambientes/%d/view-configuracoes/' , 			'fa-briefcase'); 
+insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 1,  'Gêneros' , 				'/ambientes/%d/view-generos/' , 						'fa-music'); 
+insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 2,  'Vinhetas' , 				'/ambientes/%d/view-list-upload-midia/vinheta/' , 		'fa-sound-o'); 
+insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 3,  'Institucionais', 		'/ambientes/%d/view-list-upload-midia/inst/' , 			'fa-headphones'); 
+insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 4,  'Comerciais' , 			'/ambientes/%d/view-list-upload-midia/comercial/' , 	'fa-film'); 
+insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 5,  'Programetes' , 			'/ambientes/%d/view-list-upload-midia/programete/' , 	'fa-bullhorn'); 
+insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 6,  'Chamadas Instantâneas' , '/ambientes/%d/view-list-upload-midia/chamada-func/' , 	'fa-bolt'); 
+insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 7,  'Configurações' , 		'/ambientes/%d/view-configuracoes/' , 					'fa-briefcase'); 
 insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 8,  'Blocos' , 				'/ambientes/%d/view-blocos/' , 					'fa-th-large'); 
 insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 9,  'Expediente' ,			'/ambientes/%d/view-expediente/' , 				'fa-clock-o'); 
 insert into funcionalidade ( id_funcionalidade, ordem, nome, url, icone ) values ( nextval('funcionalidade_id_func_seq'), 10, 'Eventos' , 				'/ambientes/%d/view-eventos/' , 				'fa-newspaper-o'); 

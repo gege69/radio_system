@@ -42,6 +42,7 @@
     <link href="${context}/css/estilo.css" rel="stylesheet">
     <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
     <link href="${context}/css/bootstrap-dialog.css" rel="stylesheet">
+    <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
     <link href="${context}/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">
     
     <script src="${context}/js/jquery-1.11.3.js"></script>
@@ -54,6 +55,9 @@
     <script src="${context}/js/jquery.serializejson.js"></script>
     <script src="${context}/js/json2.js"></script>
     <script src="${context}/js/jquery.populate.js"></script>
+    <script src="${context}/js/bootstrap-table/bootstrap-table.js"></script>
+    <script src="${context}/js/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>    
+    
     
   </head>
 

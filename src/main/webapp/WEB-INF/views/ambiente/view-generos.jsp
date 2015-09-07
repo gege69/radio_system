@@ -44,14 +44,14 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="#" id="btnSalvarGeneros">Salvar alterações</a>
+                <a class="btn btn-default" href="${context}/view-ambiente/${id_ambiente}" >Administrar Ambiente</a>
               </div>            
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
-                <a class="btn btn-default" href="${context}/view-ambiente/${id_ambiente}" >Administrar Ambiente</a>
+                <a class="btn btn-primary" href="#" id="btnSalvarGeneros">Salvar alterações</a>
               </div>            
-            </div>
+            </div>            
           </div>
           
           <div class="spacer-vertical10"></div>

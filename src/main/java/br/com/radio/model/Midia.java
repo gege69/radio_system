@@ -41,7 +41,7 @@ public class Midia implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_midia", nullable = false )
-	private Long id_midia;
+	private Long idMidia;
 
 	@NotNull( message = "O nome do Arquivo é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, length = 200 )
@@ -57,7 +57,7 @@ public class Midia implements Serializable {
 	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )
 	private String descricao;
 	
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch=FetchType.EAGER)
 	   @JoinTable(name="midia_categoria", joinColumns = { 
 	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_categoria", nullable=false, updatable=false) })
@@ -85,6 +85,10 @@ public class Midia implements Serializable {
 	@NotNull( message = "O caminho do arquivo no servidor é de preenchimento obrigatório" )
 	@Column( name = "filepath", nullable = false, length = 200 )
 	private String filepath;
+	
+	@NotNull( message = "O tamanho ao arquivo é de preenchimento obrigatório" )
+	@Column( name = "filesize", nullable = false )
+	private Integer filesize;
 	
 	// Se o registro existe no filesystem (e pode ser acessado pelo servidor de aplicação) então está válido.
 	@Column( name="valido")
@@ -120,7 +124,7 @@ public class Midia implements Serializable {
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ( ( id_midia == null ) ? 0 : id_midia.hashCode() );
+		result = prime * result + ( ( idMidia == null ) ? 0 : idMidia.hashCode() );
 		return result;
 	}
 
@@ -134,24 +138,24 @@ public class Midia implements Serializable {
 		if ( getClass() != obj.getClass() )
 			return false;
 		Midia other = (Midia) obj;
-		if ( id_midia == null )
+		if ( idMidia == null )
 		{
-			if ( other.id_midia != null )
+			if ( other.idMidia != null )
 				return false;
 		}
-		else if ( !id_midia.equals( other.id_midia ) )
+		else if ( !idMidia.equals( other.idMidia ) )
 			return false;
 		return true;
 	}
 
-	public Long getId_midia()
+	public Long getIdMidia()
 	{
-		return id_midia;
+		return idMidia;
 	}
 
-	public void setId_midia( Long id_midia )
+	public void setIdMidia( Long idMidia )
 	{
-		this.id_midia = id_midia;
+		this.idMidia = idMidia;
 	}
 
 	public String getNome()
@@ -322,6 +326,16 @@ public class Midia implements Serializable {
 	public void setGenre( String genre )
 	{
 		this.genre = genre;
+	}
+
+	public Integer getFilesize()
+	{
+		return filesize;
+	}
+
+	public void setFilesize( Integer filesize )
+	{
+		this.filesize = filesize;
 	}
 
 	

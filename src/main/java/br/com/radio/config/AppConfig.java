@@ -47,6 +47,7 @@ public class AppConfig {
 		return new HikariDataSource( dataSourceConfig );
 	}
 
+
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory()
 	{

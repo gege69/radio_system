@@ -2,6 +2,7 @@ package br.com.radio.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -28,6 +29,14 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 		
 		return resolver;
 	}
+	
+	@Bean
+	public StandardServletMultipartResolver multipartResolver()
+	{
+		StandardServletMultipartResolver resolver = new StandardServletMultipartResolver();
+	    return resolver;	
+	}
+	
 	
 		
 	@Override
