@@ -15,7 +15,7 @@
       
       <div class="panel panel-default">
         <div class="panel-heading">
-          <input type="hidden" id="id_ambiente" value="${id_ambiente}">
+          <input type="hidden" id="idAmbiente" value="${idAmbiente}">
           <h3>${nome}<br/>
             <small>URL Player : ${urlambiente}</small><br/>
             <small>Login : ${login}</small><br/>
@@ -77,12 +77,12 @@
 
     var pagina = 0, limit = 6;
 
-    var listaFuncionalidades = function( id_ambiente, doJump ){
+    var listaFuncionalidades = function( idAmbiente, doJump ){
         
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/'+id_ambiente+'/funcionalidades/geral',
+            url: '${context}/ambientes/'+idAmbiente+'/funcionalidades/geral',
             dataType: 'json',
             data: {'pagina': pagina}
         }).done( function(json){
@@ -103,8 +103,8 @@
 
     $(function(){
 
-        var id_ambiente = $('#id_ambiente').val();
-        listaFuncionalidades( id_ambiente, false);
+        var idAmbiente = $('#idAmbiente').val();
+        listaFuncionalidades( idAmbiente, false);
         
     });
 

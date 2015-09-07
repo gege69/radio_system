@@ -34,7 +34,7 @@
                   <div class="row">
                     <form action="#" id="ambiente-generos-form" method="POST">
                       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                      <input type="hidden" id="id_ambiente" value="${id_ambiente}">
+                      <input type="hidden" id="idAmbiente" value="${idAmbiente}">
                       <input type="hidden" id="idCategoria" value="${idCategoria}">
                       <div class="container" id="view-container">
                         
@@ -50,7 +50,7 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/view-ambiente/${id_ambiente}" >Administrar Ambiente</a>
+                <a class="btn btn-default" href="${context}/view-ambiente/${idAmbiente}" >Administrar Ambiente</a>
               </div>            
             </div>
           </div>
@@ -98,12 +98,12 @@
 
 
     
-    var upload = function( id_ambiente )
+    var upload = function( idAmbiente )
     {
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: '${context}/ambientes/'+id_ambiente+'/upload',
+            url: '${context}/ambientes/'+idAmbiente+'/upload',
             dataType: 'json',
             data : dados 
         }).done( function(json){
@@ -120,10 +120,10 @@
             xhr.setRequestHeader(header, token);
         });
         
-        var id_ambiente = $('#id_ambiente').val();
+        var idAmbiente = $('#idAmbiente').val();
         
         $('#btnUpload').on('click', function(){
-            upload( $('#id_ambiente').val() );
+            upload( $('#idAmbiente').val() );
         });
         
     });

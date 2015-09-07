@@ -4,18 +4,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteGenero;
+import br.com.radio.model.Empresa;
 import br.com.radio.model.Genero;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.EmpresaRepository;
 import br.com.radio.repository.GeneroRepository;
 
-@Component
+@Service
 public class AmbienteBusiness {
 
 	@Autowired
@@ -26,6 +28,9 @@ public class AmbienteBusiness {
 	
 	@Autowired
 	private AmbienteGeneroRepository ambienteGeneroRepo;
+	
+	@Autowired
+	private EmpresaRepository empresaRepo;
 
 
 	/**
@@ -36,7 +41,13 @@ public class AmbienteBusiness {
 	public Ambiente saveAmbiente( Ambiente ambiente )
 	{
 		// colocar aqui validações de endereço antes de salvar...
-		
+		if ( ambiente.getEmpresa() == null )
+		{
+			Empresa empresa = empresaRepo.findByCodigo( "Eterion" );
+			ambiente.setEmpresa( empresa );
+			
+//			throw new RuntimeException("Empresa não determinada");
+		}
 				
 		return ambienteRepo.saveAndFlush( ambiente );
 		
@@ -44,9 +55,9 @@ public class AmbienteBusiness {
 	
 	
 	@Transactional
-	public boolean saveGeneros( Long id_ambiente, GeneroListDTO generoList )
+	public boolean saveGeneros( Long idAmbiente, GeneroListDTO generoList )
 	{
-		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		boolean result = false;
 		
@@ -56,7 +67,7 @@ public class AmbienteBusiness {
 			
 			List<Long> idsGeneros = generos.stream().map( Genero::getId_genero ).collect( Collectors.toList() );
 
-			ambienteGeneroRepo.deleteByAmbienteNotInIds( id_ambiente, idsGeneros ); 
+			ambienteGeneroRepo.deleteByAmbienteNotInIds( idAmbiente, idsGeneros ); 
 			
 			generos.stream().forEach( g -> {
 				Genero genero = generoRepo.findOne( g.getId_genero() );

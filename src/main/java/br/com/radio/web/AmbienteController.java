@@ -66,14 +66,14 @@ public class AmbienteController extends AbstractController {
 	private AmbienteBusiness ambienteBusiness;
 	
 	
-	@RequestMapping( value = "/view-ambiente/{id}", method = RequestMethod.GET )
-	public String viewAmbiente( @PathVariable Long id, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/view-ambiente/{idAmbiente}", method = RequestMethod.GET )
+	public String viewAmbiente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepo.findOne( id );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 
 		if ( ambiente != null )
 		{
-			model.addAttribute( "id_ambiente", ambiente.getId_ambiente() );
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 			model.addAttribute( "urlambiente", ambiente.getUrlambiente() );
 			model.addAttribute( "login", ambiente.getLogin() );
@@ -85,19 +85,19 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = { "/ambientes/{id}", "/api/ambientes/{id}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody Ambiente getAmbiente( @PathVariable Long id, HttpServletResponse response )
+	@RequestMapping( value = { "/ambientes/{idAmbiente}", "/api/ambientes/{idAmbiente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody Ambiente getAmbiente( @PathVariable Long idAmbiente, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepo.findOne( id );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		return ambiente;
 	}
 	
 	
-	@RequestMapping( value = { 	"/ambientes/{id}/funcionalidades/{modo}", 
-								"/api/ambientes/{id}/funcionalidades/{modo}" }, 
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/funcionalidades/{modo}", 
+								"/api/ambientes/{idAmbiente}/funcionalidades/{modo}" }, 
 					 method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String getFuncionalidadesAmbiente( @PathVariable Long id, @PathVariable String modo, HttpServletResponse response )
+	public @ResponseBody String getFuncionalidadesAmbiente( @PathVariable Long idAmbiente, @PathVariable String modo, HttpServletResponse response )
 	{
 		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
 
@@ -107,7 +107,7 @@ public class AmbienteController extends AbstractController {
 
 		funcionalidades.stream().forEach( f -> {
 			JsonObject obj = Json.createObjectBuilder()
-					.add("url_funcionalidade", String.format( f.getUrl(), id ) )
+					.add("url_funcionalidade", String.format( f.getUrl(), idAmbiente ) )
 					.add("nome_funcionalidade", f.getNome() )
 					.add("icone_funcionalidade", f.getIcone() )
 					.build();
@@ -177,14 +177,14 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/ambientes/{id_ambiente}/view-generos", method = RequestMethod.GET )
-	public String viewGeneros( @PathVariable Long id_ambiente, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-generos", method = RequestMethod.GET )
+	public String viewGeneros( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		if ( ambiente != null )
 		{
-			model.addAttribute( "id_ambiente", ambiente.getId_ambiente() );
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
 			return "ambiente/view-generos";
@@ -194,12 +194,12 @@ public class AmbienteController extends AbstractController {
 	}
 	
 
-	@RequestMapping( value = { 	"/ambientes/{id_ambiente}/generos", "/api/ambientes/{id_ambiente}/generos" }, 
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos", "/api/ambientes/{idAmbiente}/generos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Genero> getGeneros( @PathVariable Long id_ambiente, HttpServletResponse response )
+	public @ResponseBody JSONListWrapper<Genero> getGeneros( @PathVariable Long idAmbiente, HttpServletResponse response )
 	{
 		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
-		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
 
@@ -213,12 +213,12 @@ public class AmbienteController extends AbstractController {
 	
 	
 	// DEPOIS MUDAR ISSO... PRA TALVEZ FAZER APENAS 1 REQUISIÇÃO.... 
-	@RequestMapping( value = { 	"/ambientes/{id_ambiente}/generos-associacao", "/api/ambientes/{id_ambiente}/generos-associacao" }, 
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos-associacao", "/api/ambientes/{idAmbiente}/generos-associacao" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Long> getGenerosAssoc( @PathVariable Long id_ambiente, HttpServletResponse response )
+	public @ResponseBody JSONListWrapper<Long> getGenerosAssoc( @PathVariable Long idAmbiente, HttpServletResponse response )
 	{
 		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
-		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
 
@@ -233,15 +233,14 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = { 	"/ambientes/{id_ambiente}/generos", "/api/ambientes/{id_ambiente}/generos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String gravaGenerosAmbiente( @PathVariable Long id_ambiente, @RequestBody GeneroListDTO generoList, BindingResult result )
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos", "/api/ambientes/{idAmbiente}/generos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String gravaGenerosAmbiente( @PathVariable Long idAmbiente, @RequestBody GeneroListDTO generoList, BindingResult result )
 	{
-		
 		String jsonResult = "";
 		
 		try
 		{
-			boolean saved = ambienteBusiness.saveGeneros( id_ambiente, generoList );
+			boolean saved = ambienteBusiness.saveGeneros( idAmbiente, generoList );
 				
 			if ( saved )
 				jsonResult = getOkResponse();

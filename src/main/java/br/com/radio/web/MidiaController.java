@@ -1,17 +1,10 @@
 package br.com.radio.web;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.util.List;
 
-import javax.json.Json;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.openhft.hashing.LongHashFunction;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.radio.business.MidiaBusiness;
 import br.com.radio.json.JSONBootstrapGridWrapper;
@@ -54,14 +46,14 @@ public class MidiaController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/ambientes/{id_ambiente}/view-list-upload-midia/{codigo}", method = RequestMethod.GET )
-	public String viewAmbiente( @PathVariable Long id_ambiente, @PathVariable String codigo, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-list-upload-midia/{codigo}", method = RequestMethod.GET )
+	public String viewAmbiente( @PathVariable Long idAmbiente, @PathVariable String codigo, ModelMap model, HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 
 		if ( ambiente != null )
 		{
-			model.addAttribute( "id_ambiente", ambiente.getId_ambiente() );
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 			
 			Categoria categoria = categoriaRepo.findByCodigo( codigo );
@@ -82,9 +74,9 @@ public class MidiaController extends AbstractController {
 	
 	
 	// Depois fazer a versão AJAX desse upload
-	@RequestMapping(value="/ambientes/{id_ambiente}/view-list-upload-midia/{codigo}", method=RequestMethod.POST)
+	@RequestMapping(value="/ambientes/{idAmbiente}/view-list-upload-midia/{codigo}", method=RequestMethod.POST)
     public String handleFileUpload(
-    		@PathVariable Long id_ambiente,
+    		@PathVariable Long idAmbiente,
     		@PathVariable String codigo,
     		@RequestParam("file") MultipartFile file, 
     		@RequestParam("categorias[]") Long[] categorias,
@@ -92,11 +84,11 @@ public class MidiaController extends AbstractController {
     		Model model )
 	{
 		
-		Ambiente ambiente = ambienteRepo.findOne( id_ambiente );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		if ( ambiente != null )
 		{
-			model.addAttribute( "id_ambiente", ambiente.getId_ambiente() );
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 
 			Categoria categoria = categoriaRepo.findByCodigo( codigo );
@@ -134,13 +126,15 @@ public class MidiaController extends AbstractController {
 
 	
 	
+
 	
-	@RequestMapping( value = { "/ambientes/{id_ambiente}/midias-por-categoria/{idCategoria}/", 
-							   "/api/ambientes/{id_ambiente}/midias-por-categoria/{idCategoria}/" }, 
+	// desacoplar a lista da paginação... no caso da API
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/", 
+							   "/api/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/" }, 
 					 method = RequestMethod.GET, 
 					 produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
-			@PathVariable Long id_ambiente, 
+			@PathVariable Long idAmbiente, 
 			@PathVariable Long idCategoria,
 			@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
 			@RequestParam("offset") int offset, 
@@ -152,6 +146,14 @@ public class MidiaController extends AbstractController {
 		Pageable pageable = new PageRequest( pageNumber, limit, Sort.Direction.fromStringOrNull( order ), "idMidia" );
 
 		Page<Midia> midiaPage = midiaRepo.findAll( pageable );
+		
+		List<Midia> midiaList = midiaPage.getContent();
+		
+		midiaList.stream().forEach( m -> {
+			m.getCategorias().forEach( cat -> {
+				m.getCategoriasView().put( cat.getCodigo(), true );
+			});
+		});
 		
 		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaPage.getContent(), midiaPage.getTotalElements() );
 

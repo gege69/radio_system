@@ -29,7 +29,7 @@ insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval
 
 create sequence ambiente_genero_id_ambgen_seq;
 
-CREATE TABLE AMBIENTE_GENERO
+CREATE TABLE IF NOT EXISTS AMBIENTE_GENERO
 (
 	id_ambgen bigint default nextval('ambiente_genero_id_ambgen_seq'),
 	id_ambiente bigint not null,

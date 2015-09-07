@@ -44,7 +44,7 @@
                   <div class="row">
                     
                     <div class="col-md-12">
-                      <form action="${context}/ambientes/${id_ambiente}/view-list-upload-midia/${codigo}" 
+                      <form action="${context}/ambientes/${idAmbiente}/view-list-upload-midia/${codigo}" 
                             method="POST" 
                             id="ambiente-upload-midia" 
                             class="form" 
@@ -60,7 +60,7 @@
                           </div>
                         </div>
 
-                        <div class="col-lg-12" >
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                           <div class="form-group" id="checkBoxContainer">
                           </div>
                         </div>
@@ -85,7 +85,7 @@
                       <table  
                          id="table"
                          data-toggle="table"
-                         data-url="${context}/ambientes/${id_ambiente}/midias-por-categoria/${idCategoria}/"
+                         data-url="${context}/ambientes/${idAmbiente}/midias-por-categoria/${idCategoria}/"
                          data-height="400"
                          data-side-pagination="server"
                          data-pagination="true"
@@ -98,6 +98,12 @@
                               <th data-field="idMidia">ID</th>
                               <th data-field="nome">Nome</th>
                               <th data-field="descricao">Descrição</th>
+                              <th data-field="vinheta" data-formatter="catFormatter">Vinheta</th>
+                              <th data-field="inst" data-formatter="catFormatter">Institucional</th>
+                              <th data-field="comercial" data-formatter="catFormatter">Comercial</th>
+                              <th data-field="programete" data-formatter="catFormatter">Programete</th>
+                              <th data-field="chamada-func" data-formatter="catFormatter">Cham. Funcionário</th>
+                              <th data-field="chamada-inst" data-formatter="catFormatter">Cham. Instantânea</th>
                           </tr>
                         </thead>
                       </table>
@@ -111,7 +117,7 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/view-ambiente/${id_ambiente}" >Administrar Ambiente</a>
+                <a class="btn btn-default" href="${context}/view-ambiente/${idAmbiente}" >Administrar Ambiente</a>
               </div>            
             </div>
           </div>
@@ -146,6 +152,13 @@
 <script type="text/javascript">
 
     var $table = $('#table');
+    
+    function catFormatter(value, row) {
+        
+        var icon = value == true ? 'fa-check' : 'fa-circle-thin';
+
+        return '<i class="fa '+ icon + '"></i>';
+    }
     
     function queryParams(params) {
 
@@ -193,7 +206,7 @@
     };
     
     // futuramente tornar esse Upload em ajax
-    var upload = function( id_ambiente )
+    var upload = function( idAmbiente )
     {
         // pegar as categorias e fazer a listinha de strings 
         $("#ambiente-upload-midia").submit();
@@ -211,10 +224,10 @@
             xhr.setRequestHeader(header, token);
         });
         
-        var id_ambiente = $('#id_ambiente').val();
+        var idAmbiente = $('#idAmbiente').val();
         
         $('#btnUploadMidia').on('click', function(){
-            upload( $('#id_ambiente').val() );
+            upload( $('#idAmbiente').val() );
         });
         
         listaCategorias();

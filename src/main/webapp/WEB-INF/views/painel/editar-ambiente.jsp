@@ -24,7 +24,7 @@
           <form class="form-horizontal" id="ambiente-form" action="#" method="POST">
           
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <input type="hidden" id="id_ambiente_amb" name="id_ambiente" value="${id_ambiente}" >
+            <input type="hidden" id="idAmbiente_amb" name="idAmbiente" value="${idAmbiente}" >
   
             <div class="row">
               <div class="col-lg-6 col-md-6">
@@ -293,7 +293,7 @@
        
         $('#btnSalvar').on('click', salvar);
         
-        getDados( $('#id_ambiente_amb').val() );
+        getDados( $('#idAmbiente_amb').val() );
         
     });
 

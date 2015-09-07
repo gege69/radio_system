@@ -5,9 +5,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -15,6 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
@@ -29,6 +33,11 @@ public class Usuario implements Serializable {
 	@Column( name = "id_usuario", nullable = false )
 	private Long id_usuario;
 	
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn( name="id_empresa", nullable=false )
+	private Empresa empresa;
+	
 	@NotNull( message = "O nome do usuário é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, length = 200 )
 	private String nome;
@@ -41,6 +50,7 @@ public class Usuario implements Serializable {
 	@Column( name = "login", nullable = false, length = 40, unique = true )
 	private String login;
 	
+	@JsonIgnore
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
 	@Column( name = "password", nullable = false )
 	private String password;
@@ -144,6 +154,16 @@ public class Usuario implements Serializable {
 	public void setAtivo( Boolean ativo )
 	{
 		this.ativo = ativo;
+	}
+
+	public Empresa getEmpresa()
+	{
+		return empresa;
+	}
+
+	public void setEmpresa( Empresa empresa )
+	{
+		this.empresa = empresa;
 	}
 
 	

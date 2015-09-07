@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,11 +34,16 @@ public class Ambiente implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_ambiente", nullable = false )
-	private Long id_ambiente;
+	private Long idAmbiente;
 
 	@NotNull( message = "O nome do Ambiente é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, length = 200 )
 	private String nome;
+	
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn( name="id_empresa", nullable=false )
+	private Empresa empresa;
 
 	@Column( name = "telefone1" )
 	private String telefone1;
@@ -122,14 +128,14 @@ public class Ambiente implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
-	public Long getId_ambiente()
+	public Long getIdAmbiente()
 	{
-		return id_ambiente;
+		return idAmbiente;
 	}
 
-	public void setId_ambiente( Long id_ambiente )
+	public void setIdAmbiente( Long idAmbiente )
 	{
-		this.id_ambiente = id_ambiente;
+		this.idAmbiente = idAmbiente;
 	}
 
 	public String getNome()
@@ -380,6 +386,16 @@ public class Ambiente implements Serializable {
 	public void setUrlambiente( String urlambiente )
 	{
 		this.urlambiente = urlambiente;
+	}
+
+	public Empresa getEmpresa()
+	{
+		return empresa;
+	}
+
+	public void setEmpresa( Empresa empresa )
+	{
+		this.empresa = empresa;
 	}
 
 

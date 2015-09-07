@@ -30,7 +30,7 @@
                   <div class="row">
                     <form action="#" id="ambiente-generos-form" method="POST">
                       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                      <input type="hidden" id="id_ambiente" value="${id_ambiente}">
+                      <input type="hidden" id="idAmbiente" value="${idAmbiente}">
                       <div class="container" id="view-container">
                       </div>
                     </form>
@@ -44,7 +44,7 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/view-ambiente/${id_ambiente}" >Administrar Ambiente</a>
+                <a class="btn btn-default" href="${context}/view-ambiente/${idAmbiente}" >Administrar Ambiente</a>
               </div>            
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
@@ -96,12 +96,12 @@
 <script type="text/javascript">
 
 
-    var listaGeneros = function( id_ambiente, doJump ){
+    var listaGeneros = function( idAmbiente, doJump ){
         
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/'+id_ambiente+'/generos',
+            url: '${context}/ambientes/'+idAmbiente+'/generos',
             dataType: 'json'
         }).done( function(json){
             makeListTmpl(json);
@@ -110,7 +110,7 @@
             $.ajax({
                 type: 'GET',
                 contentType: 'application/json',
-                url: '${context}/ambientes/'+id_ambiente+'/generos-associacao',
+                url: '${context}/ambientes/'+idAmbiente+'/generos-associacao',
                 dataType: 'json'
             }).done( function(json){
                 
@@ -126,7 +126,7 @@
     }
 
     
-    var salvarGeneros = function( id_ambiente )
+    var salvarGeneros = function( idAmbiente )
     {
         var array_values = [];
         $('input[type=checkbox]').each( function() {
@@ -142,7 +142,7 @@
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: '${context}/ambientes/'+id_ambiente+'/generos',
+            url: '${context}/ambientes/'+idAmbiente+'/generos',
             dataType: 'json',
             data : dados 
         }).done( function(json){
@@ -176,11 +176,11 @@
             xhr.setRequestHeader(header, token);
         });
         
-        var id_ambiente = $('#id_ambiente').val();
-        listaGeneros( id_ambiente, false);
+        var idAmbiente = $('#idAmbiente').val();
+        listaGeneros( idAmbiente, false);
         
         $('#btnSalvarGeneros').on('click', function(){
-            salvarGeneros( $('#id_ambiente').val() );
+            salvarGeneros( $('#idAmbiente').val() );
         });
         
     });

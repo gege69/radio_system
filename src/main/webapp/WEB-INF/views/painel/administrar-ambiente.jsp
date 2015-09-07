@@ -80,18 +80,18 @@
 <script id="GridBodyTmpl" type="text/x-jsrender">
 <tr>
   <td width="90%">
-    <a class="btn btn-link" href="${context}/view-ambiente/{{:id_ambiente}}">
+    <a class="btn btn-link" href="${context}/view-ambiente/{{:idAmbiente}}">
      {{:nome}}
     </a>
   </td>
   <td>
-    <a class="btn btn-link" href="${context}/espelhar-ambiente/{{:id_ambiente}}">
+    <a class="btn btn-link" href="${context}/espelhar-ambiente/{{:idAmbiente}}">
       <i class="fa fa-lg fa-files-o"></i>
       Espelhar
     </a>
   </td>
   <td>
-    <a class="btn btn-link" href="${context}/editar-ambiente/{{:id_ambiente}}">
+    <a class="btn btn-link" href="${context}/editar-ambiente/{{:idAmbiente}}">
       <i class="fa fa-lg fa-pencil-square-o"></i>
       Editar
     </a>

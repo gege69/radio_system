@@ -14,8 +14,8 @@ import br.com.radio.model.Genero;
 public interface AmbienteGeneroRepository extends JpaRepository<AmbienteGenero, Long> {
 	
 	@Modifying
-    @Query( value = "DELETE FROM AMBIENTE_GENERO WHERE ID_AMBIENTE = :id_ambiente AND ID_GENERO NOT IN :ids ", nativeQuery = true )
-    int deleteByAmbienteNotInIds(@Param("id_ambiente") Long id_ambiente, @Param("ids") List<Long> idsGeneros );
+    @Query( value = "DELETE FROM AMBIENTE_GENERO WHERE ID_AMBIENTE = :idAmbiente AND ID_GENERO NOT IN :ids ", nativeQuery = true )
+    int deleteByAmbienteNotInIds(@Param("idAmbiente") Long idAmbiente, @Param("ids") List<Long> idsGeneros );
 	
 	List<AmbienteGenero> findByAmbiente( Ambiente ambiente );
 	

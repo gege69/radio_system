@@ -103,18 +103,18 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/espelhar-ambiente/{id_ambiente}", method=RequestMethod.GET)
-	public String espelharAmbiente( @PathVariable String id_ambiente, ModelMap model, HttpServletResponse response )
+	@RequestMapping(value="/espelhar-ambiente/{idAmbiente}", method=RequestMethod.GET)
+	public String espelharAmbiente( @PathVariable String idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		model.addAttribute( "quantidade", 1 );
 		
 		return "painel/espelhamento-ambiente";
 	}
 	
-	@RequestMapping(value="/editar-ambiente/{id_ambiente}", method=RequestMethod.GET)
-	public String editarAmbiente( @PathVariable Long id_ambiente, ModelMap model, HttpServletResponse response )
+	@RequestMapping(value="/editar-ambiente/{idAmbiente}", method=RequestMethod.GET)
+	public String editarAmbiente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
-		model.addAttribute( "id_ambiente", id_ambiente );
+		model.addAttribute( "idAmbiente", idAmbiente );
 		
 		return "painel/editar-ambiente";
 	}

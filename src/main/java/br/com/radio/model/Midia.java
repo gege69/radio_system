@@ -2,7 +2,9 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,11 +18,15 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -56,13 +62,17 @@ public class Midia implements Serializable {
 
 	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )
 	private String descricao;
-	
+
+	@JsonIgnore
 	@ManyToMany(fetch=FetchType.EAGER)
 	   @JoinTable(name="midia_categoria", joinColumns = { 
 	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_categoria", nullable=false, updatable=false) })
     private List<Categoria> categorias;
-
+	
+	@Transient
+	private Map<String,Boolean> categoriasView = new HashMap<String,Boolean>();
+	
 	// Ao contrário dos outros registros essa data serve para guardar quando o arquivo (música/gravação) foi criado/gravado/lançado
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
@@ -336,6 +346,18 @@ public class Midia implements Serializable {
 	public void setFilesize( Integer filesize )
 	{
 		this.filesize = filesize;
+	}
+
+	@JsonAnyGetter
+	public Map<String, Boolean> getCategoriasView()
+	{
+		return categoriasView;
+	}
+
+	@JsonAnySetter
+	public void setCategoriasView( Map<String, Boolean> categoriasView )
+	{
+		this.categoriasView = categoriasView;
 	}
 
 	
