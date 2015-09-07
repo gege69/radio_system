@@ -29,11 +29,13 @@ import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteGenero;
+import br.com.radio.model.Categoria;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.GeneroRepository;
@@ -50,6 +52,9 @@ public class AmbienteController extends AbstractController {
 	
 	@Autowired
 	private FuncionalidadeRepository funcionalidadeRepo;
+	
+	@Autowired
+	private CategoriaRepository categoriaRepo;
 	
 	@Autowired
 	private GeneroRepository generoRepo;
@@ -251,5 +256,18 @@ public class AmbienteController extends AbstractController {
 		
 		return jsonResult;
 	}
+	
+	
+	@RequestMapping( value = { 	"/ambientes/categorias", "/api/ambientes/categorias" }, 
+			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Categoria> getCategorias( HttpServletResponse response )
+	{
+		List<Categoria> categorias = categoriaRepo.findAll();
+		
+		JSONListWrapper<Categoria> jsonList = new JSONListWrapper<Categoria>( categorias, this.qtd );
+		
+		return jsonList;
+	}
+	
 	
 }

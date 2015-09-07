@@ -36,7 +36,7 @@ public class Categoria implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_categoria", nullable = false )
-	private Long id_categoria;
+	private Long idCategoria;
 
 	@NotNull( message = "O nome da Categoria é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, length = 100 )
@@ -48,15 +48,14 @@ public class Categoria implements Serializable {
 	@Column( name = "codigo", columnDefinition = "TEXT" )
 	private String codigo;
 	
-
-	public Long getId_categoria()
+	public Long getIdCategoria()
 	{
-		return id_categoria;
+		return idCategoria;
 	}
 
-	public void setId_categoria( Long id_categoria )
+	public void setIdCategoria( Long idCategoria )
 	{
-		this.id_categoria = id_categoria;
+		this.idCategoria = idCategoria;
 	}
 
 	public String getNome()
@@ -95,14 +94,13 @@ public class Categoria implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Categoria( Long id_categoria, String codigo )
+	public Categoria( Long idCategoria, String nome )
 	{
 		super();
-		this.id_categoria = id_categoria;
-		this.codigo = codigo;
+		this.idCategoria = idCategoria;
+		this.nome = nome;
 	}
-	
-	
+
 	
 
 }

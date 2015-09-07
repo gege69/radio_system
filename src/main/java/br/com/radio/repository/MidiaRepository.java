@@ -13,4 +13,6 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
 	Page<Midia> findByCategoriasIn( List<Categoria> categorias, Pageable pageable );
 	
+	Midia findByFilehash( String filehash );
+	
 }

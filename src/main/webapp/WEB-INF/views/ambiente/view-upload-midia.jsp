@@ -35,7 +35,7 @@
                     <form action="#" id="ambiente-generos-form" method="POST">
                       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                       <input type="hidden" id="id_ambiente" value="${id_ambiente}">
-                      <input type="hidden" id="id_categoria" value="${id_categoria}">
+                      <input type="hidden" id="idCategoria" value="${idCategoria}">
                       <div class="container" id="view-container">
                         
                       </div>

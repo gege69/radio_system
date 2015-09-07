@@ -15,6 +15,11 @@ public class JSONBootstrapGridWrapper<T> implements Serializable {
 		this.rows = rows;
 		this.total = total;
 	}
+	
+	public JSONBootstrapGridWrapper(List<T> rows, Long total){
+		this.rows = rows;
+		this.total = total.intValue();
+	}
 
 	public List<T> getRows()
 	{
