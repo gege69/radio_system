@@ -20,7 +20,7 @@
 
           <div class="panel panel-default">
             <div class="panel-heading">
-              Página não encontrada
+              404 - Página não encontrada
             </div>
             <div class="panel-body">
             </div>

@@ -11,7 +11,15 @@ import br.com.radio.model.Midia;
 
 public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
-	Page<Midia> findByCategoriasIn( List<Categoria> categorias, Pageable pageable );
+	Page<Midia> findByCategoriasIn( Pageable pageable, Categoria... categorias );
+	
+	Page<Midia> findByCategoriasInOrderByIdMidiaDesc( Pageable pageable, Categoria... categorias );
+	
+	Page<Midia> findAllByOrderByIdMidiaDesc( Pageable pageable );
+	
+	Page<Midia> findByNomeContainingOrTitleContaining( String nome, String title, Pageable pageable );
+	
+	Page<Midia> findByNomeContainingOrTitleContainingAndCategoriasIn( String nome, String title, List<Categoria> categorias, Pageable pageable );
 	
 	Midia findByFilehash( String filehash );
 	

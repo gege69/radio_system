@@ -39,12 +39,20 @@ CREATE TABLE IF NOT EXISTS PARAMETRO
 (
 	id_parametro bigint default nextval('parametro_id_parametro_seq'),
 	id_empresa bigint not null,
-	param text,
+	codigo text,
+	valor text,
 	descricao text,
 	type text,
 	constraint parametro_pkey primary key (id_parametro),
 	constraint parametro_empresa_fk foreign key (id_empresa) references empresa (id_empresa)
 );
+
+
+
+insert into  PARAMETRO ( id_parametro, id_empresa, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA WHERE CODIGO = 'Eterion' ), 'BASE_MIDIA_PATH', '/home/pazin/teste/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
+
+
 
 
 
@@ -65,6 +73,10 @@ ALTER TABLE USUARIO ADD constraint USUARIO_empresa_fk foreign key (id_empresa) r
 UPDATE USUARIO SET ID_EMPRESA = ( SELECT ID_EMPRESA FROM EMPRESA WHERE CODIGO = 'Eterion' );
 
 ALTER TABLE USUARIO ALTER COLUMN ID_EMPRESA SET NOT NULL;
+
+
+
+
 
 
 

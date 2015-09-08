@@ -158,6 +158,8 @@ public class Midia implements Serializable {
 		return true;
 	}
 
+	
+	
 	public Long getIdMidia()
 	{
 		return idMidia;
@@ -358,6 +360,12 @@ public class Midia implements Serializable {
 	public void setCategoriasView( Map<String, Boolean> categoriasView )
 	{
 		this.categoriasView = categoriasView;
+	}
+
+	public Midia()
+	{
+		super();
+		this.dataCriacao = new Date();
 	}
 
 	

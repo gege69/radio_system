@@ -1,6 +1,8 @@
 package br.com.radio.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -93,6 +95,12 @@ public class Categoria implements Serializable {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public Categoria( Long idCategoria )
+	{
+		super();
+		this.idCategoria = idCategoria;
+	}
 
 	public Categoria( Long idCategoria, String nome )
 	{
@@ -102,5 +110,16 @@ public class Categoria implements Serializable {
 	}
 
 	
+	public static List<Categoria> listByIds( Long... categorias )
+	{
+		List<Categoria> result = new ArrayList<Categoria>();
+
+		for ( Long id : categorias )
+		{
+			result.add( new Categoria( id ) );
+		}
+		
+		return result;
+	}
 
 }

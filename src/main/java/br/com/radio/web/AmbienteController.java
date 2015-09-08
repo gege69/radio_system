@@ -1,7 +1,6 @@
 package br.com.radio.web;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -63,7 +62,7 @@ public class AmbienteController extends AbstractController {
 	private AmbienteGeneroRepository ambienteGeneroRepo;
 	
 	@Autowired
-	private AmbienteService ambienteBusiness;
+	private AmbienteService ambienteService;
 	
 	
 	@RequestMapping( value = "/view-ambiente/{idAmbiente}", method = RequestMethod.GET )
@@ -149,7 +148,7 @@ public class AmbienteController extends AbstractController {
 
 			try
 			{
-				ambiente = ambienteBusiness.saveAmbiente( ambiente );
+				ambiente = ambienteService.saveAmbiente( ambiente );
 				
 				jsonResult = writeObjectAsString( ambiente );
 			}
@@ -241,7 +240,7 @@ public class AmbienteController extends AbstractController {
 		
 		try
 		{
-			boolean saved = ambienteBusiness.saveGeneros( idAmbiente, generoList );
+			boolean saved = ambienteService.saveGeneros( idAmbiente, generoList );
 				
 			if ( saved )
 				jsonResult = getOkResponse();

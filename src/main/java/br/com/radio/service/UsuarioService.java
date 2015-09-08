@@ -1,5 +1,7 @@
 package br.com.radio.service;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -66,6 +68,13 @@ public class UsuarioService {
 		return usuario;
 	}
 
+	
+	public Usuario getUserByPrincipal( Principal principal )
+	{
+		Usuario usuario = usuarioRepository.findByLogin( principal.getName() );
+		
+		return usuario;
+	}
 
 	
 }

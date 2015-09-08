@@ -1,7 +1,8 @@
 <jsp:include page="/WEB-INF/views/main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
-<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 
   <div class="container">
   
@@ -12,27 +13,12 @@
     <div class="row">
     
       <div class="row" id="alertArea">
-
-        <c:if test="${not empty error}">      
-          <div class="alert alert-danger" role="alert" id="alertalertArea" >
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <div id="errogeral">${error}</div>
-          </div>
-        </c:if>
-        
-        <c:if test="${not empty success}">      
-          <div class="alert alert-success" role="alert" id="alertalertArea" >
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <div id="errogeral">${success}</div>
-          </div>
-        </c:if>
-        
       </div>
       
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Gerenciar ${nomeCategoria}<br/>
-            <small>Espaço para armazenamento: 0 MB em uso, 500 MB disponíveis </small>
+          <h3>Busca Básica<br/>
+            <small>Busca de arquivos de mídia</small>
           </h3>
           
           <div class="spacer-vertical20"></div>
@@ -44,19 +30,17 @@
                   <div class="row">
                     
                     <div class="col-md-12">
-                      <form action="${context}/ambientes/${idAmbiente}/view-list-upload-midia/${codigo}" 
-                            method="POST" 
-                            id="ambiente-upload-midia" 
-                            class="form" 
-                            enctype="multipart/form-data">
+                      <form action="#" 
+                            id="ambiente-search-midia" 
+                            class="form"
+                            onsubmit="return false;" >
                       
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                        <input type="hidden" id="idCategoria" name="idCategoria" value="${idCategoria}">
-                        
+
                         <div class="col-lg-7 col-md-9 col-sm-12">
                           <div class="form-group">
-                            <label for="file">Arquivo:</label>
-                            <input type="file" class="form-control" id="arquivo" name="file" placeholder="algum arquivo">
+                            <label for="file">Nome do <b>arquivo</b> ou nome da <b>música</b>:</label>
+                            <input type="text" class="form-control" id="nome-midia" name="nome" placeholder="Ex: 'Meteoro da paixão' ou 'Run to the Hills'">
                           </div>
                         </div>
 
@@ -65,16 +49,9 @@
                           </div>
                         </div>
                         
-                        <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <div class="form-group">
-                              <a class="btn btn-primary" href="#" id="btnUploadMidia">Upload Mídia</a>
-                            </div>
-                          </div>
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <div class="form-group pull-right">
-                              <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view-pesquisa-midia" id="btnPesquisar">Busca Básica</a>
-                            </div>
+                        <div class="col-lg-7 col-md-9 col-sm-12">
+                          <div class="form-group">
+                            <a class="btn btn-default" href="#" id="btnSearchMidia">Pesquisar</a>
                           </div>
                         </div>
                         
@@ -91,15 +68,15 @@
                     <div class="col-lg-12 col-md-12">
                       <table  
                          id="table"
+                         data-url = "${context}/ambientes/${idAmbiente}/midias/searches/"
                          data-toggle="table"
-                         data-url="${context}/ambientes/${idAmbiente}/midias-por-categoria/${idCategoria}/"
                          data-height="400"
                          data-side-pagination="server"
                          data-pagination="true"
                          data-page-size=7
                          data-page-list="[7]"
                          data-locale = "pt_BR"
-                         data-query-params="queryParams" >
+                         data-query-params = "queryParams" >
                         <thead>
                           <tr>
                               <th data-field="idMidia">ID</th>
@@ -161,9 +138,7 @@
     var $table = $('#table');
     
     function catFormatter(value, row) {
-        
         var icon = value == true ? 'fa-check' : 'fa-circle-thin';
-
         return '<i class="fa '+ icon + '"></i>';
     }
     
@@ -171,8 +146,13 @@
 
         params.pageNumber = $('#table').bootstrapTable('getOptions').pageNumber;
         
-//         console.log("xxxxx  "+JSON.stringify(params));
-        // {"limit":10,"offset":0,"order":"asc","your_param1":1,"your_param2":2}
+        formparams = $('#ambiente-search-midia').serializeJSON();
+        
+        for ( var k in formparams )
+            params[k] = formparams[k];
+        
+        console.log( params );
+        
         return params;
     }
     
@@ -186,17 +166,6 @@
             dataType: 'json'
         }).done( function(json){
             makeListTmpl(json);
-            
-            var lista = json.rows;
-            
-            var id_categoria_tela = $('#idCategoria').val();
-
-            $.each( lista, function( idx, obj ){
-
-                if ( obj.idCategoria == id_categoria_tela )
-                    $('#inlineCheck'+obj.idCategoria).prop('checked', true);
-            });
-            
         } );
     }
     
@@ -212,32 +181,29 @@
         $('#checkBoxContainer').append(content);
     };
     
-    // futuramente tornar esse Upload em ajax
-    var upload = function( idAmbiente )
-    {
-        // pegar as categorias e fazer a listinha de strings 
-        $("#ambiente-upload-midia").submit();
-        
-        $("#ambiente-upload-midia").bind('ajax:complete', function() {
-            console.log('teste');
-        });
-    }
 
     $(function(){
 
-        var token = $("input[name='_csrf']").val();
-        var header = "X-CSRF-TOKEN";
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
         $(document).ajaxSend(function(e, xhr, options) {
             xhr.setRequestHeader(header, token);
         });
         
         var idAmbiente = $('#idAmbiente').val();
+
         
         $('#btnUploadMidia').on('click', function(){
             upload( $('#idAmbiente').val() );
         });
+
         
-        listaCategorias();
+        $('#btnSearchMidia').on('click', function(){
+            $table.bootstrapTable('refresh');    
+        });
+        
+        
+//         listaCategorias();
         
     });
 

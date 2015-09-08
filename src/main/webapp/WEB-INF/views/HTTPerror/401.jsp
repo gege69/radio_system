@@ -20,7 +20,7 @@
 
           <div class="panel panel-default">
             <div class="panel-heading">
-              403 - Acesso Negado
+              401 - Não autorizado
             </div>
             <div class="panel-body">
             </div>
@@ -28,16 +28,6 @@
           </div>
           
         </div>
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
-        <c:url var="logoutUrl" value="/logout"/>
-        <form action="${logoutUrl}" method="post">
-          <input type="submit" class="btn btn-link" value="Log out" />
-          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
       </div>
     </div>
       

@@ -17,9 +17,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.model.Categoria;
+import br.com.radio.model.Empresa;
 import br.com.radio.model.Midia;
+import br.com.radio.model.Parametro;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
+import br.com.radio.repository.ParametroRepository;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -36,26 +39,45 @@ public class MidiaService {
 	@Autowired
 	private CategoriaRepository categoriaRepo;
 
+	@Autowired
+	private ParametroRepository parametroRepo;
 	
-	public Integer saveUpload( MultipartFile file, Long[] categorias ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	
+	public Integer saveUpload( MultipartFile file, Long[] categorias, Empresa empresa ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		String basePath = "/home/pazin/teste/";
+		List<Categoria> categoriaList = null;
+		List<Long> ids = null;
 		
+		if ( categorias != null && categorias.length > 0 )
+			ids = Arrays.asList( categorias );
+		else
+			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
+		
+
+		// Hash do arquivo ********************************************
 		byte[] bytes = file.getBytes();
 		
 		LongHashFunction l = LongHashFunction.xx_r39();
 		long hashXX = l.hashBytes( bytes, 0, bytes.length );
 
 		String hash = Long.toString( hashXX );
-
+		// Hash do arquivo ********************************************
+		
+		
 		File arquivo = null;
 		Integer size = 0;
+		
+		String basePath = "";
+		
+		Parametro parametro = parametroRepo.findByCodigoAndEmpresa( "BASE_MIDIA_PATH", empresa );
+		basePath = parametro.getValor();
+
 		
 		Midia midia = midiaRepo.findByFilehash( hash );
 		
 		if ( midia == null )
 		{
-			String path = basePath + file.getOriginalFilename();
+			String path = basePath + hash;
 			
 			arquivo = new File( path );
 
@@ -81,16 +103,14 @@ public class MidiaService {
 		}
 
 		atualizaIDTags( midia, arquivo );
-		
 
-		if ( categorias != null && categorias.length > 0 )
+		if ( ids != null && ids.size() > 0 )
 		{
-			List<Long> ids = Arrays.asList( categorias );
-			
-			List<Categoria> categoriaList = categoriaRepo.findByIdCategoriaIn( ids );
+			categoriaList = categoriaRepo.findByIdCategoriaIn( ids );
 			
 			midia.setCategorias( categoriaList );
 		}
+		
 		midiaRepo.save( midia );
 		
 		return size;
@@ -128,6 +148,10 @@ public class MidiaService {
 		}
 		
 	}
+	
+	
+	
+	
 	
 	
 }

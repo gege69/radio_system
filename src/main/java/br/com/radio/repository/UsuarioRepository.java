@@ -6,8 +6,8 @@ import br.com.radio.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-	public Long countByEmailOrLogin( String email, String login );
+	Long countByEmailOrLogin( String email, String login );
 	
-	public Usuario findByLogin( String login );
+	Usuario findByLogin( String login );
 	
 }

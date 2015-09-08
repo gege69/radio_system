@@ -1,8 +1,8 @@
 package br.com.radio.web;
 
+import java.security.Principal;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,12 @@ import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Midia;
+import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.service.MidiaService;
+import br.com.radio.service.UsuarioService;
 
 @Controller
 public class MidiaController extends AbstractController {
@@ -42,12 +44,14 @@ public class MidiaController extends AbstractController {
 	private MidiaRepository midiaRepo;
 	
 	@Autowired
-	private MidiaService midiaBusiness;
+	private MidiaService midiaService;
 	
+	@Autowired
+	private UsuarioService usuarioService;
 	
 	
 	@RequestMapping( value = "/ambientes/{idAmbiente}/view-list-upload-midia/{codigo}", method = RequestMethod.GET )
-	public String viewAmbiente( @PathVariable Long idAmbiente, @PathVariable String codigo, ModelMap model, HttpServletResponse response )
+	public String viewListUpload( @PathVariable Long idAmbiente, @PathVariable String codigo, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 
@@ -80,9 +84,14 @@ public class MidiaController extends AbstractController {
     		@PathVariable String codigo,
     		@RequestParam("file") MultipartFile file, 
     		@RequestParam("categorias[]") Long[] categorias,
-    		HttpServletRequest request, 
+    		Principal principal, 
     		Model model )
 	{
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			return "HTTPerror/404";
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -104,7 +113,7 @@ public class MidiaController extends AbstractController {
 			{
 				try
 				{
-					Integer size = midiaBusiness.saveUpload( file, categorias );
+					Integer size = midiaService.saveUpload( file, categorias, usuario.getEmpresa() );
 					
 					model.addAttribute( "success", "Arquivo enviado com sucesso" );
 				}
@@ -134,18 +143,22 @@ public class MidiaController extends AbstractController {
 					 method = RequestMethod.GET, 
 					 produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
-			@PathVariable Long idAmbiente, 
-			@PathVariable Long idCategoria,
-			@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
-			@RequestParam("offset") int offset, 
-			@RequestParam("limit") int limit, 
-			@RequestParam("order") String order )
+																	@PathVariable Long idAmbiente, 
+																	@PathVariable Long idCategoria,
+																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
+																	@RequestParam(value="limit", required = false) int limit, 
+																	@RequestParam(value="order", required = false) String order )
 	{
 		pageNumber = getPageZeroBased( pageNumber );
 		
 		Pageable pageable = new PageRequest( pageNumber, limit, Sort.Direction.fromStringOrNull( order ), "idMidia" );
-
-		Page<Midia> midiaPage = midiaRepo.findAll( pageable );
+		
+		Page<Midia> midiaPage = null;
+		
+		if ( idCategoria != null && idCategoria > 0 )
+			midiaPage = midiaRepo.findByCategoriasInOrderByIdMidiaDesc( pageable, new Categoria( idCategoria, "" ) );
+		else
+			midiaPage = midiaRepo.findAllByOrderByIdMidiaDesc( pageable );
 		
 		List<Midia> midiaList = midiaPage.getContent();
 		
@@ -161,6 +174,61 @@ public class MidiaController extends AbstractController {
 	}
 	
 	
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-pesquisa-midia", method = RequestMethod.GET )
+	public String viewPesquisaMidia( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+			
+			return "ambiente/view-pesquisa-midia";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias/searches/", 
+							   "/api/ambientes/{idAmbiente}/midias/searches/" }, 
+					 method = RequestMethod.GET, 
+					 produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaSearches(
+																	@PathVariable Long idAmbiente,
+																	@RequestParam(value="nome", required= false) String nome,
+																	@RequestParam(value="categorias[]", required=false) Long[] categorias,
+																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
+																	@RequestParam(value="limit", required = false) Integer limit, 
+																	@RequestParam(value="order", required = false) String order )
+	{
+		pageNumber = getPageZeroBased( pageNumber );
+		
+		Pageable pageable = new PageRequest( pageNumber, limit, Sort.Direction.fromStringOrNull( order ), "idMidia" );
+		
+		Page<Midia> midiaPage = null;
+
+//		if ( categorias != null && categorias.length > 0 )
+//			midiaPage = midiaRepo.findByNomeContainingOrTitleContainingAndCategoriasIn( "%"+nome+"%", "%"+nome+"%", Categoria.listByIds( categorias ), pageable );
+//		else
+			midiaPage = midiaRepo.findByNomeContainingOrTitleContaining( "%"+nome+"%", "%"+nome+"%", pageable );
+		
+		List<Midia> midiaList = midiaPage.getContent();
+		
+		midiaList.stream().forEach( m -> {
+			m.getCategorias().forEach( cat -> {
+				m.getCategoriasView().put( cat.getCodigo(), true );
+			});
+		});
+		
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaList, midiaPage.getTotalElements() );
+
+		return jsonList;
+	}
 	
 	
 	

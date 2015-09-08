@@ -30,8 +30,12 @@ public class Parametro implements Serializable {
 	private Empresa empresa;
 	
 	@NotNull( message = "O código do parâmetro é de preenchimento obrigatório" )
-	@Column( name = "param", nullable = false )
-	private String param;
+	@Column( name = "codigo", nullable = false )
+	private String codigo;
+	
+	@NotNull( message = "O valor do parâmetro é de preenchimento obrigatório" )
+	@Column( name = "valor", nullable = false )
+	private String valor;
 	
 	@Column( name = "descricao" )
 	private String descricao;
@@ -59,16 +63,6 @@ public class Parametro implements Serializable {
 		this.empresa = empresa;
 	}
 
-	public String getParam()
-	{
-		return param;
-	}
-
-	public void setParam( String param )
-	{
-		this.param = param;
-	}
-
 	public String getDescricao()
 	{
 		return descricao;
@@ -87,6 +81,26 @@ public class Parametro implements Serializable {
 	public void setType( String type )
 	{
 		this.type = type;
+	}
+
+	public String getCodigo()
+	{
+		return codigo;
+	}
+
+	public void setCodigo( String codigo )
+	{
+		this.codigo = codigo;
+	}
+
+	public String getValor()
+	{
+		return valor;
+	}
+
+	public void setValor( String valor )
+	{
+		this.valor = valor;
 	}
 	
 		
