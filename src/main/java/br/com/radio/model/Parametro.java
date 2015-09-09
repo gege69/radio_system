@@ -30,17 +30,17 @@ public class Parametro implements Serializable {
 	private Empresa empresa;
 	
 	@NotNull( message = "O código do parâmetro é de preenchimento obrigatório" )
-	@Column( name = "codigo", nullable = false )
+	@Column( name = "codigo", nullable = false, columnDefinition = "TEXT" )
 	private String codigo;
 	
 	@NotNull( message = "O valor do parâmetro é de preenchimento obrigatório" )
-	@Column( name = "valor", nullable = false )
+	@Column( name = "valor", nullable = false, columnDefinition = "TEXT" )
 	private String valor;
 	
-	@Column( name = "descricao" )
+	@Column( name = "descricao", columnDefinition = "TEXT" )
 	private String descricao;
 
-	@Column( name = "type" )
+	@Column( name = "type", columnDefinition = "TEXT" )
 	private String type;
 
 	public Long getId_parametro()

@@ -39,7 +39,7 @@ public class Genero implements Serializable {
 	private Long id_genero;
 
 	@NotNull( message = "O nome do Gênero é de preenchimento obrigatório" )
-	@Column( name = "genero", nullable = false, length = 100 )
+	@Column( name = "genero", nullable = false, columnDefinition = "TEXT" )
 	private String nome;
 
 	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )

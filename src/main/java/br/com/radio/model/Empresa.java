@@ -30,20 +30,20 @@ public class Empresa implements Serializable {
 	private Long id_empresa;
 	
 	@NotNull( message = "O CNPJ da empresa é de preenchimento obrigatório" )
-	@Column( name = "cnpj", nullable = false )
+	@Column( name = "cnpj", nullable = false, length = 14 )
 	private String cnpj;
 
-	@Column( name = "codigo" )
+	@Column( name = "codigo", columnDefinition = "TEXT" )
 	private String codigo;
 	
 	@NotNull( message = "A razão social da empresa é de preenchimento obrigatório" )
-	@Column( name = "razaosocial", nullable = false )
+	@Column( name = "razaosocial", nullable = false, columnDefinition = "TEXT" )
 	private String razaosocial;
 	
-	@Column( name = "nomefantasia" )
+	@Column( name = "nomefantasia", columnDefinition = "TEXT" )
 	private String nomefantasia;
 	
-	@Column( name = "dominio" )
+	@Column( name = "dominio", columnDefinition = "TEXT" )
 	private String dominio;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)

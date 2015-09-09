@@ -45,10 +45,10 @@ public class Mensagem implements Serializable {
 	private Usuario usuario;
 	
 	@NotNull( message = "O assunto da mensagem é de preenchimento obrigatório" )
-	@Column( name = "assunto", nullable = false, length = 200 )
+	@Column( name = "assunto", nullable = false, columnDefinition = "TEXT" )
 	private String assunto;
 	
-	@Column( name = "emailcopia", nullable = true, length = 200 )
+	@Column( name = "emailcopia", nullable = true, columnDefinition = "TEXT" )
 	private String emailCopia;
 	
 	@OneToOne

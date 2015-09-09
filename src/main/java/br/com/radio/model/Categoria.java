@@ -24,15 +24,6 @@ import javax.validation.constraints.NotNull;
 @Table(name="categoria")
 public class Categoria implements Serializable {
 	
-//	public final static Categoria MUSICA = 			new Categoria( 1L, "musica" );
-//	public final static Categoria VINHETA = 		new Categoria( 2L, "vinheta" );
-//	public final static Categoria INST = 			new Categoria( 3L, "inst" );
-//	public final static Categoria COMERCIAL = 		new Categoria( 4L, "comercial" );
-//	public final static Categoria PROGRAMETE = 		new Categoria( 5L, "programete" );
-//	public final static Categoria CHAMADAFUNC = 	new Categoria( 6L, "chamada-func" );
-//	public final static Categoria CHAMADAINSTANT = 	new Categoria( 7L, "chamada-instant" );
-//	
-	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id

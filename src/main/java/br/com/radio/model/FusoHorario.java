@@ -34,11 +34,11 @@ public class FusoHorario implements Serializable {
 	private String offsetfuso;
 
 	@NotNull( message = "O ID canônico do Fuso Horário é de preenchimento obrigatório" )
-	@Column( name = "canonid", nullable = false, length = 100 )
+	@Column( name = "canonid", nullable = false, columnDefinition = "TEXT" )
 	private String canonid;
 	
 	@NotNull( message = "O alias do Fuso Horário é de preenchimento obrigatório" )
-	@Column( name = "alias", nullable = false, length = 300 )
+	@Column( name = "alias", nullable = false, columnDefinition = "TEXT" )
 	private String alias;
 
 	@Column( name = "ordercomum" )

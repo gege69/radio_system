@@ -30,7 +30,7 @@ public class Perfil implements Serializable {
 	private Long id_perfil;
 
 	@NotNull( message = "O nome do Perfil é de preenchimento obrigatório" )
-	@Column( name = "nome", nullable = false, length = 100 )
+	@Column( name = "nome", nullable = false, columnDefinition = "TEXT" )
 	private String nome;
 
 	public Long getId_perfil()

@@ -65,16 +65,16 @@ public class Ambiente implements Serializable {
 	@Column( name = "anotacoes", columnDefinition = "TEXT" )
 	private String anotacoes;
 
-	@Column( name = "logradouro", length = 200 )
+	@Column( name = "logradouro", columnDefinition = "TEXT" )
 	private String logradouro;
 
 	@Column( name = "numero", length = 20 )
 	private String numero;
 	
-	@Column( name = "bairro", length = 100 )
+	@Column( name = "bairro", columnDefinition = "TEXT" )
 	private String bairro;
 
-	@Column( name = "cidade", length = 100 )
+	@Column( name = "cidade", columnDefinition = "TEXT" )
 	private String cidade;
 
 	@Column( name = "estado", length = 200 )

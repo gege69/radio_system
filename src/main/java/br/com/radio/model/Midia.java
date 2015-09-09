@@ -50,7 +50,7 @@ public class Midia implements Serializable {
 	private Long idMidia;
 
 	@NotNull( message = "O nome do Arquivo é de preenchimento obrigatório" )
-	@Column( name = "nome", nullable = false, length = 200 )
+	@Column( name = "nome", nullable = false, columnDefinition = "TEXT" )
 	private String nome;
 	
 	@Column( name = "extensao", nullable = true, length = 10 )
@@ -89,11 +89,11 @@ public class Midia implements Serializable {
 
 	// Esse hash além de servir como nome do arquivo no filesystem será utilizado para verificação de consistência do arquivo... 
 	@NotNull( message = "O hash do arquivo é de preenchimento obrigatório" )
-	@Column( name = "filehash", nullable = false, length = 200 )
+	@Column( name = "filehash", nullable = false, columnDefinition = "TEXT" )
 	private String filehash;
 	
 	@NotNull( message = "O caminho do arquivo no servidor é de preenchimento obrigatório" )
-	@Column( name = "filepath", nullable = false, length = 200 )
+	@Column( name = "filepath", nullable = false, columnDefinition = "TEXT" )
 	private String filepath;
 	
 	@NotNull( message = "O tamanho ao arquivo é de preenchimento obrigatório" )
@@ -110,22 +110,22 @@ public class Midia implements Serializable {
 	
 	
 	// TAGs ID3v2.3.0
-	@Column( name="title")
+	@Column( name="title", columnDefinition = "TEXT")
 	private String title;
 
-	@Column( name="artist")
+	@Column( name="artist", columnDefinition = "TEXT")
 	private String artist;
 
-	@Column( name="album")
+	@Column( name="album", columnDefinition = "TEXT")
 	private String album;
 
-	@Column( name="comment")
+	@Column( name="comment", columnDefinition = "TEXT")
 	private String comment;
 
-	@Column( name="datetag")
+	@Column( name="datetag", columnDefinition = "TEXT")
 	private String datetag;
 
-	@Column( name="genre")
+	@Column( name="genre", columnDefinition = "TEXT")
 	private String genre;
 	
  	

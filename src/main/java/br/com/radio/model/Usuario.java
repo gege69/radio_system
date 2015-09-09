@@ -39,11 +39,11 @@ public class Usuario implements Serializable {
 	private Empresa empresa;
 	
 	@NotNull( message = "O nome do usuário é de preenchimento obrigatório" )
-	@Column( name = "nome", nullable = false, length = 200 )
+	@Column( name = "nome", nullable = false, columnDefinition = "TEXT" )
 	private String nome;
 	
 	@NotNull( message = "O email do usuário é de preenchimento obrigatório" )
-	@Column( name = "email", nullable = false, length = 200 )
+	@Column( name = "email", nullable = false, length = 120 )
 	private String email;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
@@ -52,7 +52,7 @@ public class Usuario implements Serializable {
 	
 	@JsonIgnore
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
-	@Column( name = "password", nullable = false )
+	@Column( name = "password", nullable = false, length = 200 )
 	private String password;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)

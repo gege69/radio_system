@@ -31,11 +31,19 @@ insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) value
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'ADMINISTRADORES', '', null);
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'MOBILE', '', null);
 
+
+
+
+INSERT INTO EMPRESA ( id_empresa ,cnpj ,codigo ,razaosocial ,nomefantasia ,dominio ,datacriacao ,dataalteracao ,ativo )
+VALUES ( nextval('empresa_id_empresa_seq'), '28372714000140', 'Eterion', 'Eterion', 'Eterion', 'www.eterion.com.br', now(), null, true );
+
+
+
 -- Usuários Padrão
-insert into usuario ( id_usuario, login, password, dataalteracao, datacriacao, ativo, nome, email ) 
-values ( nextval('usuario_id_usuario_seq'), 'fpazin', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', null, now(), true, 'Fernando Pazin', 'pazinfernando@gmail.com');
-insert into usuario ( id_usuario, login, password, dataalteracao, datacriacao, ativo, nome, email ) 
-values ( nextval('usuario_id_usuario_seq'), 'gaugusto', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
+insert into usuario ( id_usuario, login, password, id_empresa, dataalteracao, datacriacao, ativo, nome, email ) 
+values ( nextval('usuario_id_usuario_seq'), 'fpazin', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_empresa from empresa where codigo = 'Eterion' ), null, now(), true, 'Fernando Pazin', 'pazinfernando@gmail.com');
+insert into usuario ( id_usuario, login, password, id_empresa, dataalteracao, datacriacao, ativo, nome, email ) 
+values ( nextval('usuario_id_usuario_seq'), 'gaugusto', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_empresa from empresa where codigo = 'Eterion' ), null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
 
 insert into perfil values ( nextval('perfil_id_perfil_seq'), 'DESENVOLVEDOR' );
 insert into perfil values ( nextval('perfil_id_perfil_seq'), 'ADMINISTRADOR' );
@@ -93,5 +101,34 @@ insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval
 insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval('genero_id_genero_seq'), now(), 'Disco' ,'Disco' );
 insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval('genero_id_genero_seq'), now(), 'Instrumental' ,'Instrumental' );
 
+
+
+
+
+
+insert into  PARAMETRO ( id_parametro, id_empresa, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA WHERE CODIGO = 'Eterion' ), 'BASE_MIDIA_PATH', '/home/pazin/teste/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
+
+
+
+
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 1,  'Gêneros' ,       '/ambientes/%d/view-generos/' ,             'fa-music'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 2,  'Vinhetas' ,      '/ambientes/%d/view-list-upload-midia/vinheta/' ,     'fa-sound-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 3,  'Institucionais',     '/ambientes/%d/view-list-upload-midia/inst/' ,      'fa-headphones'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 4,  'Comerciais' ,      '/ambientes/%d/view-list-upload-midia/comercial/' ,   'fa-film'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 5,  'Programetes' ,     '/ambientes/%d/view-list-upload-midia/programete/' ,  'fa-bullhorn'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 6,  'Chamadas Instantâneas' , '/ambientes/%d/view-list-upload-midia/chamada-inst/' ,  'fa-bolt'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 7,  'Configurações' ,     '/ambientes/%d/view-configuracoes/' ,           'fa-briefcase'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 8,  'Blocos' ,        '/ambientes/%d/view-blocos/' ,          'fa-th-large'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 9,  'Expediente' ,      '/ambientes/%d/view-expediente/' ,        'fa-clock-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 10, 'Eventos' ,       '/ambientes/%d/view-eventos/' ,         'fa-newspaper-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 11, 'Funcionários' ,    '/ambientes/%d/view-funcionarios/' ,      'fa-users'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 12, 'Rodoviária' ,      '/ambientes/%d/view-rodoviaria/' ,        'fa-bus'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 13, 'Relatórios' ,      '/ambientes/%d/view-relatórios/' ,        'fa-files-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Downloads' ,       '/ambientes/%d/view-downloads/' ,         'fa-floppy-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Restrições' ,      '/ambientes/%d/view-restricoes/' ,        'fa-unlock-alt'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Logomarca' ,       '/ambientes/%d/view-logomarca/' ,         'fa-trademark'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Simular' ,       '/ambientes/%d/view-simular/' ,         'fa-play'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'SendVoice' ,       '/ambientes/%d/view-sendvoice/' ,         'fa-microphone'); 
 
 

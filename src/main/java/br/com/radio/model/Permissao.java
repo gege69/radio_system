@@ -34,11 +34,11 @@ public class Permissao implements Serializable {
 	private Long id_permissao;
 	
 	@NotNull( message = "O alias da Permissão é de preenchimento obrigatório" )
-	@Column( name = "codigo", nullable = false, length = 100 )
+	@Column( name = "codigo", nullable = false, columnDefinition = "TEXT" )
 	private String codigo;
 
 	@NotNull( message = "A descrição da Permissão é de preenchimento obrigatório" )
-	@Column( name = "descricao", nullable = false, length = 400 )
+	@Column( name = "descricao", nullable = false, columnDefinition = "TEXT" )
 	private String descricao;
 	
 	@ManyToOne
