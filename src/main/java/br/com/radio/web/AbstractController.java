@@ -7,8 +7,10 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -44,15 +46,26 @@ public abstract class AbstractController {
 	
 	protected Pageable getPageable( Integer pagina, Integer limit )
 	{
+		return getPageable( pagina, limit, null, null );
+	}
+	
+	
+	protected Pageable getPageable( Integer pagina, Integer limit, String order, String field )
+	{
 		pagina = getPageZeroBased( pagina );
 		
 		if ( limit == null || limit.equals( 0 ) )
 			limit = this.qtd;
 		
-		Pageable pageable = new PageRequest( pagina, limit );
+		Pageable pageable = null;
+		
+		if ( StringUtils.isNotBlank( order ) && StringUtils.isNotBlank( field ) )
+			pageable = new PageRequest( pagina, limit, Sort.Direction.fromStringOrNull( order ), field );
+		else
+			pageable = new PageRequest( pagina, limit );
+		
 		return pageable;
 	}
-	
 	
 	protected <T> List<T> paginacao(List<T> modelList, int start ){
 		

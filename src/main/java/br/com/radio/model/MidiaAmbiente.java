@@ -98,6 +98,20 @@ public class MidiaAmbiente implements Serializable {
 	{
 		this.dataAssociacao = dataAssociacao;
 	}
+
+	public MidiaAmbiente()
+	{
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public MidiaAmbiente( Ambiente ambiente, Midia midia, Date dataAssociacao )
+	{
+		super();
+		this.ambiente = ambiente;
+		this.midia = midia;
+		this.dataAssociacao = dataAssociacao;
+	}
 	
 	
 

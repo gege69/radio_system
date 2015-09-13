@@ -39,17 +39,16 @@ public class GerenciadorController extends AbstractController {
 	@RequestMapping(value="/principal", method=RequestMethod.GET)
 	public String principal( ModelMap model )
 	{
-		
 		// Fazer select nas permissões e mandar uma lista com os botoes que podem ser clicados ou não... vai precisar de outro método pra retornar uma lista em json e montar com javascript 
 		
-		return "painel/principal";
+		return "gerenciador/principal";
 	}
 	
 	
 	@RequestMapping(value="/fazer")
 	public String fazer( ModelMap model )
 	{
-		return "painel/fazer";
+		return "gerenciador/fazer";
 	}
 
 
@@ -57,22 +56,33 @@ public class GerenciadorController extends AbstractController {
 	@PreAuthorize("hasAuthority('INCLUIR_AMB')")
 	public String cadastro( ModelMap model )
 	{
-		return "painel/incluir-ambiente";
+		return "gerenciador/incluir-ambiente";
 	}
 	
 	@RequestMapping(value="/administrar-ambiente")
 	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
 	public String administrar( ModelMap model )
 	{
-		return "painel/administrar-ambiente";
+		return "gerenciador/administrar-ambiente";
 	}
 	
 	@RequestMapping(value="/alterar-senha", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
 	public String alterarSenha( ModelMap model )
 	{
-		return "painel/alterar-senha";
+		return "gerenciador/alterar-senha";
 	}
+	
+	
+	
+	// O método POST com essa mesma URL está no MidiaController até que o Upload via ajax seja feito...
+	@RequestMapping(value="/view-upload-multi", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('UPLOAD_AMBIENTE')")
+	public String viewUploadMulti( ModelMap model )
+	{
+		return "gerenciador/view-upload-multi";
+	}
+
 	
 	
 	@RequestMapping(value="/alterar-senha", method=RequestMethod.POST, produces=APPLICATION_JSON_CHARSET_UTF_8)
@@ -108,7 +118,7 @@ public class GerenciadorController extends AbstractController {
 	{
 		model.addAttribute( "quantidade", 1 );
 		
-		return "painel/espelhamento-ambiente";
+		return "gerenciador/espelhamento-ambiente";
 	}
 	
 	@RequestMapping(value="/editar-ambiente/{idAmbiente}", method=RequestMethod.GET)
@@ -116,7 +126,7 @@ public class GerenciadorController extends AbstractController {
 	{
 		model.addAttribute( "idAmbiente", idAmbiente );
 		
-		return "painel/editar-ambiente";
+		return "gerenciador/editar-ambiente";
 	}
 	
 	

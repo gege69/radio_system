@@ -48,29 +48,28 @@
             <div class="col-lg-10 col-md-10">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" id="check_pacote"> Somente com pacote de Programetes opcionais
+                  <input type="checkbox" id="check_pacote"> Exibir somente ambientes com pacote de Programetes opcionais
                 </label>
               </div>
-              
-              <div class="spacer-vertical40"></div>
-              
-              <div class="">
-                <a class="btn btn-default" href="${context}/incluir-ambiente">Adicionar Novo Ambiente</a>
-              </div>            
             </div>
           </div>
           
           <div class="spacer-vertical40"></div>
           
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                <a class="btn btn-default" href="${context}/incluir-ambiente">Adicionar Novo Ambiente</a>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="pull-right">
+                <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>    
+              </div>          
+            </div>
+          </div>            
         </div>
       </div>
     </div>
     
-    <div class="row">
-        <div class="pull-right">
-          <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
-        </div>
-    </div>
       
   </div> <!-- /container -->
 

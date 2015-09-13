@@ -14,7 +14,7 @@
       <div class="row" id="alertArea">
       </div>
     
-      <div class="col-md-10 col-sm-10">
+      <div class="col-md-12 col-sm-12">
         <div class="panel panel-default">
           <div class="panel-body">
             <h3>Alterar Senha<br/>
@@ -51,11 +51,22 @@
                 </div>
                 
                 <div class="form-group">
-                  <div class="col-sm-offset-5 col-sm-6 col-md-offset-6">
+                  <label for="login" class="control-label col-sm-3 col-md-4"></label>
+                  <div class="col-sm-5 col-md-4">
                     <button type="button" class="btn btn-default" id="btnAlterar">Alterar Senha</button>
                   </div>
                 </div>
               </form>
+            </div>
+            
+            <div class="spacer-vertical80"></div>
+          
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="pull-right">
+                  <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+                </div>            
+              </div>
             </div>
             
           </div>
@@ -64,14 +75,6 @@
       
     </div>
     
-    <div class="row">
-      <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-        <div class="pull-right">
-          <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
-        </div>
-      </div>
-    </div>
-      
   </div> <!-- /container -->
   
   

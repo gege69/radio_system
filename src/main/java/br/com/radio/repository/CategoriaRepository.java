@@ -12,6 +12,6 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 	
 	List<Categoria> findByCodigoIn( List<String> codigos );	
 	
-	List<Categoria> findByIdCategoriaIn( List<Long> idCategorias );
+	List<Categoria> findByIdCategoriaIn( Long[] categorias );
 	
 }

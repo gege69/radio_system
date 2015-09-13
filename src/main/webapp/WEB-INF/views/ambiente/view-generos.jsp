@@ -23,7 +23,7 @@
           <div class="spacer-vertical40"></div>
           
           <div class="row">
-            <div class="col-lg-11 col-md-12">
+            <div class="col-lg-12 col-md-12">
               <div class="panel panel-default">
                 <div class="panel-body">
                    
@@ -31,7 +31,9 @@
                     <form action="#" id="ambiente-generos-form" method="POST">
                       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                       <input type="hidden" id="idAmbiente" value="${idAmbiente}">
-                      <div class="container" id="view-container">
+                      <div class="form-inline">
+                        <div class="container" id="view-container">
+                        </div>
                       </div>
                     </form>
                   </div>
@@ -44,7 +46,7 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/view-ambiente/${idAmbiente}" >Administrar Ambiente</a>
+                <a class="btn btn-default" href="#" id="btnSalvarGeneros">Modo Avançado</a>
               </div>            
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
@@ -54,42 +56,41 @@
             </div>            
           </div>
           
-          <div class="spacer-vertical10"></div>
+          <div class="spacer-vertical80"></div>
 
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="#" id="btnSalvarGeneros">Modo Avançado</a>
+                <a class="btn btn-default" href="${context}/view-ambiente/${idAmbiente}" >
+                  <i class="fa fa-arrow-left"></i>
+                  Voltar para ${nome}
+                </a>
               </div>            
             </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="pull-right">
+                <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+              </div>
+            </div>
           </div>
-          
-          <div class="spacer-vertical40"></div>
           
         </div>
       </div>
     </div>
     
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div class="pull-right">
-          <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
-        </div>
-      </div>
-    </div>
       
   </div> <!-- /container -->
 
 
 
 <script id="viewTmpl" type="text/x-jsrender">
-    <div class="form-inline">
-      <div class="checkbox col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    
+      <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <label>
           <input type="checkbox" id="genero-{{:id_genero}}" name="genero[id_genero]" value="{{:id_genero}}"> {{:descricao}}
         </label>
       </div>
-    </div>  
+      
 </script>  
 
 

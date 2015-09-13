@@ -77,9 +77,9 @@ public class MidiaController extends AbstractController {
 	
 	
 	
-	// Depois fazer a versão AJAX desse upload
+	// AJAX NÃO É SUPORTADO POR IE8... FAZER UMA VERSÃO PARA A API QUE NÃO REDIRECIONA PRA TELA...
 	@RequestMapping(value="/ambientes/{idAmbiente}/view-list-upload-midia/{codigo}", method=RequestMethod.POST)
-    public String handleFileUpload(
+    public String uploadSync(
     		@PathVariable Long idAmbiente,
     		@PathVariable String codigo,
     		@RequestParam("file") MultipartFile file, 
@@ -113,9 +113,9 @@ public class MidiaController extends AbstractController {
 			{
 				try
 				{
-					Integer size = midiaService.saveUpload( file, categorias, usuario.getEmpresa() );
+					midiaService.saveUpload( file, categorias, usuario.getEmpresa(), ambiente );
 					
-					model.addAttribute( "success", "Arquivo enviado com sucesso" );
+					model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
 				}
 				catch ( Exception e )
 				{
@@ -135,9 +135,49 @@ public class MidiaController extends AbstractController {
 
 	
 	
+	
+	
+	// AJAX NÃO É SUPORTADO POR IE8 ... FAZER UMA VERSÃO QUE NÃO REDIRECIONA PRA TELA...
+	@RequestMapping(value="/view-upload-multi", method=RequestMethod.POST)
+    public String uploadMultiSync(
+    		@RequestParam("file") MultipartFile file,
+    		@RequestParam("ambientes[]") Long[] ambientes,    		
+    		@RequestParam("categorias[]") Long[] categorias,
+    		Principal principal, 
+    		Model model )
+	{
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			return "HTTPerror/404";
+		
+		if ( !file.isEmpty() )
+		{
+			try
+			{
+				midiaService.saveUploadMulti( file, categorias, usuario.getEmpresa(), ambientes );
+				
+				model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				
+				model.addAttribute( "error", e.getMessage() );
+			}
+		}
+		else
+		{
+			model.addAttribute( "error", "O arquivo está vazio" );
+		}
+
+	    return "painel/view-upload-multi";
+    }
+	
+	
 
 	
-	// desacoplar a lista da paginação... no caso da API
 	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/", 
 							   "/api/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/" }, 
 					 method = RequestMethod.GET, 
@@ -146,19 +186,19 @@ public class MidiaController extends AbstractController {
 																	@PathVariable Long idAmbiente, 
 																	@PathVariable Long idCategoria,
 																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
-																	@RequestParam(value="limit", required = false) int limit, 
+																	@RequestParam(value="limit", required = false) Integer limit, 
 																	@RequestParam(value="order", required = false) String order )
 	{
-		pageNumber = getPageZeroBased( pageNumber );
-		
-		Pageable pageable = new PageRequest( pageNumber, limit, Sort.Direction.fromStringOrNull( order ), "idMidia" );
+		Pageable pageable = getPageable( pageNumber, limit, order, "idMidia" ); 
 		
 		Page<Midia> midiaPage = null;
+
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		if ( idCategoria != null && idCategoria > 0 )
-			midiaPage = midiaRepo.findByCategoriasInOrderByIdMidiaDesc( pageable, new Categoria( idCategoria, "" ) );
+			midiaPage = midiaRepo.findByAmbientesAndCategorias( pageable, ambiente, new Categoria( idCategoria, "" ) );
 		else
-			midiaPage = midiaRepo.findAllByOrderByIdMidiaDesc( pageable );
+			midiaPage = midiaRepo.findByAmbientes( pageable, ambiente );
 		
 		List<Midia> midiaList = midiaPage.getContent();
 		
@@ -206,27 +246,34 @@ public class MidiaController extends AbstractController {
 																	@RequestParam(value="limit", required = false) Integer limit, 
 																	@RequestParam(value="order", required = false) String order )
 	{
-		pageNumber = getPageZeroBased( pageNumber );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
-		Pageable pageable = new PageRequest( pageNumber, limit, Sort.Direction.fromStringOrNull( order ), "idMidia" );
+		JSONBootstrapGridWrapper<Midia> jsonList = null;
 		
-		Page<Midia> midiaPage = null;
+		if ( ambiente != null )
+		{
+			pageNumber = getPageZeroBased( pageNumber );
+			
+			Pageable pageable = new PageRequest( pageNumber, limit, Sort.Direction.fromStringOrNull( order ), "idMidia" );
+			
+			Page<Midia> midiaPage = null;
 
-//		if ( categorias != null && categorias.length > 0 )
-//			midiaPage = midiaRepo.findByNomeContainingOrTitleContainingAndCategoriasIn( "%"+nome+"%", "%"+nome+"%", Categoria.listByIds( categorias ), pageable );
-//		else
-			midiaPage = midiaRepo.findByNomeContainingOrTitleContaining( "%"+nome+"%", "%"+nome+"%", pageable );
-		
-		List<Midia> midiaList = midiaPage.getContent();
-		
-		midiaList.stream().forEach( m -> {
-			m.getCategorias().forEach( cat -> {
-				m.getCategoriasView().put( cat.getCodigo(), true );
+			if ( categorias != null && categorias.length > 0 )
+				midiaPage = midiaRepo.findByAmbientesAndNomeContainingAndCategoriasIn( ambiente, "%"+nome+"%", Categoria.listByIds( categorias ), pageable );
+			else
+				midiaPage = midiaRepo.findByAmbientesAndNomeContaining( ambiente, "%"+nome+"%", pageable );
+			
+			List<Midia> midiaList = midiaPage.getContent();
+			
+			midiaList.stream().forEach( m -> {
+				m.getCategorias().forEach( cat -> {
+					m.getCategoriasView().put( cat.getCodigo(), true );
+				});
 			});
-		});
+			
+			jsonList = new JSONBootstrapGridWrapper<Midia>(midiaList, midiaPage.getTotalElements() );
+		}
 		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaList, midiaPage.getTotalElements() );
-
 		return jsonList;
 	}
 	

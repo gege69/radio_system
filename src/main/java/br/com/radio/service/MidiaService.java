@@ -16,11 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Empresa;
 import br.com.radio.model.Midia;
+import br.com.radio.model.MidiaAmbiente;
 import br.com.radio.model.Parametro;
+import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.MidiaAmbienteRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
 
@@ -42,28 +46,61 @@ public class MidiaService {
 	@Autowired
 	private ParametroRepository parametroRepo;
 	
+	@Autowired
+	private AmbienteRepository ambienteRepo;
 	
-	public Integer saveUpload( MultipartFile file, Long[] categorias, Empresa empresa ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	@Autowired
+	private MidiaAmbienteRepository midiaAmbienteRepo;
+	
+	
+	
+	public void saveUploadMulti( MultipartFile file, Long[] categorias, Empresa empresa, Long[] ambientes ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		List<Categoria> categoriaList = null;
-		List<Long> ids = null;
-		
-		if ( categorias != null && categorias.length > 0 )
-			ids = Arrays.asList( categorias );
-		else
+		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
+		if ( ambientes == null || ambientes.length <= 0 )
+			throw new RuntimeException("Nenhum ambiente selecionado para receber a Mídia. Escolha pelo menos um ambiente.");
+		
+		String hash = geraHashDoArquivo( file );
+		
+		Midia midia = salvaMidia( file, empresa, categorias, hash );
 
-		// Hash do arquivo ********************************************
-		byte[] bytes = file.getBytes();
+//		boolean aoMenosUm = false;
+		for ( Long id : ambientes )
+		{
+			Ambiente ambiente = ambienteRepo.findOne( id );
+			
+			if ( ambiente != null )
+			{
+//				aoMenosUm = true;
+				associaMidiaEAmbiente( ambiente, midia );
+			}
+		}
 		
-		LongHashFunction l = LongHashFunction.xx_r39();
-		long hashXX = l.hashBytes( bytes, 0, bytes.length );
+//		if ( !aoMenosUm )
+//			throw new RuntimeException( "Nenhum ambiente encontrado para associação." );
+		
+	}
+	
+	
+	public void saveUpload( MultipartFile file, Long[] categorias, Empresa empresa, Ambiente ambiente ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		if ( categorias == null || categorias.length <= 0 )
+			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
+		
+		String hash = geraHashDoArquivo( file );
+		
+		Midia midia = salvaMidia( file, empresa, categorias, hash );
+		
+		associaMidiaEAmbiente( ambiente, midia );
+		
+	}
 
-		String hash = Long.toString( hashXX );
-		// Hash do arquivo ********************************************
-		
-		
+
+	private Midia salvaMidia( MultipartFile file, Empresa empresa, Long[] categorias, String hash ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		List<Categoria> categoriaList = null;
 		File arquivo = null;
 		Integer size = 0;
 		
@@ -104,16 +141,40 @@ public class MidiaService {
 
 		atualizaIDTags( midia, arquivo );
 
-		if ( ids != null && ids.size() > 0 )
+		if ( categorias != null && categorias.length > 0 )
 		{
-			categoriaList = categoriaRepo.findByIdCategoriaIn( ids );
+			categoriaList = categoriaRepo.findByIdCategoriaIn( categorias );
 			
 			midia.setCategorias( categoriaList );
 		}
 		
 		midiaRepo.save( midia );
+		return midia;
+	}
+
+
+	private void associaMidiaEAmbiente( Ambiente ambiente, Midia midia )
+	{
+		MidiaAmbiente assocMidiaAmbiente = midiaAmbienteRepo.findByAmbienteAndMidia( ambiente, midia );
+
+		if ( assocMidiaAmbiente == null )
+		{
+			assocMidiaAmbiente = new MidiaAmbiente( ambiente, midia, new Date() );
+			midiaAmbienteRepo.save( assocMidiaAmbiente );
+		}
+	}
+
+
+	private String geraHashDoArquivo( MultipartFile file ) throws IOException
+	{
+		byte[] bytes = file.getBytes();
 		
-		return size;
+		LongHashFunction l = LongHashFunction.xx_r39();
+		long hashXX = l.hashBytes( bytes, 0, bytes.length );
+
+		String hash = Long.toString( hashXX );
+
+		return hash;
 	}
 
 	private void atualizaIDTags( Midia midia, File arquivo ) throws IOException, UnsupportedTagException, InvalidDataException

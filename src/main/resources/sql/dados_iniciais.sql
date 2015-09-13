@@ -113,7 +113,7 @@ values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA
 
 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 1,  'Gêneros' ,       '/ambientes/%d/view-generos/' ,             'fa-music'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 2,  'Vinhetas' ,      '/ambientes/%d/view-list-upload-midia/vinheta/' ,     'fa-sound-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 2,  'Vinhetas' ,      '/ambientes/%d/view-list-upload-midia/vinheta/' ,     'fa-audio-o'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 3,  'Institucionais',     '/ambientes/%d/view-list-upload-midia/inst/' ,      'fa-headphones'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 4,  'Comerciais' ,      '/ambientes/%d/view-list-upload-midia/comercial/' ,   'fa-film'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 5,  'Programetes' ,     '/ambientes/%d/view-list-upload-midia/programete/' ,  'fa-bullhorn'); 

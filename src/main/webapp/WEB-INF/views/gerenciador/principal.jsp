@@ -62,7 +62,7 @@
               <div class="row row-centered">
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/view-upload-multi">
                       <i class="fa fa-3x icone-main fa-cloud-upload"></i>
                       <span class="label-botao-main">Upload Ambientes</span>
                     </a>
@@ -102,15 +102,17 @@
           </div>
           
           <div class="row">
-            <div class="col-md-4 col-sm-3 col-xs-3">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               Você possui XX ambientes cadastrados
             </div>
-            <div class="col-md-3 col-md-offset-10   col-sm-2 col-sm-offset-7   col-xs-4 col-xs-offset-5">
-              <c:url var="logoutUrl" value="/logout"/>
-              <form action="${logoutUrl}" method="post">
-                <input type="submit" class="btn btn-link" value="Log out" />
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-              </form>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="pull-right">
+                <c:url var="logoutUrl" value="/logout"/>
+                <form action="${logoutUrl}" method="post">
+                  <input type="submit" class="btn btn-link" value="Log out" />
+                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+              </div>
             </div>
           </div>
           

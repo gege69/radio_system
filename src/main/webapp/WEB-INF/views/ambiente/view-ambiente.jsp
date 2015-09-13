@@ -42,19 +42,31 @@
           </div>
           
           <div class="row">
-            <div class="col-md-4 col-sm-3 col-xs-3">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <a class="btn btn-default" href="${context}/administrar-ambiente">
                 <i class="fa fa-arrow-left"></i>
               Voltar para Ambientes</a>
             </div>
-            <div class="col-md-3 col-md-offset-10   col-sm-2 col-sm-offset-7   col-xs-4 col-xs-offset-5">
-              <c:url var="logoutUrl" value="/logout"/>
-              <form action="${logoutUrl}" method="post">
-                <input type="submit" class="btn btn-link" value="Log out" />
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-              </form>
+            
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="pull-right">
+                <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+              </div>
             </div>
+                  
           </div>
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">          
+              <div class="pull-right">
+                <c:url var="logoutUrl" value="/logout"/>
+                <form action="${logoutUrl}" method="post">
+                  <input type="submit" class="btn btn-link" value="Log out" />
+                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+              </div>
+            </div>
+          </div>              
           
         </div>
       </div>

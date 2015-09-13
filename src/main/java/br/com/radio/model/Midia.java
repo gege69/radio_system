@@ -69,9 +69,17 @@ public class Midia implements Serializable {
 	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_categoria", nullable=false, updatable=false) })
     private List<Categoria> categorias;
-	
+
 	@Transient
 	private Map<String,Boolean> categoriasView = new HashMap<String,Boolean>();
+
+	@JsonIgnore
+	@ManyToMany(fetch=FetchType.LAZY)
+	   @JoinTable(name="midia_ambiente", joinColumns = { 
+	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
+	        @JoinColumn(name="id_ambiente", nullable=false, updatable=false) })
+	private List<Ambiente> ambientes;
+	
 	
 	// Ao contrário dos outros registros essa data serve para guardar quando o arquivo (música/gravação) foi criado/gravado/lançado
 	@JsonDeserialize(using=JSONDateDeserializer.class)
@@ -367,6 +375,23 @@ public class Midia implements Serializable {
 		super();
 		this.dataCriacao = new Date();
 	}
+
+	public List<Ambiente> getAmbientes()
+	{
+		return ambientes;
+	}
+
+	public void setAmbientes( List<Ambiente> ambientes )
+	{
+		this.ambientes = ambientes;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Midia [idMidia=%s, nome=%s]", idMidia, nome );
+	}
+
 
 	
 	
