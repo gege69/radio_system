@@ -1,5 +1,7 @@
 package br.com.radio.web;
 
+import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,11 +28,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
+import br.com.radio.model.Usuario;
+import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
@@ -38,31 +43,39 @@ import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.service.AmbienteService;
+import br.com.radio.service.UsuarioService;
 
 @Controller
 public class AmbienteController extends AbstractController {
 
 		
+	// DAOs ==================
 	@Autowired
 	private FusoHorarioRepository fusoRepo;
-	
 	@Autowired
 	private AmbienteRepository ambienteRepo;
-	
 	@Autowired
 	private FuncionalidadeRepository funcionalidadeRepo;
-	
 	@Autowired
 	private CategoriaRepository categoriaRepo;
-	
 	@Autowired
 	private GeneroRepository generoRepo;
-	
 	@Autowired
 	private AmbienteGeneroRepository ambienteGeneroRepo;
+	@Autowired
+	private AmbienteConfiguracaoRepository ambienteConfigRepo;
+	// DAOs ==================
 	
+	
+	// Services ==============
 	@Autowired
 	private AmbienteService ambienteService;
+	
+	@Autowired
+	private UsuarioService usuarioService;
+	// Services ==============
+
+	
 	
 	
 	@RequestMapping( value = "/view-ambiente/{idAmbiente}", method = RequestMethod.GET )
@@ -198,7 +211,6 @@ public class AmbienteController extends AbstractController {
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Genero> getGeneros( @PathVariable Long idAmbiente, HttpServletResponse response )
 	{
-		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
@@ -217,9 +229,9 @@ public class AmbienteController extends AbstractController {
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Long> getGenerosAssoc( @PathVariable Long idAmbiente, HttpServletResponse response )
 	{
-		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
+
+		// Talvez eu possa mudar isso pra que o relacionando fique diretamente na Entity de Gênero 
 		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
 
 		// Colecionando apenas os IDs dos gêneros que estão associados à esse ambiente
@@ -268,5 +280,92 @@ public class AmbienteController extends AbstractController {
 		return jsonList;
 	}
 	
+	
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-configuracoes", method = RequestMethod.GET )
+	public String viewConfiguracoes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/view-configuracoes";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/configuracoes", "/api/ambientes/{idAmbiente}/configuracoes" }, 
+			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody AmbienteConfiguracao getConfiguracoes( @PathVariable Long idAmbiente )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		AmbienteConfiguracao configuracoes = null;
+		
+		if ( ambiente != null )
+			configuracoes = ambienteConfigRepo.findByAmbiente( ambiente );
+		
+		return configuracoes;
+	}
+	
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/configuracoes", "/api/ambientes/{idAmbiente}/configuracoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String gravaConfiguracoes( @PathVariable Long idAmbiente, @RequestBody AmbienteConfiguracao ambienteConfiguracao, Principal principal )
+	{
+		String jsonResult = "";
+		
+		try
+		{
+			Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+			
+			if ( ambiente == null )
+				throw new RuntimeException("Ambiente não encontrado");
+
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null )
+				throw new RuntimeException("Usuário não encontrado");
+			
+			AmbienteConfiguracao configuracaoAnterior = null;
+
+			if ( ambienteConfiguracao.getIdAmbConfig() != null && ambienteConfiguracao.getIdAmbConfig() > 0 )
+				configuracaoAnterior = ambienteConfigRepo.findOne( ambienteConfiguracao.getIdAmbConfig() );
+			
+			if ( configuracaoAnterior == null ) // apenas para garantir verificar se já não existe uma configuração anterior para o ambiente ( mesmo que o ID da config não seja passado )
+				configuracaoAnterior = ambienteConfigRepo.findByAmbiente( ambiente ); 
+			
+			if ( configuracaoAnterior != null )
+			{
+				ambienteConfiguracao.setIdAmbConfig( configuracaoAnterior.getIdAmbConfig() );  // apenas garantindo o id do registro existente para que ele faça um update...
+				ambienteConfiguracao.setDataCriacao( configuracaoAnterior.getDataCriacao() ); // histórico
+				ambienteConfiguracao.setUsuarioCriacao( configuracaoAnterior.getUsuarioCriacao() ); // historico
+			}
+			else
+				ambienteConfiguracao.setUsuarioCriacao( usuario );
+			
+			ambienteConfiguracao.setDataAlteracao( new Date() );
+			ambienteConfiguracao.setUsuarioAlteracao( usuario );
+			
+			ambienteConfiguracao.setAmbiente( ambiente );
+
+			ambienteConfigRepo.save( ambienteConfiguracao );
+				
+			jsonResult = getOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", "Não foi possível gravar : " + e.getMessage() );
+		}
+		
+		return jsonResult;
+	}
 	
 }

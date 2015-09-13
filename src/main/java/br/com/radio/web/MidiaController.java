@@ -34,6 +34,7 @@ import br.com.radio.service.UsuarioService;
 @Controller
 public class MidiaController extends AbstractController {
 
+	// DAOs =====================
 	@Autowired
 	private AmbienteRepository ambienteRepo;
 	
@@ -42,12 +43,16 @@ public class MidiaController extends AbstractController {
 	
 	@Autowired
 	private MidiaRepository midiaRepo;
+	// DAOs =====================
 	
+	
+	// Services =================
 	@Autowired
 	private MidiaService midiaService;
 	
 	@Autowired
 	private UsuarioService usuarioService;
+	// Services =================
 	
 	
 	@RequestMapping( value = "/ambientes/{idAmbiente}/view-list-upload-midia/{codigo}", method = RequestMethod.GET )
