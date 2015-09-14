@@ -3,7 +3,6 @@ package br.com.radio.web;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -12,7 +11,6 @@ import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +30,7 @@ import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
+import br.com.radio.model.Bloco;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.FusoHorario;
@@ -40,6 +39,7 @@ import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.BlocoRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.FusoHorarioRepository;
@@ -66,6 +66,8 @@ public class AmbienteController extends AbstractController {
 	private AmbienteGeneroRepository ambienteGeneroRepo;
 	@Autowired
 	private AmbienteConfiguracaoRepository ambienteConfigRepo;
+	@Autowired
+	private BlocoRepository blocoRepo;
 	// DAOs ==================
 	
 	
@@ -420,6 +422,71 @@ public class AmbienteController extends AbstractController {
 		
 		return jsonResult;
 	}	
+	
+	
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-bloco", method = RequestMethod.GET )
+	public String viewBlocos( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/view-bloco";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/bloco", "/api/ambientes/{idAmbiente}/bloco" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody Bloco getBloco( @PathVariable Long idAmbiente, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		Bloco bloco = ambiente.getBloco();
+		
+		return bloco;
+	}
+	
+	
+
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/bloco", "/api/ambientes/{idAmbiente}/bloco" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveBloco( @PathVariable Long idAmbiente, @RequestBody Bloco bloco, BindingResult result )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() )
+			jsonResult = getErrorsAsJSONErroMessage( result );
+		else
+		{
+			try
+			{
+				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+				if ( ambiente.getBloco() != null )
+					bloco.setIdBloco( ambiente.getBloco().getIdBloco() ); // update
+				
+				bloco.setAmbiente( ambiente );
+				blocoRepo.save( bloco );
+				
+				jsonResult = getOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+		
+		return jsonResult;
+	}	
+	
+	
 	
 	
 }

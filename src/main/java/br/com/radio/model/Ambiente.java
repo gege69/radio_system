@@ -53,6 +53,10 @@ public class Ambiente implements Serializable {
 	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY, mappedBy= "ambiente")
 	private AmbienteConfiguracao configuracao;
+	
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.LAZY, mappedBy= "ambiente")
+	private Bloco bloco;
 
 	@Column( name = "telefone1" )
 	private String telefone1;
@@ -137,6 +141,9 @@ public class Ambiente implements Serializable {
 	
 	@Column( name = "minutoFimExpediente" )
 	private Integer minutoFimExpediente;
+	
+	
+	
 	
 	
 	// REST
@@ -487,5 +494,14 @@ public class Ambiente implements Serializable {
 		this.minutoFimExpediente = minutoFimExpediente;
 	}
 
+	public Bloco getBloco()
+	{
+		return bloco;
+	}
+
+	public void setBloco( Bloco bloco )
+	{
+		this.bloco = bloco;
+	}
 	
 }

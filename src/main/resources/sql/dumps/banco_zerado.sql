@@ -80,8 +80,12 @@ CREATE TABLE ambiente (
     email1 character varying(255),
     email2 character varying(255),
     estado character varying(200),
+    horafimexpediente integer,
+    horainiexpediente integer,
     login character varying(40) NOT NULL,
     logradouro text,
+    minutofimexpediente integer,
+    minutoiniexpediente integer,
     nome character varying(200) NOT NULL,
     numero character varying(20),
     opcionais boolean,
@@ -97,6 +101,72 @@ CREATE TABLE ambiente (
 
 
 ALTER TABLE ambiente OWNER TO "radio-user";
+
+--
+-- Name: ambiente_configuracao; Type: TABLE; Schema: public; Owner: radio-user; Tablespace: 
+--
+
+CREATE TABLE ambiente_configuracao (
+    id_ambconfig bigint NOT NULL,
+    agendmidia boolean,
+    atendimento boolean,
+    autoplay boolean,
+    avancarretornar boolean,
+    chamfuncionarios boolean,
+    chaminstantanea boolean,
+    chamvariosfuncionarios boolean,
+    chamveiculo boolean,
+    controleblocos boolean,
+    controlecomerciais boolean,
+    controleinstitucionais boolean,
+    controleprogrametes boolean,
+    controlevolumeindividual boolean,
+    dataalteracao timestamp without time zone,
+    datacriacao timestamp without time zone NOT NULL,
+    generosbycc boolean,
+    horoscopo boolean,
+    locutorvirtual boolean,
+    menudownloads boolean,
+    nobreak boolean,
+    opcionais boolean,
+    pedidomusical boolean,
+    pedidomusicalvinheta boolean,
+    relatoriosmidia boolean,
+    rodoviarias boolean,
+    selecaogenero boolean,
+    volumechamadas integer,
+    volumecomerciais integer,
+    volumegeral integer,
+    volumemusicas integer,
+    vozlocucao character varying(255),
+    id_ambiente bigint,
+    id_usuarioalteracao bigint,
+    id_usuario bigint
+);
+
+
+ALTER TABLE ambiente_configuracao OWNER TO "radio-user";
+
+--
+-- Name: ambiente_configuracao_id_ambconfig_seq; Type: SEQUENCE; Schema: public; Owner: radio-user
+--
+
+CREATE SEQUENCE ambiente_configuracao_id_ambconfig_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ambiente_configuracao_id_ambconfig_seq OWNER TO "radio-user";
+
+--
+-- Name: ambiente_configuracao_id_ambconfig_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radio-user
+--
+
+ALTER SEQUENCE ambiente_configuracao_id_ambconfig_seq OWNED BY ambiente_configuracao.id_ambconfig;
+
 
 --
 -- Name: ambiente_genero; Type: TABLE; Schema: public; Owner: radio-user; Tablespace: 
@@ -151,6 +221,45 @@ ALTER TABLE ambiente_id_ambiente_seq OWNER TO "radio-user";
 --
 
 ALTER SEQUENCE ambiente_id_ambiente_seq OWNED BY ambiente.id_ambiente;
+
+
+--
+-- Name: bloco; Type: TABLE; Schema: public; Owner: radio-user; Tablespace: 
+--
+
+CREATE TABLE bloco (
+    id_bloco bigint NOT NULL,
+    indexhoracerta integer,
+    indexinstitucionais integer,
+    indexprogrametes integer,
+    posicaovinheta integer,
+    qtdcomerciais integer,
+    qtdmusicas integer,
+    id_ambiente bigint
+);
+
+
+ALTER TABLE bloco OWNER TO "radio-user";
+
+--
+-- Name: bloco_id_bloco_seq; Type: SEQUENCE; Schema: public; Owner: radio-user
+--
+
+CREATE SEQUENCE bloco_id_bloco_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bloco_id_bloco_seq OWNER TO "radio-user";
+
+--
+-- Name: bloco_id_bloco_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radio-user
+--
+
+ALTER SEQUENCE bloco_id_bloco_seq OWNED BY bloco.id_bloco;
 
 
 --
@@ -804,10 +913,24 @@ ALTER TABLE ONLY ambiente ALTER COLUMN id_ambiente SET DEFAULT nextval('ambiente
 
 
 --
+-- Name: id_ambconfig; Type: DEFAULT; Schema: public; Owner: radio-user
+--
+
+ALTER TABLE ONLY ambiente_configuracao ALTER COLUMN id_ambconfig SET DEFAULT nextval('ambiente_configuracao_id_ambconfig_seq'::regclass);
+
+
+--
 -- Name: id_ambgen; Type: DEFAULT; Schema: public; Owner: radio-user
 --
 
 ALTER TABLE ONLY ambiente_genero ALTER COLUMN id_ambgen SET DEFAULT nextval('ambiente_genero_id_ambgen_seq'::regclass);
+
+
+--
+-- Name: id_bloco; Type: DEFAULT; Schema: public; Owner: radio-user
+--
+
+ALTER TABLE ONLY bloco ALTER COLUMN id_bloco SET DEFAULT nextval('bloco_id_bloco_seq'::regclass);
 
 
 --
@@ -948,8 +1071,23 @@ SELECT pg_catalog.setval('acesso_usuario_id_acesso_seq', 1, false);
 -- Data for Name: ambiente; Type: TABLE DATA; Schema: public; Owner: radio-user
 --
 
-COPY ambiente (id_ambiente, anotacoes, bairro, cidade, dataalteracao, datacriacao, download, email1, email2, estado, login, logradouro, nome, numero, opcionais, password, sincronizar, telefone1, telefone2, urlambiente, id_empresa, id_fusohorario, id_usuario) FROM stdin;
+COPY ambiente (id_ambiente, anotacoes, bairro, cidade, dataalteracao, datacriacao, download, email1, email2, estado, horafimexpediente, horainiexpediente, login, logradouro, minutofimexpediente, minutoiniexpediente, nome, numero, opcionais, password, sincronizar, telefone1, telefone2, urlambiente, id_empresa, id_fusohorario, id_usuario) FROM stdin;
 \.
+
+
+--
+-- Data for Name: ambiente_configuracao; Type: TABLE DATA; Schema: public; Owner: radio-user
+--
+
+COPY ambiente_configuracao (id_ambconfig, agendmidia, atendimento, autoplay, avancarretornar, chamfuncionarios, chaminstantanea, chamvariosfuncionarios, chamveiculo, controleblocos, controlecomerciais, controleinstitucionais, controleprogrametes, controlevolumeindividual, dataalteracao, datacriacao, generosbycc, horoscopo, locutorvirtual, menudownloads, nobreak, opcionais, pedidomusical, pedidomusicalvinheta, relatoriosmidia, rodoviarias, selecaogenero, volumechamadas, volumecomerciais, volumegeral, volumemusicas, vozlocucao, id_ambiente, id_usuarioalteracao, id_usuario) FROM stdin;
+\.
+
+
+--
+-- Name: ambiente_configuracao_id_ambconfig_seq; Type: SEQUENCE SET; Schema: public; Owner: radio-user
+--
+
+SELECT pg_catalog.setval('ambiente_configuracao_id_ambconfig_seq', 1, false);
 
 
 --
@@ -975,17 +1113,32 @@ SELECT pg_catalog.setval('ambiente_id_ambiente_seq', 1, false);
 
 
 --
+-- Data for Name: bloco; Type: TABLE DATA; Schema: public; Owner: radio-user
+--
+
+COPY bloco (id_bloco, indexhoracerta, indexinstitucionais, indexprogrametes, posicaovinheta, qtdcomerciais, qtdmusicas, id_ambiente) FROM stdin;
+\.
+
+
+--
+-- Name: bloco_id_bloco_seq; Type: SEQUENCE SET; Schema: public; Owner: radio-user
+--
+
+SELECT pg_catalog.setval('bloco_id_bloco_seq', 1, false);
+
+
+--
 -- Data for Name: categoria; Type: TABLE DATA; Schema: public; Owner: radio-user
 --
 
 COPY categoria (id_categoria, codigo, descricao, nome) FROM stdin;
-8	musica	Música	Música
-9	vinheta	Vinheta	Vinheta
-10	inst	Institucional	Institucional
-11	comercial	Comercial	Comercial
-12	programete	Programete	Programete
-13	chamada-func	Chamada Funcionário	Chamada Funcionário
-14	chamada-inst	Chamada Instantânea	Chamada Instantânea
+1	musica	Música	Música
+2	vinheta	Vinheta	Vinheta
+3	inst	Institucional	Institucional
+4	comercial	Comercial	Comercial
+5	programete	Programete	Programete
+6	chamada-func	Chamada Funcionário	Chamada Funcionário
+7	chamada-inst	Chamada Instantânea	Chamada Instantânea
 \.
 
 
@@ -993,7 +1146,7 @@ COPY categoria (id_categoria, codigo, descricao, nome) FROM stdin;
 -- Name: categoria_id_categoria_seq; Type: SEQUENCE SET; Schema: public; Owner: radio-user
 --
 
-SELECT pg_catalog.setval('categoria_id_categoria_seq', 14, true);
+SELECT pg_catalog.setval('categoria_id_categoria_seq', 7, true);
 
 
 --
@@ -1016,7 +1169,7 @@ SELECT pg_catalog.setval('conexao_id_conexao_seq', 1, false);
 --
 
 COPY empresa (id_empresa, ativo, cnpj, codigo, dataalteracao, datacriacao, dominio, nomefantasia, razaosocial) FROM stdin;
-2	t	28372714000140	Eterion	\N	2015-09-08 23:45:07.397866	www.eterion.com.br	Eterion	Eterion
+1	t	28372714000140	Eterion	\N	2015-09-13 23:56:53.987601	www.eterion.com.br	Eterion	Eterion
 \.
 
 
@@ -1024,7 +1177,7 @@ COPY empresa (id_empresa, ativo, cnpj, codigo, dataalteracao, datacriacao, domin
 -- Name: empresa_id_empresa_seq; Type: SEQUENCE SET; Schema: public; Owner: radio-user
 --
 
-SELECT pg_catalog.setval('empresa_id_empresa_seq', 2, true);
+SELECT pg_catalog.setval('empresa_id_empresa_seq', 1, true);
 
 
 --
@@ -1033,16 +1186,16 @@ SELECT pg_catalog.setval('empresa_id_empresa_seq', 2, true);
 
 COPY funcionalidade (id_funcionalidade, icone, nome, ordem, url) FROM stdin;
 1	fa-music	Gêneros	1	/ambientes/%d/view-generos/
-2	fa-sound-o	Vinhetas	2	/ambientes/%d/view-list-upload-midia/vinheta/
+2	fa-file-audio-o	Vinhetas	2	/ambientes/%d/view-list-upload-midia/vinheta/
 3	fa-headphones	Institucionais	3	/ambientes/%d/view-list-upload-midia/inst/
 4	fa-film	Comerciais	4	/ambientes/%d/view-list-upload-midia/comercial/
 5	fa-bullhorn	Programetes	5	/ambientes/%d/view-list-upload-midia/programete/
-6	fa-bolt	Chamadas Instantâneas	6	/ambientes/%d/view-list-upload-midia/chamada-inst/
-7	fa-briefcase	Configurações	7	/ambientes/%d/view-configuracoes/
-8	fa-th-large	Blocos	8	/ambientes/%d/view-blocos/
+6	fa-bolt	Chamadas<br/>Instantâneas	6	/ambientes/%d/view-list-upload-midia/chamada-inst/
+7	fa-users	Chamadas<br/>Funcionários	7	/ambientes/%d/view-list-upload-midia/chamada-func/
+8	fa-th-large	Blocos	8	/ambientes/%d/view-bloco/
 9	fa-clock-o	Expediente	9	/ambientes/%d/view-expediente/
 10	fa-newspaper-o	Eventos	10	/ambientes/%d/view-eventos/
-11	fa-users	Funcionários	11	/ambientes/%d/view-funcionarios/
+11	fa-briefcase	Configurações	11	/ambientes/%d/view-configuracoes/
 12	fa-bus	Rodoviária	12	/ambientes/%d/view-rodoviaria/
 13	fa-files-o	Relatórios	13	/ambientes/%d/view-relatórios/
 14	fa-floppy-o	Downloads	14	/ambientes/%d/view-downloads/
@@ -1065,10 +1218,10 @@ SELECT pg_catalog.setval('funcionalidade_id_funcionalidade_seq', 18, true);
 --
 
 COPY fuso_horario (id_fusohorario, alias, canonid, offsetfuso, ordercomum) FROM stdin;
-5	Acre	America/Lima	-05:00	2
-6	Manaus	America/Manaus	-04:00	1
-7	Brasília	America/Sao_Paulo	-03:00	0
-8	Fernando Noronha	America/Noronha	-02:00	4
+1	Acre	America/Lima	-05:00	2
+2	Manaus	America/Manaus	-04:00	1
+3	Brasília	America/Sao_Paulo	-03:00	0
+4	Fernando Noronha	America/Noronha	-02:00	4
 \.
 
 
@@ -1076,7 +1229,7 @@ COPY fuso_horario (id_fusohorario, alias, canonid, offsetfuso, ordercomum) FROM 
 -- Name: fuso_horario_id_fusohorario_seq; Type: SEQUENCE SET; Schema: public; Owner: radio-user
 --
 
-SELECT pg_catalog.setval('fuso_horario_id_fusohorario_seq', 8, true);
+SELECT pg_catalog.setval('fuso_horario_id_fusohorario_seq', 4, true);
 
 
 --
@@ -1084,29 +1237,29 @@ SELECT pg_catalog.setval('fuso_horario_id_fusohorario_seq', 8, true);
 --
 
 COPY genero (id_genero, datacriacao, descricao, genero) FROM stdin;
-1	2015-09-08 23:45:07.397866	Top 300 - Lançamentos	Top 300 - Lançamentos
-2	2015-09-08 23:45:07.397866	Internacional	Internacional
-3	2015-09-08 23:45:07.397866	Pop Rock Nacional	Pop Rock Nacional
-4	2015-09-08 23:45:07.397866	Sertanejos	Sertanejos
-5	2015-09-08 23:45:07.397866	Sertanejo universitário	Sertanejo universitário
-6	2015-09-08 23:45:07.397866	Pagode e Samba	Pagode e Samba
-7	2015-09-08 23:45:07.397866	Axé Music	Axé Music
-8	2015-09-08 23:45:07.397866	Forró	Forró
-9	2015-09-08 23:45:07.397866	Country	Country
-10	2015-09-08 23:45:07.397866	Dance Music	Dance Music
-11	2015-09-08 23:45:07.397866	Flashback	Flashback
-12	2015-09-08 23:45:07.397866	Infantil	Infantil
-13	2015-09-08 23:45:07.397866	Bossa Nova	Bossa Nova
-14	2015-09-08 23:45:07.397866	Reggae Nacional	Reggae Nacional
-15	2015-09-08 23:45:07.397866	Arrocha	Arrocha
-16	2015-09-08 23:45:07.397866	Fitness Music	Fitness Music
-17	2015-09-08 23:45:07.397866	Rock Internacional	Rock Internacional
-18	2015-09-08 23:45:07.397866	Sertanejo Romântico	Sertanejo Romântico
-19	2015-09-08 23:45:07.397866	Gospel Internacional	Gospel Internacional
-20	2015-09-08 23:45:07.397866	Lounge	Lounge
-21	2015-09-08 23:45:07.397866	Flash House	Flash House
-22	2015-09-08 23:45:07.397866	Disco	Disco
-23	2015-09-08 23:45:07.397866	Instrumental	Instrumental
+1	2015-09-13 23:56:53.987601	Top 300 - Lançamentos	Top 300 - Lançamentos
+2	2015-09-13 23:56:53.987601	Internacional	Internacional
+3	2015-09-13 23:56:53.987601	Pop Rock Nacional	Pop Rock Nacional
+4	2015-09-13 23:56:53.987601	Sertanejos	Sertanejos
+5	2015-09-13 23:56:53.987601	Sertanejo universitário	Sertanejo universitário
+6	2015-09-13 23:56:53.987601	Pagode e Samba	Pagode e Samba
+7	2015-09-13 23:56:53.987601	Axé Music	Axé Music
+8	2015-09-13 23:56:53.987601	Forró	Forró
+9	2015-09-13 23:56:53.987601	Country	Country
+10	2015-09-13 23:56:53.987601	Dance Music	Dance Music
+11	2015-09-13 23:56:53.987601	Flashback	Flashback
+12	2015-09-13 23:56:53.987601	Infantil	Infantil
+13	2015-09-13 23:56:53.987601	Bossa Nova	Bossa Nova
+14	2015-09-13 23:56:53.987601	Reggae Nacional	Reggae Nacional
+15	2015-09-13 23:56:53.987601	Arrocha	Arrocha
+16	2015-09-13 23:56:53.987601	Fitness Music	Fitness Music
+17	2015-09-13 23:56:53.987601	Rock Internacional	Rock Internacional
+18	2015-09-13 23:56:53.987601	Sertanejo Romântico	Sertanejo Romântico
+19	2015-09-13 23:56:53.987601	Gospel Internacional	Gospel Internacional
+20	2015-09-13 23:56:53.987601	Lounge	Lounge
+21	2015-09-13 23:56:53.987601	Flash House	Flash House
+22	2015-09-13 23:56:53.987601	Disco	Disco
+23	2015-09-13 23:56:53.987601	Instrumental	Instrumental
 \.
 
 
@@ -1190,7 +1343,7 @@ SELECT pg_catalog.setval('midia_id_midia_seq', 1, false);
 --
 
 COPY parametro (id_parametro, codigo, descricao, type, valor, id_empresa) FROM stdin;
-2	BASE_MIDIA_PATH	Pasta em disco onde serão armazenadas as músicas EX: C:\\Temp\\Musicas	\N	/home/pazin/teste/	2
+1	BASE_MIDIA_PATH	Pasta em disco onde serão armazenadas as músicas EX: C:\\Temp\\Musicas	\N	/home/pazin/teste/	1
 \.
 
 
@@ -1198,7 +1351,7 @@ COPY parametro (id_parametro, codigo, descricao, type, valor, id_empresa) FROM s
 -- Name: parametro_id_parametro_seq; Type: SEQUENCE SET; Schema: public; Owner: radio-user
 --
 
-SELECT pg_catalog.setval('parametro_id_parametro_seq', 2, true);
+SELECT pg_catalog.setval('parametro_id_parametro_seq', 1, true);
 
 
 --
@@ -1226,17 +1379,17 @@ SELECT pg_catalog.setval('perfil_id_perfil_seq', 5, true);
 --
 
 COPY perfil_permissao (id_perfperm, datacriacao, id_perfil, id_permissao) FROM stdin;
-1	2015-09-08 23:45:07.397866	1	12
-2	2015-09-08 23:45:07.397866	1	13
-3	2015-09-08 23:45:07.397866	1	14
-4	2015-09-08 23:45:07.397866	1	15
-5	2015-09-08 23:45:07.397866	1	16
-6	2015-09-08 23:45:07.397866	1	17
-7	2015-09-08 23:45:07.397866	1	18
-8	2015-09-08 23:45:07.397866	1	19
-9	2015-09-08 23:45:07.397866	1	20
-10	2015-09-08 23:45:07.397866	1	21
-11	2015-09-08 23:45:07.397866	1	22
+1	2015-09-13 23:56:53.987601	1	1
+2	2015-09-13 23:56:53.987601	1	2
+3	2015-09-13 23:56:53.987601	1	3
+4	2015-09-13 23:56:53.987601	1	4
+5	2015-09-13 23:56:53.987601	1	5
+6	2015-09-13 23:56:53.987601	1	6
+7	2015-09-13 23:56:53.987601	1	7
+8	2015-09-13 23:56:53.987601	1	8
+9	2015-09-13 23:56:53.987601	1	9
+10	2015-09-13 23:56:53.987601	1	10
+11	2015-09-13 23:56:53.987601	1	11
 \.
 
 
@@ -1252,17 +1405,17 @@ SELECT pg_catalog.setval('perfil_permissao_id_perfperm_seq', 11, true);
 --
 
 COPY permissao (id_permissao, codigo, descricao, id_permissaopai) FROM stdin;
-12	INCLUIR_AMB		\N
-13	ADMINISTRAR_AMB		\N
-14	ALTERAR_SENHA		\N
-15	MENSAGENS		\N
-16	MONITORAMENTO		\N
-17	CHAMADA_FUNCIO		\N
-18	UPLOAD_AMBIENTE		\N
-19	FERRAMENTAS		\N
-20	SOFTWARES		\N
-21	ADMINISTRADORES		\N
-22	MOBILE		\N
+1	INCLUIR_AMB		\N
+2	ADMINISTRAR_AMB		\N
+3	ALTERAR_SENHA		\N
+4	MENSAGENS		\N
+5	MONITORAMENTO		\N
+6	CHAMADA_FUNCIO		\N
+7	UPLOAD_AMBIENTE		\N
+8	FERRAMENTAS		\N
+9	SOFTWARES		\N
+10	ADMINISTRADORES		\N
+11	MOBILE		\N
 \.
 
 
@@ -1270,7 +1423,7 @@ COPY permissao (id_permissao, codigo, descricao, id_permissaopai) FROM stdin;
 -- Name: permissao_id_permissao_seq; Type: SEQUENCE SET; Schema: public; Owner: radio-user
 --
 
-SELECT pg_catalog.setval('permissao_id_permissao_seq', 22, true);
+SELECT pg_catalog.setval('permissao_id_permissao_seq', 11, true);
 
 
 --
@@ -1278,8 +1431,8 @@ SELECT pg_catalog.setval('permissao_id_permissao_seq', 22, true);
 --
 
 COPY usuario (id_usuario, ativo, dataalteracao, datacriacao, email, login, nome, password, id_empresa) FROM stdin;
-2	t	\N	2015-09-08 23:45:07.397866	pazinfernando@gmail.com	fpazin	Fernando Pazin	$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC	2
-3	t	\N	2015-09-08 23:45:07.397866	george.g.augusto@gmail.com	gaugusto	George Augusto	$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC	2
+1	t	\N	2015-09-13 23:56:53.987601	pazinfernando@gmail.com	fpazin	Fernando Pazin	$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC	1
+2	t	\N	2015-09-13 23:56:53.987601	george.g.augusto@gmail.com	gaugusto	George Augusto	$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC	1
 \.
 
 
@@ -1287,7 +1440,7 @@ COPY usuario (id_usuario, ativo, dataalteracao, datacriacao, email, login, nome,
 -- Name: usuario_id_usuario_seq; Type: SEQUENCE SET; Schema: public; Owner: radio-user
 --
 
-SELECT pg_catalog.setval('usuario_id_usuario_seq', 3, true);
+SELECT pg_catalog.setval('usuario_id_usuario_seq', 2, true);
 
 
 --
@@ -1295,8 +1448,8 @@ SELECT pg_catalog.setval('usuario_id_usuario_seq', 3, true);
 --
 
 COPY usuario_perfil (id_usuperf, id_perfil, id_usuario) FROM stdin;
-1	1	2
-2	1	3
+1	1	1
+2	1	2
 \.
 
 
@@ -1312,7 +1465,7 @@ SELECT pg_catalog.setval('usuario_perfil_id_usuperf_seq', 2, true);
 --
 
 COPY usuario_permissao (id_usuperm, datacriacao, id_permissao, id_usuario) FROM stdin;
-1	2015-09-08 23:45:07.397866	12	\N
+1	2015-09-13 23:56:53.987601	1	\N
 \.
 
 
@@ -1332,6 +1485,14 @@ ALTER TABLE ONLY acesso_usuario
 
 
 --
+-- Name: ambiente_configuracao_pkey; Type: CONSTRAINT; Schema: public; Owner: radio-user; Tablespace: 
+--
+
+ALTER TABLE ONLY ambiente_configuracao
+    ADD CONSTRAINT ambiente_configuracao_pkey PRIMARY KEY (id_ambconfig);
+
+
+--
 -- Name: ambiente_genero_pkey; Type: CONSTRAINT; Schema: public; Owner: radio-user; Tablespace: 
 --
 
@@ -1345,6 +1506,14 @@ ALTER TABLE ONLY ambiente_genero
 
 ALTER TABLE ONLY ambiente
     ADD CONSTRAINT ambiente_pkey PRIMARY KEY (id_ambiente);
+
+
+--
+-- Name: bloco_pkey; Type: CONSTRAINT; Schema: public; Owner: radio-user; Tablespace: 
+--
+
+ALTER TABLE ONLY bloco
+    ADD CONSTRAINT bloco_pkey PRIMARY KEY (id_bloco);
 
 
 --
@@ -1548,6 +1717,22 @@ ALTER TABLE ONLY ambiente
 
 
 --
+-- Name: fk_69h6lninhg65xd7od6vscb1tf; Type: FK CONSTRAINT; Schema: public; Owner: radio-user
+--
+
+ALTER TABLE ONLY ambiente_configuracao
+    ADD CONSTRAINT fk_69h6lninhg65xd7od6vscb1tf FOREIGN KEY (id_ambiente) REFERENCES ambiente(id_ambiente);
+
+
+--
+-- Name: fk_6bb079ml5usas4l2jacvs2dev; Type: FK CONSTRAINT; Schema: public; Owner: radio-user
+--
+
+ALTER TABLE ONLY ambiente_configuracao
+    ADD CONSTRAINT fk_6bb079ml5usas4l2jacvs2dev FOREIGN KEY (id_usuarioalteracao) REFERENCES usuario(id_usuario);
+
+
+--
 -- Name: fk_9w1iw0eoe93w4m2aq0tihjc5d; Type: FK CONSTRAINT; Schema: public; Owner: radio-user
 --
 
@@ -1652,6 +1837,14 @@ ALTER TABLE ONLY ambiente
 
 
 --
+-- Name: fk_lniwf79yvm66g1vyrb8iouu3w; Type: FK CONSTRAINT; Schema: public; Owner: radio-user
+--
+
+ALTER TABLE ONLY bloco
+    ADD CONSTRAINT fk_lniwf79yvm66g1vyrb8iouu3w FOREIGN KEY (id_ambiente) REFERENCES ambiente(id_ambiente);
+
+
+--
 -- Name: fk_mk1oe4srv9i0fqwbv9vxjw67c; Type: FK CONSTRAINT; Schema: public; Owner: radio-user
 --
 
@@ -1681,6 +1874,14 @@ ALTER TABLE ONLY midia_genero
 
 ALTER TABLE ONLY usuario_permissao
     ADD CONSTRAINT fk_q3um0dky0pwbo14outjmpexba FOREIGN KEY (id_permissao) REFERENCES permissao(id_permissao);
+
+
+--
+-- Name: fk_texupuhsyc125mpvqfg2elgqw; Type: FK CONSTRAINT; Schema: public; Owner: radio-user
+--
+
+ALTER TABLE ONLY ambiente_configuracao
+    ADD CONSTRAINT fk_texupuhsyc125mpvqfg2elgqw FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario);
 
 
 --

@@ -4,8 +4,8 @@ import java.lang.reflect.Field;
 
 import org.apache.commons.lang3.StringUtils;
 
-import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
+import br.com.radio.model.Bloco;
 
 public class ExpandHTMLHelper {
 
@@ -23,9 +23,11 @@ public class ExpandHTMLHelper {
 	
 	public static void main(String[] aaaa)
 	{
+		selectFields();
+		
 //		inputFields();  
 		
-		checkBoxes();
+//		checkBoxes();
 	}
 
 
@@ -46,7 +48,7 @@ public class ExpandHTMLHelper {
 		
         try
 		{
-			Field[] fields = (Ambiente.class).getDeclaredFields();
+			Field[] fields = (Bloco.class).getDeclaredFields();
 			
 			for ( Field f : fields )
 			{
@@ -74,6 +76,53 @@ public class ExpandHTMLHelper {
 		}
 	}
 	
+	
+	
+	
+	private static void selectFields()
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		String sp = System.lineSeparator();
+
+		sb.append( "<div class=\"form-group\">" ).append( sp );
+		sb.append( "  <label for=\"%s\" class=\"control-label col-sm-2 col-md-3\">%s</label>" ).append( sp );
+		sb.append( "  <div class=\"col-sm-10 col-md-8\">" ).append( sp ); 
+		sb.append( "	<select class=\"form-control\" id=\"%s\" name=\"%s\">" ).append( sp );
+		sb.append( "	  <option value=\"0\">00</option> " ).append( sp ); 
+		sb.append( "    </select>" ).append( sp );
+		sb.append( "  </div>" ).append( sp );
+		sb.append( "</div>" ).append( sp );
+		
+        try
+		{
+			Field[] fields = (Bloco.class).getDeclaredFields();
+			
+			for ( Field f : fields )
+			{
+
+				String[] palavras = StringUtils.splitByCharacterTypeCamelCase( f.getName() );
+				
+				String label = "";
+				
+				for ( String s : palavras )
+				{
+					label = label + s + " "; 
+				}
+				
+				String msg = String.format( sb.toString(), f.getName(), StringUtils.capitalize( label.trim() ), f.getName(), f.getName() );
+				
+				System.out.println( msg ); 
+			}
+			
+			
+		}
+		catch ( Exception e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 	
