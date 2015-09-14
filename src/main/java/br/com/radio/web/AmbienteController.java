@@ -3,6 +3,7 @@ package br.com.radio.web;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -11,6 +12,7 @@ import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -246,7 +248,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos", "/api/ambientes/{idAmbiente}/generos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String gravaGenerosAmbiente( @PathVariable Long idAmbiente, @RequestBody GeneroListDTO generoList, BindingResult result )
+	public @ResponseBody String saveGeneros( @PathVariable Long idAmbiente, @RequestBody GeneroListDTO generoList, BindingResult result )
 	{
 		String jsonResult = "";
 		
@@ -317,7 +319,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/configuracoes", "/api/ambientes/{idAmbiente}/configuracoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String gravaConfiguracoes( @PathVariable Long idAmbiente, @RequestBody AmbienteConfiguracao ambienteConfiguracao, Principal principal )
+	public @ResponseBody String saveConfiguracoes( @PathVariable Long idAmbiente, @RequestBody AmbienteConfiguracao ambienteConfiguracao, Principal principal )
 	{
 		String jsonResult = "";
 		
@@ -334,12 +336,12 @@ public class AmbienteController extends AbstractController {
 				throw new RuntimeException("Usuário não encontrado");
 			
 			AmbienteConfiguracao configuracaoAnterior = null;
-
+			
 			if ( ambienteConfiguracao.getIdAmbConfig() != null && ambienteConfiguracao.getIdAmbConfig() > 0 )
 				configuracaoAnterior = ambienteConfigRepo.findOne( ambienteConfiguracao.getIdAmbConfig() );
 			
-			if ( configuracaoAnterior == null ) // apenas para garantir verificar se já não existe uma configuração anterior para o ambiente ( mesmo que o ID da config não seja passado )
-				configuracaoAnterior = ambienteConfigRepo.findByAmbiente( ambiente ); 
+			if ( configuracaoAnterior == null ) // apenas para garantir : verificar se já não existe uma configuração anterior para o ambiente ( mesmo que o ID da config não seja passado )
+				configuracaoAnterior = ambiente.getConfiguracao();
 			
 			if ( configuracaoAnterior != null )
 			{
@@ -367,5 +369,57 @@ public class AmbienteController extends AbstractController {
 		
 		return jsonResult;
 	}
+	
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-expediente", method = RequestMethod.GET )
+	public String viewExpediente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/view-expediente";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/expediente", "/api/ambientes/{idAmbiente}/expediente" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveExpediente( @PathVariable Long idAmbiente, @RequestBody Ambiente ambienteDTO, BindingResult result )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() )
+			jsonResult = getErrorsAsJSONErroMessage( result );
+		else
+		{
+			try
+			{
+				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+				
+				ambiente.setHoraIniExpediente( ambienteDTO.getHoraIniExpediente() );
+				ambiente.setHoraFimExpediente( ambienteDTO.getHoraFimExpediente() );
+				ambiente.setMinutoIniExpediente( ambienteDTO.getMinutoIniExpediente() );
+				ambiente.setMinutoFimExpediente( ambienteDTO.getMinutoFimExpediente() );
+					
+				ambienteRepo.save( ambiente );
+					
+				jsonResult = getOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+		
+		return jsonResult;
+	}	
+	
 	
 }

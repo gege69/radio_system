@@ -177,7 +177,7 @@ public class MidiaController extends AbstractController {
 			model.addAttribute( "error", "O arquivo está vazio" );
 		}
 
-	    return "painel/view-upload-multi";
+	    return "gerenciador/view-upload-multi";
     }
 	
 	

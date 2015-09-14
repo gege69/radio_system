@@ -136,7 +136,7 @@
 
       <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-6">
         <label>
-          <input type="checkbox" id="inlineCheck{{:idCategoria}}" name="categorias[]" value="{{:idCategoria}}"> {{:nome}}
+          <input type="checkbox" id="inlineCheck{{:idCategoria}}" name="categorias[]" class="check-categorias" value="{{:idCategoria}}"> {{:nome}}
         </label>
       </div>
 </script>  
@@ -199,9 +199,22 @@
         $('input[name="ambientes[]"]').remove();
         
         // pegar as categorias e criar inputs hidden no form
-        var array_values = [];
         var selecao = $table.bootstrapTable('getSelections');
         
+        if ( selecao.length <= 0 )
+        {
+            preencheAlertGeral("alertArea", "Escolha pelo menos um ambiente para receber o arquivo.", "danger");
+            return false;
+        }
+        
+        var categoriasCheckadas = $( ".check-categorias:checked" ).length;
+        
+        if ( categoriasCheckadas <=0 )
+        {
+            preencheAlertGeral("alertArea", "Escolha pelo menos uma categoria para classificar o arquivo.", "danger");
+            return false;
+        }
+            
         $(selecao).each(function(){
             var linha = this;
 
@@ -213,7 +226,7 @@
             }).appendTo('#ambiente-upload-multi');
         });
         
-        console.log($('input[name="ambientes[]"]'));
+        return true;
     }
 
     $(function(){
@@ -228,8 +241,8 @@
 
         $('#ambiente-upload-multi').submit( function(e){
             e.preventDefault();
-            preparaUpload();
-            this.submit();
+            if ( preparaUpload() )
+                this.submit();   
         });
         
         $('#btnUploadMidia').on('click', function(){
@@ -237,10 +250,6 @@
         });
         
         listaCategorias();
-        
-        $('#btnteste').on('click', function(){
-           teste(); 
-        });
         
     });
 

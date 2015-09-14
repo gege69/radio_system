@@ -49,6 +49,10 @@ public class Ambiente implements Serializable {
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn( name="id_empresa", nullable=false )
 	private Empresa empresa;
+	
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.LAZY, mappedBy= "ambiente")
+	private AmbienteConfiguracao configuracao;
 
 	@Column( name = "telefone1" )
 	private String telefone1;
@@ -118,11 +122,21 @@ public class Ambiente implements Serializable {
 	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;
 
-	
 	@OneToOne
 	@JoinColumn(name="id_fusohorario")
 	private FusoHorario fusoHorario;
 	
+	@Column( name = "horaIniExpediente" )
+	private Integer horaIniExpediente;
+	
+	@Column( name = "minutoIniExpediente" )
+	private Integer minutoIniExpediente;
+	
+	@Column( name = "horaFimExpediente" )
+	private Integer horaFimExpediente;
+	
+	@Column( name = "minutoFimExpediente" )
+	private Integer minutoFimExpediente;
 	
 	
 	// REST
@@ -423,10 +437,55 @@ public class Ambiente implements Serializable {
 		this.ambienteAPI = ambienteAPI;
 	}
 
-	
-	
+	public AmbienteConfiguracao getConfiguracao()
+	{
+		return configuracao;
+	}
+
+	public void setConfiguracao( AmbienteConfiguracao configuracao )
+	{
+		this.configuracao = configuracao;
+	}
+
+	public Integer getHoraIniExpediente()
+	{
+		return horaIniExpediente;
+	}
+
+	public void setHoraIniExpediente( Integer horaIniExpediente )
+	{
+		this.horaIniExpediente = horaIniExpediente;
+	}
+
+	public Integer getMinutoIniExpediente()
+	{
+		return minutoIniExpediente;
+	}
+
+	public void setMinutoIniExpediente( Integer minutoIniExpediente )
+	{
+		this.minutoIniExpediente = minutoIniExpediente;
+	}
+
+	public Integer getHoraFimExpediente()
+	{
+		return horaFimExpediente;
+	}
+
+	public void setHoraFimExpediente( Integer horaFimExpediente )
+	{
+		this.horaFimExpediente = horaFimExpediente;
+	}
+
+	public Integer getMinutoFimExpediente()
+	{
+		return minutoFimExpediente;
+	}
+
+	public void setMinutoFimExpediente( Integer minutoFimExpediente )
+	{
+		this.minutoFimExpediente = minutoFimExpediente;
+	}
 
 	
-	
-
 }
