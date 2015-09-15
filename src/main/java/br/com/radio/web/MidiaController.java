@@ -263,6 +263,8 @@ public class MidiaController extends AbstractController {
 			
 			Page<Midia> midiaPage = null;
 
+			
+			// Melhorar para ignorar o case... vai ter que fazer select específico
 			if ( categorias != null && categorias.length > 0 )
 				midiaPage = midiaRepo.findByAmbientesAndNomeContainingAndCategoriasIn( ambiente, "%"+nome+"%", Categoria.listByIds( categorias ), pageable );
 			else

@@ -151,8 +151,6 @@
         for ( var k in formparams )
             params[k] = formparams[k];
         
-        console.log( params );
-        
         return params;
     }
     

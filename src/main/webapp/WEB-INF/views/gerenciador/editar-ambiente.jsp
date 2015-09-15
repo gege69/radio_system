@@ -269,7 +269,7 @@
                 
             }).done( function(json){ 
 
-                if (json.id != null){
+                if (json.ok == 1){
                     preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
                     jump(''); // topo da pagina
                 }

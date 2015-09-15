@@ -165,9 +165,9 @@ public class AmbienteController extends AbstractController {
 
 			try
 			{
-				ambiente = ambienteService.saveAmbiente( ambiente );
+				ambienteService.saveAmbiente( ambiente );
 				
-				jsonResult = writeObjectAsString( ambiente );
+				jsonResult = getOkResponse();
 			}
 			catch ( Exception e )
 			{
