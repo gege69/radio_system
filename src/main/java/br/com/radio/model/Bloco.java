@@ -136,6 +136,42 @@ public class Bloco implements Serializable {
 		this.indexHoraCerta = indexHoraCerta;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idBloco == null ) ? 0 : idBloco.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Bloco other = (Bloco) obj;
+		if ( idBloco == null )
+		{
+			if ( other.idBloco != null )
+				return false;
+		}
+		else if ( !idBloco.equals( other.idBloco ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Bloco [idBloco=%s, ambiente=%s, posicaoVinheta=%s, qtdMusicas=%s, qtdComerciais=%s, indexInstitucionais=%s, indexProgrametes=%s, indexHoraCerta=%s]", idBloco, ambiente,
+				posicaoVinheta, qtdMusicas, qtdComerciais, indexInstitucionais, indexProgrametes, indexHoraCerta );
+	}
+
 	
 	
 

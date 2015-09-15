@@ -31,7 +31,7 @@ public class Permissao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_permissao", nullable = false )
-	private Long id_permissao;
+	private Long idPermissao;
 	
 	@NotNull( message = "O alias da Permissão é de preenchimento obrigatório" )
 	@Column( name = "codigo", nullable = false, columnDefinition = "TEXT" )
@@ -48,43 +48,14 @@ public class Permissao implements Serializable {
     @OneToMany(mappedBy="permissaoPai")
     private List<Permissao> permissoesFilhas;
 	
-	@Override
-	public int hashCode()
+	public Long getIdPermissao()
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ( ( id_permissao == null ) ? 0 : id_permissao.hashCode() );
-		return result;
+		return idPermissao;
 	}
 
-	@Override
-	public boolean equals( Object obj )
+	public void setIdPermissao( Long idPermissao )
 	{
-		if ( this == obj )
-			return true;
-		if ( obj == null )
-			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
-		Permissao other = (Permissao) obj;
-		if ( id_permissao == null )
-		{
-			if ( other.id_permissao != null )
-				return false;
-		}
-		else if ( !id_permissao.equals( other.id_permissao ) )
-			return false;
-		return true;
-	}
-
-	public Long getId_permissao()
-	{
-		return id_permissao;
-	}
-
-	public void setId_permissao( Long id_permissao )
-	{
-		this.id_permissao = id_permissao;
+		this.idPermissao = idPermissao;
 	}
 
 	public String getCodigo()
@@ -127,7 +98,40 @@ public class Permissao implements Serializable {
 		this.permissoesFilhas = permissoesFilhas;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idPermissao == null ) ? 0 : idPermissao.hashCode() );
+		return result;
+	}
 
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Permissao other = (Permissao) obj;
+		if ( idPermissao == null )
+		{
+			if ( other.idPermissao != null )
+				return false;
+		}
+		else if ( !idPermissao.equals( other.idPermissao ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Permissao [idPermissao=%s, codigo=%s, descricao=%s, permissaoPai=%s ]", idPermissao, codigo, descricao, permissaoPai );
+	}
 	
 
 }

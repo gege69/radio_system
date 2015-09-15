@@ -40,7 +40,7 @@ public class PerfilPermissao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_perfperm", nullable = false )
-	private Long id_perfperm;
+	private Long idPerfperm;
 
 	@ManyToOne
 	@JoinColumn(name="id_perfil")
@@ -57,14 +57,14 @@ public class PerfilPermissao implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
-	public Long getId_perfperm()
+	public Long getIdPerfperm()
 	{
-		return id_perfperm;
+		return idPerfperm;
 	}
 
-	public void setId_perfperm( Long id_perfperm )
+	public void setIdPerfperm( Long idPerfperm )
 	{
-		this.id_perfperm = id_perfperm;
+		this.idPerfperm = idPerfperm;
 	}
 
 	public Perfil getPerfil()
@@ -96,9 +96,41 @@ public class PerfilPermissao implements Serializable {
 	{
 		this.dataCriacao = dataCriacao;
 	}
-	
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idPerfperm == null ) ? 0 : idPerfperm.hashCode() );
+		return result;
+	}
 
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		PerfilPermissao other = (PerfilPermissao) obj;
+		if ( idPerfperm == null )
+		{
+			if ( other.idPerfperm != null )
+				return false;
+		}
+		else if ( !idPerfperm.equals( other.idPerfperm ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "PerfilPermissao [idPerfperm=%s, perfil=%s, permissao=%s ]", idPerfperm, perfil, permissao );
+	}
 	
 
 }

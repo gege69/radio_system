@@ -503,5 +503,42 @@ public class Ambiente implements Serializable {
 	{
 		this.bloco = bloco;
 	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idAmbiente == null ) ? 0 : idAmbiente.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Ambiente other = (Ambiente) obj;
+		if ( idAmbiente == null )
+		{
+			if ( other.idAmbiente != null )
+				return false;
+		}
+		else if ( !idAmbiente.equals( other.idAmbiente ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Ambiente [idAmbiente=%s, nome=%s]", idAmbiente, nome );
+	}
+	
+	
 	
 }

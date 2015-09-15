@@ -309,17 +309,6 @@
 
 
 
-<script id="viewTmpl" type="text/x-jsrender">
-    
-      <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <label>
-          <input type="checkbox" id="genero-{{:id_genero}}" name="genero[id_genero]" value="{{:id_genero}}"> {{:descricao}}
-        </label>
-      </div>
-      
-</script>  
-
-
 <script type="text/javascript">
 
 
@@ -380,17 +369,7 @@
         
     }
     
-    var makeListTmpl = function(json){
-        
-        var tmpl = $.templates('#viewTmpl');
-        
-        $('#view-container').empty();
-        
-        var content = tmpl.render(json.rows);
-        
-        $('#view-container').append(content);
-    };
-    
+
     var refreshValorSlider = function(slideEvt) {
         var campoId = slideEvt.target.id;
         $("#"+campoId+"Val").text(slideEvt.value);

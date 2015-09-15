@@ -27,7 +27,7 @@ public class Empresa implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_empresa", nullable = false )
-	private Long id_empresa;
+	private Long idEmpresa;
 	
 	@NotNull( message = "O CNPJ da empresa é de preenchimento obrigatório" )
 	@Column( name = "cnpj", nullable = false, length = 14 )
@@ -67,14 +67,14 @@ public class Empresa implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
-	public Long getId_empresa()
+	public Long getIdEmpresa()
 	{
-		return id_empresa;
+		return idEmpresa;
 	}
 
-	public void setId_empresa( Long id_empresa )
+	public void setIdEmpresa( Long idEmpresa )
 	{
-		this.id_empresa = id_empresa;
+		this.idEmpresa = idEmpresa;
 	}
 
 	public String getCnpj()
@@ -156,5 +156,42 @@ public class Empresa implements Serializable {
 	{
 		this.ativo = ativo;
 	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idEmpresa == null ) ? 0 : idEmpresa.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Empresa other = (Empresa) obj;
+		if ( idEmpresa == null )
+		{
+			if ( other.idEmpresa != null )
+				return false;
+		}
+		else if ( !idEmpresa.equals( other.idEmpresa ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Empresa [idEmpresa=%s, cnpj=%s, razaosocial=%s]", idEmpresa, cnpj, razaosocial );
+	}
+	
+	
 	
 }

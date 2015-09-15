@@ -30,7 +30,7 @@ public class MidiaGenero implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_mediagen", nullable = false )
-	private Long id_mediagen;
+	private Long idMediagen;
 
 	@ManyToOne
 	@JoinColumn(name="id_genero")
@@ -40,14 +40,14 @@ public class MidiaGenero implements Serializable {
 	@JoinColumn(name="id_midia")
 	private Midia midia;
 
-	public Long getId_mediagen()
+	public Long getIdMediagen()
 	{
-		return id_mediagen;
+		return idMediagen;
 	}
 
-	public void setId_mediagen( Long id_mediagen )
+	public void setIdMediagen( Long idMediagen )
 	{
-		this.id_mediagen = id_mediagen;
+		this.idMediagen = idMediagen;
 	}
 
 	public Genero getGenero()
@@ -68,6 +68,41 @@ public class MidiaGenero implements Serializable {
 	public void setMidia( Midia midia )
 	{
 		this.midia = midia;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idMediagen == null ) ? 0 : idMediagen.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		MidiaGenero other = (MidiaGenero) obj;
+		if ( idMediagen == null )
+		{
+			if ( other.idMediagen != null )
+				return false;
+		}
+		else if ( !idMediagen.equals( other.idMediagen ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "MidiaGenero [idMediagen=%s, genero=%s, midia=%s]", idMediagen, genero, midia );
 	}
 
 	

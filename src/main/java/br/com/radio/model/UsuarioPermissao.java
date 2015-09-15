@@ -40,7 +40,7 @@ public class UsuarioPermissao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_usuperm", nullable = false )
-	private Long id_usuperm;
+	private Long idUsuperm;
 
 	@ManyToOne
 	@JoinColumn(name="id_usuario")
@@ -57,14 +57,14 @@ public class UsuarioPermissao implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
-	public Long getId_usuperm()
+	public Long getIdUsuperm()
 	{
-		return id_usuperm;
+		return idUsuperm;
 	}
 
-	public void setId_usuperm( Long id_usuperm )
+	public void setIdUsuperm( Long idUsuperm )
 	{
-		this.id_usuperm = id_usuperm;
+		this.idUsuperm = idUsuperm;
 	}
 
 	public Usuario getUsuario()
@@ -104,6 +104,39 @@ public class UsuarioPermissao implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idUsuperm == null ) ? 0 : idUsuperm.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		UsuarioPermissao other = (UsuarioPermissao) obj;
+		if ( idUsuperm == null )
+		{
+			if ( other.idUsuperm != null )
+				return false;
+		}
+		else if ( !idUsuperm.equals( other.idUsuperm ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "UsuarioPermissao [idUsuperm=%s, usuario=%s, permissao=%s]", idUsuperm, usuario, permissao );
+	}
 		
 }

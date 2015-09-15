@@ -27,20 +27,20 @@ public class Perfil implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_perfil", nullable = false )
-	private Long id_perfil;
+	private Long idPerfil;
 
 	@NotNull( message = "O nome do Perfil é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, columnDefinition = "TEXT" )
 	private String nome;
 
-	public Long getId_perfil()
+	public Long getIdPerfil()
 	{
-		return id_perfil;
+		return idPerfil;
 	}
 
-	public void setId_perfil( Long id_perfil )
+	public void setIdPerfil( Long idPerfil )
 	{
-		this.id_perfil = id_perfil;
+		this.idPerfil = idPerfil;
 	}
 
 	public String getNome()
@@ -51,6 +51,41 @@ public class Perfil implements Serializable {
 	public void setNome( String nome )
 	{
 		this.nome = nome;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Perfil [idPerfil=%s, nome=%s]", idPerfil, nome );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idPerfil == null ) ? 0 : idPerfil.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Perfil other = (Perfil) obj;
+		if ( idPerfil == null )
+		{
+			if ( other.idPerfil != null )
+				return false;
+		}
+		else if ( !idPerfil.equals( other.idPerfil ) )
+			return false;
+		return true;
 	}
 
 

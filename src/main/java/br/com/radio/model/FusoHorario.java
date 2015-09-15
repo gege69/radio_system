@@ -27,7 +27,7 @@ public class FusoHorario implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_fusohorario", nullable = false )
-	private Long id_fusohorario;
+	private Long idFusohorario;
 
 	@NotNull( message = "O offset do Fuso Horário é de preenchimento obrigatório" )
 	@Column( name = "offsetfuso", nullable = false, length = 20 )
@@ -44,14 +44,14 @@ public class FusoHorario implements Serializable {
 	@Column( name = "ordercomum" )
 	private Integer orderComum;  // atribui uma prioridade de mais utilizados para poder ordenar. Brasilia por exemplo será inserido com 0, Manaus como 1, etc
 
-	public Long getId_fusohorario()
+	public Long getIdFusohorario()
 	{
-		return id_fusohorario;
+		return idFusohorario;
 	}
 
-	public void setId_fusohorario( Long id_fusohorario )
+	public void setIdFusohorario( Long idFusohorario )
 	{
-		this.id_fusohorario = id_fusohorario;
+		this.idFusohorario = idFusohorario;
 	}
 
 	public String getOffsetfuso()
@@ -100,8 +100,40 @@ public class FusoHorario implements Serializable {
 		orderComum = 99;
 	}
 
-	
-	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idFusohorario == null ) ? 0 : idFusohorario.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		FusoHorario other = (FusoHorario) obj;
+		if ( idFusohorario == null )
+		{
+			if ( other.idFusohorario != null )
+				return false;
+		}
+		else if ( !idFusohorario.equals( other.idFusohorario ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "FusoHorario [idFusohorario=%s, alias=%s]", idFusohorario, alias );
+	}
 	
 
 }

@@ -36,7 +36,7 @@ public class Genero implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_genero", nullable = false )
-	private Long id_genero;
+	private Long idGenero;
 
 	@NotNull( message = "O nome do Gênero é de preenchimento obrigatório" )
 	@Column( name = "genero", nullable = false, columnDefinition = "TEXT" )
@@ -54,14 +54,14 @@ public class Genero implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
-	public Long getId_genero()
+	public Long getIdGenero()
 	{
-		return id_genero;
+		return idGenero;
 	}
 
-	public void setId_genero( Long id_genero )
+	public void setIdGenero( Long idGenero )
 	{
-		this.id_genero = id_genero;
+		this.idGenero = idGenero;
 	}
 
 	public String getNome()
@@ -92,6 +92,41 @@ public class Genero implements Serializable {
 	public void setDataCriacao( Date dataCriacao )
 	{
 		this.dataCriacao = dataCriacao;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idGenero == null ) ? 0 : idGenero.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Genero other = (Genero) obj;
+		if ( idGenero == null )
+		{
+			if ( other.idGenero != null )
+				return false;
+		}
+		else if ( !idGenero.equals( other.idGenero ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Genero [idGenero=%s, nome=%s]", idGenero, nome );
 	}
 	
 	

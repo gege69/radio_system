@@ -65,12 +65,12 @@ public class AmbienteService {
 		{
 			List<Genero> generos = generoList.getLista();
 			
-			List<Long> idsGeneros = generos.stream().map( Genero::getId_genero ).collect( Collectors.toList() );
+			List<Long> idsGeneros = generos.stream().map( Genero::getIdGenero ).collect( Collectors.toList() );
 
 			ambienteGeneroRepo.deleteByAmbienteNotInIds( idAmbiente, idsGeneros ); 
 			
 			generos.stream().forEach( g -> {
-				Genero genero = generoRepo.findOne( g.getId_genero() );
+				Genero genero = generoRepo.findOne( g.getIdGenero() );
 				
 				if ( genero != null )
 				{

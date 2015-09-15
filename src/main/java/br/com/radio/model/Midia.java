@@ -136,37 +136,6 @@ public class Midia implements Serializable {
 	@Column( name="genre", columnDefinition = "TEXT")
 	private String genre;
 	
- 	
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ( ( idMidia == null ) ? 0 : idMidia.hashCode() );
-		return result;
-	}
-
-	@Override
-	public boolean equals( Object obj )
-	{
-		if ( this == obj )
-			return true;
-		if ( obj == null )
-			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
-		Midia other = (Midia) obj;
-		if ( idMidia == null )
-		{
-			if ( other.idMidia != null )
-				return false;
-		}
-		else if ( !idMidia.equals( other.idMidia ) )
-			return false;
-		return true;
-	}
-
-	
 	
 	public Long getIdMidia()
 	{
@@ -392,8 +361,34 @@ public class Midia implements Serializable {
 		return String.format( "Midia [idMidia=%s, nome=%s]", idMidia, nome );
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idMidia == null ) ? 0 : idMidia.hashCode() );
+		return result;
+	}
 
-	
-	
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Midia other = (Midia) obj;
+		if ( idMidia == null )
+		{
+			if ( other.idMidia != null )
+				return false;
+		}
+		else if ( !idMidia.equals( other.idMidia ) )
+			return false;
+		return true;
+	}
+
 
 }

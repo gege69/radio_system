@@ -507,5 +507,49 @@ public class AmbienteConfiguracao implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idAmbConfig == null ) ? 0 : idAmbConfig.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		AmbienteConfiguracao other = (AmbienteConfiguracao) obj;
+		if ( idAmbConfig == null )
+		{
+			if ( other.idAmbConfig != null )
+				return false;
+		}
+		else if ( !idAmbConfig.equals( other.idAmbConfig ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String
+				.format(
+						"AmbienteConfiguracao [idAmbConfig=%s, ambiente=%s, autoplay=%s, selecaoGenero=%s, avancarRetornar=%s, atendimento=%s, chamVeiculo=%s, chamFuncionarios=%s, chamVariosFuncionarios=%s, chamInstantanea=%s, rodoviarias=%s, horoscopo=%s, agendMidia=%s, relatoriosMidia=%s, controleBlocos=%s, controleComerciais=%s, controleInstitucionais=%s, controleProgrametes=%s, nobreak=%s, menuDownloads=%s, locutorVirtual=%s, pedidoMusical=%s, pedidoMusicalVinheta=%s, generosByCC=%s, opcionais=%s, vozLocucao=%s, controleVolumeIndividual=%s, volumeMusicas=%s, volumeChamadas=%s, volumeComerciais=%s, volumeGeral=%s, dataCriacao=%s, usuarioCriacao=%s, dataAlteracao=%s, usuarioAlteracao=%s]",
+						idAmbConfig, ambiente, autoplay, selecaoGenero, avancarRetornar, atendimento, chamVeiculo, chamFuncionarios, chamVariosFuncionarios, chamInstantanea, rodoviarias, horoscopo,
+						agendMidia, relatoriosMidia, controleBlocos, controleComerciais, controleInstitucionais, controleProgrametes, nobreak, menuDownloads, locutorVirtual, pedidoMusical,
+						pedidoMusicalVinheta, generosByCC, opcionais, vozLocucao, controleVolumeIndividual, volumeMusicas, volumeChamadas, volumeComerciais, volumeGeral, dataCriacao, usuarioCriacao,
+						dataAlteracao, usuarioAlteracao );
+	}
+
+
+	
+	
 	
 }

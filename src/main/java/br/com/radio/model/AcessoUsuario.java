@@ -37,7 +37,7 @@ public class AcessoUsuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_acesso", nullable = false )
-	private Long id_acesso;
+	private Long idAcesso;
 
 	@OneToOne
 	@JoinColumn( name="id_usuario" )
@@ -62,16 +62,16 @@ public class AcessoUsuario implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
-	public Long getId_acesso()
+	public Long getIdAcesso()
 	{
-		return id_acesso;
+		return idAcesso;
 	}
 
-	public void setId_acesso( Long id_acesso )
+	public void setIdAcesso( Long idAcesso )
 	{
-		this.id_acesso = id_acesso;
+		this.idAcesso = idAcesso;
 	}
-
+	
 	public Usuario getUsuario()
 	{
 		return usuario;
@@ -110,6 +110,41 @@ public class AcessoUsuario implements Serializable {
 	public void setDataCriacao( Date dataCriacao )
 	{
 		this.dataCriacao = dataCriacao;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idAcesso == null ) ? 0 : idAcesso.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		AcessoUsuario other = (AcessoUsuario) obj;
+		if ( idAcesso == null )
+		{
+			if ( other.idAcesso != null )
+				return false;
+		}
+		else if ( !idAcesso.equals( other.idAcesso ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "AcessoUsuario [idAcesso=%s, usuario=%s]", idAcesso, usuario );
 	}
 
 	

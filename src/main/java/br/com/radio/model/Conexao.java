@@ -37,7 +37,7 @@ public class Conexao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_conexao", nullable = false )
-	private Long id_conexao;
+	private Long idConexao;
 	
 	@ManyToOne
 	@JoinColumn(name="id_ambiente")
@@ -62,14 +62,14 @@ public class Conexao implements Serializable {
 	@Column( name = "dados", columnDefinition = "TEXT" )
 	private String dados;
 
-	public Long getId_conexao()
+	public Long getIdConexao()
 	{
-		return id_conexao;
+		return idConexao;
 	}
 
-	public void setId_conexao( Long id_conexao )
+	public void setIdConexao( Long idConexao )
 	{
-		this.id_conexao = id_conexao;
+		this.idConexao = idConexao;
 	}
 
 	public Ambiente getAmbiente()
@@ -121,9 +121,41 @@ public class Conexao implements Serializable {
 	{
 		this.dados = dados;
 	}
-	
-	
-	
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idConexao == null ) ? 0 : idConexao.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Conexao other = (Conexao) obj;
+		if ( idConexao == null )
+		{
+			if ( other.idConexao != null )
+				return false;
+		}
+		else if ( !idConexao.equals( other.idConexao ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Conexao [idConexao=%s, ambiente=%s, dataConexao=%s]", idConexao, ambiente, dataConexao );
+	}
 	
 
 }

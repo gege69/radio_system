@@ -9,8 +9,10 @@ INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval
 INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Institucional', 'Institucional', 'inst' );
 INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Comercial', 'Comercial', 'comercial' );
 INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Programete', 'Programete', 'programete' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Funcionário', 'Chamada Funcionário', 'chamada-func' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Instantânea', 'Chamada Instantânea', 'chamada-inst' );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Instantânea', 'Chamada Instantânea', 'chamada_inst' );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Nome da chamada de Funcionário', 'Chamada Funcionário (Nome)', 'chamada_func_nome' );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Frase da chamada de Funcionário', 'Chamada Funcionário (Frase)', 'chamada_func_frase' );
+
 
 
 INSERT INTO FUSO_HORARIO (id_fusohorario, offsetfuso, canonid, alias, ordercomum ) VALUES ( nextval('fuso_horario_id_fusohorario_seq'), '-05:00', 'America/Lima'    , 'Acre', 2 );

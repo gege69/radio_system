@@ -31,7 +31,7 @@ public class Usuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_usuario", nullable = false )
-	private Long id_usuario;
+	private Long idUsuario;
 	
 	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY)
@@ -76,14 +76,14 @@ public class Usuario implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
-	public Long getId_usuario()
+	public Long getIdUsuario()
 	{
-		return id_usuario;
+		return idUsuario;
 	}
 
-	public void setId_usuario( Long id_usuario )
+	public void setIdUsuario( Long idUsuario )
 	{
-		this.id_usuario = id_usuario;
+		this.idUsuario = idUsuario;
 	}
 
 	public String getNome()
@@ -166,7 +166,39 @@ public class Usuario implements Serializable {
 		this.empresa = empresa;
 	}
 
-	
-	
-	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idUsuario == null ) ? 0 : idUsuario.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Usuario other = (Usuario) obj;
+		if ( idUsuario == null )
+		{
+			if ( other.idUsuario != null )
+				return false;
+		}
+		else if ( !idUsuario.equals( other.idUsuario ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Usuario [idUsuario=%s, empresa=%s, nome=%s, email=%s, login=%s, password=%s, dataCriacao=%s]", idUsuario, empresa, nome, email, login, password, dataCriacao );
+	}
+
 }

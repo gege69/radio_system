@@ -139,7 +139,7 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Fuso-horário:</label>
                   <div class="col-sm-4 col-md-6">
-                    <select class="form-control" id="id_fusohorario_fuh" name="fusoHorario[id_fusohorario]">
+                    <select class="form-control" id="idFusohorario" name="fusoHorario[idFusohorario]">
                     </select>
                   </div>
                 </div>
@@ -226,8 +226,8 @@
         }).done( function(json) {
             $.each( json.rows , function (i, fuso){
                 var text_str = fuso.offsetfuso + " - " + fuso.alias
-                $('#id_fusohorario_fuh').append($('<option>', { 
-                    value: fuso.id_fusohorario,
+                $('#idFusohorario').append($('<option>', { 
+                    value: fuso.idFusohorario,
                     text : text_str  
                 }));
             });

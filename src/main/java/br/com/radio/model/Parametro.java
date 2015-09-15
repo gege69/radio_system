@@ -23,7 +23,7 @@ public class Parametro implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_parametro", nullable = false )
-	private Long id_parametro;
+	private Long idParametro;
 	
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn( name="id_empresa", nullable=false )
@@ -43,14 +43,14 @@ public class Parametro implements Serializable {
 	@Column( name = "type", columnDefinition = "TEXT" )
 	private String type;
 
-	public Long getId_parametro()
+	public Long getIdParametro()
 	{
-		return id_parametro;
+		return idParametro;
 	}
 
-	public void setId_parametro( Long id_parametro )
+	public void setIdParametro( Long idParametro )
 	{
-		this.id_parametro = id_parametro;
+		this.idParametro = idParametro;
 	}
 
 	public Empresa getEmpresa()
@@ -102,8 +102,40 @@ public class Parametro implements Serializable {
 	{
 		this.valor = valor;
 	}
-	
-		
-	
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idParametro == null ) ? 0 : idParametro.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Parametro other = (Parametro) obj;
+		if ( idParametro == null )
+		{
+			if ( other.idParametro != null )
+				return false;
+		}
+		else if ( !idParametro.equals( other.idParametro ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Parametro [idParametro=%s, empresa=%s, codigo=%s, valor=%s, descricao=%s, type=%s]", idParametro, empresa, codigo, valor, descricao, type );
+	}
 	
 }

@@ -239,7 +239,7 @@ public class AmbienteController extends AbstractController {
 		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
 
 		// Colecionando apenas os IDs dos gêneros que estão associados à esse ambiente
-		List<Long> ids = ambienteGeneros.stream().map( ab -> ab.getGenero().getId_genero() ).collect( Collectors.toList() );
+		List<Long> ids = ambienteGeneros.stream().map( ab -> ab.getGenero().getIdGenero() ).collect( Collectors.toList() );
 
 		JSONListWrapper<Long> jsonList = new JSONListWrapper<Long>( ids, this.qtd );
 		

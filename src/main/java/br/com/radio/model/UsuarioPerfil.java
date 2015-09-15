@@ -30,7 +30,7 @@ public class UsuarioPerfil implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_usuperf", nullable = false )
-	private Long id_usuperf;
+	private Long idUsuperf;
 
 	@ManyToOne
 	@JoinColumn(name="id_usuario")
@@ -40,14 +40,14 @@ public class UsuarioPerfil implements Serializable {
 	@JoinColumn(name="id_perfil")
 	private Perfil perfil;
 
-	public Long getId_usuperf()
+	public Long getIdUsuperf()
 	{
-		return id_usuperf;
+		return idUsuperf;
 	}
 
-	public void setId_usuperf( Long id_usuperf )
+	public void setIdUsuperf( Long idUsuperf )
 	{
-		this.id_usuperf = id_usuperf;
+		this.idUsuperf = idUsuperf;
 	}
 
 	public Usuario getUsuario()
@@ -70,6 +70,39 @@ public class UsuarioPerfil implements Serializable {
 		this.perfil = perfil;
 	}
 
-		
-	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idUsuperf == null ) ? 0 : idUsuperf.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		UsuarioPerfil other = (UsuarioPerfil) obj;
+		if ( idUsuperf == null )
+		{
+			if ( other.idUsuperf != null )
+				return false;
+		}
+		else if ( !idUsuperf.equals( other.idUsuperf ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "UsuarioPerfil [idUsuperf=%s, usuario=%s, perfil=%s]", idUsuperf, usuario, perfil );
+	}
+
 }

@@ -39,7 +39,7 @@ public class MidiaAmbiente implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_midiaamb", nullable = false )
-	private Long id_midiaamb;
+	private Long idMidiaamb;
 	
 	@ManyToOne
 	@JoinColumn(name="id_ambiente")
@@ -57,21 +57,19 @@ public class MidiaAmbiente implements Serializable {
 	
 
 	// talvez guardar o usuário que associou?
+	public Long getIdMidiaamb()
+	{
+		return idMidiaamb;
+	}
 
-
+	public void setIdMidiaamb( Long idMidiaamb )
+	{
+		this.idMidiaamb = idMidiaamb;
+	}
+	
 	public Ambiente getAmbiente()
 	{
 		return ambiente;
-	}
-
-	public Long getId_midiaamb()
-	{
-		return id_midiaamb;
-	}
-
-	public void setId_midiaamb( Long id_midiaamb )
-	{
-		this.id_midiaamb = id_midiaamb;
 	}
 
 	public void setAmbiente( Ambiente ambiente )
@@ -112,9 +110,42 @@ public class MidiaAmbiente implements Serializable {
 		this.midia = midia;
 		this.dataAssociacao = dataAssociacao;
 	}
-	
-	
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idMidiaamb == null ) ? 0 : idMidiaamb.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		MidiaAmbiente other = (MidiaAmbiente) obj;
+		if ( idMidiaamb == null )
+		{
+			if ( other.idMidiaamb != null )
+				return false;
+		}
+		else if ( !idMidiaamb.equals( other.idMidiaamb ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "MidiaAmbiente [idMidiaamb=%s, ambiente=%s, midia=%s]", idMidiaamb, ambiente, midia );
+	}
+	
 	
 
 }

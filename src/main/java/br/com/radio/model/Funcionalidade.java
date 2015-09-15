@@ -18,7 +18,7 @@ public class Funcionalidade implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_funcionalidade", nullable = false )
-	private Long id_funcionalidade;
+	private Long idFuncionalidade;
 	
 	@Column( name = "nome", columnDefinition = "TEXT" )
 	private String nome;
@@ -32,15 +32,14 @@ public class Funcionalidade implements Serializable {
 	@Column( name = "icone", columnDefinition = "TEXT" )
 	private String icone;
 
-	
-	public Long getId_funcionalidade()
+	public Long getIdFuncionalidade()
 	{
-		return id_funcionalidade;
+		return idFuncionalidade;
 	}
 
-	public void setId_funcionalidade( Long id_funcionalidade )
+	public void setIdFuncionalidade( Long idFuncionalidade )
 	{
-		this.id_funcionalidade = id_funcionalidade;
+		this.idFuncionalidade = idFuncionalidade;
 	}
 
 	public String getNome()
@@ -83,8 +82,40 @@ public class Funcionalidade implements Serializable {
 		this.icone = icone;
 	}
 
-	
-	
-	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idFuncionalidade == null ) ? 0 : idFuncionalidade.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Funcionalidade other = (Funcionalidade) obj;
+		if ( idFuncionalidade == null )
+		{
+			if ( other.idFuncionalidade != null )
+				return false;
+		}
+		else if ( !idFuncionalidade.equals( other.idFuncionalidade ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Funcionalidade [idFuncionalidade=%s, nome=%s]", idFuncionalidade, nome );
+	}
+
 	
 }
