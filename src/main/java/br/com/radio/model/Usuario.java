@@ -2,6 +2,7 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -70,6 +73,13 @@ public class Usuario implements Serializable {
 	@Column( name = "ativo" )
 	private Boolean ativo;
 
+	@ManyToMany(fetch=FetchType.EAGER)
+	   @JoinTable(name="usuario_perfil", joinColumns = { 
+	        @JoinColumn(name="id_usuario", nullable=false, updatable=false) }, inverseJoinColumns = { 
+	        @JoinColumn(name="id_perfil", nullable=false, updatable=false) })
+	private List<Perfil> perfis;
+
+	
 	public Usuario()
 	{
 		super();
@@ -200,5 +210,18 @@ public class Usuario implements Serializable {
 	{
 		return String.format( "Usuario [idUsuario=%s, empresa=%s, nome=%s, email=%s, login=%s, password=%s, dataCriacao=%s]", idUsuario, empresa, nome, email, login, password, dataCriacao );
 	}
+
+	public List<Perfil> getPerfis()
+	{
+		return perfis;
+	}
+
+	public void setPerfis( List<Perfil> perfis )
+	{
+		this.perfis = perfis;
+	}
+	
+	
+	
 
 }

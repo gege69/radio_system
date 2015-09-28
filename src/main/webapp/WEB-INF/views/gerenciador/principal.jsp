@@ -51,7 +51,7 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/view-atalho-cham-func">
                       <i class="fa fa-3x icone-main fa-users"></i>
                       <span class="label-botao-main">Chamada de</br>Funcionários</span>
                     </a>
@@ -80,9 +80,9 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/view-list-usuarios-sistema">
                       <i class="fa fa-3x icone-main fa-user-plus"></i>
-                      <span class="label-botao-main">Administradores</span>
+                      <span class="label-botao-main">Usuários do<br/>Sistema</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
@@ -103,7 +103,7 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              Você possui XX ambientes cadastrados
+              Você possui ${qtdAmbientes} ambientes cadastrados
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">

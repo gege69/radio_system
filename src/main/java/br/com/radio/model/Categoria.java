@@ -51,6 +51,9 @@ public class Categoria implements Serializable {
 	@Column( name = "codigo", columnDefinition = "TEXT" )
 	private String codigo;
 	
+	@Column( name = "simpleUpload" )
+	private Boolean simpleUpload;
+	
 	public Long getIdCategoria()
 	{
 		return idCategoria;
@@ -156,6 +159,16 @@ public class Categoria implements Serializable {
 	public String toString()
 	{
 		return String.format( "Categoria [idCategoria=%s, codigo=%s]", idCategoria, codigo );
+	}
+
+	public Boolean getSimpleUpload()
+	{
+		return simpleUpload;
+	}
+
+	public void setSimpleUpload( Boolean simpleUpload )
+	{
+		this.simpleUpload = simpleUpload;
 	}
 
 	

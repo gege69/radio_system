@@ -4,14 +4,14 @@
 
 -- SCRIPT INICIAL
 
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Música', 'Música', 'musica' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Vinheta', 'Vinheta', 'vinheta' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Institucional', 'Institucional', 'inst' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Comercial', 'Comercial', 'comercial' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Programete', 'Programete', 'programete' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Instantânea', 'Chamada Instantânea', 'chamada_inst' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Nome da chamada de Funcionário', 'Chamada Funcionário (Nome)', 'chamada_func_nome' );
-INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO ) VALUES ( nextval('categoria_id_categoria_seq'), 'Frase da chamada de Funcionário', 'Chamada Funcionário (Frase)', 'chamada_func_frase' );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Música', 'Música', 'musica', false );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Vinheta', 'Vinheta', 'vinheta', true );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Institucional', 'Institucional', 'inst', true );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Comercial', 'Comercial', 'comercial', true );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Programete', 'Programete', 'programete', true );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Instantânea', 'Chamada Instantânea', 'chamada_inst', true );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Nome da chamada de Funcionário', 'Chamada Funcionário (Nome)', 'chamada_func_nome', false );
+INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Frase da chamada de Funcionário', 'Chamada Funcionário (Frase)', 'chamada_func_frase', false );
 
 
 
@@ -30,7 +30,7 @@ insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) value
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'UPLOAD_AMBIENTE', '', null);
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'FERRAMENTAS', '', null);
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'SOFTWARES', '', null);
-insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'ADMINISTRADORES', '', null);
+insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'USUARIOS', '', null);
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'MOBILE', '', null);
 
 
@@ -64,7 +64,7 @@ INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'
 INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'UPLOAD_AMBIENTE' ) );
 INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'FERRAMENTAS' ) );
 INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'SOFTWARES' ) );
-INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'ADMINISTRADORES' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'USUARIOS' ) );
 INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'MOBILE' ) );
 
 
@@ -114,23 +114,23 @@ values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA
 
 
 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 1,  'Gêneros' ,       '/ambientes/%d/view-generos/' ,             'fa-music'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 2,  'Vinhetas' ,      '/ambientes/%d/view-list-upload-midia/vinheta/' ,     'fa-file-audio-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 3,  'Institucionais',     '/ambientes/%d/view-list-upload-midia/inst/' ,      'fa-headphones'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 4,  'Comerciais' ,      '/ambientes/%d/view-list-upload-midia/comercial/' ,   'fa-film'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 5,  'Programetes' ,     '/ambientes/%d/view-list-upload-midia/programete/' ,  'fa-bullhorn'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 6,  'Chamadas<br/>Instantâneas' , '/ambientes/%d/view-list-upload-midia/chamada-inst/' ,  'fa-bolt'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 7,  'Chamadas<br/>Funcionários' ,    '/ambientes/%d/view-list-upload-midia/chamada-func/' ,      'fa-users'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 8,  'Blocos' ,        '/ambientes/%d/view-bloco/' ,          'fa-th-large'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 9,  'Expediente' ,      '/ambientes/%d/view-expediente/' ,        'fa-clock-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 10, 'Eventos' ,       '/ambientes/%d/view-eventos/' ,         'fa-newspaper-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 11,  'Configurações' ,     '/ambientes/%d/view-configuracoes/' ,           'fa-briefcase'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 12, 'Rodoviária' ,      '/ambientes/%d/view-rodoviaria/' ,        'fa-bus'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 13, 'Relatórios' ,      '/ambientes/%d/view-relatórios/' ,        'fa-files-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Downloads' ,       '/ambientes/%d/view-downloads/' ,         'fa-floppy-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Restrições' ,      '/ambientes/%d/view-restricoes/' ,        'fa-unlock-alt'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Logomarca' ,       '/ambientes/%d/view-logomarca/' ,         'fa-trademark'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Simular' ,       '/ambientes/%d/view-simular/' ,         'fa-play'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'SendVoice' ,       '/ambientes/%d/view-sendvoice/' ,         'fa-microphone'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 1,  'Gêneros' ,       				'/ambientes/%d/view-generos/' ,             			'fa-music'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 2,  'Vinhetas' ,      				'/ambientes/%d/view-list-upload-midia/vinheta/' ,     	'fa-file-audio-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 3,  'Institucionais',     			'/ambientes/%d/view-list-upload-midia/inst/' ,      	'fa-headphones'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 4,  'Comerciais' ,      			'/ambientes/%d/view-list-upload-midia/comercial/' ,   	'fa-film'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 5,  'Programetes' ,     			'/ambientes/%d/view-list-upload-midia/programete/' ,  	'fa-bullhorn'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 6,  'Chamadas<br/>Instantâneas' , 	'/ambientes/%d/view-list-upload-midia/chamada-inst/' ,  'fa-bolt'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 7,  'Chamadas<br/>Funcionários' ,   '/ambientes/%d/view-list-chamada-funcionarios',  		'fa-users'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 8,  'Blocos' ,        				'/ambientes/%d/view-bloco/' ,          		'fa-th-large'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 9,  'Expediente' ,      			'/ambientes/%d/view-expediente/' ,        	'fa-clock-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 10, 'Eventos' ,       				'/ambientes/%d/view-eventos/' ,         	'fa-newspaper-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 11,  'Configurações' ,     			'/ambientes/%d/view-configuracoes/' ,       'fa-briefcase'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 12, 'Rodoviária' ,      			'/ambientes/%d/view-rodoviaria/' ,        	'fa-bus'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 13, 'Relatórios' ,      			'/ambientes/%d/view-relatórios/' ,        	'fa-files-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Downloads' ,       			'/ambientes/%d/view-downloads/' ,         	'fa-floppy-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Restrições' ,      			'/ambientes/%d/view-restricoes/' ,        	'fa-unlock-alt'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Logomarca' ,       			'/ambientes/%d/view-logomarca/' ,         	'fa-trademark'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Simular' ,       				'/ambientes/%d/view-simular/' ,         	'fa-play'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'SendVoice' ,       			'/ambientes/%d/view-sendvoice/' ,         	'fa-microphone'); 
 
 

@@ -109,7 +109,6 @@
                               <th data-field="inst" data-formatter="catFormatter">Institucional</th>
                               <th data-field="comercial" data-formatter="catFormatter">Comercial</th>
                               <th data-field="programete" data-formatter="catFormatter">Programete</th>
-                              <th data-field="chamada-func" data-formatter="catFormatter">Cham. Funcionário</th>
                               <th data-field="chamada-inst" data-formatter="catFormatter">Cham. Instantânea</th>
                           </tr>
                         </thead>
@@ -166,8 +165,6 @@
 
         params.pageNumber = $('#table').bootstrapTable('getOptions').pageNumber;
         
-//         console.log("xxxxx  "+JSON.stringify(params));
-        // {"limit":10,"offset":0,"order":"asc","your_param1":1,"your_param2":2}
         return params;
     }
     
@@ -177,7 +174,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/categorias',
+            url: '${context}/ambientes/categorias?simpleUpload=true',
             dataType: 'json'
         }).done( function(json){
             makeListTmpl(json);

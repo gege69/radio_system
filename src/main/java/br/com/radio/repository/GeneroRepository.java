@@ -6,5 +6,7 @@ import br.com.radio.model.Genero;
 
 public interface GeneroRepository extends JpaRepository<Genero, Long> {
 
+	
+	
 }
 	

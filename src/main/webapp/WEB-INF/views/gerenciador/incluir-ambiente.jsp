@@ -119,8 +119,8 @@
                 data: JSON.stringify( $('#ambiente-form').serializeJSON() ),
                 success: function(json){
                   
-                    if (json.idAmbiente != null){
-                      
+                    if (json.ok != null ){
+                       
                         preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
                           
                         jump(''); // topo da pagina

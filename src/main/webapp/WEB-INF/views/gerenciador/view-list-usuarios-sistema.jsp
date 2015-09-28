@@ -12,8 +12,8 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Administrar Ambiente<br/>
-            <small>Você possui ${qtdAmbientes} ambiente(es) cadastrado(s)</small>
+          <h3>Usuários do Painel<br/>
+            <small>Pessoas autorizadas a acessar seu painel de controle</small>
           </h3>
           
           <div class="spacer-vertical20"></div>
@@ -22,9 +22,9 @@
             <div class="col-lg-12 col-md-12">
             
               <table  
-                 id="table-admin"
+                 id="table-usu"
                  data-toggle="table"
-                 data-url="${context}/ambientes"
+                 data-url="${context}/usuarios"
                  data-height="400"
                  data-side-pagination="server"
                  data-pagination="true"
@@ -33,8 +33,8 @@
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="nome" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" data-formatter="nomeFormatter">Nome</th>
-                      <th data-field="espelhar" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="espelharFormatter" data-halign="center" data-align="center">Espelhar</th>
+                      <th data-field="nome" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" data-formatter="nomeFormatter">Usuário</th>
+                      <th data-field="perfis" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" data-formatter="perfisFormatter">Perfis</th>
                       <th data-field="editar" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="editarFormatter" data-halign="center" data-align="center">Editar</th>
                       <th data-field="remover" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="removeFormatter" data-halign="center" data-align="center">Remover</th>
                   </tr>
@@ -44,21 +44,11 @@
             </div>
           </div>
           
-          <div class="row">
-            <div class="col-lg-10 col-md-10">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="check_pacote"> Exibir somente ambientes com pacote de Programetes opcionais
-                </label>
-              </div>
-            </div>
-          </div>
-          
           <div class="spacer-vertical40"></div>
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                <a class="btn btn-primary" href="${context}/incluir-ambiente">Adicionar Novo Ambiente</a>
+                <a class="btn btn-primary" href="${context}/view-usuario">Adicionar Novo Usuário</a>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
@@ -81,27 +71,40 @@
 
     function queryParams(params) {
 
-        params.pageNumber = $('#table-admin').bootstrapTable('getOptions').pageNumber;
+        params.pageNumber = $('#table-usu').bootstrapTable('getOptions').pageNumber;
         
         return params;
     }
 
     function nomeFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/view-ambiente/'+ row.idAmbiente +'">' + value + '</a>';
-    }
-    
-    function espelharFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/espelhar-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-files-o"></i></a>';
+        return '<a class="btn btn-link" href="${context}/view-usuario/'+ row.idUsuario +'">' + value + '</a>';
     }
     
     function editarFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/editar-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
+        return '<a class="btn btn-link" href="${context}/view-usuario/'+ row.idUsuario +'"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
     }
 
     function removeFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/remover-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-trash-o"></i></a>';
+        return '<a class="btn btn-link" href="${context}/remover-usuario/'+ row.idUsuario +'"> <i class="fa fa-lg fa-trash-o"></i></a>';
     }
+    
+    function perfisFormatter(value, row) {
 
+        var result = '';
+        
+        if ( value )
+        {
+            for (var i=0; i < value.length; i++){
+                
+                if ( result.length > 0 )
+                    result += ', ';
+                
+                result += value[i].nome;
+            }
+        }
+        
+        return result;
+    }
 
     $(function(){
         

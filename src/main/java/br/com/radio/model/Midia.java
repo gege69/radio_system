@@ -80,7 +80,6 @@ public class Midia implements Serializable {
 	        @JoinColumn(name="id_ambiente", nullable=false, updatable=false) })
 	private List<Ambiente> ambientes;
 	
-	
 	// Ao contrário dos outros registros essa data serve para guardar quando o arquivo (música/gravação) foi criado/gravado/lançado
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)

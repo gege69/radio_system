@@ -144,9 +144,6 @@ jQuery.fn.populate = function(obj, options) {
 						continue;
 					}
 					
-                   debug('Elemento ' + element + ' ' + element.type);
-
-					
 				// anything else, process
 					switch(element.type || element.tagName)
 					{

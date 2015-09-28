@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -83,6 +84,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = "/view-ambiente/{idAmbiente}", method = RequestMethod.GET )
+	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
 	public String viewAmbiente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -101,7 +103,85 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-expediente", method = RequestMethod.GET )
+	public String viewExpediente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/view-expediente";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-generos", method = RequestMethod.GET )
+	public String viewGeneros( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/view-generos";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-configuracoes", method = RequestMethod.GET )
+	public String viewConfiguracoes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/view-configuracoes";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-bloco", method = RequestMethod.GET )
+	public String viewBlocos( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/view-bloco";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@RequestMapping( value = { "/ambientes/{idAmbiente}", "/api/ambientes/{idAmbiente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
 	public @ResponseBody Ambiente getAmbiente( @PathVariable Long idAmbiente, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -140,11 +220,17 @@ public class AmbienteController extends AbstractController {
 	
 	@RequestMapping( value = { "/ambientes", "/api/ambientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Ambiente> listAmbiente( @RequestParam(value="pagina", required=false) Integer pagina, 
-																 @RequestParam(value="limit", required=false) Integer limit )
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 Principal principal )
 	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			return null;
+		
 		Pageable pageable = getPageable( pagina, limit );
 			
-		Page<Ambiente> ambientePage = ambienteRepo.findAll( pageable );
+		Page<Ambiente> ambientePage = ambienteRepo.findByEmpresa( pageable, usuario.getEmpresa() );
 		
 		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
 
@@ -194,22 +280,6 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-generos", method = RequestMethod.GET )
-	public String viewGeneros( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
-	{
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "ambiente/view-generos";
-		}
-		else
-			return "HTTPerror/404";
-	}
-	
 
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos", "/api/ambientes/{idAmbiente}/generos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -228,7 +298,7 @@ public class AmbienteController extends AbstractController {
 		
 	
 	
-	// DEPOIS MUDAR ISSO... PRA TALVEZ FAZER APENAS 1 REQUISIÇÃO.... 
+ 
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos-associacao", "/api/ambientes/{idAmbiente}/generos-associacao" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Long> getGenerosAssoc( @PathVariable Long idAmbiente, HttpServletResponse response )
@@ -275,32 +345,19 @@ public class AmbienteController extends AbstractController {
 	
 	@RequestMapping( value = { 	"/ambientes/categorias", "/api/ambientes/categorias" }, 
 			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Categoria> getCategorias( HttpServletResponse response )
+	public @ResponseBody JSONListWrapper<Categoria> getCategorias( @RequestParam(value="simpleUpload", required=false) Boolean simpleUpload, HttpServletResponse response )
 	{
-		List<Categoria> categorias = categoriaRepo.findAll();
+		List<Categoria> categorias = null;
 		
+		if ( simpleUpload != null )
+			categorias = categoriaRepo.findBySimpleUpload( simpleUpload );
+		else
+			categorias = categoriaRepo.findAll();
+		
+		// O parametro upload caso seja true filtra o download apenas para categorias onde o usuário pode fazer upload pela tela de Ambiente
 		JSONListWrapper<Categoria> jsonList = new JSONListWrapper<Categoria>( categorias, this.qtd );
 		
 		return jsonList;
-	}
-	
-	
-	
-	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-configuracoes", method = RequestMethod.GET )
-	public String viewConfiguracoes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
-	{
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "ambiente/view-configuracoes";
-		}
-		else
-			return "HTTPerror/404";
 	}
 	
 	
@@ -373,23 +430,6 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
-	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-expediente", method = RequestMethod.GET )
-	public String viewExpediente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
-	{
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "ambiente/view-expediente";
-		}
-		else
-			return "HTTPerror/404";
-	}
-	
 
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/expediente", "/api/ambientes/{idAmbiente}/expediente" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String saveExpediente( @PathVariable Long idAmbiente, @RequestBody Ambiente ambienteDTO, BindingResult result )
@@ -423,24 +463,6 @@ public class AmbienteController extends AbstractController {
 		return jsonResult;
 	}	
 	
-	
-	
-	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-bloco", method = RequestMethod.GET )
-	public String viewBlocos( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
-	{
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "ambiente/view-bloco";
-		}
-		else
-			return "HTTPerror/404";
-	}
 	
 	
 	@RequestMapping( value = { "/ambientes/{idAmbiente}/bloco", "/api/ambientes/{idAmbiente}/bloco" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )

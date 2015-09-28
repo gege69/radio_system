@@ -164,6 +164,19 @@
             
             
             <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <div class="pull-right">
+                  <button type="button" class="btn btn-primary" id="btnSalvar">
+                    <i class="fa fa-floppy-o"></i>
+                    Salvar Alterações
+                  </button>
+                </div>            
+              </div>
+            </div>
+            
+            <div class="spacer-vertical40"></div>
+            
+            <div class="row">
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="">
                   <a class="btn btn-default" href="${context}/administrar-ambiente" >
@@ -173,25 +186,18 @@
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary" id="btnSalvar">
-                    <i class="fa fa-floppy-o"></i>
-                    Salvar Alterações
-                  </button>
-                </div>            
+                  <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+                </div>
               </div>
             </div>
                         
           </form>
-          <div class="spacer-vertical40"></div>
+          
         </div>
       </div>
     </div>
     
-    <div class="row">
-      <div class="pull-right">
-        <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
-      </div>
-    </div>
+
       
   </div> <!-- /container -->
 

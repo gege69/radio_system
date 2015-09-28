@@ -12,10 +12,14 @@ import net.openhft.hashing.LongHashFunction;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Empresa;
@@ -64,7 +68,7 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( file );
 		
-		Midia midia = salvaMidia( file, empresa, categorias, hash );
+		Midia midia = salvaMidia( file, empresa, categorias, hash, null );
 
 //		boolean aoMenosUm = false;
 		for ( Long id : ambientes )
@@ -84,21 +88,39 @@ public class MidiaService {
 	}
 	
 	
+	public void saveUpload( MultipartFile file, String codigoCategoria, Empresa empresa, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
+		
+		if ( categoria == null )
+			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
+		
+		saveUpload( file, new Long[] { categoria.getIdCategoria() }, empresa, ambiente, descricao );
+	}
+	
+
+	
 	public void saveUpload( MultipartFile file, Long[] categorias, Empresa empresa, Ambiente ambiente ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		saveUpload( file, categorias, empresa, ambiente, null );
+	}
+	
+	
+	public void saveUpload( MultipartFile file, Long[] categorias, Empresa empresa, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
 		String hash = geraHashDoArquivo( file );
 		
-		Midia midia = salvaMidia( file, empresa, categorias, hash );
+		Midia midia = salvaMidia( file, empresa, categorias, hash, descricao );
 		
 		associaMidiaEAmbiente( ambiente, midia );
 		
 	}
 
 
-	private Midia salvaMidia( MultipartFile file, Empresa empresa, Long[] categorias, String hash ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	private Midia salvaMidia( MultipartFile file, Empresa empresa, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		List<Categoria> categoriaList = null;
 		File arquivo = null;
@@ -138,6 +160,8 @@ public class MidiaService {
 			
 			arquivo = new File( midia.getFilepath() );
 		}
+		
+		midia.setDescricao( descricao );
 
 		atualizaIDTags( midia, arquivo );
 
@@ -212,7 +236,30 @@ public class MidiaService {
 	
 	
 	
-	
+	public JSONBootstrapGridWrapper<Midia> filtraMidia( Long idAmbiente, Long idCategoria, String codigoCategoria, Pageable pageable )
+	{
+		Page<Midia> midiaPage = null;
+
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( idCategoria != null && idCategoria > 0 )
+			midiaPage = midiaRepo.findByAmbientesAndCategorias( pageable, ambiente, new Categoria( idCategoria, "" ) );
+		else if ( StringUtils.isNotBlank( codigoCategoria ) )
+			midiaPage = midiaRepo.findByAmbientesAndCategorias_codigo( pageable, ambiente, codigoCategoria );
+		else
+			midiaPage = midiaRepo.findByAmbientes( pageable, ambiente );
+		
+		List<Midia> midiaList = midiaPage.getContent();
+		
+		midiaList.stream().forEach( m -> {
+			m.getCategorias().forEach( cat -> {
+				m.getCategoriasView().put( cat.getCodigo(), true );
+			});
+		});
+		
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaList, midiaPage.getTotalElements() );
+		return jsonList;
+	}
 	
 	
 }

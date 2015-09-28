@@ -81,8 +81,47 @@ public class MidiaController extends AbstractController {
 	}
 	
 	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-pesquisa-midia", method = RequestMethod.GET )
+	public String viewPesquisaMidia( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+			
+			return "ambiente/view-pesquisa-midia";
+		}
+		else
+			return "HTTPerror/404";
+	}
 	
-	// AJAX NÃO É SUPORTADO POR IE8... FAZER UMA VERSÃO PARA A API QUE NÃO REDIRECIONA PRA TELA...
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-list-chamada-funcionarios", method = RequestMethod.GET )
+	public String viewListChamadaFuncionarios( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+			
+			return "ambiente/view-list-chamada-funcionarios";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@RequestMapping(value="/ambientes/{idAmbiente}/view-list-upload-midia/{codigo}", method=RequestMethod.POST)
     public String uploadSync(
     		@PathVariable Long idAmbiente,
@@ -125,7 +164,7 @@ public class MidiaController extends AbstractController {
 				catch ( Exception e )
 				{
 					e.printStackTrace();
-					
+
 					model.addAttribute( "error", e.getMessage() );
 				}
 			}
@@ -181,8 +220,57 @@ public class MidiaController extends AbstractController {
     }
 	
 	
+	
+	@RequestMapping(value="/ambientes/{idAmbiente}/view-list-chamada-funcionarios", method=RequestMethod.POST)
+    public String uploadChamadaFuncionarioSync(
+    		@PathVariable Long idAmbiente,
+    		@RequestParam("codigo") String codigo,
+    		@RequestParam("file") MultipartFile file, 
+    		@RequestParam("descricao") String descricao,
+    		Principal principal, 
+    		Model model )
+	{
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			return "HTTPerror/404";
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+
+			if ( !file.isEmpty() )
+			{
+				try
+				{
+					midiaService.saveUpload( file, codigo, usuario.getEmpresa(), ambiente, descricao );
+					
+					model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
+				}
+				catch ( Exception e )
+				{
+					e.printStackTrace();
+					
+					model.addAttribute( "error", e.getMessage() );
+				}
+			}
+			else
+			{
+				model.addAttribute( "error", "O arquivo está vazio" );
+			}
+		}
+
+	    return "ambiente/view-list-chamada-funcionarios";
+    }
+	
+	
 
 	
+	// Filtra pelo ID da categoria
 	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/", 
 							   "/api/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/" }, 
 					 method = RequestMethod.GET, 
@@ -196,46 +284,33 @@ public class MidiaController extends AbstractController {
 	{
 		Pageable pageable = getPageable( pageNumber, limit, order, "idMidia" ); 
 		
-		Page<Midia> midiaPage = null;
-
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
-		if ( idCategoria != null && idCategoria > 0 )
-			midiaPage = midiaRepo.findByAmbientesAndCategorias( pageable, ambiente, new Categoria( idCategoria, "" ) );
-		else
-			midiaPage = midiaRepo.findByAmbientes( pageable, ambiente );
-		
-		List<Midia> midiaList = midiaPage.getContent();
-		
-		midiaList.stream().forEach( m -> {
-			m.getCategorias().forEach( cat -> {
-				m.getCategoriasView().put( cat.getCodigo(), true );
-			});
-		});
-		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaList, midiaPage.getTotalElements() );
+		JSONBootstrapGridWrapper<Midia> jsonList = midiaService.filtraMidia( idAmbiente, idCategoria, null, pageable );
 
 		return jsonList;
 	}
-	
-	
-	
-	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-pesquisa-midia", method = RequestMethod.GET )
-	public String viewPesquisaMidia( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
-	{
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-			
-			return "ambiente/view-pesquisa-midia";
-		}
-		else
-			return "HTTPerror/404";
+	
+	
+	// Filtra pela string de Código da Categoria
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias-por-categoria", 
+	   						   "/api/ambientes/{idAmbiente}/midias-por-categoria" }, 
+	   			     method = RequestMethod.GET, 
+	   			     produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoriaString(
+												@PathVariable Long idAmbiente, 
+												@RequestParam("codigo") String codigo,
+												@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
+												@RequestParam(value="limit", required = false) Integer limit, 
+												@RequestParam(value="order", required = false) String order )
+	{
+		Pageable pageable = getPageable( pageNumber, limit, order, "idMidia" ); 
+		
+		JSONBootstrapGridWrapper<Midia> jsonList = midiaService.filtraMidia( idAmbiente, null, codigo, pageable );
+		
+		return jsonList;
 	}
+
+	
 	
 	
 	

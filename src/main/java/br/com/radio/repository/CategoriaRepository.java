@@ -14,4 +14,6 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 	
 	List<Categoria> findByIdCategoriaIn( Long[] categorias );
 	
+	List<Categoria> findBySimpleUpload( Boolean simpleUpload );
+	
 }
