@@ -203,7 +203,7 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	
-	@RequestMapping(value="/alterar-senha", method=RequestMethod.POST, produces=APPLICATION_JSON_CHARSET_UTF_8)
+	@RequestMapping(value="/senha", method=RequestMethod.PUT, produces=APPLICATION_JSON_CHARSET_UTF_8)
 	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
 	public @ResponseBody String gravaNovaSenha( @RequestBody @Valid AlterarSenhaDTO senhaDTO, BindingResult result, Principal principal )
 	{

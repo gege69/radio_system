@@ -102,7 +102,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/'+idAmbiente+'/generos',
+            url: '${context}/ambientes/generos',    // busca a lista de gêneros geral ( não restringe pelo ambiente )
             dataType: 'json'
         }).done( function(json){
             makeListTmpl(json);
@@ -111,14 +111,14 @@
             $.ajax({
                 type: 'GET',
                 contentType: 'application/json',
-                url: '${context}/ambientes/'+idAmbiente+'/generos-associacao',
+                url: '${context}/ambientes/'+idAmbiente+'/generos',    // busca a lista de ambientes que está relacionada com o ambiente 
                 dataType: 'json'
             }).done( function(json){
                 
                 var lista = json.rows;
 
                 $.each( lista, function( idx, obj ){
-                    $('#genero-'+obj).prop('checked', true);
+                    $('#genero-'+obj.idGenero).prop('checked', true);
                 });
                 
             });

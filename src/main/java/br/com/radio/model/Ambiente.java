@@ -141,10 +141,14 @@ public class Ambiente implements Serializable {
 	
 	@Column( name = "minutoFimExpediente" )
 	private Integer minutoFimExpediente;
+
+	@JsonIgnore
+	@Column( name = "logomarca" )
+	private byte[] logomarca;
 	
-	
-	
-	
+	@JsonIgnore
+	@Column( name = "logomimetype")
+	private String logomimetype;
 	
 	// REST
 	@Transient
@@ -538,7 +542,27 @@ public class Ambiente implements Serializable {
 	{
 		return String.format( "Ambiente [idAmbiente=%s, nome=%s]", idAmbiente, nome );
 	}
-	
+
+	public byte[] getLogomarca()
+	{
+		return logomarca;
+	}
+
+	public void setLogomarca( byte[] logomarca )
+	{
+		this.logomarca = logomarca;
+	}
+
+	public String getLogomimetype()
+	{
+		return logomimetype;
+	}
+
+	public void setLogomimetype( String logomimetype )
+	{
+		this.logomimetype = logomimetype;
+	}
+
 	
 	
 }

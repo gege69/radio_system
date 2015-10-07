@@ -1,5 +1,8 @@
 package br.com.radio.web;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -11,12 +14,15 @@ import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +31,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.GeneroListDTO;
+import br.com.radio.exception.ResourceNotFoundException;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -172,6 +180,21 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-logomarca", method = RequestMethod.GET )
+	public String viewLogomarca( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/view-logomarca";
+		}
+		else
+			return "HTTPerror/404";
+	}
 	
 	
 	
@@ -281,14 +304,18 @@ public class AmbienteController extends AbstractController {
 	
 	
 
-	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos", "/api/ambientes/{idAmbiente}/generos" }, 
+	
+	/**
+	 * Lista todos os gêneros que estejam cadastrados no banco de dados ( não restringe por empresa, talvez possa melhorar )
+	 * 
+	 * @param idAmbiente
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping( value = { 	"/ambientes/generos", "/api/ambientes/generos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Genero> getGeneros( @PathVariable Long idAmbiente, HttpServletResponse response )
+	public @ResponseBody JSONListWrapper<Genero> getGeneros( HttpServletResponse response )
 	{
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
-		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
-
 		List<Genero> generos = generoRepo.findAll();
 		
 		JSONListWrapper<Genero> jsonList = new JSONListWrapper<Genero>( generos, this.qtd );
@@ -298,10 +325,16 @@ public class AmbienteController extends AbstractController {
 		
 	
 	
- 
-	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos-associacao", "/api/ambientes/{idAmbiente}/generos-associacao" }, 
+	/**
+	 * Retorna uma lista os gêneros que estão associados com esse ambiente específico.
+	 * 
+	 * @param idAmbiente
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos", "/api/ambientes/{idAmbiente}/generos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Long> getGenerosAssoc( @PathVariable Long idAmbiente, HttpServletResponse response )
+	public @ResponseBody JSONListWrapper<Genero> getGenerosAssoc( @PathVariable Long idAmbiente, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 
@@ -309,9 +342,9 @@ public class AmbienteController extends AbstractController {
 		List<AmbienteGenero> ambienteGeneros = ambienteGeneroRepo.findByAmbiente( ambiente );
 
 		// Colecionando apenas os IDs dos gêneros que estão associados à esse ambiente
-		List<Long> ids = ambienteGeneros.stream().map( ab -> ab.getGenero().getIdGenero() ).collect( Collectors.toList() );
+		List<Genero> generos = ambienteGeneros.stream().map( ab -> ab.getGenero() ).collect( Collectors.toList() );
 
-		JSONListWrapper<Long> jsonList = new JSONListWrapper<Long>( ids, this.qtd );
+		JSONListWrapper<Genero> jsonList = new JSONListWrapper<Genero>( generos, this.qtd );
 		
 		return jsonList;
 	}
@@ -508,6 +541,99 @@ public class AmbienteController extends AbstractController {
 		return jsonResult;
 	}	
 	
+	
+	
+	
+	
+	// ALTERAR PARA A API NÃO CHAMAR MÉTODO CHAMADOS VIEW
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/view-logomarca" }, method = { RequestMethod.POST } )
+	public String uploadLogomarca( @PathVariable Long idAmbiente, @RequestParam("file") MultipartFile file, Principal principal, Model model )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			return "HTTPerror/404";
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+
+			boolean erro = false;
+			
+			if ( !file.isEmpty() )
+			{
+				if ( !mimeImagensSet.contains( file.getContentType() ) )
+				{
+					model.addAttribute( "error", "O arquivo não é uma imagem." );
+					erro = true;
+				}
+			}
+			else
+			{
+				model.addAttribute( "error", "O arquivo está vazio" );
+				erro = true;
+			}
+			
+			
+			if ( erro == false )
+			{
+				try
+				{
+					ambiente.setLogomarca( file.getBytes() );
+					ambiente.setLogomimetype( file.getContentType() );
+					
+					ambienteRepo.save( ambiente );
+					
+					model.addAttribute( "success", String.format( "Logomarca \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
+				}
+				catch ( Exception e )
+				{
+					e.printStackTrace();
+
+					model.addAttribute( "error", e.getMessage() );
+				}
+			}
+		}
+
+	    return "ambiente/view-logomarca";
+	}	
+
+	
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/logomarca" }, method = { RequestMethod.GET } )
+	public void getLogomarca( @PathVariable Long idAmbiente, Principal principal, HttpServletResponse response )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			throw new ResourceNotFoundException();
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null && ambiente.getLogomarca() != null && StringUtils.isNotBlank( ambiente.getLogomimetype() ) )
+		{
+			ByteArrayInputStream bin = new ByteArrayInputStream( ambiente.getLogomarca() );
+			
+			try
+			{
+				response.setContentType( ambiente.getLogomimetype() );
+				IOUtils.copy( bin, response.getOutputStream() );
+			}
+			catch ( IOException e )
+			{
+				e.printStackTrace();
+				throw new ResourceNotFoundException();
+			}
+			finally
+			{
+				IOUtils.closeQuietly( bin );
+			}
+		}
+		
+	}
 	
 	
 	

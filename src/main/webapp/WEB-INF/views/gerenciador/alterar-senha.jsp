@@ -103,9 +103,9 @@
         if ( validaForm() ){
             
             $.ajax({
-                type: 'POST',
+                type: 'PUT',
                 contentType: 'application/json',
-                url: '${context}/alterar-senha',
+                url: '${context}/senha',
                 dataType: 'json',
                 data: JSON.stringify( $('#alterar-senha-form').serializeJSON() )
             }).done( function(json){ 

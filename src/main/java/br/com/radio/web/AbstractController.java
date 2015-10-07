@@ -1,7 +1,9 @@
 package br.com.radio.web;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -22,6 +24,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class AbstractController {
 	
 	public static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json; charset=utf-8";
+	
+	public static final Set<String> mimeImagensSet = new HashSet<String>();
+	
+	static { 
+		mimeImagensSet.add( "image/gif" );
+		mimeImagensSet.add( "image/jpeg" );
+		mimeImagensSet.add( "image/png" );
+		mimeImagensSet.add( "image/jpg" );
+	}
 	
 	protected int qtd = 6;
 	
