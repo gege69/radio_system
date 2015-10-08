@@ -179,7 +179,7 @@
             <div class="row">
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="">
-                  <a class="btn btn-default" href="${context}/administrar-ambiente" >
+                  <a class="btn btn-default" href="${context}/ambientes/administrar" >
                     <i class="fa fa-arrow-left"></i>
                     Voltar para Administrar Ambientes</a>
                 </div>            
@@ -204,15 +204,12 @@
 
 <script type="text/javascript">
 
-    var getDados = function( id )
+    var getDados = function()
     {
-        if ( id == null || id == undefined )
-            alert('Id não encontrado');
-        
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/'+id,
+            url: '${context}/ambientes/'+ ${idAmbiente},
             dataType: 'json'
         }).done( function(json) {
             
@@ -299,7 +296,7 @@
        
         $('#btnSalvar').on('click', salvar);
         
-        getDados( $('#idAmbiente_amb').val() );
+        getDados();
         
     });
 

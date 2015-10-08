@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.radio.enumeration.PosicaoVinheta;
 
 
@@ -33,6 +35,7 @@ public class Bloco implements Serializable {
 	@Column( name = "id_bloco", nullable = false )
 	private Long idBloco;
 	
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;

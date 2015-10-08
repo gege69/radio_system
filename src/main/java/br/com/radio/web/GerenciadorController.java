@@ -1,6 +1,9 @@
 package br.com.radio.web;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
@@ -12,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +24,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import br.com.radio.dto.AlterarSenhaDTO;
+import br.com.radio.dto.EndPointDTO;
 import br.com.radio.json.JSONListWrapper;
+import br.com.radio.model.Categoria;
+import br.com.radio.model.FusoHorario;
+import br.com.radio.model.Genero;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.FusoHorarioRepository;
+import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.UsuarioService;
 
@@ -42,13 +54,54 @@ import br.com.radio.service.UsuarioService;
 public class GerenciadorController extends AbstractController {
 
 	@Autowired
-	private UsuarioService usuarioService;
-	
+	private GeneroRepository generoRepo;
 	@Autowired
 	private UsuarioRepository usuarioRepo;
-	
 	@Autowired
 	private AmbienteRepository ambienteRepo;
+	@Autowired
+	private FusoHorarioRepository fusoRepo;
+	@Autowired
+	private CategoriaRepository categoriaRepo;
+
+
+	@Autowired
+	private UsuarioService usuarioService;
+
+	@Autowired
+	private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+	@RequestMapping( value = "endpoints", method = RequestMethod.GET )
+	public String getEndPointsInView( Model model )
+	{
+		
+		Comparator<EndPointDTO> byPath = (EndPointDTO i1, EndPointDTO i2) -> i1.getPatternsCondition().compareTo( i2.getPatternsCondition());
+		
+		List<EndPointDTO> endpoints = new ArrayList<EndPointDTO>();
+		
+		requestMappingHandlerMapping.getHandlerMethods().forEach( ( info, method ) -> {
+			
+			EndPointDTO dto = new EndPointDTO();
+			
+			dto.setController( method.getBeanType().getName() );
+			dto.setPatternsCondition( info.getPatternsCondition().toString() );
+			dto.setMethodsCondition( info.getMethodsCondition().toString() );
+			dto.setParamsCondition( info.getParamsCondition().toString() );
+			dto.setHeadersCondition( info.getHeadersCondition().toString() );
+			dto.setConsumesCondition( info.getConsumesCondition().toString() );
+			dto.setProducesCondition( info.getProducesCondition().toString() );
+			dto.setCustomCondition( info.getCustomCondition() != null ? info.getCustomCondition().toString() : "" );
+			
+			endpoints.add( dto );
+		});
+		
+		endpoints.sort( byPath );
+		
+	    model.addAttribute( "endPoints", endpoints );
+	    
+	    return "admin/endpoints";
+	}
+	
 	
 	
 	@RequestMapping(value="/principal", method=RequestMethod.GET)
@@ -74,31 +127,9 @@ public class GerenciadorController extends AbstractController {
 	}
 
 
-	@RequestMapping(value="/incluir-ambiente")
-	@PreAuthorize("hasAuthority('INCLUIR_AMB')")
-	public String viewIncluirAmbiente( ModelMap model )
-	{
-		return "gerenciador/incluir-ambiente";
-	}
 	
-	@RequestMapping(value="/administrar-ambiente")
-	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
-	public String viewAdministrarAmbiente( ModelMap model, Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getEmpresa() == null )
-			return null;
-		
-		Long count = ambienteRepo.countByEmpresa( usuario.getEmpresa() );
-		
-		model.addAttribute( "qtdAmbientes", count );
-		
-		
-		return "gerenciador/administrar-ambiente";
-	}
 	
-	@RequestMapping(value="/alterar-senha", method=RequestMethod.GET)
+	@RequestMapping(value="/senha/edit", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
 	public String viewAlterarSenha( ModelMap model )
 	{
@@ -111,24 +142,7 @@ public class GerenciadorController extends AbstractController {
 	@PreAuthorize("hasAuthority('UPLOAD_AMBIENTE')")
 	public String viewUploadMulti( ModelMap model )
 	{
-		return "gerenciador/view-upload-multi";
-	}
-
-	
-	@RequestMapping(value="/espelhar-ambiente/{idAmbiente}", method=RequestMethod.GET)
-	public String viewEspelharAmbiente( @PathVariable String idAmbiente, ModelMap model, HttpServletResponse response )
-	{
-		model.addAttribute( "quantidade", 1 );
-		
-		return "gerenciador/espelhamento-ambiente";
-	}
-	
-	@RequestMapping(value="/editar-ambiente/{idAmbiente}", method=RequestMethod.GET)
-	public String viewEditarAmbiente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
-	{
-		model.addAttribute( "idAmbiente", idAmbiente );
-		
-		return "gerenciador/editar-ambiente";
+		return "gerenciador/upload-multi";
 	}
 
 	
@@ -202,8 +216,61 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 	
+	@RequestMapping( value = { "/fusohorarios", "/api/fusohorarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<FusoHorario> listFusos()
+	{
+		List<FusoHorario> ncmList = fusoRepo.findAllWithSortByOrderComum();
+		
+		int total = ncmList.size();
+		
+		JSONListWrapper<FusoHorario> jsonList = new JSONListWrapper<FusoHorario>(ncmList, total);
+
+		return jsonList;
+	}	
 	
-	@RequestMapping(value="/senha", method=RequestMethod.PUT, produces=APPLICATION_JSON_CHARSET_UTF_8)
+	
+
+	
+	/**
+	 * Lista todos os gêneros que estejam cadastrados no banco de dados ( não restringe por empresa, talvez possa melhorar )
+	 * 
+	 * @param idAmbiente
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping( value = { 	"/generos", "/api/generos" }, 
+						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Genero> getGeneros( HttpServletResponse response )
+	{
+		List<Genero> generos = generoRepo.findAll();
+		
+		JSONListWrapper<Genero> jsonList = new JSONListWrapper<Genero>( generos, this.qtd );
+		
+		return jsonList;
+	}
+		
+	
+	
+	@RequestMapping( value = { 	"/categorias", "/api/categorias" }, 
+			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Categoria> getCategorias( @RequestParam(value="simpleUpload", required=false) Boolean simpleUpload, HttpServletResponse response )
+	{
+		List<Categoria> categorias = null;
+		
+		if ( simpleUpload != null )
+			categorias = categoriaRepo.findBySimpleUpload( simpleUpload );
+		else
+			categorias = categoriaRepo.findAll();
+		
+		// O parametro upload caso seja true filtra o download apenas para categorias onde o usuário pode fazer upload pela tela de Ambiente
+		JSONListWrapper<Categoria> jsonList = new JSONListWrapper<Categoria>( categorias, this.qtd );
+		
+		return jsonList;
+	}
+
+	
+	
+	@RequestMapping(value="/senha", method=RequestMethod.POST, produces=APPLICATION_JSON_CHARSET_UTF_8)
 	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
 	public @ResponseBody String gravaNovaSenha( @RequestBody @Valid AlterarSenhaDTO senhaDTO, BindingResult result, Principal principal )
 	{

@@ -44,7 +44,7 @@
                   <div class="row">
                     
                     <div class="col-md-12">
-                      <form action="${context}/ambientes/${idAmbiente}/view-list-upload-midia/${codigo}" 
+                      <form action="${context}/ambientes/${idAmbiente}/view-upload-midia/${codigo}" 
                             method="POST" 
                             id="ambiente-upload-midia" 
                             class="form" 
@@ -123,7 +123,7 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/view-ambiente/${idAmbiente}" >
+                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >
                   <i class="fa fa-arrow-left"></i>
                   Voltar para ${nome}
                 </a>
@@ -174,7 +174,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/categorias?simpleUpload=true',
+            url: '${context}/categorias?simpleUpload=true',
             dataType: 'json'
         }).done( function(json){
             makeListTmpl(json);

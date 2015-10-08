@@ -58,7 +58,7 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                <a class="btn btn-primary" href="${context}/incluir-ambiente">Adicionar Novo Ambiente</a>
+                <a class="btn btn-primary" href="${context}/ambientes/new">Adicionar Novo Ambiente</a>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
@@ -87,19 +87,20 @@
     }
 
     function nomeFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/view-ambiente/'+ row.idAmbiente +'">' + value + '</a>';
+        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/view">' + value + '</a>';
     }
     
     function espelharFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/espelhar-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-files-o"></i></a>';
+        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/espelhar"> <i class="fa fa-lg fa-files-o"></i></a>';
     }
     
     function editarFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/editar-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
+        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/editar"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
     }
 
     function removeFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/remover-ambiente/'+ row.idAmbiente +'"> <i class="fa fa-lg fa-trash-o"></i></a>';
+        // pensar melhor nesse.... tem que ser um ajax perguntando certeza e usando o DELETE 
+        return '<a class="btn btn-link" href="#"> <i class="fa fa-lg fa-trash-o"></i></a>';
     }
 
 

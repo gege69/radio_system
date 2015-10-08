@@ -114,23 +114,23 @@ values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA
 
 
 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 1,  'Gêneros' ,       				'/ambientes/%d/view-generos/' ,             			'fa-music'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 2,  'Vinhetas' ,      				'/ambientes/%d/view-list-upload-midia/vinheta/' ,     	'fa-file-audio-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 3,  'Institucionais',     			'/ambientes/%d/view-list-upload-midia/inst/' ,      	'fa-headphones'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 4,  'Comerciais' ,      			'/ambientes/%d/view-list-upload-midia/comercial/' ,   	'fa-film'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 5,  'Programetes' ,     			'/ambientes/%d/view-list-upload-midia/programete/' ,  	'fa-bullhorn'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 6,  'Chamadas<br/>Instantâneas' , 	'/ambientes/%d/view-list-upload-midia/chamada-inst/' ,  'fa-bolt'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 7,  'Chamadas<br/>Funcionários' ,   '/ambientes/%d/view-list-chamada-funcionarios',  		'fa-users'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 8,  'Blocos' ,        				'/ambientes/%d/view-bloco/' ,          		'fa-th-large'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 9,  'Expediente' ,      			'/ambientes/%d/view-expediente/' ,        	'fa-clock-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 10, 'Eventos' ,       				'/ambientes/%d/view-eventos/' ,         	'fa-newspaper-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 11,  'Configurações' ,     			'/ambientes/%d/view-configuracoes/' ,       'fa-briefcase'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 12, 'Rodoviária' ,      			'/ambientes/%d/view-rodoviaria/' ,        	'fa-bus'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 13, 'Relatórios' ,      			'/ambientes/%d/view-relatórios/' ,        	'fa-files-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Downloads' ,       			'/ambientes/%d/view-downloads/' ,         	'fa-floppy-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Restrições' ,      			'/ambientes/%d/view-restricoes/' ,        	'fa-unlock-alt'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Logomarca' ,       			'/ambientes/%d/view-logomarca/' ,         	'fa-trademark'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Simular' ,       				'/ambientes/%d/view-simular/' ,         	'fa-play'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'SendVoice' ,       			'/ambientes/%d/view-sendvoice/' ,         	'fa-microphone'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 1,  'Gêneros' ,       				'/ambientes/%d/generos/view' ,             			'fa-music'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 2,  'Vinhetas' ,      				'/ambientes/%d/view-upload-midia/vinheta/' ,     	'fa-file-audio-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 3,  'Institucionais',     			'/ambientes/%d/view-upload-midia/inst/' ,      		'fa-headphones'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 4,  'Comerciais' ,      			'/ambientes/%d/view-upload-midia/comercial/' ,   	'fa-film'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 5,  'Programetes' ,     			'/ambientes/%d/view-upload-midia/programete/' ,  	'fa-bullhorn'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 6,  'Chamadas<br/>Instantâneas' , 	'/ambientes/%d/view-upload-midia/chamada_inst/' ,  	'fa-bolt'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 7,  'Chamadas<br/>Funcionários' ,   '/ambientes/%d/view-chamada-funcionarios',  		'fa-users'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 8,  'Blocos' ,        				'/ambientes/%d/blocos/view' ,          		'fa-th-large'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 9,  'Expediente' ,      			'/ambientes/%d/expedientes/view' ,        	'fa-clock-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 10, 'Eventos' ,       				'/ambientes/%d/eventos/view' ,     	    	'fa-newspaper-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 11,  'Configurações' ,     			'/ambientes/%d/configuracoes/view' ,       	'fa-briefcase'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 12, 'Rodoviária' ,      			'/ambientes/%d/rodoviaria/view' ,        	'fa-bus'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 13, 'Relatórios' ,      			'/ambientes/%d/relatorios/view' ,        	'fa-files-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Downloads' ,       			'/ambientes/%d/downloads/view' ,         	'fa-floppy-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Restrições' ,      			'/ambientes/%d/restricoes/view' ,        	'fa-unlock-alt'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Logomarca' ,       			'/ambientes/%d/logomarcas/view' ,         	'fa-trademark'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Simular' ,       				'/ambientes/%d/simulacoes/view' ,         	'fa-play'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'SendVoice' ,       			'/ambientes/%d/sendvoices/view' ,         	'fa-microphone'); 
 
 

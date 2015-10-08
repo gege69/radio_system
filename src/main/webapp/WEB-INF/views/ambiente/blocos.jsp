@@ -246,7 +246,7 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/view-ambiente/${idAmbiente}" >
+                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >
                   <i class="fa fa-arrow-left"></i>
                   Voltar para ${nome}
                 </a>
@@ -277,7 +277,7 @@
             
             type: 'POST',
             contentType: 'application/json',
-            url: '${context}/ambientes/${idAmbiente}/bloco',
+            url: '${context}/ambientes/${idAmbiente}/blocos',
             dataType: 'json',
             data:  JSON.stringify( $('#ambiente-bloco-form').serializeJSON() )
             
@@ -298,7 +298,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/${idAmbiente}/bloco',
+            url: '${context}/ambientes/${idAmbiente}/blocos',
             dataType: 'json'
         }).done( function(json) {
             

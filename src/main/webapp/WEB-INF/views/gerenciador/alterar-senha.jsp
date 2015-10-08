@@ -103,7 +103,7 @@
         if ( validaForm() ){
             
             $.ajax({
-                type: 'PUT',
+                type: 'POST',
                 contentType: 'application/json',
                 url: '${context}/senha',
                 dataType: 'json',

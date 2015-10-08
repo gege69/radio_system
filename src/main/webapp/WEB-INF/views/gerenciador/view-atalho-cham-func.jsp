@@ -73,7 +73,7 @@
     }
 
     function nomeFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/view-list-chamada-funcionarios">' + value + '</a>';
+        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/view-chamada-funcionarios">' + value + '</a>';
     }
     
     

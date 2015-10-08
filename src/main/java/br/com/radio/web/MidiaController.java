@@ -55,8 +55,8 @@ public class MidiaController extends AbstractController {
 	// Services =================
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-list-upload-midia/{codigo}", method = RequestMethod.GET )
-	public String viewListUpload( @PathVariable Long idAmbiente, @PathVariable String codigo, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-upload-midia/{codigo}", method = RequestMethod.GET )
+	public String viewUpload( @PathVariable Long idAmbiente, @PathVariable String codigo, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 
@@ -74,7 +74,7 @@ public class MidiaController extends AbstractController {
 				model.addAttribute( "codigo",  categoria.getCodigo() );
 			}
 			
-			return "ambiente/view-list-upload-midia";
+			return "ambiente/upload-midia";
 		}
 		else
 			return "HTTPerror/404";
@@ -91,15 +91,15 @@ public class MidiaController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 			
-			return "ambiente/view-pesquisa-midia";
+			return "ambiente/pesquisa-midia";
 		}
 		else
 			return "HTTPerror/404";
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-list-chamada-funcionarios", method = RequestMethod.GET )
-	public String viewListChamadaFuncionarios( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view-chamada-funcionarios", method = RequestMethod.GET )
+	public String viewChamadaFuncionarios( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 
@@ -108,7 +108,7 @@ public class MidiaController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 			
-			return "ambiente/view-list-chamada-funcionarios";
+			return "ambiente/chamada-funcionarios";
 		}
 		else
 			return "HTTPerror/404";
@@ -122,7 +122,7 @@ public class MidiaController extends AbstractController {
 	
 	
 	
-	@RequestMapping(value="/ambientes/{idAmbiente}/view-list-upload-midia/{codigo}", method=RequestMethod.POST)
+	@RequestMapping(value="/ambientes/{idAmbiente}/view-upload-midia/{codigo}", method=RequestMethod.POST)
     public String uploadSync(
     		@PathVariable Long idAmbiente,
     		@PathVariable String codigo,
@@ -174,7 +174,7 @@ public class MidiaController extends AbstractController {
 			}
 		}
 
-	    return "ambiente/view-list-upload-midia";
+	    return "ambiente/upload-midia";
     }
 
 	
@@ -216,12 +216,12 @@ public class MidiaController extends AbstractController {
 			model.addAttribute( "error", "O arquivo está vazio" );
 		}
 
-	    return "gerenciador/view-upload-multi";
+	    return "gerenciador/upload-multi";
     }
 	
 	
 	
-	@RequestMapping(value="/ambientes/{idAmbiente}/view-list-chamada-funcionarios", method=RequestMethod.POST)
+	@RequestMapping(value="/ambientes/{idAmbiente}/view-chamada-funcionarios", method=RequestMethod.POST)
     public String uploadChamadaFuncionarioSync(
     		@PathVariable Long idAmbiente,
     		@RequestParam("codigo") String codigo,
@@ -264,7 +264,7 @@ public class MidiaController extends AbstractController {
 			}
 		}
 
-	    return "ambiente/view-list-chamada-funcionarios";
+	    return "ambiente/chamada-funcionarios";
     }
 	
 	

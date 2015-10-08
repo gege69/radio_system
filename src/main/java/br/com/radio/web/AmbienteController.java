@@ -2,7 +2,6 @@ package br.com.radio.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -40,19 +39,14 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
-import br.com.radio.model.Categoria;
 import br.com.radio.model.Funcionalidade;
-import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
-import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
-import br.com.radio.repository.FusoHorarioRepository;
-import br.com.radio.repository.GeneroRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.UsuarioService;
 
@@ -62,15 +56,9 @@ public class AmbienteController extends AbstractController {
 		
 	// DAOs ==================
 	@Autowired
-	private FusoHorarioRepository fusoRepo;
-	@Autowired
 	private AmbienteRepository ambienteRepo;
 	@Autowired
 	private FuncionalidadeRepository funcionalidadeRepo;
-	@Autowired
-	private CategoriaRepository categoriaRepo;
-	@Autowired
-	private GeneroRepository generoRepo;
 	@Autowired
 	private AmbienteGeneroRepository ambienteGeneroRepo;
 	@Autowired
@@ -91,7 +79,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/view-ambiente/{idAmbiente}", method = RequestMethod.GET )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/view", method = RequestMethod.GET )
 	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
 	public String viewAmbiente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
@@ -104,15 +92,58 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "urlambiente", ambiente.getUrlambiente() );
 			model.addAttribute( "login", ambiente.getLogin() );
 		
-			return "ambiente/view-ambiente";
+			return "ambiente/ambiente";
 		}
 		else
 			return "HTTPerror/404";
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-expediente", method = RequestMethod.GET )
-	public String viewExpediente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	
+	@RequestMapping(value="/ambientes/{idAmbiente}/espelhar", method=RequestMethod.GET)
+	public String espelhar( @PathVariable String idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		model.addAttribute( "quantidade", 1 );
+		
+		return "ambiente/espelhar";
+	}
+	
+	@RequestMapping(value="/ambientes/{idAmbiente}/editar", method=RequestMethod.GET)
+	public String editar( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		model.addAttribute( "idAmbiente", idAmbiente );
+		
+		return "ambiente/editar";
+	}
+
+	
+	@RequestMapping(value="/ambientes/new", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('INCLUIR_AMB')")
+	public String incluir( ModelMap model )
+	{
+		return "ambiente/incluir";
+	}
+	
+	@RequestMapping(value="/ambientes/administrar" , method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
+	public String administrar( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			return null;
+		
+		Long count = ambienteRepo.countByEmpresa( usuario.getEmpresa() );
+		
+		model.addAttribute( "qtdAmbientes", count );
+		
+		
+		return "ambiente/administrar";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/expedientes/view", method = RequestMethod.GET )
+	public String expedientes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -121,15 +152,15 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
-			return "ambiente/view-expediente";
+			return "ambiente/expedientes";
 		}
 		else
 			return "HTTPerror/404";
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-generos", method = RequestMethod.GET )
-	public String viewGeneros( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/generos/view", method = RequestMethod.GET )
+	public String generos( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -138,15 +169,15 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
-			return "ambiente/view-generos";
+			return "ambiente/generos";
 		}
 		else
 			return "HTTPerror/404";
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-configuracoes", method = RequestMethod.GET )
-	public String viewConfiguracoes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/configuracoes/view", method = RequestMethod.GET )
+	public String configuracoes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -155,15 +186,15 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
-			return "ambiente/view-configuracoes";
+			return "ambiente/configuracoes";
 		}
 		else
 			return "HTTPerror/404";
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-bloco", method = RequestMethod.GET )
-	public String viewBlocos( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/blocos/view", method = RequestMethod.GET )
+	public String blocos( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -172,7 +203,7 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
-			return "ambiente/view-bloco";
+			return "ambiente/blocos";
 		}
 		else
 			return "HTTPerror/404";
@@ -180,8 +211,8 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/view-logomarca", method = RequestMethod.GET )
-	public String viewLogomarca( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	@RequestMapping( value = "/ambientes/{idAmbiente}/logomarcas/view", method = RequestMethod.GET )
+	public String logomarcas( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -190,7 +221,7 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
-			return "ambiente/view-logomarca";
+			return "ambiente/logomarcas";
 		}
 		else
 			return "HTTPerror/404";
@@ -289,40 +320,7 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = { "/fusohorarios", "/api/fusohorarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<FusoHorario> listFusos()
-	{
-		List<FusoHorario> ncmList = fusoRepo.findAllWithSortByOrderComum();
-		
-		int total = ncmList.size();
-		
-		JSONListWrapper<FusoHorario> jsonList = new JSONListWrapper<FusoHorario>(ncmList, total);
 
-		return jsonList;
-	}	
-	
-	
-	
-
-	
-	/**
-	 * Lista todos os gêneros que estejam cadastrados no banco de dados ( não restringe por empresa, talvez possa melhorar )
-	 * 
-	 * @param idAmbiente
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping( value = { 	"/ambientes/generos", "/api/ambientes/generos" }, 
-						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Genero> getGeneros( HttpServletResponse response )
-	{
-		List<Genero> generos = generoRepo.findAll();
-		
-		JSONListWrapper<Genero> jsonList = new JSONListWrapper<Genero>( generos, this.qtd );
-		
-		return jsonList;
-	}
-		
 	
 	
 	/**
@@ -376,22 +374,6 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = { 	"/ambientes/categorias", "/api/ambientes/categorias" }, 
-			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Categoria> getCategorias( @RequestParam(value="simpleUpload", required=false) Boolean simpleUpload, HttpServletResponse response )
-	{
-		List<Categoria> categorias = null;
-		
-		if ( simpleUpload != null )
-			categorias = categoriaRepo.findBySimpleUpload( simpleUpload );
-		else
-			categorias = categoriaRepo.findAll();
-		
-		// O parametro upload caso seja true filtra o download apenas para categorias onde o usuário pode fazer upload pela tela de Ambiente
-		JSONListWrapper<Categoria> jsonList = new JSONListWrapper<Categoria>( categorias, this.qtd );
-		
-		return jsonList;
-	}
 	
 	
 	
@@ -464,7 +446,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 
-	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/expediente", "/api/ambientes/{idAmbiente}/expediente" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/expedientes", "/api/ambientes/{idAmbiente}/expedientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String saveExpediente( @PathVariable Long idAmbiente, @RequestBody Ambiente ambienteDTO, BindingResult result )
 	{
 		String jsonResult = "";
@@ -498,7 +480,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = { "/ambientes/{idAmbiente}/bloco", "/api/ambientes/{idAmbiente}/bloco" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/blocos", "/api/ambientes/{idAmbiente}/blocos" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody Bloco getBloco( @PathVariable Long idAmbiente, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -510,7 +492,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 
-	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/bloco", "/api/ambientes/{idAmbiente}/bloco" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/blocos", "/api/ambientes/{idAmbiente}/blocos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String saveBloco( @PathVariable Long idAmbiente, @RequestBody Bloco bloco, BindingResult result )
 	{
 		String jsonResult = "";
@@ -598,7 +580,7 @@ public class AmbienteController extends AbstractController {
 			}
 		}
 
-	    return "ambiente/view-logomarca";
+	    return "ambiente/logomarcas";
 	}	
 
 	

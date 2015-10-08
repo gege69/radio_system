@@ -21,19 +21,19 @@
               <div class="row row-centered">
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/incluir-ambiente">
+                    <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/ambientes/new">
                       <i class="fa fa-3x icone-main fa-shopping-cart"></i>
                       <span class="label-botao-main">Incluir Ambiente</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/administrar-ambiente">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/ambientes/administrar">
                       <i class="fa fa-3x icone-main fa-random"></i>
                       <span class="label-botao-main">Administar Ambiente</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/alterar-senha">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/senha/edit">
                       <i class="fa fa-3x icone-main fa-lock"></i>
                       <span class="label-botao-main">Alterar Senha</span>
                     </a>

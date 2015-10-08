@@ -161,7 +161,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/categorias?simpleUpload=true',
+            url: '${context}/categorias?simpleUpload=true',
             dataType: 'json'
         }).done( function(json){
             makeListTmpl(json);

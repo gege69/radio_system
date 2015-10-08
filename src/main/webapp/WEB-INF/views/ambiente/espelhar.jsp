@@ -27,7 +27,7 @@
                 </div>
                 <div class="panel-body">
                 
-                  <form class="form-horizontal" action="${context}/views/painel/editar-ambiente.jsp">
+                  <form class="form-horizontal" action="${context}/fazer">
                   
                     <div class="form-group">
                       <label for="login" class="control-label col-sm-2 col-md-3">Espelhar em:</label>
@@ -57,7 +57,7 @@
           <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
               <div class="">
-                <a class="btn btn-default" href="${context}/administrar-ambiente" >
+                <a class="btn btn-default" href="${context}/ambientes/administrar" >
                   <i class="fa fa-arrow-left"></i>
                   Voltar para Administrar Ambientes</a>
               </div>            
@@ -70,7 +70,7 @@
     
     <div class="row">
       <div class="pull-right">
-        <a class="btn btn-default" href="${context}/views/painel/principal.jsp">Painel Gerencial</a>
+        <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
       </div>
     </div>
       

@@ -101,7 +101,7 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/view-ambiente/${idAmbiente}" >Administrar Ambiente</a>
+                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >Administrar Ambiente</a>
               </div>            
             </div>
           </div>
@@ -160,7 +160,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/categorias',
+            url: '${context}/categorias',
             dataType: 'json'
         }).done( function(json){
             makeListTmpl(json);
