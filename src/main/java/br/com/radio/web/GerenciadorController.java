@@ -162,7 +162,7 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 
-	@RequestMapping(value={ "/view-usuario/{idUsuario}", "/view-usuario" } , method=RequestMethod.GET)
+	@RequestMapping(value={ "/usuarios/view", "/usuarios/{idUsuario}/view" } , method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('USUARIOS')")
 	public String viewUsuario( @PathVariable Map<String, String> pathVariables, ModelMap model )
 	{

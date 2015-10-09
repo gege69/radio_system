@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 /**
  * Gênero
  * 
+ * TODO: Talvez colocar um ID_EMPRESA porque alguns gêneros são muito característicos de uma certa empresa....
+ * 
  * @author pazin
  *
  */

@@ -41,19 +41,19 @@ public class Mensagem implements Serializable {
 	private Long idMensagem;
 
 	@OneToOne
-	@JoinColumn(name="id_usuario")
-	private Usuario usuario;
-	
-	@NotNull( message = "O assunto da mensagem é de preenchimento obrigatório" )
-	@Column( name = "assunto", nullable = false, columnDefinition = "TEXT" )
-	private String assunto;
-	
-	@Column( name = "emailcopia", nullable = true, columnDefinition = "TEXT" )
-	private String emailCopia;
-	
-	@OneToOne
 	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;
+	
+	@OneToOne
+	@JoinColumn(name="id_endereco_origem")
+	private MensagemEndereco de;
+	
+	@OneToOne
+	@JoinColumn(name="id_endereco_destino")
+	private MensagemEndereco para;
+	
+	@Column( name = "assunto", nullable = false, columnDefinition = "TEXT" )
+	private String assunto;
 	
 	@NotNull( message = "O conteúdo da mensagem é de preenchimento obrigatório" )
 	@Column( name = "conteudo", nullable = false, columnDefinition = "TEXT" )
@@ -65,6 +65,9 @@ public class Mensagem implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 
+	@Column( name="lida", columnDefinition= "bool default false")
+	private Boolean lida;
+
 	public Long getIdMensagem()
 	{
 		return idMensagem;
@@ -75,14 +78,34 @@ public class Mensagem implements Serializable {
 		this.idMensagem = idMensagem;
 	}
 
-	public Usuario getUsuario()
+	public Ambiente getAmbiente()
 	{
-		return usuario;
+		return ambiente;
 	}
 
-	public void setUsuario( Usuario usuario )
+	public void setAmbiente( Ambiente ambiente )
 	{
-		this.usuario = usuario;
+		this.ambiente = ambiente;
+	}
+
+	public MensagemEndereco getDe()
+	{
+		return de;
+	}
+
+	public void setDe( MensagemEndereco de )
+	{
+		this.de = de;
+	}
+
+	public MensagemEndereco getPara()
+	{
+		return para;
+	}
+
+	public void setPara( MensagemEndereco para )
+	{
+		this.para = para;
 	}
 
 	public String getAssunto()
@@ -93,26 +116,6 @@ public class Mensagem implements Serializable {
 	public void setAssunto( String assunto )
 	{
 		this.assunto = assunto;
-	}
-
-	public String getEmailCopia()
-	{
-		return emailCopia;
-	}
-
-	public void setEmailCopia( String emailCopia )
-	{
-		this.emailCopia = emailCopia;
-	}
-
-	public Ambiente getAmbiente()
-	{
-		return ambiente;
-	}
-
-	public void setAmbiente( Ambiente ambiente )
-	{
-		this.ambiente = ambiente;
 	}
 
 	public String getConteudo()
@@ -133,6 +136,16 @@ public class Mensagem implements Serializable {
 	public void setDataCriacao( Date dataCriacao )
 	{
 		this.dataCriacao = dataCriacao;
+	}
+
+	public Boolean getLida()
+	{
+		return lida;
+	}
+
+	public void setLida( Boolean lida )
+	{
+		this.lida = lida;
 	}
 
 	@Override
@@ -164,12 +177,6 @@ public class Mensagem implements Serializable {
 		return true;
 	}
 
-	@Override
-	public String toString()
-	{
-		return String.format( "Mensagem [idMensagem=%s, usuario=%s, assunto=%s]", idMensagem, usuario, assunto );
-	}
-	
-	
 
+	
 }

@@ -30,6 +30,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
+
+/**
+ * 
+ * Representa o ambiente onde o Player executa ( a loja ou mercado )
+ * 
+ * TODO: Controle de inativação e extrato de período quando esteve ativo ou não...
+ * 
+ * @author pazin
+ *
+ */
 @Entity
 @Table(name="ambiente")
 public class Ambiente implements Serializable {
@@ -150,6 +160,10 @@ public class Ambiente implements Serializable {
 	@Column( name = "logomimetype")
 	private String logomimetype;
 	
+	@Column( name = "ativo", columnDefinition = "BOOL default true")
+	private Boolean ativo;
+	
+	
 	// REST
 	@Transient
 	private Map<String,String> ambienteAPI = new HashMap<String,String>();
@@ -164,6 +178,7 @@ public class Ambiente implements Serializable {
 		this.sincronizar = false;
 		this.download = false;
 		this.dataCriacao = new Date();
+		this.ativo = true;
 	}
 
 	public Long getIdAmbiente()
@@ -563,6 +578,17 @@ public class Ambiente implements Serializable {
 		this.logomimetype = logomimetype;
 	}
 
+	public Boolean getAtivo()
+	{
+		return ativo;
+	}
+
+	public void setAtivo( Boolean ativo )
+	{
+		this.ativo = ativo;
+	}
+
+	
 	
 	
 }
