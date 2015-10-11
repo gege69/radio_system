@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.GeneroListDTO;
+import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.exception.ResourceNotFoundException;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
@@ -41,13 +43,16 @@ import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
+import br.com.radio.model.Programacao;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
+import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.service.AmbienteService;
+import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.service.UsuarioService;
 
 @Controller
@@ -65,6 +70,8 @@ public class AmbienteController extends AbstractController {
 	private AmbienteConfiguracaoRepository ambienteConfigRepo;
 	@Autowired
 	private BlocoRepository blocoRepo;
+	@Autowired
+	private ProgramacaoRepository programacaoRepo;
 	// DAOs ==================
 	
 	
@@ -74,6 +81,9 @@ public class AmbienteController extends AbstractController {
 	
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private ProgramacaoMusicalService programacaoMusicalService;
 	// Services ==============
 
 	
@@ -210,6 +220,25 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/programacoes/view", method = RequestMethod.GET )
+	public String programacoes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/programacoes";
+		}
+		else
+			return "HTTPerror/404";
+	}	
+	
+	
+	
+	
 	
 	@RequestMapping( value = "/ambientes/{idAmbiente}/logomarcas/view", method = RequestMethod.GET )
 	public String logomarcas( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
@@ -226,8 +255,6 @@ public class AmbienteController extends AbstractController {
 		else
 			return "HTTPerror/404";
 	}
-	
-	
 	
 	
 	
@@ -372,6 +399,56 @@ public class AmbienteController extends AbstractController {
 		
 		return jsonResult;
 	}
+	
+	
+	
+	/**
+	 * Retorna a lista com as programações do ambiente.
+	 * 
+	 * @param idAmbiente
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes", "/api/ambientes/{idAmbiente}/programacoes" }, 
+						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Programacao> getProgramacoes( @PathVariable Long idAmbiente, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		List<Programacao> result = programacaoMusicalService.getProgramacaoAtivaByAmbiente( ambiente );
+
+		JSONListWrapper<Programacao> jsonList = new JSONListWrapper<Programacao>( result, result.size() );
+		
+		return jsonList;
+	}
+	
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes", "/api/ambientes/{idAmbiente}/programacoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveProgramacao( @PathVariable Long idAmbiente, @RequestBody Programacao programacaoDTO, BindingResult result )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() )
+			jsonResult = getErrorsAsJSONErroMessage( result );
+		else
+		{
+			try
+			{
+				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+				
+				programacaoMusicalService.saveProgramacao( ambiente, programacaoDTO );
+					
+				jsonResult = getOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+		
+		return jsonResult;
+	}	
 	
 	
 	
@@ -527,6 +604,9 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
+	
+	
+	
 	// ALTERAR PARA A API NÃO CHAMAR MÉTODO CHAMADOS VIEW
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/view-logomarca" }, method = { RequestMethod.POST } )
 	public String uploadLogomarca( @PathVariable Long idAmbiente, @RequestParam("file") MultipartFile file, Principal principal, Model model )
@@ -617,6 +697,45 @@ public class AmbienteController extends AbstractController {
 		
 	}
 	
-	
+//	
+//	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/testeprog" }, method = { RequestMethod.GET } )
+//	public @ResponseBody String teste( @PathVariable Long idAmbiente, Model model )
+//	{
+//		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+//		
+//		Programacao p = new Programacao();
+//		
+//		Random r = new Random();
+//		int mindia = 1;
+//		int maxdia = 7;
+//
+//		int minhora = 0;
+//		int maxhora = 23;
+//		
+//		int minmin = 0;
+//		int maxmin = 59;
+//		
+//		p.setAmbiente( ambienteRepo.findOne( idAmbiente ) );
+//		p.setAtivo( true );
+//		p.setDiaSemana( DiaSemana.getByIndex( r.nextInt(maxdia-mindia) + mindia ) );
+//		
+//		p.setHoraInicio( r.nextInt(maxhora-minhora) + minhora );
+//		p.setHoraFim( r.nextInt(maxhora-p.getHoraInicio()) + p.getHoraInicio() );
+//		
+//		
+//		p.setMinutoInicio( r.nextInt(maxmin-minmin) + minmin );
+//		p.setMinutoFim( r.nextInt(maxmin-p.getMinutoInicio()) + p.getMinutoInicio() );
+//		
+//		p.setDateTimeInicio( p.getDate( p.getHoraInicio(), p.getMinutoInicio() ) );
+//		p.setDateTimeFim( p.getDate( p.getHoraFim(), p.getMinutoFim() ) );
+//		
+//		programacaoMusicalService.saveProgramacao( ambiente, p );
+//		
+////		programacaoRepo.save( p );
+//		
+//		System.out.println(p.toString());
+//		
+//		return writeObjectAsString( p );
+//	}
 	
 }
