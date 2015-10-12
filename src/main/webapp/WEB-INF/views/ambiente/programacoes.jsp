@@ -23,39 +23,52 @@
           <div class="spacer-vertical40"></div>
           
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-8">
+            <div class="col-lg-12 col-md-12">
               <div class="panel panel-default">
                 <div class="panel-body">
                    
                   <div class="row">
-                    <div class="col-lg-12">
-  
-                        <div class="row">
-                          <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6">
-                          
-                            <table>
-                              <tr>
-                              </tr>
-                              <tr>
-                              </tr>
-                              <tr>
-                              </tr>
-                              <tr>
-                              </tr>
-                            </table>
-                            
-                          </div>
-                        </div>
-  
-  
-                        <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <a class="btn btn-primary" id="btnSalvarExpediente" href="#">Salvar Alterações</a>
-                          </div>
-                        </div>                     
-                          
+                    <div class="col-lg-12 col-md-12">
+                      <table class="table table-striped table-bordered sched" style="table-layout: fixed; word-wrap: break-word;">
+                        <thead>
+                          <td>
+                            #
+                          </td>
+                          <td>
+                            SEGUNDA
+                          </td>
+                          <td>
+                            TERÇA
+                          </td>
+                          <td>
+                            QUARTA
+                          </td>
+                          <td>
+                            QUINTA
+                          </td>
+                          <td>
+                            SEXTA
+                          </td>
+                          <td>
+                            SÁBADO
+                          </td>
+                          <td>
+                            DOMINGO
+                          </td>
+                        </thead>
+                        <tbody id="bodytable">
+                                       
+                        </tbody>
+                      </table>
                     </div>
                   </div>
+                  
+                    
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                      <a class="btn btn-primary" id="btnSalvarExpediente" href="#">Salvar Alterações</a>
+                    </div>
+                  </div>                     
                   
                 </div>
               </div>
@@ -89,8 +102,18 @@
 
 
 
-<script type="text/javascript">
+<script id="viewTmpl" type="text/x-jsrender">
+<tr>
+{{for diasSemana}}
+  <td>
+    <div id="{{:hora}}-{{:dia}}" hora="{{:hora}}" dia={{:dia}} class="divsched">{{:desc}}</div>
+  </td>
+{{/for}}  
+</tr>                           
+</script>  
 
+
+<script type="text/javascript">
 
     var salvar = function(){
         
@@ -98,7 +121,7 @@
             
             type: 'POST',
             contentType: 'application/json',
-            url: '${context}/ambientes/${idAmbiente}/expedientes',
+            url: '${context}/ambientes/${idAmbiente}/programacoes',
             dataType: 'json',
             data:  JSON.stringify( $('#ambiente-expediente-form').serializeJSON() )
             
@@ -113,25 +136,79 @@
             }
         });
     };
+    
+    function pad(value, length) {
+        return (value.toString().length < length) ? pad("0"+value, length):value;
+    }
+    
+    var buildTable = function(){
 
-    var getDados = function( id )
-    {
-        if ( id == null || id == undefined )
-            alert('Id não encontrado');
+        var rows = [];
         
+        for ( i = 0; i<= 23; i++ )
+        {
+            var diasSemanaArray = [ { hora : i, dia: "", desc : pad(i, 2) + ":00" }, 
+                                    { hora : i, dia: "SEGUNDA", desc : "&nbsp;" }, 
+                                    { hora : i, dia: "TERCA", desc : "&nbsp;" }, 
+                                    { hora : i, dia: "QUARTA", desc : "&nbsp;" }, 
+                                    { hora : i, dia: "QUINTA", desc : "&nbsp;" }, 
+                                    { hora : i, dia: "SEXTA", desc : "&nbsp;" }, 
+                                    { hora : i, dia: "SABADO", desc : "&nbsp;" }, 
+                                    { hora : i, dia: "DOMINGO", desc : "&nbsp;" } ];
+            
+            var linha = { diasSemana : diasSemanaArray };
+            
+            rows[i] = linha;
+        }
+        
+        var tmpl = $.templates('#viewTmpl');
+        
+        $('#bodytable').empty();
+        
+        var content = tmpl.render(rows);
+        
+        $('#bodytable').append(content);
+    };
+    
+    
+    var openPopup = function( element )
+    {
+        var par = element.parent();
+        
+        
+        
+    }
+    
+
+    var getDados = function()
+    {
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/ambientes/'+id,
+            url: '${context}/ambientes/${idAmbiente}/programacoes',
             dataType: 'json'
         }).done( function(json) {
             
-            removeErros( $('#ambiente-expediente-form') );
-             $('#ambiente-expediente-form').populate(json);
-            jump('ambiente-expediente-form');
+            $.each( json.rows, function( index, obj ) {
+
+                var $celula = $('#'+obj.horaInicio+'-'+obj.diaSemana);
+                
+                var link = "<a href='#' id='linkcelula-" + obj.horaInicio+"-"+obj.diaSemana + "' hora='"+obj.horaInicio+"' dia='"+obj.diaSemana+"' class='btn btn-link linkcelula'>2 Gêneros</a>";
+                
+                $celula.html( link );
+                $celula.addClass('divschedsel');
+
+            });
+            
+            $('.linkcelula').click( function() {
+                openPopup( $( this ) );
+            });
+            
         });
     }
 
+    
+    
     $(function(){
 
         var token = $("input[name='_csrf']").val();
@@ -141,8 +218,11 @@
         });
         
         $('#btnSalvarExpediente').on('click', salvar);
+
+        buildTable();
+
+        getDados();
         
-        getDados( $('#idAmbiente').val() );
     });
 
 </script>

@@ -1,13 +1,10 @@
 package br.com.radio.service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Programacao;
 import br.com.radio.repository.ProgramacaoRepository;
@@ -113,5 +110,9 @@ public class ProgramacaoMusicalService {
 			return p;
 		}
 	}
+	
+	
+	
+	
 
 }

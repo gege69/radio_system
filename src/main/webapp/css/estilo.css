@@ -66,3 +66,22 @@
   display: block;
 }
 
+.sched {
+}
+
+.sched TD {
+  text-align: center;
+}
+
+
+
+.divsched {
+  min-height: 22px;
+  line-height: 22px;
+  display: block;
+}
+
+.divschedsel {
+  cursor: pointer; cursor: hand;
+  background-color: #A1FFFF;
+}

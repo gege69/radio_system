@@ -254,10 +254,22 @@
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
-                <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/programacoes/view" id="btnAvançado"><i class="fa fa-list-ol"></i> Configurar Programação Musical</a>              
               </div>
             </div>
           </div>
+
+          <div class="spacer-vertical20"></div>
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="pull-right">
+                <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
+              </div>            
+            </div>
+          </div>
+          
+          
           
         </div>
       </div>

@@ -115,6 +115,9 @@ public class Midia implements Serializable {
 	@Column( name="cached")
 	private Boolean cached;
 	
+	// Duração em segundos do playback 
+	@Column( name="duracao")
+	private Integer duracao;
 	
 	// TAGs ID3v2.3.0
 	@Column( name="title", columnDefinition = "TEXT")

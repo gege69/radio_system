@@ -124,13 +124,14 @@ insert into funcionalidade ( ordem, nome, url, icone ) values ( 7,  'Chamadas<br
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 8,  'Blocos' ,        				'/ambientes/%d/blocos/view' ,          		'fa-th-large'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 9,  'Expediente' ,      			'/ambientes/%d/expedientes/view' ,        	'fa-clock-o'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 10, 'Eventos' ,       				'/ambientes/%d/eventos/view' ,     	    	'fa-newspaper-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 11,  'Configurações' ,     			'/ambientes/%d/configuracoes/view' ,       	'fa-briefcase'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 12, 'Rodoviária' ,      			'/ambientes/%d/rodoviaria/view' ,        	'fa-bus'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 13, 'Relatórios' ,      			'/ambientes/%d/relatorios/view' ,        	'fa-files-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Downloads' ,       			'/ambientes/%d/downloads/view' ,         	'fa-floppy-o'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Restrições' ,      			'/ambientes/%d/restricoes/view' ,        	'fa-unlock-alt'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Logomarca' ,       			'/ambientes/%d/logomarcas/view' ,         	'fa-trademark'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Simular' ,       				'/ambientes/%d/simulacoes/view' ,         	'fa-play'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'SendVoice' ,       			'/ambientes/%d/sendvoices/view' ,         	'fa-microphone'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 11, 'Programação<br/>Musical' ,  	'/ambientes/%d/programacoes/view' ,     	'fa-list-ol'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 12, 'Configurações' ,     			'/ambientes/%d/configuracoes/view' ,       	'fa-briefcase'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 13, 'Rodoviária' ,      			'/ambientes/%d/rodoviaria/view' ,        	'fa-bus'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Relatórios' ,      			'/ambientes/%d/relatorios/view' ,        	'fa-files-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Downloads' ,       			'/ambientes/%d/downloads/view' ,         	'fa-floppy-o'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Restrições' ,      			'/ambientes/%d/restricoes/view' ,        	'fa-unlock-alt'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Logomarca' ,       			'/ambientes/%d/logomarcas/view' ,         	'fa-trademark'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'Simular' ,       				'/ambientes/%d/simulacoes/view' ,         	'fa-play'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 19, 'SendVoice' ,       			'/ambientes/%d/sendvoices/view' ,         	'fa-microphone'); 
 
 
