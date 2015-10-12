@@ -412,12 +412,9 @@ public class AmbienteController extends AbstractController {
 			
 			Programacao programacao = programacaoRepo.findOne( idProgramacao );
 
-			Programacao nova = programacaoMusicalService.gravaGenerosProgramacao( ambiente, programacao, generoList.getLista() );
+			programacaoMusicalService.gravaGenerosProgramacao( ambiente, programacao, generoList.getLista() );
 				
-			if ( nova != null )
-				jsonResult = writeOkResponse();
-			else
-				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Erro ao salvar associação de Gêneros do ambiente" );
+			jsonResult = writeOkResponse();
 		}
 		catch ( Exception e )
 		{
@@ -443,12 +440,9 @@ public class AmbienteController extends AbstractController {
 			
 			DiaSemana diaSemana = DiaSemana.valueOf( dia );
 			
-			Boolean ok = programacaoMusicalService.gravaGenerosProgramacaoDiaInteiro( ambiente, diaSemana, generoList.getLista() );
+			programacaoMusicalService.gravaGenerosProgramacaoDiaInteiro( ambiente, diaSemana, generoList.getLista() );
 				
-			if ( ok )
-				jsonResult = writeOkResponse();
-			else
-				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Erro ao salvar associação de Gêneros do ambiente" );
+			jsonResult = writeOkResponse();
 		}
 		catch ( Exception e )
 		{

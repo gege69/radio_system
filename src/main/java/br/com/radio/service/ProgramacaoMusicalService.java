@@ -105,29 +105,32 @@ public class ProgramacaoMusicalService {
 		
 		programacaoRepo.save( programacoesDoDia );
 		
-		Integer horaInicioDia = ambiente.getHoraIniExpediente();
-		Integer horaFimDia = 0;
-
-		if ( ambiente.getMinutoFimExpediente() > 0 )
+		if ( generos != null && generos.size() > 0 )
 		{
-			if ( ambiente.getHoraFimExpediente().equals(23) )
-				horaFimDia = 0;
+			Integer horaInicioDia = ambiente.getHoraIniExpediente();
+			Integer horaFimDia = 0;
+
+			if ( ambiente.getMinutoFimExpediente() > 0 )
+			{
+				if ( ambiente.getHoraFimExpediente().equals(23) )
+					horaFimDia = 0;
+				else
+					horaFimDia = ambiente.getHoraFimExpediente() + 1;
+			}
 			else
-				horaFimDia = ambiente.getHoraFimExpediente() + 1;
-		}
-		else
-			horaFimDia = ambiente.getHoraFimExpediente();
+				horaFimDia = ambiente.getHoraFimExpediente();
 
-		Integer maxLoopFor = horaFimDia;
-		
-		if ( horaFimDia.equals( 0 ) )
-			maxLoopFor = 24;
-
-		for ( int hora = horaInicioDia; hora <= maxLoopFor; hora++ )
-		{
-			Programacao nova = gravaNovaProgramacao( ambiente, new Programacao( ambiente, dia, hora ), false );
+			Integer maxLoopFor = horaFimDia;
 			
-			gravaGeneros( generos, nova );
+			if ( horaFimDia.equals( 0 ) )
+				maxLoopFor = 24;
+
+			for ( int hora = horaInicioDia; hora <= maxLoopFor; hora++ )
+			{
+				Programacao nova = gravaNovaProgramacao( ambiente, new Programacao( ambiente, dia, hora ), false );
+				
+				gravaGeneros( generos, nova );
+			}
 		}
 		
 		return true;
@@ -159,9 +162,14 @@ public class ProgramacaoMusicalService {
 		
 		programacaoRepo.save( dto );
 		
-		Programacao nova = gravaNovaProgramacao( ambiente, dto );
+		Programacao nova = null;
+		
+		if ( generos != null && generos.size() > 0 )
+		{
+			nova = gravaNovaProgramacao( ambiente, dto );
 
-		gravaGeneros( generos, nova );
+			gravaGeneros( generos, nova );
+		}
 
 		return nova;
 	}

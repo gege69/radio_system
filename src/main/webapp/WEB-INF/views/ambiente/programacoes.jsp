@@ -380,6 +380,8 @@
         
         var horadesc = pad(horaint, 2) + ":00";
         
+        $('#genero-all').prop('checked', false);
+        
         $('#titulo-modal').html( element.attr("diadesc") + " às " + horadesc );
         
         $('#idProgramacaoModal').val( idProgramacao );
