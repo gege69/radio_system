@@ -74,14 +74,49 @@
 }
 
 
-
-.divsched {
+.schedbasic {
   min-height: 22px;
   line-height: 22px;
   display: block;
 }
 
-.divschedsel {
+.divsched {
+  min-height: 22px;
+  line-height: 22px;
+  display: block;
   cursor: pointer; cursor: hand;
+}
+
+.divschedsel {
   background-color: #A1FFFF;
 }
+
+.linkcelula {
+  word-wrap:break-word;
+}
+
+
+.smallhide {
+  display : inline;
+}
+
+.bighide {
+  display : none;
+}
+
+
+@media (max-width: 640px) 
+{
+    .smallhide
+    {
+        display: none;
+    }
+    
+    .bighide
+    {
+        display: inline;
+    }
+    
+}
+
+

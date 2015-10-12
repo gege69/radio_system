@@ -242,7 +242,7 @@ public class GerenciadorController extends AbstractController {
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Genero> getGeneros( HttpServletResponse response )
 	{
-		List<Genero> generos = generoRepo.findAll();
+		List<Genero> generos = generoRepo.findAllByOrderByNome();
 		
 		JSONListWrapper<Genero> jsonList = new JSONListWrapper<Genero>( generos, this.qtd );
 		
@@ -278,7 +278,7 @@ public class GerenciadorController extends AbstractController {
 
 		if ( result.hasErrors() ){
 			
-			jsonResult = getErrorsAsJSONErroMessage(result);	
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
 		}
 		else
 		{
@@ -290,7 +290,7 @@ public class GerenciadorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
 		

@@ -14,4 +14,7 @@ public interface ProgramacaoRepository extends JpaRepository<Programacao, Long> 
 	
 	List<Programacao> findByAmbienteAndDiaSemanaAndAtivoTrue( Ambiente ambiente, DiaSemana diaSemana );
 
+	Programacao findByAmbienteAndIdProgramacao( Ambiente ambiente, Long idProgramacao );
+	
+
 }

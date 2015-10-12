@@ -87,7 +87,7 @@
     
       <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <label>
-          <input type="checkbox" id="genero-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
+          <input type="checkbox" class="checkbox-genero" id="genero-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
         </label>
       </div>
       
@@ -97,7 +97,7 @@
 <script type="text/javascript">
 
 
-    var listaGeneros = function( idAmbiente, doJump ){
+    var listaGeneros = function( doJump ){
         
         $.ajax({
             type: 'GET',
@@ -111,7 +111,7 @@
             $.ajax({
                 type: 'GET',
                 contentType: 'application/json',
-                url: '${context}/ambientes/'+idAmbiente+'/generos',    // busca a lista de ambientes que está relacionada com o ambiente 
+                url: '${context}/ambientes/${idAmbiente}/generos',    // busca a lista de generos que está relacionada com o ambiente 
                 dataType: 'json'
             }).done( function(json){
                 
@@ -127,10 +127,10 @@
     }
 
     
-    var salvarGeneros = function( idAmbiente )
+    var salvarGeneros = function()
     {
         var array_values = [];
-        $('input[type=checkbox]').each( function() {
+        $('.checkbox-genero').each( function() {
             if( $(this).is(':checked') ) {
                 array_values.push( {idGenero: $(this).val()} );
             }
@@ -143,7 +143,7 @@
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: '${context}/ambientes/'+idAmbiente+'/generos',
+            url: '${context}/ambientes/${idAmbiente}/generos',
             dataType: 'json',
             data : dados 
         }).done( function(json){
@@ -177,11 +177,10 @@
             xhr.setRequestHeader(header, token);
         });
         
-        var idAmbiente = $('#idAmbiente').val();
-        listaGeneros( idAmbiente, false);
+        listaGeneros(false);
         
         $('#btnSalvarGeneros').on('click', function(){
-            salvarGeneros( $('#idAmbiente').val() );
+            salvarGeneros();
         });
         
     });

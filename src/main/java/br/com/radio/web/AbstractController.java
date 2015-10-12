@@ -121,7 +121,7 @@ public abstract class AbstractController {
 	}
 	
 	
-	protected String getErrorsAsJSONErroMessage(BindingResult result){
+	protected String writeErrorsAsJSONErroMessage(BindingResult result){
 		
 		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 		
@@ -153,7 +153,7 @@ public abstract class AbstractController {
 	}
 	
 	
-	protected String getSingleErrorAsJSONErroMessage(String field, String message ){
+	protected String writeSingleErrorAsJSONErroMessage(String field, String message ){
 		
 		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 		
@@ -171,7 +171,7 @@ public abstract class AbstractController {
 		return jsonObject.toString();
 	}
 
-	protected String getOkResponse(){
+	protected String writeOkResponse(){
 		
 		JsonObject obj = Json.createObjectBuilder().add("ok", 1 ).build();
 		String jsonResult = obj.toString();

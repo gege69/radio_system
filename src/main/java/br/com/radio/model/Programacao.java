@@ -5,8 +5,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,17 +25,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
@@ -119,12 +125,17 @@ public class Programacao implements Serializable {
 	private Date dataInativo;
 	
 	@JsonIgnore
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.ALL})
 	   @JoinTable(name="programacao_genero", joinColumns = { 
 	        @JoinColumn(name="id_programacao", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_genero", nullable=false, updatable=false) })
 	private List<Genero> generos;
 
+	
+	@Transient
+	private Map<String,String> progAPI = new HashMap<String,String>();
+	
+	
 	
 	// registros de transmissão 
 	
@@ -236,6 +247,17 @@ public class Programacao implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
+	public Programacao( Ambiente ambiente, DiaSemana diaSemana, Integer horaInicio )
+	{
+		super();
+		this.ambiente = ambiente;
+		this.diaSemana = diaSemana;
+		this.horaInicio = horaInicio;
+		this.ativo = true;
+		this.dataCriacao = new Date();
+
+	}
+
 
 	
 	/**
@@ -321,6 +343,20 @@ public class Programacao implements Serializable {
 	{
 		this.generos = generos;
 	}
+
+	@JsonAnyGetter
+	public Map<String, String> getProgAPI()
+	{
+		return progAPI;
+	}
+
+	@JsonAnySetter
+	public void setProgAPI( Map<String, String> progAPI )
+	{
+		this.progAPI = progAPI;
+	}
+	
+	
 	
 	
 

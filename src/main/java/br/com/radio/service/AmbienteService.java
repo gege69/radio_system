@@ -93,5 +93,21 @@ public class AmbienteService {
 	
 	
 	
+	public Boolean saveExpediente( Long idAmbiente, Ambiente dto ) 
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		ambiente.setHoraIniExpediente( dto.getHoraIniExpediente() );
+		ambiente.setHoraFimExpediente( dto.getHoraFimExpediente() );
+		ambiente.setMinutoIniExpediente( dto.getMinutoIniExpediente() );
+		ambiente.setMinutoFimExpediente( dto.getMinutoFimExpediente() );
+			
+		ambienteRepo.save( ambiente );
+		
+		return true;
+	}
+	
+	
+	
 }
 

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -146,7 +145,6 @@ public class AmbienteController extends AbstractController {
 		Long count = ambienteRepo.countByEmpresa( usuario.getEmpresa() );
 		
 		model.addAttribute( "qtdAmbientes", count );
-		
 		
 		return "ambiente/administrar";
 	}
@@ -326,7 +324,7 @@ public class AmbienteController extends AbstractController {
 		
 		if ( result.hasErrors() ){
 			
-			jsonResult = getErrorsAsJSONErroMessage(result);	
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
 		}
 		else{
 
@@ -334,12 +332,12 @@ public class AmbienteController extends AbstractController {
 			{
 				ambienteService.saveAmbiente( ambiente );
 				
-				jsonResult = getOkResponse();
+				jsonResult = writeOkResponse();
 			}
 			catch ( Exception e )
 			{
 				e.printStackTrace();
-				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
 
@@ -387,19 +385,80 @@ public class AmbienteController extends AbstractController {
 			boolean saved = ambienteService.saveGeneros( idAmbiente, generoList );
 				
 			if ( saved )
-				jsonResult = getOkResponse();
+				jsonResult = writeOkResponse();
 			else
-				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", "Erro ao salvar associação de Gêneros do ambiente" );
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Erro ao salvar associação de Gêneros do ambiente" );
 		}
 		catch ( Exception e )
 		{
 			e.printStackTrace();
-			jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 		}
 		
 		return jsonResult;
 	}
+
 	
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/{idProgramacao}/generos", "/api/ambientes/{idAmbiente}/programacoes/{idProgramacao}/generos" }, 
+				method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveProgramacoesGeneros( @PathVariable Long idAmbiente, @PathVariable Long idProgramacao, @RequestBody GeneroListDTO generoList, BindingResult result )
+	{
+		String jsonResult = "";
+		
+		try
+		{
+			Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+			
+			Programacao programacao = programacaoRepo.findOne( idProgramacao );
+
+			Programacao nova = programacaoMusicalService.gravaGenerosProgramacao( ambiente, programacao, generoList.getLista() );
+				
+			if ( nova != null )
+				jsonResult = writeOkResponse();
+			else
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Erro ao salvar associação de Gêneros do ambiente" );
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+		
+		return jsonResult;
+	}
+
+
+
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/generos/{dia}", "/api/ambientes/{idAmbiente}/programacoes/generos/{dia}" }, 
+			method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveProgramacoesGenerosDiaInteiro( @PathVariable Long idAmbiente, @PathVariable String dia, @RequestBody GeneroListDTO generoList, BindingResult result )
+	{
+		String jsonResult = "";
+		
+		try
+		{
+			Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+			
+			DiaSemana diaSemana = DiaSemana.valueOf( dia );
+			
+			Boolean ok = programacaoMusicalService.gravaGenerosProgramacaoDiaInteiro( ambiente, diaSemana, generoList.getLista() );
+				
+			if ( ok )
+				jsonResult = writeOkResponse();
+			else
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Erro ao salvar associação de Gêneros do ambiente" );
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+		
+		return jsonResult;
+	}
+
 	
 	
 	/**
@@ -429,27 +488,44 @@ public class AmbienteController extends AbstractController {
 		String jsonResult = "";
 		
 		if ( result.hasErrors() )
-			jsonResult = getErrorsAsJSONErroMessage( result );
+			jsonResult = writeErrorsAsJSONErroMessage( result );
 		else
 		{
 			try
 			{
 				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 				
-				programacaoMusicalService.saveProgramacao( ambiente, programacaoDTO );
+				Programacao prog = programacaoMusicalService.gravaNovaProgramacao( ambiente, programacaoDTO );
 					
-				jsonResult = getOkResponse();
+				jsonResult = writeObjectAsString( prog );
 			}
 			catch ( Exception e )
 			{
 				e.printStackTrace();
-				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
 		
 		return jsonResult;
 	}	
 	
+	
+	
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/{idProgramacao}/generos", "/api/ambientes/{idAmbiente}/programacoes/{idProgramacao}/generos" }, 
+			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Genero> getGenerosByProgramacao( @PathVariable Long idAmbiente, @PathVariable Long idProgramacao, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		Programacao prog = programacaoRepo.findByAmbienteAndIdProgramacao( ambiente, idProgramacao );
+		
+		List<Genero> generos = prog.getGeneros();
+
+		JSONListWrapper<Genero> jsonList = new JSONListWrapper<Genero>( generos, generos.size() );
+		
+		return jsonList;
+	}
 	
 	
 	
@@ -510,12 +586,12 @@ public class AmbienteController extends AbstractController {
 
 			ambienteConfigRepo.save( ambienteConfiguracao );
 				
-			jsonResult = getOkResponse();
+			jsonResult = writeOkResponse();
 		}
 		catch ( Exception e )
 		{
 			e.printStackTrace();
-			jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", "Não foi possível gravar : " + e.getMessage() );
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Não foi possível gravar : " + e.getMessage() );
 		}
 		
 		return jsonResult;
@@ -529,26 +605,22 @@ public class AmbienteController extends AbstractController {
 		String jsonResult = "";
 		
 		if ( result.hasErrors() )
-			jsonResult = getErrorsAsJSONErroMessage( result );
+			jsonResult = writeErrorsAsJSONErroMessage( result );
 		else
 		{
 			try
 			{
-				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+				Boolean ok = ambienteService.saveExpediente( idAmbiente, ambienteDTO );	
 				
-				ambiente.setHoraIniExpediente( ambienteDTO.getHoraIniExpediente() );
-				ambiente.setHoraFimExpediente( ambienteDTO.getHoraFimExpediente() );
-				ambiente.setMinutoIniExpediente( ambienteDTO.getMinutoIniExpediente() );
-				ambiente.setMinutoFimExpediente( ambienteDTO.getMinutoFimExpediente() );
-					
-				ambienteRepo.save( ambiente );
-					
-				jsonResult = getOkResponse();
+				if ( ok )
+					jsonResult = writeOkResponse();
+				else
+					throw new RuntimeException("Não foi possível gravar o Expediente");
 			}
 			catch ( Exception e )
 			{
 				e.printStackTrace();
-				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
 		
@@ -575,7 +647,7 @@ public class AmbienteController extends AbstractController {
 		String jsonResult = "";
 		
 		if ( result.hasErrors() )
-			jsonResult = getErrorsAsJSONErroMessage( result );
+			jsonResult = writeErrorsAsJSONErroMessage( result );
 		else
 		{
 			try
@@ -588,12 +660,12 @@ public class AmbienteController extends AbstractController {
 				bloco.setAmbiente( ambiente );
 				blocoRepo.save( bloco );
 				
-				jsonResult = getOkResponse();
+				jsonResult = writeOkResponse();
 			}
 			catch ( Exception e )
 			{
 				e.printStackTrace();
-				jsonResult = getSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
 		
