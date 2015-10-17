@@ -133,10 +133,17 @@ public class MidiaService {
 			
 			Categoria categoria = categoriaRepo.findByCodigo( Categoria.MUSICA );
 			
+			List<MidiaGenero> midiaGeneros = new ArrayList<MidiaGenero>();
 			
+			String grupoArtista = null;
+			
+			int index = 0;
+			int max = 0;
 			
 			for ( File f : arquivos )
 			{
+				boolean troca = false;
+				
 				String pasta = StringUtils.substring( f.getParent(), f.getParent().lastIndexOf( "/" ) + 1 );
 				
 				System.out.println( pasta );
@@ -170,32 +177,50 @@ public class MidiaService {
 				
 				fis.close();
 				
-				associaMidiaEAmbiente( ambiente, midia );
-				
 				if ( StringUtils.isBlank( midia.getArtist() ) )
 					midia.setArtist( pasta );
 				
 				midiaRepo.saveAndFlush( midia );
 				
-				int max = rand.nextInt(2) + 1;
+				associaMidiaEAmbiente( ambiente, midia );
 				
-				List<MidiaGenero> midiaGeneros = new ArrayList<MidiaGenero>();
 				
-				for ( int i = 0; i < max ; i++ )
+				if ( !StringUtils.equals( grupoArtista, midia.getArtist() ) )
 				{
-					MidiaGenero mg = new MidiaGenero();
-					
-					mg.setMidia(  midia );
-					
-					int index = rand.nextInt( generos.size() );
-					
-					mg.setGenero( generos.get( index ) );
-					
-					midiaGeneros.add( mg );
+					grupoArtista = midia.getArtist();
+					troca = true;
 				}
 
-				midiaGeneroRepo.save( midiaGeneros );
+				if ( troca )
+				{
+					midiaGeneros.clear();
+					
+					max = rand.nextInt(2) + 1;
 
+					for ( int i = 0; i < max ; i++ )
+					{
+						MidiaGenero mg = new MidiaGenero();
+						
+						mg.setMidia(  midia );
+						
+						index = rand.nextInt( generos.size() );
+						
+						mg.setGenero( generos.get( index ) );
+						
+						midiaGeneros.add( mg );
+					}
+				}
+				else
+				{
+					for ( MidiaGenero mg : midiaGeneros )
+					{
+						mg.setIdMediagen( null );
+						mg.setMidia( midia );
+					}
+				}
+
+				
+				midiaGeneroRepo.save( midiaGeneros );
 			}
 			
 		}
@@ -316,7 +341,7 @@ public class MidiaService {
 		if ( assocMidiaAmbiente == null )
 		{
 			assocMidiaAmbiente = new MidiaAmbiente( ambiente, midia, new Date() );
-			midiaAmbienteRepo.save( assocMidiaAmbiente );
+			midiaAmbienteRepo.saveAndFlush( assocMidiaAmbiente );
 		}
 	}
 

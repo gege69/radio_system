@@ -27,7 +27,8 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	
 	Midia findByFilehash( String filehash );
 	
-	List<Midia> findByAmbientesAndCategoriasAndGenerosIn( Ambiente ambiente, Categoria categoria, Set<Genero> genero );
+	@Query("SELECT m FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE a = ?1 AND c = ?2 AND g IN ?3 group by m ")
+	List<Midia> findByAmbientesAndCategoriasAndGenerosInGroupBy( Ambiente ambiente, Categoria categoria, Set<Genero> genero );
 
 	@Query("SELECT m.idMidia FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE a = ?1 AND c = ?2 AND g IN ?3 ")
 	List<Long> findIdsByAmbientesAndCategoriasAndGenerosIn( Ambiente ambiente, Categoria categoria, Set<Genero> genero );

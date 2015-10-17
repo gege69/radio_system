@@ -380,10 +380,13 @@ public class Midia implements Serializable {
 		this.duracao = duracao;
 	}
 
+
+
 	@Override
 	public String toString()
 	{
-		return String.format( "Midia [idMidia=%s, nome=%s]", idMidia, nome );
+//		return String.format( "Midia [idMidia=%s, nome=%s, artist=%s]", idMidia, nome, artist );
+		return String.format( "Midia [idMidia=%s, artist=%s, posicaoShuffle=%10.8f]", idMidia, artist, posicaoShuffle );
 	}
 
 	@Override

@@ -2,6 +2,9 @@ package br.com.radio.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.commons.lang3.StringUtils;
 
 import br.com.radio.model.Ambiente;
 
@@ -22,5 +25,30 @@ public class AmbienteListDTO implements Serializable {
 	}
 	
 	
+	public static void main(String[] aaaa)
+	{
+		ThreadLocalRandom rnd = ThreadLocalRandom.current();
+		
+		double ds = rnd.nextDouble(0.12);
+		double ds2 = rnd.nextDouble(0.12);
+		double ds3 = rnd.nextDouble(0.12);
+		double ds4 = rnd.nextDouble(0.12);
+		
+		int result = rnd.nextInt(2);
+		
+		int result2 = rnd.nextInt(2);
+		int result3 = rnd.nextInt(2);
+		int result4= rnd.nextInt(2);
+
+		System.out.println( ds );
+		System.out.println( ds2 );
+		System.out.println( ds3 );
+		System.out.println( ds4 );
+		
+		System.out.println( result );
+		System.out.println( result2 );
+		System.out.println( result3 );
+		System.out.println( result4 );
+	}
 	
 }
