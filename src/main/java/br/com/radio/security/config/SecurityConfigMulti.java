@@ -1,6 +1,9 @@
 package br.com.radio.security.config;
 
+import java.util.regex.Pattern;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 
@@ -76,20 +80,54 @@ public class SecurityConfigMulti {
     public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 		
         protected void configure(HttpSecurity http) throws Exception {
+        	
+        	
+        	RequestMatcher csrfRequestMatcher = new RequestMatcher() 
+        	{
+	    		// Always allow the HTTP GET method
+	    		private Pattern allowedMethods = Pattern.compile("^GET$");
+	    		  
+	    		// Disable CSFR protection on the following urls:
+	    		private AntPathRequestMatcher[] requestMatchers = {
+	    		    new AntPathRequestMatcher("/api/**")
+	    		};
+	
+	    		@Override
+	    		public boolean matches(HttpServletRequest request) {
+	    		    // Skip allowed methods
+	    		    if (allowedMethods.matcher(request.getMethod()).matches()) {
+	    		        return false;
+	    		    }   
+	
+	    		    // If the request match one url the CSFR protection will be disabled
+	    		    for (AntPathRequestMatcher rm : requestMatchers) {
+	    		        if (rm.matches(request)) { return false; }
+	    		    }
+	
+	    		    return true;
+	    		} // method matches
+    		};
+        	
+        	
             http
+            	// desabilitando o CSRF para as URLs de API
+            	.csrf().requireCsrfProtectionMatcher( csrfRequestMatcher )
+            	.and()
                 .antMatcher( "/api/**")                               
-                .authorizeRequests()
-                    .anyRequest().authenticated()  
+                .authorizeRequests().anyRequest().authenticated()  
                 .and()
                 .httpBasic();
             
-			CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();    
-		    http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
+            
+            // Não é mais necessário porque não estou fazendo SPA e o client vai sempre usar basic authentication
+//			CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();    
+//		    http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
         }
     }
 	
 	
-	@Configuration                                                   
+	@Configuration
+	@Order(2)  
     public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 		
 		@Override
@@ -155,10 +193,6 @@ public class SecurityConfigMulti {
 				.invalidSessionUrl( "/login?time=1" )
 				.maximumSessions( 1 );
 
-			
-			CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();    
-		    http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
-			
 		}
     }
 	

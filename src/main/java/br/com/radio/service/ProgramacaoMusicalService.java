@@ -1,9 +1,15 @@
 package br.com.radio.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -12,11 +18,16 @@ import org.springframework.stereotype.Service;
 
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.Categoria;
 import br.com.radio.model.Genero;
+import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
+import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
+import br.com.radio.service.programacaomusical.ProgramacaoListMidiaListDTO;
 import br.com.radio.util.UtilsDates;
 
 
@@ -28,6 +39,13 @@ public class ProgramacaoMusicalService {
 	
 	@Autowired
 	private ProgramacaoGeneroRepository programacaoGeneroRepo;
+	
+	@Autowired
+	private MidiaRepository midiaRepo;
+
+	@Autowired
+	private CategoriaRepository categoriaRepo;
+
 	
 	
 	/**
@@ -96,6 +114,12 @@ public class ProgramacaoMusicalService {
 	@Transactional
 	public boolean gravaGenerosProgramacaoDiaInteiro( Ambiente ambiente, DiaSemana dia, List<Genero> generos )
 	{
+		if ( ambiente.getHoraIniExpediente() == null || 
+			 ambiente.getHoraFimExpediente() == null || 
+			 ambiente.getMinutoIniExpediente() == null ||
+			 ambiente.getMinutoFimExpediente() == null )
+			throw new RuntimeException("O Expediente desse ambiente não está configurado.");
+		
 		List<Programacao> programacoesDoDia = programacaoRepo.findByAmbienteAndDiaSemanaAndAtivoTrue( ambiente, dia );
 		
 		programacoesDoDia.forEach( prog -> {
@@ -113,19 +137,14 @@ public class ProgramacaoMusicalService {
 			if ( ambiente.getMinutoFimExpediente() > 0 )
 			{
 				if ( ambiente.getHoraFimExpediente().equals(23) )
-					horaFimDia = 0;
+					horaFimDia = 23;
 				else
 					horaFimDia = ambiente.getHoraFimExpediente() + 1;
 			}
 			else
 				horaFimDia = ambiente.getHoraFimExpediente();
 
-			Integer maxLoopFor = horaFimDia;
-			
-			if ( horaFimDia.equals( 0 ) )
-				maxLoopFor = 24;
-
-			for ( int hora = horaInicioDia; hora <= maxLoopFor; hora++ )
+			for ( int hora = horaInicioDia; hora <= horaFimDia; hora++ )
 			{
 				Programacao nova = gravaNovaProgramacao( ambiente, new Programacao( ambiente, dia, hora ), false );
 				
@@ -281,6 +300,82 @@ public class ProgramacaoMusicalService {
 		return false;
 	}
 	
+	
+	
+	
+
+	public Map<Set<Genero>, ProgramacaoListMidiaListDTO> selecaoMusicas( Ambiente ambiente )
+	{
+		// Baseado no ambiente e no dia atual... vai buscar os gêneros
+		Categoria categoria = categoriaRepo.findByCodigo( Categoria.MUSICA );
+		
+		LocalDateTime data = LocalDateTime.now();
+		
+		DiaSemana diaSemana = DiaSemana.getByIndex( data.getDayOfWeek().getValue() );
+
+		List<Programacao> programacaoDia = programacaoRepo.findByAmbienteAndDiaSemanaAndAtivoTrue( ambiente, diaSemana );
+		
+		programacaoDia.forEach( p -> {
+ 			p.getGeneros().size(); // inicializando o hibernate lazy loader 
+			p.setGenerosSet( new HashSet<Genero>( p.getGeneros() ) );
+		});
+		
+		Map<Set<Genero>, List<Programacao>> mapProgramacaoPorGeneros = programacaoDia.stream().collect( Collectors.groupingBy( Programacao::getGenerosSet ) );
+		
+		Map<Set<Genero>, ProgramacaoListMidiaListDTO> result = new HashMap<>();
+		
+		
+		// Primeiro separa a lista de programação pelos seus gêneros.
+		// As músicas precisam estar agrupada por gêneros
+		// Cria outro mapa com um objeto contendo a lista de programação e a lista de músicas para ser consumida.
+		mapProgramacaoPorGeneros.forEach( ( generosSet, programacaoList ) -> {
+
+//			System.out.println("_______________");
+//			generosSet.forEach( g -> System.out.println(g.toString()) );
+			
+			List<Midia> midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosIn( ambiente, categoria, generosSet );
+
+			ProgramacaoListMidiaListDTO dto = new ProgramacaoListMidiaListDTO( programacaoList, midias );
+			
+			result.put( generosSet, dto );
+		});
+		
+		return result;
+	}
+	
+	
+	public void geraTransmissao( Ambiente ambiente )
+	{
+		Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = selecaoMusicas( ambiente );
+		
+		ThreadLocalRandom r = ThreadLocalRandom.current();
+//		double randomValue = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+		
+		musicasPorGenero.forEach( ( generosSet, dto ) -> {
+			
+			System.out.println( "_______________" );
+
+			System.out.println( generosSet.toString() );
+			System.out.println( dto.getMidias().size() );
+
+			Integer duracaoTotal = dto.getMidias().stream().mapToInt( Midia::getDuracao ).sum();
+
+			System.out.println( duracaoTotal + " segundos " );
+			System.out.println( ( duracaoTotal / 60 ) + " minutos " );
+			System.out.println( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
+
+			System.out.println( dto.getProgramacoes().size() + " progamacoes (1 hora cada)" );
+			
+		});
+		
+	}
+	
+	
+	private void applyFisherYatesMidias( ProgramacaoListMidiaListDTO dto ) 
+	{
+		
+	}
+
 	
 
 }

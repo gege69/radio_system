@@ -1,7 +1,5 @@
 package br.com.radio.web;
 
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -14,7 +12,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -47,15 +44,6 @@ public class AuthenticationController extends AbstractController {
 	        
 		return "auth/login";
 	}
-	
-	@RequestMapping(value="/api/start", method=RequestMethod.GET)
-	public @ResponseBody String apistart( HttpServletRequest request, ModelMap model )
-	{
-		JsonObject obj = Json.createObjectBuilder().add("ok", "true").build();
-		
-		return obj.toString(); 
-	}
-	
 	
 	@RequestMapping(value="/403", method=RequestMethod.GET)
 	public String acessoNegado( HttpServletRequest request, ModelMap model )

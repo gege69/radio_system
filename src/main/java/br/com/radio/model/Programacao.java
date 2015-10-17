@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -131,6 +132,9 @@ public class Programacao implements Serializable {
 	        @JoinColumn(name="id_genero", nullable=false, updatable=false) })
 	private List<Genero> generos;
 
+	@JsonIgnore
+	@Transient
+	private Set<Genero> generosSet;
 	
 	@Transient
 	private Map<String,String> progAPI = new HashMap<String,String>();
@@ -354,6 +358,16 @@ public class Programacao implements Serializable {
 	public void setProgAPI( Map<String, String> progAPI )
 	{
 		this.progAPI = progAPI;
+	}
+
+	public Set<Genero> getGenerosSet()
+	{
+		return generosSet;
+	}
+
+	public void setGenerosSet( Set<Genero> generosSet )
+	{
+		this.generosSet = generosSet;
 	}
 	
 	

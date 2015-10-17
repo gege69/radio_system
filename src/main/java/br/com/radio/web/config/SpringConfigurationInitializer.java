@@ -38,7 +38,8 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement( LOCATION, MAX_FILE_SIZE, MAX_REQUEST_SIZE, FILE_SIZE_THRESHOLD);
         return multipartConfigElement;
     }
- 
+
+    
     private static final String LOCATION = "/tmp/"; // Temporary location where files will be stored
  
     private static final long MAX_FILE_SIZE = 31457280; // 30MB : Max file size.
@@ -47,15 +48,5 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
      
     private static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
     
-    
-    
-//    @Override
-//    protected void registerDispatcherServlet(ServletContext servletContext) {
-//        super.registerDispatcherServlet(servletContext);
-//
-//        servletContext.addListener(new HttpSessionEventPublisher());
-//
-//    }
-
 
 }

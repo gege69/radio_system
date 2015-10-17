@@ -76,7 +76,7 @@ public class Transmissao implements Serializable {
 	@Column( name= "link" )
 	private String link;
 	
-	@Column( name= "ativo" )
+	@Column( name= "linkativo" )
 	private Boolean linkativo;
 	
 	

@@ -1,14 +1,24 @@
 package br.com.radio.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import net.openhft.hashing.LongHashFunction;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,12 +32,16 @@ import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Empresa;
+import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.MidiaAmbiente;
+import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.Parametro;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
+import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
 
@@ -54,10 +68,19 @@ public class MidiaService {
 	
 	@Autowired
 	private MidiaAmbienteRepository midiaAmbienteRepo;
+
+	@Autowired
+	private MidiaGeneroRepository midiaGeneroRepo;
+	
+	@Autowired
+	private GeneroRepository generoRepo;
+	
+	@PersistenceContext
+	protected EntityManager em;
 	
 	
-	
-	public void saveUploadMulti( MultipartFile file, Long[] categorias, Empresa empresa, Long[] ambientes ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	@Transactional
+	public void saveUploadMulti( MultipartFile multiPartFile, Long[] categorias, Empresa empresa, Long[] ambientes ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
@@ -65,113 +88,223 @@ public class MidiaService {
 		if ( ambientes == null || ambientes.length <= 0 )
 			throw new RuntimeException("Nenhum ambiente selecionado para receber a Mídia. Escolha pelo menos um ambiente.");
 		
-		String hash = geraHashDoArquivo( file );
+		byte[] bytes = multiPartFile.getBytes(); 
 		
-		Midia midia = salvaMidia( file, empresa, categorias, hash, null );
+		String hash = geraHashDoArquivo( bytes );
+		
+		Midia midia = salvaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), empresa, categorias, hash, null );
 
-//		boolean aoMenosUm = false;
+		boolean aoMenosUm = false;
 		for ( Long id : ambientes )
 		{
 			Ambiente ambiente = ambienteRepo.findOne( id );
 			
 			if ( ambiente != null )
 			{
-//				aoMenosUm = true;
+				aoMenosUm = true;
 				associaMidiaEAmbiente( ambiente, midia );
 			}
 		}
 		
-//		if ( !aoMenosUm )
-//			throw new RuntimeException( "Nenhum ambiente encontrado para associação." );
+		if ( !aoMenosUm )
+			throw new RuntimeException( "Nenhum ambiente encontrado para associação." );
 		
 	}
 	
 	
-	public void saveUpload( MultipartFile file, String codigoCategoria, Empresa empresa, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	
+	
+	
+	public void getFromFileSystem()
+	{
+		try
+		{
+			File diretorio = new File("/home/pazin/musicas/");
+			
+			Collection<File> arquivos = FileUtils.listFiles( diretorio, new String[]{ "mp3" }, true );
+			
+			List<Genero> generos = generoRepo.findAll();
+			
+			Random rand = new Random(); 
+
+			Ambiente ambiente = ambienteRepo.findOne( 1L );
+			
+			Integer iteracoes = 0;
+			
+			Categoria categoria = categoriaRepo.findByCodigo( Categoria.MUSICA );
+			
+			
+			
+			for ( File f : arquivos )
+			{
+				String pasta = StringUtils.substring( f.getParent(), f.getParent().lastIndexOf( "/" ) + 1 );
+				
+				System.out.println( pasta );
+				
+				iteracoes++;
+				
+				System.out.println(f.getName() + " | " + f.length());
+
+				String hash = "";
+				
+				FileInputStream fis = null;
+				try
+				{
+					fis = new FileInputStream( f );
+					
+					byte[] bytes = IOUtils.toByteArray( fis );
+					
+					hash = geraHashDoArquivo( bytes );
+					
+					fis.close();
+				}
+				catch ( Exception e )
+				{
+					e.printStackTrace();
+				}
+				
+
+				fis = new FileInputStream( f );
+				
+				Midia midia = salvaMidia( fis, f.getName(), ambiente.getEmpresa(), new Long[] { categoria.getIdCategoria() }, hash, "" );
+				
+				fis.close();
+				
+				associaMidiaEAmbiente( ambiente, midia );
+				
+				if ( StringUtils.isBlank( midia.getArtist() ) )
+					midia.setArtist( pasta );
+				
+				midiaRepo.saveAndFlush( midia );
+				
+				int max = rand.nextInt(2) + 1;
+				
+				List<MidiaGenero> midiaGeneros = new ArrayList<MidiaGenero>();
+				
+				for ( int i = 0; i < max ; i++ )
+				{
+					MidiaGenero mg = new MidiaGenero();
+					
+					mg.setMidia(  midia );
+					
+					int index = rand.nextInt( generos.size() );
+					
+					mg.setGenero( generos.get( index ) );
+					
+					midiaGeneros.add( mg );
+				}
+
+				midiaGeneroRepo.save( midiaGeneros );
+
+			}
+			
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+	public Midia saveUpload( MultipartFile multiPartFile, String codigoCategoria, Empresa empresa, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
 		
 		if ( categoria == null )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
-		saveUpload( file, new Long[] { categoria.getIdCategoria() }, empresa, ambiente, descricao );
+		return saveUpload( multiPartFile, new Long[] { categoria.getIdCategoria() }, empresa, ambiente, descricao );
 	}
 	
 
 	
-	public void saveUpload( MultipartFile file, Long[] categorias, Empresa empresa, Ambiente ambiente ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Empresa empresa, Ambiente ambiente ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		saveUpload( file, categorias, empresa, ambiente, null );
+		return saveUpload( multiPartFile, categorias, empresa, ambiente, null );
 	}
 	
 	
-	public void saveUpload( MultipartFile file, Long[] categorias, Empresa empresa, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	@Transactional
+	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Empresa empresa, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
-		String hash = geraHashDoArquivo( file );
+		byte[] bytes = multiPartFile.getBytes();
 		
-		Midia midia = salvaMidia( file, empresa, categorias, hash, descricao );
+		String hash = geraHashDoArquivo( bytes );
+		
+		Midia midia = salvaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), empresa, categorias, hash, descricao );
 		
 		associaMidiaEAmbiente( ambiente, midia );
 		
+		return midia;
 	}
 
 
-	private Midia salvaMidia( MultipartFile file, Empresa empresa, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia salvaMidia( InputStream is, String originalName, Empresa empresa, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		List<Categoria> categoriaList = null;
 		File arquivo = null;
 		Integer size = 0;
 		
-		String basePath = "";
-		
-		Parametro parametro = parametroRepo.findByCodigoAndEmpresa( "BASE_MIDIA_PATH", empresa );
-		basePath = parametro.getValor();
-
-		
-		Midia midia = midiaRepo.findByFilehash( hash );
-		
-		if ( midia == null )
+		Midia midia = null;
+		try
 		{
-			String path = basePath + hash;
+			String basePath = "";
 			
-			arquivo = new File( path );
+			Parametro parametro = parametroRepo.findByCodigoAndEmpresa( "BASE_MIDIA_PATH", empresa );
+			basePath = parametro.getValor();
 
-			size = IOUtils.copy( file.getInputStream(), new FileOutputStream( arquivo ) );
 			
-			midia = new Midia();
+			midia = midiaRepo.findByFilehash( hash );
 			
-			midia.setDataUpload( new Date() );
-			midia.setNome( file.getOriginalFilename() );
-			midia.setFilepath( path );
-			midia.setFilehash( hash );
-			midia.setMimetype( "audio/mpeg" );  // file.getContentType()
-			midia.setFilesize( size );
-			midia.setExtensao( FilenameUtils.getExtension( file.getOriginalFilename() ) );
-			midia.setValido( true );
-			midia.setCached( false );
+			if ( midia == null )
+			{
+				String path = basePath + hash;
+				
+				arquivo = new File( path );
+
+				size = IOUtils.copy( is, new FileOutputStream( arquivo ) );
+				
+				midia = new Midia();
+				
+				midia.setDataUpload( new Date() );
+				midia.setNome( originalName );
+				midia.setFilepath( path );
+				midia.setFilehash( hash );
+				midia.setMimetype( "audio/mpeg" );  // file.getContentType()
+				midia.setFilesize( size );
+				midia.setExtensao( FilenameUtils.getExtension( originalName ) );
+				midia.setValido( true );
+				midia.setCached( false );
+				
+				preencheInformacoesMP3( midia, arquivo );
+			}
+			
+			midia.setDescricao( descricao );
+
+			if ( categorias != null && categorias.length > 0 )
+			{
+				categoriaList = categoriaRepo.findByIdCategoriaIn( categorias );
+				
+				midia.setCategorias( categoriaList );
+			}
+			
+			midiaRepo.save( midia );
 		}
-		else
+		catch ( Exception e )
 		{
-			size = midia.getFilesize();
+			if ( ( arquivo != null && arquivo.exists() ) 
+				 &&
+				 ( midia == null || midia.getIdMidia() == null || midia.getIdMidia().equals( 0L ) ) )
+				arquivo.delete();
 			
-			arquivo = new File( midia.getFilepath() );
+			throw e;
 		}
 		
-		midia.setDescricao( descricao );
-
-		atualizaIDTags( midia, arquivo );
-
-		if ( categorias != null && categorias.length > 0 )
-		{
-			categoriaList = categoriaRepo.findByIdCategoriaIn( categorias );
-			
-			midia.setCategorias( categoriaList );
-		}
-		
-		midiaRepo.save( midia );
 		return midia;
 	}
 
@@ -188,10 +321,8 @@ public class MidiaService {
 	}
 
 
-	private String geraHashDoArquivo( MultipartFile file ) throws IOException
+	private String geraHashDoArquivo( byte[] bytes ) throws IOException
 	{
-		byte[] bytes = file.getBytes();
-		
 		LongHashFunction l = LongHashFunction.xx_r39();
 		long hashXX = l.hashBytes( bytes, 0, bytes.length );
 
@@ -200,37 +331,41 @@ public class MidiaService {
 		return hash;
 	}
 
-	private void atualizaIDTags( Midia midia, File arquivo ) throws IOException, UnsupportedTagException, InvalidDataException
+	private void preencheInformacoesMP3( Midia midia, File arquivo ) throws IOException, UnsupportedTagException, InvalidDataException
 	{
-		Mp3File mp3File = new Mp3File( arquivo );
-		
-		if ( mp3File.hasId3v2Tag() )
+		if ( arquivo.length() > 0 )
 		{
-			ID3v2 id3v2Tag;
+			Mp3File mp3File = new Mp3File( arquivo );
+
+			midia.setDuracao( Long.valueOf( mp3File.getLengthInSeconds() ).intValue() );
 			
-			id3v2Tag = mp3File.getId3v2Tag();
-			
-			midia.setTitle( id3v2Tag.getTitle() );
-			midia.setArtist( id3v2Tag.getArtist() );
-			midia.setAlbum( id3v2Tag.getAlbum() );
-			midia.setComment( id3v2Tag.getComment() );
-			midia.setDatetag( id3v2Tag.getYear() );
-			midia.setGenre( id3v2Tag.getGenreDescription() );
+			if ( mp3File.hasId3v2Tag() )
+			{
+				ID3v2 id3v2Tag;
+				
+				id3v2Tag = mp3File.getId3v2Tag();
+				
+				midia.setTitle( id3v2Tag.getTitle() );
+				midia.setArtist( id3v2Tag.getArtist() );
+				midia.setAlbum( id3v2Tag.getAlbum() );
+				midia.setComment( id3v2Tag.getComment() );
+				midia.setDatetag( id3v2Tag.getYear() );
+				midia.setGenre( id3v2Tag.getGenreDescription() );
+			}
+			else if ( mp3File.hasId3v1Tag() )
+			{
+				ID3v1 id3v1Tag;
+				
+				id3v1Tag = mp3File.getId3v1Tag();
+				
+				midia.setTitle( id3v1Tag.getTitle() );
+				midia.setArtist( id3v1Tag.getArtist() );
+				midia.setAlbum( id3v1Tag.getAlbum() );
+				midia.setComment( id3v1Tag.getComment() );
+				midia.setDatetag( id3v1Tag.getYear() );
+				midia.setGenre( id3v1Tag.getGenreDescription() );
+			}
 		}
-		else if ( mp3File.hasId3v1Tag() )
-		{
-			ID3v1 id3v1Tag;
-			
-			id3v1Tag = mp3File.getId3v1Tag();
-			
-			midia.setTitle( id3v1Tag.getTitle() );
-			midia.setArtist( id3v1Tag.getArtist() );
-			midia.setAlbum( id3v1Tag.getAlbum() );
-			midia.setComment( id3v1Tag.getComment() );
-			midia.setDatetag( id3v1Tag.getYear() );
-			midia.setGenre( id3v1Tag.getGenreDescription() );
-		}
-		
 	}
 	
 	
@@ -259,6 +394,7 @@ public class MidiaService {
 		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaList, midiaPage.getTotalElements() );
 		return jsonList;
 	}
+
 	
 	
 }

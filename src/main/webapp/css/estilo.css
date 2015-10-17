@@ -69,6 +69,10 @@
 .sched {
 }
 
+.sched THEAD TD {
+  font-weight: bold;
+}
+
 .sched TD {
   text-align: center;
 }
@@ -96,27 +100,56 @@
 }
 
 
-.smallhide {
+.showOnXs {
+  display : none;
+}
+
+.hideOnSm {
   display : inline;
 }
 
-.bighide {
+.hideOnBg {
   display : none;
 }
 
 
-@media (max-width: 640px) 
+@media (max-width: 700px) 
 {
-    .smallhide
+    .showOnXs
+    {
+        display : none;
+    }
+  
+    .hideOnSm
     {
         display: none;
     }
     
-    .bighide
+    .hideOnBg
     {
         display: inline;
     }
     
 }
 
+
+
+@media (max-width: 448px) 
+{
+    .showOnXs
+    {
+        display : inline;
+    }
+  
+    .hideOnSm
+    {
+        display: none;
+    }
+    
+    .hideOnBg
+    {
+        display: none;
+    }
+    
+}
 

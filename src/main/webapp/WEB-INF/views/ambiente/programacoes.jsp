@@ -16,11 +16,18 @@
     
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Programação Musical ( Gêneros )<br/>
+          <h3>
+            <div class="row">
+              <div class="col-lg-12">
+                Programação Musical<br/>
+                ( Gêneros )
+              </div>
+            </div>
+            <br/>
             <small>Programação musical do ${nome}</small>
           </h3>
           
-          <div class="spacer-vertical40"></div>
+          <div class="spacer-vertical20"></div>
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
@@ -35,25 +42,39 @@
                             #
                           </td>
                           <td>
-                            SEGUNDA
+                            <span class='showOnXs'>S</span>
+                            <span class='hideOnBg'>SEG</span>
+                            <span class='hideOnSm'>SEGUNDA</span>
                           </td>
                           <td>
-                            TERÇA
+                            <span class='showOnXs'>T</span>
+                            <span class='hideOnBg'>TER</span>
+                            <span class='hideOnSm'>TERÇA</span>
                           </td>
                           <td>
-                            QUARTA
+                            <span class='showOnXs'>Q</span>
+                            <span class='hideOnBg'>QUA</span>
+                            <span class='hideOnSm'>QUARTA</span>
                           </td>
                           <td>
-                            QUINTA
+                            <span class='showOnXs'>Q</span>
+                            <span class='hideOnBg'>QUI</span>
+                            <span class='hideOnSm'>QUINTA</span>
                           </td>
                           <td>
-                            SEXTA
+                            <span class='showOnXs'>S</span>
+                            <span class='hideOnBg'>SEX</span>
+                            <span class='hideOnSm'>SEXTA</span>
                           </td>
                           <td>
-                            SÁBADO
+                            <span class='showOnXs'>S</span>
+                            <span class='hideOnBg'>SÁB</span>
+                            <span class='hideOnSm'>SÁBADO</span>
                           </td>
                           <td>
-                            DOMINGO
+                            <span class='showOnXs'>D</span>
+                            <span class='hideOnBg'>DOM</span>
+                            <span class='hideOnSm'>DOMINGO</span>
                           </td>
                         </thead>
                         <tbody id="bodytable">
@@ -289,7 +310,7 @@
         
         for ( i = 0; i<= 23; i++ )
         {
-            var diasSemanaArray = [ { hora : i, dia: "", desc : pad(i, 2) + "<span class='smallhide'>:00</span>", clazz : "schedbasic" }, 
+            var diasSemanaArray = [ { hora : i, dia: "", desc : pad(i, 2) + "<span class='hideOnSm'>:00</span>", clazz : "schedbasic" }, 
                                     { hora : i, dia: "SEGUNDA", diadesc: "Segunda", desc : "&nbsp;", clazz : "divsched" }, 
                                     { hora : i, dia: "TERCA", diadesc: "Terça", desc : "&nbsp;", clazz : "divsched" }, 
                                     { hora : i, dia: "QUARTA", diadesc: "Quarta", desc : "&nbsp;", clazz : "divsched" }, 
@@ -413,11 +434,11 @@
                 if ( obj.generosCount != null )
                 {
                     if ( obj.generosCount == "0" || obj.generosCount == "null" )
-                        conteudo = "0<span class='smallhide'> Gêneros</span>";
+                        conteudo = "0<span class='hideOnSm'> Gêneros</span>";
                     else if ( obj.generosCount == "1" || obj.generosCount == 1 )
-                        conteudo = "<span class='bighide'>1</span><span class='smallhide'>"+ obj.generoSingle + "</span>";
+                        conteudo = "<span class='showOnXs'>1</span><span class='hideOnBg'>1</span><span class='hideOnSm'>"+ obj.generoSingle + "</span>";
                     else
-                        conteudo = obj.generosCount+"<span class='smallhide'> Gêneros</span>";
+                        conteudo = obj.generosCount+"<span class='hideOnSm'> Gêneros</span>";
                 }
                 
 //                 var link = "<a href='#' id='linkcelula-" + obj.horaInicio+"-"+obj.diaSemana + "' hora='"+obj.horaInicio+"' dia='"+obj.diaSemana+"' class='btn btn-link linkcelula'>"+conteudo+"</a>";

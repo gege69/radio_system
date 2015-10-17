@@ -64,7 +64,7 @@ public class Midia implements Serializable {
 	private String descricao;
 
 	@JsonIgnore
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(fetch=FetchType.LAZY)
 	   @JoinTable(name="midia_categoria", joinColumns = { 
 	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_categoria", nullable=false, updatable=false) })
@@ -137,6 +137,18 @@ public class Midia implements Serializable {
 
 	@Column( name="genre", columnDefinition = "TEXT")
 	private String genre;
+	
+	@JsonIgnore
+	@ManyToMany(fetch=FetchType.LAZY)
+	   @JoinTable(name="midia_genero", joinColumns = { 
+	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
+	        @JoinColumn(name="id_genero", nullable=false, updatable=false) })
+    private List<Genero> generos;
+	
+	
+	@JsonIgnore
+	@Transient
+	private Double posicaoShuffle;
 	
 	
 	public Long getIdMidia()
@@ -356,6 +368,17 @@ public class Midia implements Serializable {
 	{
 		this.ambientes = ambientes;
 	}
+	
+	
+	public Integer getDuracao()
+	{
+		return duracao;
+	}
+
+	public void setDuracao( Integer duracao )
+	{
+		this.duracao = duracao;
+	}
 
 	@Override
 	public String toString()
@@ -392,5 +415,26 @@ public class Midia implements Serializable {
 		return true;
 	}
 
+	public List<Genero> getGeneros()
+	{
+		return generos;
+	}
+
+	public void setGeneros( List<Genero> generos )
+	{
+		this.generos = generos;
+	}
+
+	public Double getPosicaoShuffle()
+	{
+		return posicaoShuffle;
+	}
+
+	public void setPosicaoShuffle( Double posicaoShuffle )
+	{
+		this.posicaoShuffle = posicaoShuffle;
+	}
+
+	
 
 }

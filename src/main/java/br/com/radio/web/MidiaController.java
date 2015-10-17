@@ -123,7 +123,7 @@ public class MidiaController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes/{idAmbiente}/view-upload-midia/{codigo}", method=RequestMethod.POST)
-    public String uploadSync(
+    public String uploadTela(
     		@PathVariable Long idAmbiente,
     		@PathVariable String codigo,
     		@RequestParam("file") MultipartFile file, 
@@ -177,13 +177,14 @@ public class MidiaController extends AbstractController {
 	    return "ambiente/upload-midia";
     }
 
+
+
 	
 	
 	
 	
-	// AJAX NÃO É SUPORTADO POR IE8 ... FAZER UMA VERSÃO QUE NÃO REDIRECIONA PRA TELA...
 	@RequestMapping(value="/view-upload-multi", method=RequestMethod.POST)
-    public String uploadMultiSync(
+    public String uploadMultiTela(
     		@RequestParam("file") MultipartFile file,
     		@RequestParam("ambientes[]") Long[] ambientes,    		
     		@RequestParam("categorias[]") Long[] categorias,
@@ -222,7 +223,7 @@ public class MidiaController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes/{idAmbiente}/view-chamada-funcionarios", method=RequestMethod.POST)
-    public String uploadChamadaFuncionarioSync(
+    public String uploadChamadaFuncionarioTela(
     		@PathVariable Long idAmbiente,
     		@RequestParam("codigo") String codigo,
     		@RequestParam("file") MultipartFile file, 
@@ -360,6 +361,13 @@ public class MidiaController extends AbstractController {
 	}
 	
 	
+	@RequestMapping( value = "/arquivos", method = RequestMethod.GET)
+	public @ResponseBody String testeArquivos()
+	{
+		midiaService.getFromFileSystem();
+		
+		return writeOkResponse();
+	}
 	
 	
 }

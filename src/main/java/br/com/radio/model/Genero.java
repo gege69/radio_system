@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -49,8 +50,9 @@ public class Genero implements Serializable {
 	
 	// No futuro adicionar algum tipo de hierarquia / árvore de subgêneros
 
-	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+//	@JsonDeserialize(using=JSONDateDeserializer.class)
+//	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonIgnore
 	@NotNull( message = "A data de criação do Gênero é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )
