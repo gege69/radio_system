@@ -112,7 +112,7 @@ insert into  PARAMETRO ( id_parametro, id_empresa, codigo, valor, descricao, typ
 values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA WHERE CODIGO = 'Eterion' ), 'BASE_MIDIA_PATH', '/home/pazin/teste/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
 
 insert into  PARAMETRO ( id_parametro, id_empresa, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA WHERE CODIGO = 'Eterion' ), 'SERVER_REQUEST_PATH', '/home/pazin/teste/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA WHERE CODIGO = 'Eterion' ), 'SERVER_REQUEST_PATH', '', 'A definir', null );
 
 
 

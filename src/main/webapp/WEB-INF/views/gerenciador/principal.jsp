@@ -68,7 +68,7 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/arquivos">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-key"></i>
                       <span class="label-botao-main">Ferramentas</span>
                     </a>

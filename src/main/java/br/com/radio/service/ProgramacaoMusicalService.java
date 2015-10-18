@@ -516,6 +516,7 @@ public class ProgramacaoMusicalService {
 		{
 			Long ordemplay = 1l;
 			
+			// ao invés de acoplar isso no for... fazer um método que tem o indice de inicio e apenas retorna uma sublista com o total da duração em segundos ( 1 hora )
 			for ( int i = index; i < midiasOrdenadas.size(); i++ )
 			{
 				Midia midia = midiasOrdenadas.get( i );
