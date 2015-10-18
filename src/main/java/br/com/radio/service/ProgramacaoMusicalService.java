@@ -13,23 +13,28 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import br.com.radio.enumeration.DiaSemana;
+import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
+import br.com.radio.model.Transmissao;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
+import br.com.radio.repository.TransmissaoRepository;
 import br.com.radio.service.programacaomusical.ProgramacaoListMidiaListDTO;
 import br.com.radio.util.UtilsDates;
 
@@ -48,7 +53,15 @@ public class ProgramacaoMusicalService {
 
 	@Autowired
 	private CategoriaRepository categoriaRepo;
+	
+	@Autowired
+	private Environment env;
+	
+	@Autowired
+	private EntityManager em;
 
+	@Autowired 
+	private TransmissaoRepository transmissaoRepo;
 	
 	
 	/**
@@ -344,7 +357,8 @@ public class ProgramacaoMusicalService {
 	}
 	
 	
-	public void geraTransmissao( Ambiente ambiente )
+	@Transactional
+	public void geraTransmissao( Ambiente ambiente, String urlRequest )
 	{
 		Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = selecaoMusicas( ambiente );
 		
@@ -352,10 +366,7 @@ public class ProgramacaoMusicalService {
 			
 			printaInformacoes( generosSet, dto );
 
-			// Aqui posso embaralhar direto ( vai gerar clusters e músicas do mesmo artista próximas )
-//			applyFisherYatesShuffle( dto );
-			
-			// ou posso fazer o algoritmo do spotify
+			// algoritmo do spotify
 			applySpotifyShuffle( dto );
 			
 			// imprimindo
@@ -364,10 +375,11 @@ public class ProgramacaoMusicalService {
 			});
 
 			validaClusters( dto );
+			
+			
+			// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
+			consomeMusicas( ambiente, dto, urlRequest );
 		});
-		
-		
-		
 	}
 
 
@@ -469,5 +481,76 @@ public class ProgramacaoMusicalService {
 		musicas.sort( pelaPosicaoShuffle );
  
 	}
+	
+	
+	public void consomeMusicas( Ambiente ambiente, ProgramacaoListMidiaListDTO dto, String urlRequest )
+	{
+		List<Programacao> programacoes = dto.getProgramacoes();
+		
+		// Na verdade é bagunçadas.. porque nesse ponto o shuffle já deveria ter ocorrido
+		List<Midia> midiasOrdenadas = dto.getMidias();
+
+		String url = urlRequest + "/api/ambientes/"+ ambiente.getIdAmbiente() +"/transmissoes/" ;
+		
+		String batchSizeStr = env.getRequiredProperty( "hibernate.jdbc.batch_size" );
+		
+		Integer batchSize = 50;
+		
+		if ( StringUtils.isNotBlank( batchSizeStr ) )
+		{
+		 	try
+			{
+				batchSize = Integer.valueOf( batchSizeStr );
+			}
+			catch ( NumberFormatException e )
+			{
+				batchSize = 50;
+				e.printStackTrace();
+			}
+		}
+		
+		int batchNumber = 0;
+		int index = 0;
+		
+		for ( Programacao prog : programacoes )
+		{
+			Long ordemplay = 1l;
+			
+			for ( int i = index; i < midiasOrdenadas.size(); i++ )
+			{
+				Midia midia = midiasOrdenadas.get( i );
+				
+				Transmissao transmissao = new Transmissao();
+				
+				transmissao.setAmbiente( prog.getAmbiente() );
+				transmissao.setDataCriacao( new Date() );
+				transmissao.setDataPrevisaoPlay( null ); // pensar nisso
+				transmissao.setDuracao( midia.getDuracao() );
+				transmissao.setLinkativo( true );
+				transmissao.setMidia( midia );
+				transmissao.setProgramacao( prog );
+				transmissao.setStatusPlayback( StatusPlayback.GERADA );
+				transmissao.setOrdemPlay( ordemplay++ );
+
+				transmissaoRepo.save( transmissao );
+				
+				batchNumber++;
+				
+				if ( index % batchNumber == 0 )
+				{
+					batchNumber = 0;
+					em.flush();
+					em.clear();
+				}
+				
+				index = i + 1;
+			}
+		}
+
+		transmissaoRepo.setLinkFor( url );
+		
+		System.out.println("finsih");
+	}
+	
 
 }

@@ -1,19 +1,16 @@
 package br.com.radio.web;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Transmissao;
@@ -136,7 +134,7 @@ public class MidiaAPIController extends AbstractController {
 	
 
 	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/{idTransmissao}", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<FileSystemResource> downloadUserAvatarImage(@PathVariable Long idAmbiente, @PathVariable Long idTransmissao, Principal principal) {
+	public @ResponseBody ResponseEntity<FileSystemResource> downloadTransmissao(@PathVariable Long idAmbiente, @PathVariable Long idTransmissao, Principal principal) {
 		
 		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
 		
@@ -154,29 +152,31 @@ public class MidiaAPIController extends AbstractController {
 		
 		File arquivo = new File( midia.getFilepath() );
 		
-		
 		FileSystemResource fsr = new FileSystemResource( arquivo );
-		
-		try
-		{
-			System.out.println( fsr.getURI().toString() );
-			
-			System.out.println( fsr.getURL().toString() );
-		}
-		catch ( IOException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		String name = Integer.valueOf( midia.getNome().hashCode() ).toString();
 		
 		return ResponseEntity.ok()
-				.header( "Content-Disposition", "attachment; filename=\""+ midia.getTitle() +"\"" )
+				.header( "Content-Disposition", "attachment; filename=\""+ name +"\"" )
 				.contentLength( midia.getFilesize() )
 				.contentType( MediaType.parseMediaType( midia.getMimetype() ) )
 				.body( fsr );
 	}
 
 	
+	
+	
+	@RequestMapping( value = { "/api/ambientes/{idAmbiente}/transmissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Transmissao> listAmbiente( @PathVariable Long idAmbiente, Principal principal )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByOrdemPlayAsc( ambiente, true );
+		
+		JSONListWrapper<Transmissao> jsonList = new JSONListWrapper<Transmissao>( transmissoes , transmissoes.size() );
+
+		return jsonList;
+	}
 	
 	
 }

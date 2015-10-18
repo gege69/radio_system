@@ -22,6 +22,7 @@ import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -44,10 +45,12 @@ public class Transmissao implements Serializable {
 	@Column( name = "id_transmissao", nullable = false )
 	private Long idTransmissao;
 	
+	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;
-	
+
+	@JsonIgnore
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_programacao" )
 	private Programacao programacao;
@@ -55,6 +58,9 @@ public class Transmissao implements Serializable {
 	@OneToOne
 	@JoinColumn(name="id_midia" )
 	private Midia midia;
+	
+	@Column( name = "ordemplay", nullable = false )
+	private Long ordemPlay;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
@@ -87,9 +93,7 @@ public class Transmissao implements Serializable {
 	@Column( name = "datafinishplay" )
 	private Date dataFinishPlay;
 	
-	
-	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonIgnore
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao" )
 	private Date dataCriacao;
@@ -244,6 +248,19 @@ public class Transmissao implements Serializable {
 		super();
 		this.dataCriacao = new Date();
 	}
+
+
+	public Long getOrdemPlay()
+	{
+		return ordemPlay;
+	}
+
+
+	public void setOrdemPlay( Long ordemPlay )
+	{
+		this.ordemPlay = ordemPlay;
+	}
+	
 	
 	
 }

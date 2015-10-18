@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -763,10 +764,26 @@ public class AmbienteController extends AbstractController {
 		
 	}
 	
-//	
-//	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/testeprog" }, method = { RequestMethod.GET } )
-//	public @ResponseBody String teste( @PathVariable Long idAmbiente, Model model )
-//	{
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/testeprog" }, method = { RequestMethod.GET } )
+	public @ResponseBody String teste( @PathVariable Long idAmbiente, Model model, HttpServletRequest request )
+	{
+		
+		System.out.println(request.getRequestURL());  
+		System.out.println(request.getServletPath()); 
+		System.out.println(request.getContextPath());
+//		System.out.println(request.getPathInfo());
+		
+		JsonObject obj = Json.createObjectBuilder()
+				.add("requesturl", request.getRequestURL().toString())
+				.add("servletpath", request.getServletPath())
+				.add("contextpath", request.getContextPath())
+				.build();
+		
+		return obj.toString();
+				
+		
+		
 //		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 //		
 //		Programacao p = new Programacao();
@@ -800,8 +817,8 @@ public class AmbienteController extends AbstractController {
 ////		programacaoRepo.save( p );
 //		
 //		System.out.println(p.toString());
-//		
-//		return writeObjectAsString( p );
-//	}
+		
+		
+	}
 	
 }

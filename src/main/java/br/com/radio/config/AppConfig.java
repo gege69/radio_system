@@ -67,6 +67,7 @@ public class AppConfig {
 		jpaProperties.put( "hibernate.show_sql", env.getRequiredProperty( "hibernate.show_sql" ) );
 		jpaProperties.put( "hibernate.format_sql", env.getRequiredProperty( "hibernate.format_sql" ) );
 		jpaProperties.put( "hibernate.enable_lazy_load_no_trans", env.getRequiredProperty( "hibernate.enable_lazy_load_no_trans" ) );
+		jpaProperties.put( "hibernate.jdbc.batch_size", env.getRequiredProperty( "hibernate.jdbc.batch_size" ) );
 
 		entityManagerFactoryBean.setJpaProperties( jpaProperties );
 

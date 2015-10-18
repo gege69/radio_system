@@ -92,7 +92,7 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = salvaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), empresa, categorias, hash, null );
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), empresa, categorias, hash, null );
 
 		boolean aoMenosUm = false;
 		for ( Long id : ambientes )
@@ -173,7 +173,7 @@ public class MidiaService {
 
 				fis = new FileInputStream( f );
 				
-				Midia midia = salvaMidia( fis, f.getName(), ambiente.getEmpresa(), new Long[] { categoria.getIdCategoria() }, hash, "" );
+				Midia midia = gravaMidia( fis, f.getName(), ambiente.getEmpresa(), new Long[] { categoria.getIdCategoria() }, hash, "" );
 				
 				fis.close();
 				
@@ -261,7 +261,7 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = salvaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), empresa, categorias, hash, descricao );
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), empresa, categorias, hash, descricao );
 		
 		associaMidiaEAmbiente( ambiente, midia );
 		
@@ -269,7 +269,7 @@ public class MidiaService {
 	}
 
 
-	public Midia salvaMidia( InputStream is, String originalName, Empresa empresa, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia gravaMidia( InputStream is, String originalName, Empresa empresa, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		List<Categoria> categoriaList = null;
 		File arquivo = null;

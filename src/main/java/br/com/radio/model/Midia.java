@@ -21,14 +21,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 
@@ -79,30 +74,31 @@ public class Midia implements Serializable {
 	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_ambiente", nullable=false, updatable=false) })
 	private List<Ambiente> ambientes;
-	
+
 	// Ao contrário dos outros registros essa data serve para guardar quando o arquivo (música/gravação) foi criado/gravado/lançado
-	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonIgnore
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao" )
 	private Date dataCriacao;
 
 	// Essa data tem mais a ver com a data do registro... quando o arquivo foi enviado ao servidor.
-	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonIgnore
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataupload", nullable = false )
 	private Date dataUpload;
 
-	// Esse hash além de servir como nome do arquivo no filesystem será utilizado para verificação de consistência do arquivo... 
+	// Esse hash além de servir como nome do arquivo no filesystem será utilizado para verificação de consistência do arquivo...
+	@JsonIgnore
 	@NotNull( message = "O hash do arquivo é de preenchimento obrigatório" )
 	@Column( name = "filehash", nullable = false, columnDefinition = "TEXT" )
 	private String filehash;
 	
+	@JsonIgnore
 	@NotNull( message = "O caminho do arquivo no servidor é de preenchimento obrigatório" )
 	@Column( name = "filepath", nullable = false, columnDefinition = "TEXT" )
 	private String filepath;
-	
+
+	@JsonIgnore
 	@NotNull( message = "O tamanho ao arquivo é de preenchimento obrigatório" )
 	@Column( name = "filesize", nullable = false )
 	private Integer filesize;
@@ -112,6 +108,7 @@ public class Midia implements Serializable {
 	private Boolean valido;
 
 	// Flag pra determinar se o arquivo precisa ser cacheado ou não...
+	@JsonIgnore
 	@Column( name="cached")
 	private Boolean cached;
 	
