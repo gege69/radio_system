@@ -50,8 +50,7 @@ public class Transmissao implements Serializable {
 	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;
 
-	@JsonIgnore
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_programacao" )
 	private Programacao programacao;
 	

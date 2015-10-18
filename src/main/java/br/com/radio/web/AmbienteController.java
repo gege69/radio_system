@@ -772,6 +772,12 @@ public class AmbienteController extends AbstractController {
 		System.out.println(request.getRequestURL());  
 		System.out.println(request.getServletPath()); 
 		System.out.println(request.getContextPath());
+		
+//		http://localhost:8080/radiosystem/ambientes/1/testeprog
+//		/ambientes/1/testeprog
+		
+		System.out.println(StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" ));
+		
 //		System.out.println(request.getPathInfo());
 		
 		JsonObject obj = Json.createObjectBuilder()

@@ -11,9 +11,9 @@ import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
 
-//@SpringBootApplication
-//@ComponentScan( basePackages = { "br.com.radio.*" } )
-//@EnableConfigurationProperties
+@SpringBootApplication
+@ComponentScan( basePackages = { "br.com.radio.*" } )
+@EnableConfigurationProperties
 public class Application {
 
 	public static void main(String[] aaaa)

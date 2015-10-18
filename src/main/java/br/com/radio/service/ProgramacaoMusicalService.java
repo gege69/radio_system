@@ -430,6 +430,8 @@ public class ProgramacaoMusicalService {
 	}
 	
 	
+	
+	
 	private void applyFisherYatesShuffle( ProgramacaoListMidiaListDTO dto ) 
 	{
 		ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -492,6 +494,62 @@ public class ProgramacaoMusicalService {
 
 		String url = urlRequest + "/api/ambientes/"+ ambiente.getIdAmbiente() +"/transmissoes/" ;
 		
+		Integer batchSize = getBatchSize();
+
+		int index = 0;
+		
+		for ( Programacao prog : programacoes )
+		{
+			Long ordemplay = 1l;
+
+			int duracaoProgramacao = ( ( prog.getHoraFim() - prog.getHoraInicio() ) * 60 ) * 60;  // por enquanto fica simples assim ( sem contar os minutos )
+			
+			List<Midia> midiasPeriodoProgramacao = consomePorPeriodoTempo( midiasOrdenadas, index, duracaoProgramacao );
+			
+			index += midiasPeriodoProgramacao.size();
+			
+			// ao invés de acoplar isso no for... fazer um método que tem o indice de inicio e apenas retorna uma sublista com o total da duração em segundos ( 1 hora )
+			for ( int i = 0; i < midiasPeriodoProgramacao.size(); i++ )
+			{
+				Midia midia = midiasPeriodoProgramacao.get( i );
+				
+				Transmissao transmissao = new Transmissao();
+				
+				transmissao.setAmbiente( prog.getAmbiente() );
+				transmissao.setDataCriacao( new Date() );
+				transmissao.setDataPrevisaoPlay( null ); // pensar nisso
+				transmissao.setDuracao( midia.getDuracao() );
+				transmissao.setLinkativo( true );
+				transmissao.setMidia( midia );
+				transmissao.setProgramacao( prog );
+				transmissao.setStatusPlayback( StatusPlayback.GERADA );
+				transmissao.setOrdemPlay( ordemplay++ );
+
+				transmissaoRepo.save( transmissao );
+				
+				if ( i % batchSize == 0 )
+				{
+					em.flush();
+					em.clear();
+				}
+				
+				index = i + 1;
+			}
+			
+			em.flush();
+			em.clear();
+		}
+
+		transmissaoRepo.setLinkFor( url );
+		
+		System.out.println("finish");
+	}
+
+
+
+
+	private Integer getBatchSize()
+	{
 		String batchSizeStr = env.getRequiredProperty( "hibernate.jdbc.batch_size" );
 		
 		Integer batchSize = 50;
@@ -508,50 +566,32 @@ public class ProgramacaoMusicalService {
 				e.printStackTrace();
 			}
 		}
-		
-		int batchNumber = 0;
-		int index = 0;
-		
-		for ( Programacao prog : programacoes )
-		{
-			Long ordemplay = 1l;
-			
-			// ao invés de acoplar isso no for... fazer um método que tem o indice de inicio e apenas retorna uma sublista com o total da duração em segundos ( 1 hora )
-			for ( int i = index; i < midiasOrdenadas.size(); i++ )
-			{
-				Midia midia = midiasOrdenadas.get( i );
-				
-				Transmissao transmissao = new Transmissao();
-				
-				transmissao.setAmbiente( prog.getAmbiente() );
-				transmissao.setDataCriacao( new Date() );
-				transmissao.setDataPrevisaoPlay( null ); // pensar nisso
-				transmissao.setDuracao( midia.getDuracao() );
-				transmissao.setLinkativo( true );
-				transmissao.setMidia( midia );
-				transmissao.setProgramacao( prog );
-				transmissao.setStatusPlayback( StatusPlayback.GERADA );
-				transmissao.setOrdemPlay( ordemplay++ );
-
-				transmissaoRepo.save( transmissao );
-				
-				batchNumber++;
-				
-				if ( index % batchNumber == 0 )
-				{
-					batchNumber = 0;
-					em.flush();
-					em.clear();
-				}
-				
-				index = i + 1;
-			}
-		}
-
-		transmissaoRepo.setLinkFor( url );
-		
-		System.out.println("finsih");
+		return batchSize;
 	}
 	
+	
+	private List<Midia> consomePorPeriodoTempo( List<Midia> midiasOrdenadas, int inicio, int duracaoMaxima ) 
+	{
+		List<Midia> result = new ArrayList<Midia>();
+		
+		int duracaoAtual = 0;
+		
+		for ( int i = inicio; i < midiasOrdenadas.size(); i++ )
+		{
+			Midia m = midiasOrdenadas.get( i );
+			
+			if ( m == null || m.getDuracao() == null || m.getDuracao().equals( 0 ) )
+				continue;
+			
+			duracaoAtual += m.getDuracao();
+			
+			result.add( m );
+			
+			if ( duracaoAtual >= duracaoMaxima )
+				break;
+		}
+		
+		return result;
+	}
 
 }

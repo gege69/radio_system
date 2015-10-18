@@ -167,11 +167,21 @@ public class MidiaAPIController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/api/ambientes/{idAmbiente}/transmissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Transmissao> listAmbiente( @PathVariable Long idAmbiente, Principal principal )
+	public @ResponseBody JSONListWrapper<Transmissao> listTransmissaoAtiva( @PathVariable Long idAmbiente, Principal principal, HttpServletRequest request )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
-		List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByOrdemPlayAsc( ambiente, true );
+		List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscOrdemPlayAsc( ambiente, true );
+
+		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
+		
+		transmissoes.forEach( t -> {
+			
+			String link = baseURL + String.format( "/api/ambientes/%d/transmissoes/%d", idAmbiente, t.getIdTransmissao() );
+			
+			t.setLink( link ); 
+		});
+		
 		
 		JSONListWrapper<Transmissao> jsonList = new JSONListWrapper<Transmissao>( transmissoes , transmissoes.size() );
 

@@ -17,7 +17,7 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	@Query("update Transmissao t set t.link = ?1||t.idTransmissao where t.link is null")
 	int setLinkFor(String url);
 
-	List<Transmissao> findByAmbienteAndLinkativoOrderByOrdemPlayAsc( Ambiente ambiente, Boolean linkativo );
+	List<Transmissao> findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscOrdemPlayAsc( Ambiente ambiente, Boolean linkativo );
 	
 	
 }
