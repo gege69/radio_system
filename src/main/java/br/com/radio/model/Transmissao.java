@@ -63,6 +63,12 @@ public class Transmissao implements Serializable {
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
+	@Temporal( TemporalType.DATE )
+	@Column( name = "diaplay" )
+	private Date diaPlay;        // Essa data não vai guardar a HORA... é só pra saber o dia/mes/ano
+
+	@JsonDeserialize(using=JSONDateDeserializer.class)
+	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataprevisaoplay" )
 	private Date dataPrevisaoPlay;
@@ -258,6 +264,18 @@ public class Transmissao implements Serializable {
 	public void setOrdemPlay( Long ordemPlay )
 	{
 		this.ordemPlay = ordemPlay;
+	}
+
+
+	public Date getDiaPlay()
+	{
+		return diaPlay;
+	}
+
+
+	public void setDiaPlay( Date diaPlay )
+	{
+		this.diaPlay = diaPlay;
 	}
 	
 	

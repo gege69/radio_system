@@ -360,6 +360,9 @@ public class ProgramacaoMusicalService {
 	@Transactional
 	public void geraTransmissao( Ambiente ambiente, String urlRequest )
 	{
+
+		
+		
 		Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = selecaoMusicas( ambiente );
 		
 		musicasPorGenero.forEach( ( generosSet, dto ) -> {
@@ -428,7 +431,6 @@ public class ProgramacaoMusicalService {
 		System.out.println( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
 		System.out.println( dto.getProgramacoes().size() + " progamacoes (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
 	}
-	
 	
 	
 	
@@ -508,6 +510,8 @@ public class ProgramacaoMusicalService {
 			
 			index += midiasPeriodoProgramacao.size();
 			
+			LocalDateTime inicio = LocalDateTime.now().withHour( prog.getHoraInicio() ).withMinute( prog.getMinutoInicio() ).withSecond( 0 ).withNano( 0 );
+			
 			// ao invés de acoplar isso no for... fazer um método que tem o indice de inicio e apenas retorna uma sublista com o total da duração em segundos ( 1 hora )
 			for ( int i = 0; i < midiasPeriodoProgramacao.size(); i++ )
 			{
@@ -517,8 +521,12 @@ public class ProgramacaoMusicalService {
 				
 				transmissao.setAmbiente( prog.getAmbiente() );
 				transmissao.setDataCriacao( new Date() );
-				transmissao.setDataPrevisaoPlay( null ); // pensar nisso
+
 				transmissao.setDuracao( midia.getDuracao() );
+				
+				inicio = inicio.plusSeconds( midia.getDuracao() );
+				transmissao.setDataPrevisaoPlay( UtilsDates.fromLocalDateTime( inicio ) ); 
+				
 				transmissao.setLinkativo( true );
 				transmissao.setMidia( midia );
 				transmissao.setProgramacao( prog );

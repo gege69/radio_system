@@ -1,6 +1,8 @@
 package br.com.radio.util;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +58,20 @@ public class UtilsDates {
 	public static boolean isOverlapping( Date start1, Date end1, Date start2, Date end2 )
 	{
 		return start1.before( end2 ) && start2.before( end1 );
+	}
+	
+	public static Date fromLocalDateTime( LocalDateTime in )
+	{
+		Date out = Date.from( in.atZone( ZoneId.systemDefault() ).toInstant() );
+		
+		return out;
+	}
+	
+	public static LocalDateTime fromDate( Date in )
+	{
+		LocalDateTime out = LocalDateTime.ofInstant( in.toInstant(), ZoneId.systemDefault() );
+
+		return out;
 	}
 
 }

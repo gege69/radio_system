@@ -10,5 +10,6 @@ public interface GeneroRepository extends JpaRepository<Genero, Long> {
 
 	List<Genero> findAllByOrderByNome();
 	
+	List<Genero> findFirst10By();	
 }
 	

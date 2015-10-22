@@ -119,15 +119,18 @@ public class MidiaService {
 	{
 		try
 		{
-			File diretorio = new File("/home/pazin/musicas/");
+			File diretorio = new File("/home/pazin/musicas/Exceto Sertanejas/");
 			
 			Collection<File> arquivos = FileUtils.listFiles( diretorio, new String[]{ "mp3" }, true );
 			
-			List<Genero> generos = generoRepo.findAll();
+			List<Genero> generos = generoRepo.findFirst10By();  //findAll();
 			
 			Random rand = new Random(); 
 
 			Ambiente ambiente = ambienteRepo.findOne( 1L );
+			
+			if ( ambiente == null )
+				throw new RuntimeException("Ambiente não cadastrado ainda....");
 			
 			Integer iteracoes = 0;
 			

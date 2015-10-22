@@ -34,6 +34,7 @@ import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.TransmissaoRepository;
 import br.com.radio.service.MidiaService;
+import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.service.UsuarioService;
 
 @Controller
@@ -59,7 +60,11 @@ public class MidiaAPIController extends AbstractController {
 	private MidiaService midiaService;
 	@Autowired
 	private UsuarioService usuarioService;
+	@Autowired
+	private ProgramacaoMusicalService progMusicalService;
 	// Services =================
+	
+	
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleError(HttpServletRequest req, Exception exception) {
@@ -187,6 +192,24 @@ public class MidiaAPIController extends AbstractController {
 
 		return jsonList;
 	}
+	
+	
+	
+	
+	@RequestMapping( value = "/api/ambientes/{idAmbiente}/transmissoes/new", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String geraTransmissao( @PathVariable Long idAmbiente, Principal principal, HttpServletRequest request )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
+		
+		if ( ambiente != null )
+			progMusicalService.geraTransmissao( ambiente, baseURL );
+		
+		return writeOkResponse();
+	}
+	
+	
 	
 	
 }

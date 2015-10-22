@@ -19,5 +19,7 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 
 	List<Transmissao> findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscOrdemPlayAsc( Ambiente ambiente, Boolean linkativo );
 	
+//	List<Transmissao> findByAmbienteAndLinkativo( Ambiente ambiente, Boolean linkativo );
+	
 	
 }

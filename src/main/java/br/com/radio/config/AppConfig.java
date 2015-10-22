@@ -5,11 +5,13 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -32,30 +34,59 @@ import com.zaxxer.hikari.HikariDataSource;
 @Import( { WebAppConfig.class, SecurityConfigMulti.class } )
 public class AppConfig {
 
+	private static final Logger logger = Logger.getLogger(AppConfig.class);
+	
 	@Autowired
 	private Environment env;
 
+	
 	@Bean( destroyMethod = "close" )
-	public DataSource getDataSource()
+	@Profile("default")
+	public DataSource getDataSourceDesenvolvimento()
 	{
 		HikariConfig dataSourceConfig = new HikariConfig();
-		dataSourceConfig.setDriverClassName( env.getRequiredProperty( "db.driver" ) );
-		dataSourceConfig.setJdbcUrl( env.getRequiredProperty( "db.url" ) );
-		dataSourceConfig.setUsername( env.getRequiredProperty( "db.username" ) );
-		dataSourceConfig.setPassword( env.getRequiredProperty( "db.password" ) );
+		dataSourceConfig.setDriverClassName( env.getRequiredProperty( "dev.db.driver" ) );
+		dataSourceConfig.setJdbcUrl( env.getRequiredProperty( "dev.db.url" ) );
+		dataSourceConfig.setUsername( env.getRequiredProperty( "dev.db.username" ) );
+		dataSourceConfig.setPassword( env.getRequiredProperty( "dev.db.password" ) );
+		
+		System.out.println( MensagensProfile.getMensagemDesenvolvimento() );
+		
+		logger.debug( "DataSource Conectado em Desenvolvimento" );
 
 		return new HikariDataSource( dataSourceConfig );
 	}
 
+	
+	@Bean( destroyMethod = "close" )
+	@Profile("prod")
+	public DataSource getDataSourceProducao()
+	{
+		HikariConfig dataSourceConfig = new HikariConfig();
+		dataSourceConfig.setDriverClassName( env.getRequiredProperty( "prod.db.driver" ) );
+		dataSourceConfig.setJdbcUrl( env.getRequiredProperty( "prod.db.url" ) );
+		dataSourceConfig.setUsername( env.getRequiredProperty( "prod.db.username" ) );
+		dataSourceConfig.setPassword( env.getRequiredProperty( "prod.db.password" ) );
 
+		System.out.println( MensagensProfile.getMensagemProducao() );
+		
+		logger.debug( "DataSource Conectado em Produção" );
+		
+		return new HikariDataSource( dataSourceConfig );
+	}
+
+	
+
+	@Autowired
+	private DataSource dataSource;
+	
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory()
 	{
-
-		DataSource dataSource = getDataSource();
+		DataSource ds = this.dataSource;
 
 		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactoryBean.setDataSource( dataSource );
+		entityManagerFactoryBean.setDataSource( ds );
 		entityManagerFactoryBean.setPackagesToScan( "br.com.radio.model" );
 		entityManagerFactoryBean.setJpaVendorAdapter( new HibernateJpaVendorAdapter() );
 		entityManagerFactoryBean.setLoadTimeWeaver( new InstrumentationLoadTimeWeaver() );
