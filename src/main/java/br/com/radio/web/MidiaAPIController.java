@@ -1,10 +1,12 @@
 package br.com.radio.web;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -138,7 +140,7 @@ public class MidiaAPIController extends AbstractController {
 
 	
 
-	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/{idTransmissao}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/{idTransmissao}/midia", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<FileSystemResource> downloadTransmissao(@PathVariable Long idAmbiente, @PathVariable Long idTransmissao, Principal principal) {
 		
 		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
@@ -209,6 +211,97 @@ public class MidiaAPIController extends AbstractController {
 		return writeOkResponse();
 	}
 	
+	
+	
+	
+
+	
+	/**
+	 * Esse método vai usar o horário do servidor para determinar a música que deve ser tocada agora ( ao vivo )
+	 * 
+	 * @param idAmbiente
+	 * @param principal
+	 * @return
+	 */
+	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/live", method = RequestMethod.GET)
+	public @ResponseBody String getLinkTransmissaoAoVivo(@PathVariable Long idAmbiente, Principal principal) {
+		
+		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente == null )
+			return writeSingleErrorAsJSONErroMessage( "alertArea", "Ambiente não encontrado" );
+
+		Transmissao transmissao = progMusicalService.getTransmissaoAoVivo( ambiente );
+		
+		if ( transmissao == null )
+			return writeSingleErrorAsJSONErroMessage( "alertArea", "Transmissão não encontrada" );
+		
+		String url = transmissao.getLink();
+		
+		String jsonResult = "";
+
+		if ( url != null )
+		{
+			JsonObject obj = Json.createObjectBuilder().add("url", url ).build();
+			jsonResult = obj.toString();
+		}
+		else
+		{
+			String err = String.format( "Não foi possível determinar a transmissão do Ambiente %d ", idAmbiente ) ;
+			
+			logger.error( err );
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", err );
+		}
+		
+		return jsonResult;
+	}
+	
+	
+	
+	/**
+	 * Esse método vai usar o horário do servidor para determinar a música que deve estar tocando nesse momento e vai pegar a próxima...
+	 * 
+	 * @param idAmbiente
+	 * @param principal
+	 * @return
+	 */
+	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/live/next", method = RequestMethod.GET)
+	public @ResponseBody String getLinkTransmissaoAoVivoNext(@PathVariable Long idAmbiente, Principal principal) {
+		
+		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente == null )
+			return writeSingleErrorAsJSONErroMessage( "alertArea", "Ambiente não encontrado" );
+
+		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
+		
+		if ( transmissao == null )
+			return writeSingleErrorAsJSONErroMessage( "alertArea", "Transmissão não encontrada" );
+		
+		String url = transmissao.getLink();
+		
+		String jsonResult = "";
+
+		if ( url != null )
+		{
+			JsonObject obj = Json.createObjectBuilder().add("url", url ).build();
+			jsonResult = obj.toString();
+		}
+		else
+		{
+			String err = String.format( "Não foi possível determinar a transmissão next do Ambiente %d ", idAmbiente ) ;
+			
+			logger.error( err );
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", err );
+		}
+		
+		return jsonResult;
+	}
+
 	
 	
 	

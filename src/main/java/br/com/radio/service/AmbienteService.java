@@ -1,5 +1,7 @@
 package br.com.radio.service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,6 +109,33 @@ public class AmbienteService {
 		return true;
 	}
 	
+	
+	
+	public Boolean isExpedienteOn( Long idAmbiente )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		return this.isExpedienteOn( ambiente );
+	}
+	
+	
+	public Boolean isExpedienteOn( Ambiente ambiente )
+	{
+		Boolean result = false;
+		
+		if ( ambiente != null )
+		{
+			LocalTime agora = LocalTime.now(); 
+			
+			LocalTime inicio = LocalTime.of( ambiente.getHoraIniExpediente(), ambiente.getMinutoIniExpediente() );
+			
+			LocalTime fim = LocalTime.of( ambiente.getHoraFimExpediente(), ambiente.getMinutoFimExpediente() );
+			
+			result = agora.isAfter( inicio ) && agora.isBefore( fim );
+		}
+		
+		return result;
+	}
 	
 	
 }

@@ -23,16 +23,16 @@ public class Application {
 																
 	public static void main(String[] aaaa)
 	{
-//		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
+		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 		
-//		MidiaService midiaService = ctx.getBean( MidiaService.class );
-//		
-//		ProgramacaoMusicalService serv = ctx.getBean( ProgramacaoMusicalService.class );
-//		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
-//																																																																																																																			
-//		Ambiente ambiente = ambRepo.findOne( 1L );
-//				
-//		serv.geraTransmissao( ambiente, "http://localhost:8080/radiosystem" );
+		MidiaService midiaService = ctx.getBean( MidiaService.class );
+		
+		ProgramacaoMusicalService serv = ctx.getBean( ProgramacaoMusicalService.class );
+		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
+																																																																																																																			
+		Ambiente ambiente = ambRepo.findOne( 1L );
+				
+		serv.geraTransmissao( ambiente, "http://localhost:8080/radiosystem" );
 																																																								
 //		midiaService.getFromFileSystem();
 	}

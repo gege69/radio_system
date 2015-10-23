@@ -15,8 +15,17 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 
 	Transmissao findByIdTransmissaoAndAmbienteAndLinkativoTrue( Long idTransmissao, Ambiente ambiente );
 	
+	
+	// Esse método vai tentar encontrar um registro que esteja mais ou menos no mesmo horário do servidor e ainda não foi tocado
+	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and linkativo = true and clock_timestamp() between t.dataprevisaoplay and t.dataprevisaoplay + ( t.duracao * interval '1 second' ) order by t.dataprevisaoplay asc limit 1 ", nativeQuery=true )
+	Transmissao findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( Long idAmbiente );
+	
+	// Esse método vai tentar encontrar o primeiro registro que exista pra tocar.... 
+	Transmissao findFirstByAmbienteAndLinkativoTrueOrderByIdTransmissaoAscOrdemPlayAsc( Ambiente ambiente );
+
+	
 	@Modifying(clearAutomatically=true)
-	@Query("update Transmissao t set t.link = ?1||t.idTransmissao where t.link is null")
+	@Query("update Transmissao t set t.link = ?1||t.idTransmissao||'/midia' where t.link is null")
 	int setLinkFor(String url);
 
 	List<Transmissao> findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscOrdemPlayAsc( Ambiente ambiente, Boolean linkativo );
@@ -30,6 +39,15 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	@Modifying(clearAutomatically=true)
 	@Query("update Transmissao t set t.linkativo = false where t.ambiente = ?1 and t.linkativo = true ")
 	int setLinkInativo( Ambiente ambiente );    // Desativando os links para gerar uma nova transmissão
+
+	
+	// Para encontrar a próxima musica
+	Transmissao findByAmbienteAndLinkativoTrueAndOrdemPlay( Ambiente ambiente, Long ordemPlay );
+	
+	
+	@Modifying(clearAutomatically=true)
+	@Query("update Transmissao t set t.linkativo = false, t.downloadcompleto = true, t.dataFinishPlay = clock_timestamp(), t.statusPlayback = 'FIM' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao < ?2 ")
+	int setLinkInativoAnteriores( Ambiente ambiente, Long idTransmissao );    
 
 	
 }

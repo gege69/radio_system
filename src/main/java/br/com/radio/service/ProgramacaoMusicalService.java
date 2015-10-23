@@ -65,6 +65,9 @@ public class ProgramacaoMusicalService {
 	@Autowired 
 	private TransmissaoRepository transmissaoRepo;
 	
+	@Autowired
+	private AmbienteService ambienteService;
+	
 	
 	/**
 	 * Esse método vai obter os registros de programação do banco de dados e validar se existe colisão.
@@ -370,6 +373,59 @@ public class ProgramacaoMusicalService {
 		
 		return result;
 	}
+
+	
+	
+	private Transmissao getProximaTransmissaoAtualPeloIdAtual( Ambiente ambiente, Transmissao atual )
+	{
+		Transmissao result = null;
+		
+		if ( atual != null )
+			result = transmissaoRepo.findByAmbienteAndLinkativoTrueAndOrdemPlay( ambiente, atual.getOrdemPlay() + 1 );
+		
+		return result;
+	}
+	
+	
+
+
+	private Transmissao getTransmissaoAtual( Ambiente ambiente )
+	{
+		// Vai utilizar a hora do servidor do banco de dados para encontrar a música que deveria estar tocando.... horário do servidor tem que estar configurado corretamente ( TIMEZONE BRASIL GMT +3 SÃO PAULO )
+		Transmissao result = transmissaoRepo.findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( ambiente.getIdAmbiente() );
+
+		// Se não tem música no horário atual ... é preciso ver se o expediente já começou e pegar o primeiro que tiver pra tocar...
+		if ( result == null && ambienteService.isExpedienteOn( ambiente  ) )
+			result = transmissaoRepo.findFirstByAmbienteAndLinkativoTrueOrderByIdTransmissaoAscOrdemPlayAsc( ambiente );
+		
+		return result;
+	}
+	
+	
+	
+	@Transactional
+	public Transmissao getTransmissaoAoVivo( Ambiente ambiente )
+	{
+		Transmissao result = getTransmissaoAtual( ambiente ); 
+
+		if ( result != null && result.getIdTransmissao() != null )
+			transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
+		
+		return result;
+	}
+
+
+	@Transactional
+	public Transmissao getTransmissaoAoVivoSkipForward( Ambiente ambiente )
+	{
+		Transmissao atual = getTransmissaoAtual( ambiente ); 
+		
+		Transmissao result = getProximaTransmissaoAtualPeloIdAtual( ambiente, atual );
+		
+		transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
+		
+		return result;
+	}
 	
 	
 	
@@ -518,13 +574,18 @@ public class ProgramacaoMusicalService {
 		Integer batchSize = getBatchSize();
 
 		int index = 0;
+
+		// Ordenando as programações para ter uma ordemplay geral pela lista inteira
+		Comparator<Programacao> pelaHoraInicial = ( p1, p2 ) -> p1.getHoraInicio().compareTo( p2.getHoraInicio() );
+		programacoes.sort( pelaHoraInicial );
+		
+		Long ordemplay = 1l;
 		
 		for ( Programacao prog : programacoes )
 		{
-			Long ordemplay = 1l;
-
 			int duracaoProgramacao = ( ( prog.getHoraFim() - prog.getHoraInicio() ) * 60 ) * 60;  // por enquanto fica simples assim ( sem contar os minutos )
 			
+			// Obtém uma sublista com mais ou menos a duração da programação
 			List<Midia> midiasPeriodoProgramacao = consomePorPeriodoTempo( midiasOrdenadas, index, duracaoProgramacao );
 			
 			index += midiasPeriodoProgramacao.size();
@@ -537,7 +598,6 @@ public class ProgramacaoMusicalService {
 			
 			int qtdTransmissoes = 0;
 			
-			// ao invés de acoplar isso no for... fazer um método que tem o indice de inicio e apenas retorna uma sublista com o total da duração em segundos ( 1 hora )
 			for ( int i = 0; i < midiasPeriodoProgramacao.size(); i++ )
 			{
 				Midia midia = midiasPeriodoProgramacao.get( i );
@@ -550,6 +610,9 @@ public class ProgramacaoMusicalService {
 				transmissao.setDiaPlay( UtilsDates.asUtilDate( hoje ) );  //Só o dia
 
 				transmissao.setDuracao( midia.getDuracao() );
+				
+				
+				// posso ir armazenando todas essas transmissões e no final ir dando updates sucessivos... dessa maneira o consigo ver se pula horários ou não...
 				
 				transmissao.setDataPrevisaoPlay( UtilsDates.fromLocalDateTime( inicio ) );
 				inicio = inicio.plusSeconds( midia.getDuracao() );
@@ -633,4 +696,7 @@ public class ProgramacaoMusicalService {
 		return result;
 	}
 
+	
+	
+	
 }
