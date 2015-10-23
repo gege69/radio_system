@@ -1,10 +1,12 @@
 package br.com.radio.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import br.com.radio.model.Ambiente;
+import br.com.radio.util.UtilsDates;
 
 public class AmbienteListDTO implements Serializable {
 
@@ -35,7 +37,12 @@ public class AmbienteListDTO implements Serializable {
 		
 		inicio = inicio.plusMinutes( 1000 );
 		
+		
 		System.out.println(inicio);
+		
+		LocalDate hoje = LocalDate.now();
+		
+		System.out.println(UtilsDates.asUtilDate( hoje ));
 
 		
 //		ThreadLocalRandom rnd = ThreadLocalRandom.current();

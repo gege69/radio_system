@@ -256,7 +256,21 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
-	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/view", method = RequestMethod.GET )
+	public String simulacoes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/player-simulador";
+		}
+		else
+			return "HTTPerror/404";
+	}
 	
 	
 	

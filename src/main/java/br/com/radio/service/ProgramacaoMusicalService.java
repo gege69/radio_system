@@ -1,5 +1,6 @@
 package br.com.radio.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import br.com.radio.enumeration.DiaSemana;
@@ -325,9 +327,17 @@ public class ProgramacaoMusicalService {
 		// Baseado no ambiente e no dia atual... vai buscar os gêneros
 		Categoria categoria = categoriaRepo.findByCodigo( Categoria.MUSICA );
 		
-		LocalDateTime data = LocalDateTime.now();
+		LocalDateTime hoje = LocalDateTime.now();
 		
-		DiaSemana diaSemana = DiaSemana.getByIndex( data.getDayOfWeek().getValue() );
+		DiaSemana diaSemana = DiaSemana.getByIndex( hoje.getDayOfWeek().getValue() );
+
+		
+		// só verificar se já a música foi tocada durante o dia.
+		List<Transmissao> transmissoesTocadas = transmissaoRepo.findByAmbienteAndStatusPlaybackAndDiaPlayBetween( ambiente, StatusPlayback.FIM, UtilsDates.asUtilMidnightDate( hoje ), UtilsDates.asUtilLastSecondDate( hoje ) );
+		
+		Set<Midia> musicasJaTocadas = transmissoesTocadas.stream().map( Transmissao::getMidia ).collect( Collectors.toCollection( HashSet::new ) );
+		
+		System.out.println( "Já Tocadas : " + musicasJaTocadas.size() );
 
 		List<Programacao> programacaoDia = programacaoRepo.findByAmbienteAndDiaSemanaAndAtivoTrue( ambiente, diaSemana );
 		
@@ -346,8 +356,13 @@ public class ProgramacaoMusicalService {
 		mapProgramacaoPorGeneros.forEach( ( generosSet, programacaoList ) -> {
 
 			// Esse select pode ser melhorado para buscar as músicas mais famosas para não incluir músicas ruins de artistas famosos...
-			List<Midia> midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosInGroupBy( ambiente, categoria, generosSet );
-
+			List<Midia> midias = null;
+			
+			if ( musicasJaTocadas != null && musicasJaTocadas.size() > 0 )
+				midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosInAndMidiaNotInGroupBy( ambiente, categoria, generosSet, musicasJaTocadas );
+			else
+				midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosInGroupBy( ambiente, categoria, generosSet );
+			
 			ProgramacaoListMidiaListDTO dto = new ProgramacaoListMidiaListDTO( programacaoList, midias );
 			
 			result.put( generosSet, dto );
@@ -357,11 +372,15 @@ public class ProgramacaoMusicalService {
 	}
 	
 	
+	
 	@Transactional
 	public void geraTransmissao( Ambiente ambiente, String urlRequest )
 	{
-
-		
+		// Gerar sempre....  inativando os registros de transmissão anteriores		
+		int ignoradas = transmissaoRepo.setStatusIgnorada( ambiente ); // o que não tocou não será mais tocado... vou gerar uma nova playlist
+		int inativos = transmissaoRepo.setLinkInativo( ambiente );  // inativando os registros 
+ 
+		System.out.println( "Inativos : " + inativos );
 		
 		Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = selecaoMusicas( ambiente );
 		
@@ -510,7 +529,13 @@ public class ProgramacaoMusicalService {
 			
 			index += midiasPeriodoProgramacao.size();
 			
+			// Melhorar isso aqui para dar uma previsão melhor.... hoje a partir do segundo período ele perde precisão.
+			// Problema vai ser quando as programações não forem uma seguida da outra
 			LocalDateTime inicio = LocalDateTime.now().withHour( prog.getHoraInicio() ).withMinute( prog.getMinutoInicio() ).withSecond( 0 ).withNano( 0 );
+			
+			LocalDate hoje = LocalDate.now();
+			
+			int qtdTransmissoes = 0;
 			
 			// ao invés de acoplar isso no for... fazer um método que tem o indice de inicio e apenas retorna uma sublista com o total da duração em segundos ( 1 hora )
 			for ( int i = 0; i < midiasPeriodoProgramacao.size(); i++ )
@@ -521,11 +546,13 @@ public class ProgramacaoMusicalService {
 				
 				transmissao.setAmbiente( prog.getAmbiente() );
 				transmissao.setDataCriacao( new Date() );
+				
+				transmissao.setDiaPlay( UtilsDates.asUtilDate( hoje ) );  //Só o dia
 
 				transmissao.setDuracao( midia.getDuracao() );
 				
+				transmissao.setDataPrevisaoPlay( UtilsDates.fromLocalDateTime( inicio ) );
 				inicio = inicio.plusSeconds( midia.getDuracao() );
-				transmissao.setDataPrevisaoPlay( UtilsDates.fromLocalDateTime( inicio ) ); 
 				
 				transmissao.setLinkativo( true );
 				transmissao.setMidia( midia );
@@ -542,10 +569,14 @@ public class ProgramacaoMusicalService {
 				}
 				
 				index = i + 1;
+				
+				qtdTransmissoes++;
 			}
 			
 			em.flush();
 			em.clear();
+			
+			System.out.println( String.format( "Programação das %d as %d produzida com %d músicas", prog.getHoraInicio(), prog.getHoraFim(), qtdTransmissoes ) );
 		}
 
 		transmissaoRepo.setLinkFor( url );

@@ -5,6 +5,7 @@ public enum StatusPlayback {
 	GERADA,
 	NAFILA,
 	TOCANDO,
-	FIM;
+	FIM,
+	IGNORADA;  // IGNORADA É QUANDO É GERADA UMA NOVA PLAYLIST (TRANSMISSÃO)
 
 }

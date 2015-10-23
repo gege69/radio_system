@@ -50,9 +50,9 @@ public class AppConfig {
 		dataSourceConfig.setUsername( env.getRequiredProperty( "dev.db.username" ) );
 		dataSourceConfig.setPassword( env.getRequiredProperty( "dev.db.password" ) );
 		
-		System.out.println( MensagensProfile.getMensagemDesenvolvimento() );
+		logger.info( MensagensProfile.getMensagemDesenvolvimento() );
 		
-		logger.debug( "DataSource Conectado em Desenvolvimento" );
+		logger.info( "DataSource Conectado em Desenvolvimento" );
 
 		return new HikariDataSource( dataSourceConfig );
 	}
@@ -66,11 +66,12 @@ public class AppConfig {
 		dataSourceConfig.setDriverClassName( env.getRequiredProperty( "prod.db.driver" ) );
 		dataSourceConfig.setJdbcUrl( env.getRequiredProperty( "prod.db.url" ) );
 		dataSourceConfig.setUsername( env.getRequiredProperty( "prod.db.username" ) );
+		
 		dataSourceConfig.setPassword( env.getRequiredProperty( "prod.db.password" ) );
 
-		System.out.println( MensagensProfile.getMensagemProducao() );
+		logger.info( MensagensProfile.getMensagemProducao() );
 		
-		logger.debug( "DataSource Conectado em Produção" );
+		logger.info( "DataSource Conectado em Produção" );
 		
 		return new HikariDataSource( dataSourceConfig );
 	}

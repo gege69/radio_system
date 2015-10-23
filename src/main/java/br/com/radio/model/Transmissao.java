@@ -91,7 +91,7 @@ public class Transmissao implements Serializable {
 	private Boolean linkativo;
 	
 	
-	// Opcional
+	// Não é preenchida quando a música sofre skip...
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )

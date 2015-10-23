@@ -12,26 +12,29 @@ import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
 
-@SpringBootApplication
-@ComponentScan( basePackages = { "br.com.radio.*" } )
-@EnableConfigurationProperties
-@ActiveProfiles({"default"})
-public class Application {
+/* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
+
+//@SpringBootApplication
+//@ComponentScan( basePackages = { "br.com.radio.*" } )
+//@EnableConfigurationProperties
+//@ActiveProfiles({"default"})
+public class Application {
+																
 	public static void main(String[] aaaa)
 	{
-		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
+//		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 		
-		MidiaService midiaService = ctx.getBean( MidiaService.class );
-		
-		ProgramacaoMusicalService serv = ctx.getBean( ProgramacaoMusicalService.class );
-		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
-		
-		Ambiente ambiente = ambRepo.findOne( 1L );
-				
+//		MidiaService midiaService = ctx.getBean( MidiaService.class );
+//		
+//		ProgramacaoMusicalService serv = ctx.getBean( ProgramacaoMusicalService.class );
+//		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
+//																																																																																																																			
+//		Ambiente ambiente = ambRepo.findOne( 1L );
+//				
 //		serv.geraTransmissao( ambiente, "http://localhost:8080/radiosystem" );
-		
-		midiaService.getFromFileSystem();
+																																																								
+//		midiaService.getFromFileSystem();
 	}
 	
 }
