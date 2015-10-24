@@ -257,7 +257,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/view", method = RequestMethod.GET )
-	public String simulacoes( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	public String playerSimulador( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		

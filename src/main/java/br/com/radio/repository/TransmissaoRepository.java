@@ -20,8 +20,8 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and linkativo = true and clock_timestamp() between t.dataprevisaoplay and t.dataprevisaoplay + ( t.duracao * interval '1 second' ) order by t.dataprevisaoplay asc limit 1 ", nativeQuery=true )
 	Transmissao findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( Long idAmbiente );
 	
-	// Esse método vai tentar encontrar o primeiro registro que exista pra tocar.... 
-	Transmissao findFirstByAmbienteAndLinkativoTrueOrderByIdTransmissaoAscOrdemPlayAsc( Ambiente ambiente );
+	// Esse método vai tentar encontrar o primeiro registro que exista pra tocar NO DIA.... 
+	Transmissao findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscOrdemPlayAsc( Ambiente ambiente, Date diaPlay );
 
 	
 	@Modifying(clearAutomatically=true)

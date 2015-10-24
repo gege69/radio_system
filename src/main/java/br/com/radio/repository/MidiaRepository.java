@@ -17,7 +17,11 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
 	Page<Midia> findByAmbientesAndCategorias( Pageable pageable, Ambiente ambiente, Categoria categoria );
 	
+	List<Midia> findByAmbientesAndCategorias( Ambiente ambiente, Categoria categoria );
+	
 	Page<Midia> findByAmbientesAndCategorias_codigo( Pageable pageable, Ambiente ambiente, String codigo );
+	
+	List<Midia> findByAmbientesAndCategorias_codigo( Ambiente ambiente, String codigo );
 	
 	Page<Midia> findByAmbientes( Pageable pageable, Ambiente ambiente );
 	

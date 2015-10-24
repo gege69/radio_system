@@ -21,9 +21,14 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import br.com.radio.json.JSONDateDeserializer;
+import br.com.radio.json.JSONDateSerializer;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 
@@ -82,7 +87,8 @@ public class Midia implements Serializable {
 	private Date dataCriacao;
 
 	// Essa data tem mais a ver com a data do registro... quando o arquivo foi enviado ao servidor.
-	@JsonIgnore
+	@JsonDeserialize(using=JSONDateDeserializer.class)
+	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataupload", nullable = false )
 	private Date dataUpload;
@@ -383,7 +389,8 @@ public class Midia implements Serializable {
 	public String toString()
 	{
 //		return String.format( "Midia [idMidia=%s, nome=%s, artist=%s]", idMidia, nome, artist );
-		return String.format( "Midia [idMidia=%s, artist=%s, posicaoShuffle=%10.8f]", idMidia, artist, posicaoShuffle );
+//		return String.format( "Midia [idMidia=%s, artist=%s, posicaoShuffle=%10.8f]", idMidia, artist, posicaoShuffle );
+		return String.format( "Midia [idMidia=%s, categoria=%s]", idMidia, categorias );
 	}
 
 	@Override

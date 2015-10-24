@@ -126,7 +126,8 @@ public class MidiaController extends AbstractController {
     public String uploadTela(
     		@PathVariable Long idAmbiente,
     		@PathVariable String codigo,
-    		@RequestParam("file") MultipartFile file, 
+    		@RequestParam("file") MultipartFile file,
+    		@RequestParam(value="descricao", required = false) String descricao,
     		@RequestParam("categorias[]") Long[] categorias,
     		Principal principal, 
     		Model model )
@@ -157,7 +158,7 @@ public class MidiaController extends AbstractController {
 			{
 				try
 				{
-					midiaService.saveUpload( file, categorias, usuario.getEmpresa(), ambiente );
+					midiaService.saveUpload( file, categorias, usuario.getEmpresa(), ambiente, descricao );
 					
 					model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
 				}

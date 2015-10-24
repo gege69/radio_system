@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,25 +19,29 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.digester.SetPropertiesRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import br.com.radio.enumeration.DiaSemana;
+import br.com.radio.enumeration.PosicaoVinheta;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.Bloco;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
 import br.com.radio.model.Transmissao;
+import br.com.radio.repository.BlocoRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.repository.TransmissaoRepository;
+import br.com.radio.service.programacaomusical.BlocosManipulacaoDTO;
 import br.com.radio.service.programacaomusical.ProgramacaoListMidiaListDTO;
 import br.com.radio.util.UtilsDates;
 
@@ -54,7 +59,13 @@ public class ProgramacaoMusicalService {
 	private MidiaRepository midiaRepo;
 
 	@Autowired
+	private MidiaService midiaService;
+	
+	@Autowired
 	private CategoriaRepository categoriaRepo;
+	
+	@Autowired 
+	private BlocoRepository blocoRepo;
 	
 	@Autowired
 	private Environment env;
@@ -396,7 +407,10 @@ public class ProgramacaoMusicalService {
 
 		// Se não tem música no horário atual ... é preciso ver se o expediente já começou e pegar o primeiro que tiver pra tocar...
 		if ( result == null && ambienteService.isExpedienteOn( ambiente  ) )
-			result = transmissaoRepo.findFirstByAmbienteAndLinkativoTrueOrderByIdTransmissaoAscOrdemPlayAsc( ambiente );
+		{
+			LocalDate hoje = LocalDate.now();
+			result = transmissaoRepo.findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscOrdemPlayAsc( ambiente, UtilsDates.asUtilDate( hoje ) );
+		}
 		
 		return result;
 	}
@@ -424,6 +438,8 @@ public class ProgramacaoMusicalService {
 		
 		transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
 		
+		//TODO: gerar nova midia incremental aqui
+		
 		return result;
 	}
 	
@@ -446,15 +462,16 @@ public class ProgramacaoMusicalService {
 
 			// algoritmo do spotify
 			applySpotifyShuffle( dto );
+
+			validaClusters( dto );
 			
+			applyMergeBlocos( ambiente, dto );
+
 			// imprimindo
 			dto.getMidias().forEach( m -> {
 				System.out.println( m.toString() );
 			});
 
-			validaClusters( dto );
-			
-			
 			// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
 			consomeMusicas( ambiente, dto, urlRequest );
 		});
@@ -492,7 +509,6 @@ public class ProgramacaoMusicalService {
 
 
 
-
 	private void printaInformacoes( Set<Genero> generosSet, ProgramacaoListMidiaListDTO dto )
 	{
 		System.out.println( "_______________" );
@@ -514,6 +530,76 @@ public class ProgramacaoMusicalService {
 		ThreadLocalRandom r = ThreadLocalRandom.current();
 		Collections.shuffle( dto.getMidias(), r );
 	}
+	
+	
+	
+	private void addIfNotNull( List<Midia> novaListaMidias, Midia midia )
+	{
+		if ( midia != null )
+			novaListaMidias.add( midia );
+	}
+
+	
+	private void applyMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
+	{
+		List<Midia> musicas = dto.getMidias();
+
+		Bloco bloco = blocoRepo.findByAmbiente( ambiente ); 
+		
+		PosicaoVinheta posicaoVinheta = bloco.getPosicaoVinheta();
+		
+		ThreadLocalRandom rnd = ThreadLocalRandom.current();
+		
+		BlocosManipulacaoDTO blocoVinhetas = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, Categoria.VINHETA ) );
+		BlocosManipulacaoDTO blocoComerciais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, Categoria.COMERCIAL ) );
+		BlocosManipulacaoDTO blocoInstitucionais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, Categoria.INSTITUCIONAL ) );
+		BlocosManipulacaoDTO blocoProgrametes = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, Categoria.PROGRAMETE ) );
+		
+		int qtdComerciais = bloco.getQtdComerciais();
+		
+		int stepComerciais = 0;
+		
+		if ( qtdComerciais > 0 )
+			stepComerciais = musicas.size() / qtdComerciais;
+		
+		int stepInstitucionais = bloco.getIndexInstitucionais();
+		int stepProgrametes = bloco.getIndexProgrametes();
+		
+		LinkedList<Midia> novaListaMidias = new LinkedList<Midia>();
+
+		int countMusicas = 0;
+		
+		for ( Midia m : musicas )
+		{
+			if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_CADA_MUSICA ) )
+				addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+			
+			novaListaMidias.add( m );
+			countMusicas++;
+			
+			if ( countMusicas % stepComerciais == 0 )
+			{
+				if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
+					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+				
+				addIfNotNull( novaListaMidias, blocoComerciais.getNextRandom( rnd ) );
+				
+				if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
+					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+			}
+			
+			if ( countMusicas % stepInstitucionais == 0 )  // Depois de n músicas
+				addIfNotNull( novaListaMidias, blocoInstitucionais.getNextRandom( rnd ) );
+			
+			if ( countMusicas % stepProgrametes == 0 )  // Depois de n músicas
+				addIfNotNull( novaListaMidias, blocoProgrametes.getNextRandom( rnd ) );
+
+		};
+		
+		dto.setMidias( novaListaMidias );
+	}
+	
+	
 
 	
 	private void applySpotifyShuffle( ProgramacaoListMidiaListDTO dto )

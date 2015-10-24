@@ -3,6 +3,9 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <meta name="_csrf" th:content="${_csrf.token}"/>
 
+<script type="text/javascript" src="${context}/js/zxcvbn.js">
+</script>
+
   <div class="container">
   
     <div class="jumbotron">
@@ -131,9 +134,27 @@
         
         $('#btnAlterar').on('click', alteraSenha);
         
-    });
+        $('#password').keyup( function( event ) {
+            var text = $('#password').val(); 
+            var result = zxcvbn(text);
 
+            if ( text == '' )
+                removeErros( $('#alterar-senha-form') );
+
+            if ( result != null && result.score <= 1 )
+            {
+                preencheErroFieldUpdate( 'password', 'Senha muito fraca' );
+            }
+            else
+                removeErros( $('#alterar-senha-form') );
+            
+            console.log(result);
+        });
+        
+    });
+    
 </script>
+  
   
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

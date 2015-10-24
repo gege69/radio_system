@@ -70,6 +70,8 @@ public class MidiaAPIController extends AbstractController {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleError(HttpServletRequest req, Exception exception) {
+		
+		exception.printStackTrace();
 			
 		logger.error("Request: " + req.getRequestURL() + " raised " + exception);
 		
@@ -223,39 +225,22 @@ public class MidiaAPIController extends AbstractController {
 	 * @param principal
 	 * @return
 	 */
-	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/live", method = RequestMethod.GET)
-	public @ResponseBody String getLinkTransmissaoAoVivo(@PathVariable Long idAmbiente, Principal principal) {
+	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/live", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody Transmissao getLinkTransmissaoAoVivo(@PathVariable Long idAmbiente, Principal principal) {
 		
 		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		if ( ambiente == null )
-			return writeSingleErrorAsJSONErroMessage( "alertArea", "Ambiente não encontrado" );
+			throw new RuntimeException( "Ambiente não encontrado" );
 
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivo( ambiente );
 		
 		if ( transmissao == null )
-			return writeSingleErrorAsJSONErroMessage( "alertArea", "Transmissão não encontrada" );
+			throw new RuntimeException( "Transmissão não encontrada" );
 		
-		String url = transmissao.getLink();
-		
-		String jsonResult = "";
-
-		if ( url != null )
-		{
-			JsonObject obj = Json.createObjectBuilder().add("url", url ).build();
-			jsonResult = obj.toString();
-		}
-		else
-		{
-			String err = String.format( "Não foi possível determinar a transmissão do Ambiente %d ", idAmbiente ) ;
-			
-			logger.error( err );
-			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", err );
-		}
-		
-		return jsonResult;
+		return transmissao;
 	}
 	
 	
@@ -267,39 +252,22 @@ public class MidiaAPIController extends AbstractController {
 	 * @param principal
 	 * @return
 	 */
-	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/live/next", method = RequestMethod.GET)
-	public @ResponseBody String getLinkTransmissaoAoVivoNext(@PathVariable Long idAmbiente, Principal principal) {
+	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/live/next", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody Transmissao getLinkTransmissaoAoVivoNext(@PathVariable Long idAmbiente, Principal principal) {
 		
 		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		if ( ambiente == null )
-			return writeSingleErrorAsJSONErroMessage( "alertArea", "Ambiente não encontrado" );
+			throw new RuntimeException( "Ambiente não encontrado" );
 
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
 		
 		if ( transmissao == null )
-			return writeSingleErrorAsJSONErroMessage( "alertArea", "Transmissão não encontrada" );
+			throw new RuntimeException( "Transmissão não encontrada" );
 		
-		String url = transmissao.getLink();
-		
-		String jsonResult = "";
-
-		if ( url != null )
-		{
-			JsonObject obj = Json.createObjectBuilder().add("url", url ).build();
-			jsonResult = obj.toString();
-		}
-		else
-		{
-			String err = String.format( "Não foi possível determinar a transmissão next do Ambiente %d ", idAmbiente ) ;
-			
-			logger.error( err );
-			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", err );
-		}
-		
-		return jsonResult;
+		return transmissao;
 	}
 
 	

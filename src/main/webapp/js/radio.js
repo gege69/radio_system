@@ -163,7 +163,7 @@ var preencheErros = function( errors )
 var preencheErroField = function( nomeCampo, msg )
 {
     if ( $('#' + nomeCampo).length <= 0 )
-        preencheAlertGeral( 'alertArea', "Problema ao detectar o campo relacionado : " + msg );
+        preencheAlertGeral( 'alertArea', "Problema ao detectar o campo relacionado : " + nomeCampo );
     else
     {
         $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
@@ -175,6 +175,30 @@ var preencheErroField = function( nomeCampo, msg )
         var formgroup = $('#'+nomeCampo).closest(".form-group");
           
         formgroup.addClass('has-error has-feedback');
+    }
+}
+
+
+var preencheErroFieldUpdate = function( nomeCampo, msg )
+{
+    if ( $('#' + nomeCampo).length <= 0 )
+        return;
+    else
+    {
+        var formgroup = $('#'+nomeCampo).closest(".form-group");
+        
+        if ( formgroup.hasClass('has-error') )
+            return;
+        else
+        {
+            $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
+            $('<span class="fa fa-times form-control-feedback icone-fa-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
+              
+            if ( msg != null && msg != '' )
+                $('<div class="alert alert-danger">' + msg+ '</div>').insertAfter( '#'+nomeCampo );
+            
+            formgroup.addClass('has-error has-feedback');
+        }
     }
 }
 

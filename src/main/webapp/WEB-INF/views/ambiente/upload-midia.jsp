@@ -60,6 +60,13 @@
                           </div>
                         </div>
 
+                        <div class="col-lg-7 col-md-9 col-sm-12">
+                          <div class="form-group">
+                            <label for="file">Descrição:</label>
+                            <input type="text" class="form-control" id="descricao" name="descricao" placeholder="Preencha alguma descrição da mídia">
+                          </div>
+                        </div>
+
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                           <div class="form-group" id="checkBoxContainer">
                           </div>

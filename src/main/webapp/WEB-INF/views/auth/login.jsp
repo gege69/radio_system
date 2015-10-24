@@ -3,6 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
+
   <div class="container theme-showcase">
   
     <div class="jumbotron">
@@ -46,5 +47,8 @@
 <!--     </div> -->
       
   </div> <!-- /container -->
+
+
+
 
 <jsp:include page="../bottom.jsp" />

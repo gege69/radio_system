@@ -39,7 +39,7 @@
           <span class="sr-only">Toggle navigation</span>
           <span class="fa fa-bars"></span>
         </button>
-        <a class="navbar-brand" href="${context}/principal">Painel Gerencial</a>
+        <a class="navbar-brand" href="${context}/ambientes/${idAmbiente}/view">${nome}</a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
@@ -91,12 +91,13 @@
             </div>
             <div class="panel-body">
             
-              <div class="spacer-vertical120"></div>
-
-              <div style="display: block;">
-                <audio id="player2" type="audio/mp3" controls="controls">   
-                </audio>
-              </div>              
+              <div class="spacer-vertical40"></div>
+               
+              <div class="row row-centered" >
+                <img alt="logo" src="${context}/ambientes/${idAmbiente}/logomarca" id="marca">
+              </div>
+              
+              <div class="spacer-vertical40"></div>
             
             </div>
           
@@ -124,6 +125,10 @@
       </div>
       
       <div class="col-md-2 col-sm-2 col-xs-12 col-centered" >
+        <div style="display: none;">
+          <audio id="player2" type="audio/mp3" controls="controls">   
+          </audio>
+        </div>
         <table style=" margin: 0 auto;">
           <tr>
 <!--             <td> -->
@@ -178,11 +183,11 @@
             dataType: 'json',
         }).done( function( content ){
             
-            if ( content.url != null && content.url != '' )
+            if ( content.link != null && content.link != '' )
             {
-                console.log(content.url);
+                console.log(content.link);
                 
-                player.setSrc( content.url );
+                player.setSrc( content.link );
                 player.play();
             }
 
@@ -198,11 +203,11 @@
             dataType: 'json',
         }).done( function( content ){
             
-            if ( content.url != null && content.url != '' )
+            if ( content.link != null && content.link != '' )
             {
-                console.log(content.url);
+                console.log(content.link);
                 
-                player.setSrc( content.url );
+                player.setSrc( content.link );
                 player.play();
             }
 

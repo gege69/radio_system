@@ -425,4 +425,17 @@ public class MidiaService {
 
 	
 	
+	public List<Midia> getMidiasAtivasPorAmbienteCategoria( Ambiente ambiente, String codigo )
+	{
+		List<Midia> result = midiaRepo.findByAmbientesAndCategorias_codigo( ambiente, codigo );
+		
+		return result;
+	}
+	
+
+	
+	
+	
+	
+	
 }

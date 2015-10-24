@@ -28,7 +28,7 @@ public class Categoria implements Serializable {
 	
 	public static final String MUSICA = 			"musica";
 	public static final String VINHETA = 			"vinheta";
-	public static final String INSTITUCIONAL = 		"insitucional";
+	public static final String INSTITUCIONAL = 		"inst";
 	public static final String COMERCIAL = 			"comercial";
 	public static final String PROGRAMETE = 		"programete";
 	public static final String CHAMADA_INST = 		"chamada_inst";
