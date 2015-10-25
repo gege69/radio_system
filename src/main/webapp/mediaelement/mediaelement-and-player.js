@@ -3309,7 +3309,7 @@ if (typeof jQuery != 'undefined') {
 			return this.media.currentTime;
 		},
 		setVolume: function(volume) {
-			this.media.setVolume(volume);
+			this.media.volume = volume;
 		},
 		getVolume: function() {
 			return this.media.volume;

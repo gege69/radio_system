@@ -71,6 +71,8 @@ public class MidiaAPIController extends AbstractController {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleError(HttpServletRequest req, Exception exception) {
 		
+		
+		// TODO: lembrar de tirar esse stacktrace
 		exception.printStackTrace();
 			
 		logger.error("Request: " + req.getRequestURL() + " raised " + exception);
@@ -238,7 +240,7 @@ public class MidiaAPIController extends AbstractController {
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivo( ambiente );
 		
 		if ( transmissao == null )
-			throw new RuntimeException( "Transmissão não encontrada" );
+			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
 		
 		return transmissao;
 	}
@@ -265,7 +267,7 @@ public class MidiaAPIController extends AbstractController {
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
 		
 		if ( transmissao == null )
-			throw new RuntimeException( "Transmissão não encontrada" );
+			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
 		
 		return transmissao;
 	}

@@ -120,7 +120,7 @@
     <div class="row row-centered" style="margin-top: 11px;">
     
       <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12">
-        Nome de música bem grande bem grande bem grande bem grande bem grande
+        <span id="nome-musica"></span>
         <div class="spacer-vertical20"></div>
       </div>
       
@@ -167,7 +167,6 @@
   
 <script>
 
-
     var player = new MediaElementPlayer('#player2');
 
     var stop = function(){
@@ -182,6 +181,14 @@
             url: '${context}/api/ambientes/${idAmbiente}/transmissoes/live',
             dataType: 'json',
         }).done( function( content ){
+            
+            if ( content.midia != null )
+            {
+                if ( content.midia.title == null || content.midia.title == '' )
+                    $('#nome-musica').html( content.midia.nome );
+                else
+                    $('#nome-musica').html( content.midia.title );
+            }
             
             if ( content.link != null && content.link != '' )
             {
@@ -203,6 +210,14 @@
             dataType: 'json',
         }).done( function( content ){
             
+            if ( content.midia != null )
+            {
+                if ( content.midia.title == null || content.midia.title == '' )
+                    $('#nome-musica').html( content.midia.nome );
+                else
+                    $('#nome-musica').html( content.midia.title );
+            }
+            
             if ( content.link != null && content.link != '' )
             {
                 console.log(content.link);
@@ -216,6 +231,17 @@
     };
     
     player.media.onended = function(){ next(); };
+    
+    var alteraVolume = function( valor ) {
+
+        var volume = 1;
+        
+        if ( valor != null && valor >= 0 && valor <= 100 )
+            volume = valor / 100;
+        
+        player.media.volume = volume;
+    };
+    
     
     $(document).ready(function() {
 
@@ -237,6 +263,10 @@
         
         $('#botao-next').click( function(){
             next();
+        });
+        
+        $(".campo-slider").on("slideStop", function(slideEvt) {
+            alteraVolume(slideEvt.value);
         });
         
     });

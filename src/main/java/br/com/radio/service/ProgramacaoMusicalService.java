@@ -435,8 +435,16 @@ public class ProgramacaoMusicalService {
 		Transmissao atual = getTransmissaoAtual( ambiente ); 
 		
 		Transmissao result = getProximaTransmissaoAtualPeloIdAtual( ambiente, atual );
+
+		Long idTransmissao = null;
 		
-		transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
+		if ( result == null )
+			idTransmissao = atual.getIdTransmissao();
+		else
+			idTransmissao = result.getIdTransmissao();
+
+		if ( idTransmissao != null )
+			transmissaoRepo.setLinkInativoAnteriores( ambiente, idTransmissao );
 		
 		//TODO: gerar nova midia incremental aqui
 		
