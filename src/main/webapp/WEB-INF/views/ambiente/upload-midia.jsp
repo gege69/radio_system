@@ -214,6 +214,8 @@
     // futuramente tornar esse Upload em ajax
     var upload = function( idAmbiente )
     {
+        $('#btnUploadMidia').disable();
+        
         // pegar as categorias e fazer a listinha de strings 
         $("#ambiente-upload-midia").submit();
         
@@ -223,6 +225,22 @@
     }
 
     $(function(){
+        
+        jQuery.fn.extend({
+            disable: function(state) {
+                return this.each(function() {
+                    var $this = $(this);
+                    if($this.is('input, button'))
+                        this.disabled = state;
+                    else
+                        $this.toggleClass('disabled', state);
+                });
+            }
+        });
+        
+        $('body').on('click', 'a.disabled', function(event) {
+            event.preventDefault();
+        });
 
         var token = $("input[name='_csrf']").val();
         var header = "X-CSRF-TOKEN";
