@@ -94,7 +94,7 @@
               <div class="spacer-vertical40"></div>
                
               <div class="row row-centered" >
-                <img alt="logo" src="${context}/ambientes/${idAmbiente}/logomarca" id="marca">
+                <img alt="logo" src="${context}/ambientes/${idAmbiente}/logomarca" id="marca" style="height: 200px;">
               </div>
               
               <div class="spacer-vertical40"></div>
