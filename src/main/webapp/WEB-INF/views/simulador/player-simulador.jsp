@@ -80,7 +80,7 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Player Protótipo<br/>
+          <h3>Simulador do Player<br/>
             <small></small>
           </h3>
           
@@ -157,8 +157,8 @@
       </div>
       
       <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12 pull-right">
-<!--         <span id="slider2ValLabel" style="margin-left: 20px;">Valor: <span id="slider2Val"></span></span> -->
-        <input id="slider2" class="campo-slider" data-slider-id='ex2Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="1"/>
+        <i class="fa fa-2x fa-volume-up" style="margin-right: 15px;"></i>
+        <input id="slider2" class="campo-slider" data-slider-id='ex2Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/>
         
       </div>
     </div>
