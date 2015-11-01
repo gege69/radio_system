@@ -19,6 +19,7 @@ import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import br.com.radio.security.config.SecurityConfigMulti;
@@ -31,6 +32,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @ComponentScan( basePackages = { "br.com.radio.*" } )
 @EnableJpaRepositories( basePackages = { "br.com.radio.*" } )
 @EnableTransactionManagement
+@EnableAsync
 @Import( { WebAppConfig.class, SecurityConfigMulti.class } )
 public class AppConfig {
 
@@ -124,5 +126,6 @@ public class AppConfig {
 
 		return exceptionTranslationPostProcessor;
 	}
+
 
 }

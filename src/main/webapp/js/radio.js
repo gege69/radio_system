@@ -80,7 +80,7 @@ var makeRodapeTmpl = function( total, paginaAtual, listFunction ){
 
 var removeErros = function( form )
 {
-    form.find('.form-group').removeClass('has-error');
+    form.find('.form-group').removeClass('has-error').removeClass('has-success').removeClass('has-warning');
     form.find('#inputError2Status').remove();
     form.find('.icone-fa-feedback').remove();
     form.find('.alert').remove();
@@ -203,6 +203,34 @@ var preencheErroFieldUpdate = function( nomeCampo, msg )
 }
 
 
+var feedbackFieldUpdate = function( nomeCampo, msg, warninglevel, iconparam )
+{
+    if ( $('#' + nomeCampo).length <= 0 )
+        return;
+    else
+    {
+        var icon = 'check';
+        
+        if ( iconparam != '' || iconparam != undefined )
+            icon = iconparam;
+        
+        var formgroup = $('#'+nomeCampo).closest(".form-group");
+        
+        if ( formgroup.hasClass('has-'+warninglevel) )
+            return;
+        else
+        {
+            $('<span id="inputError2Status" class="sr-only">(error)</span>').insertAfter( '#'+nomeCampo );
+            $('<span class="fa fa-'+ icon +' form-control-feedback icone-fa-feedback" aria-hidden="true"></span>').insertAfter( '#'+nomeCampo );
+              
+            if ( msg != null && msg != '' )
+                $('<div class="alert alert-'+ warninglevel +'">' + msg+ '</div>').insertAfter( '#'+nomeCampo );
+            
+            formgroup.addClass('has-'+ warninglevel +' has-feedback');
+        }
+    }
+}
+
 var preencheAlertGeral = function( nomeCampo, msg, type )
 {
     if ( msg != null && msg != '' && nomeCampo != null && nomeCampo != '' )
@@ -240,5 +268,38 @@ var jump = function( h )
 	location.href = "#"+h;                 
 	history.replaceState(null,null,url); 
 	return false;
+}
+
+
+
+var keyup_validasenha = function( event ) {
+    var text = $('#password').val(); 
+    var result = zxcvbn(text);
+
+    if ( text == '' )
+    {
+        removeErros( $('#ambiente-form') );
+        return;
+    }
+    else
+    {
+        if ( result != null && result.score <= 1 )
+        {
+            removeErros( $('#ambiente-form') );
+            preencheErroFieldUpdate( 'password', 'Senha muito fraca' );
+        }
+        else if ( result != null && result.score <= 3 )
+        {
+            removeErros( $('#ambiente-form') );
+            feedbackFieldUpdate( 'password', 'Senha razoável', 'warning', 'exclamation-circle' );
+        }
+        else if (  result != null && result.score > 3 )
+        {
+            removeErros( $('#ambiente-form') );
+            feedbackFieldUpdate( 'password', 'Senha Forte', 'success', 'check' );
+        }
+        else
+            removeErros( $('#ambiente-form') );            
+    }
 }
 

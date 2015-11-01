@@ -28,7 +28,7 @@
                  data-height="400"
                  data-side-pagination="server"
                  data-pagination="true"
-                 data-page-size=7
+                 data-page-size=6
                  data-locale = "pt_BR"
                  data-query-params="queryParams" >
                 <thead>

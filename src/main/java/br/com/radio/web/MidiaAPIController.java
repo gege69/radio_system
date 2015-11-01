@@ -188,7 +188,7 @@ public class MidiaAPIController extends AbstractController {
 		
 		transmissoes.forEach( t -> {
 			
-			String link = baseURL + String.format( "/api/ambientes/%d/transmissoes/%d", idAmbiente, t.getIdTransmissao() );
+			String link = baseURL + t.getLink();
 			
 			t.setLink( link ); 
 		});
@@ -228,7 +228,7 @@ public class MidiaAPIController extends AbstractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/live", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody Transmissao getLinkTransmissaoAoVivo(@PathVariable Long idAmbiente, Principal principal) {
+	public @ResponseBody Transmissao getLinkTransmissaoAoVivo(@PathVariable Long idAmbiente, Principal principal, HttpServletRequest request ) {
 		
 		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
 		
@@ -237,7 +237,14 @@ public class MidiaAPIController extends AbstractController {
 		if ( ambiente == null )
 			throw new RuntimeException( "Ambiente não encontrado" );
 
+		
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivo( ambiente );
+		
+		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
+		
+		String link = baseURL + transmissao.getLink();
+
+		transmissao.setLink( link );
 		
 		if ( transmissao == null )
 			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
@@ -255,7 +262,7 @@ public class MidiaAPIController extends AbstractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/live/next", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody Transmissao getLinkTransmissaoAoVivoNext(@PathVariable Long idAmbiente, Principal principal) {
+	public @ResponseBody Transmissao getLinkTransmissaoAoVivoNext(@PathVariable Long idAmbiente, Principal principal, HttpServletRequest request) {
 		
 		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
 		
@@ -265,6 +272,12 @@ public class MidiaAPIController extends AbstractController {
 			throw new RuntimeException( "Ambiente não encontrado" );
 
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
+		
+		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
+		
+		String link = baseURL + transmissao.getLink();
+
+		transmissao.setLink( link );
 		
 		if ( transmissao == null )
 			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );

@@ -135,20 +135,7 @@
         $('#btnAlterar').on('click', alteraSenha);
         
         $('#password').keyup( function( event ) {
-            var text = $('#password').val(); 
-            var result = zxcvbn(text);
-
-            if ( text == '' )
-                removeErros( $('#alterar-senha-form') );
-
-            if ( result != null && result.score <= 1 )
-            {
-                preencheErroFieldUpdate( 'password', 'Senha muito fraca' );
-            }
-            else
-                removeErros( $('#alterar-senha-form') );
-            
-            console.log(result);
+            keyup_validasenha( event );
         });
         
     });

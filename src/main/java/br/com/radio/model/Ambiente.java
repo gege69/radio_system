@@ -99,7 +99,7 @@ public class Ambiente implements Serializable {
 	private String estado;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
-	@Column( name = "login", nullable = false, length = 40 )
+	@Column( name = "login", nullable = false, length = 40, unique=true )
 	private String login;
 	
 	@JsonIgnore

@@ -67,7 +67,7 @@
                       <div class="spacer-vertical20"></div>
                       
                       Adicionar Nome
-                      <form action="${context}/ambientes/${idAmbiente}/view-list-chamada-funcionarios" 
+                      <form action="${context}/ambientes/${idAmbiente}/view-chamada-funcionarios" 
                             method="POST" 
                             id="ambiente-upload-nome" 
                             class="form" 
@@ -123,7 +123,7 @@
                       <div class="spacer-vertical20"></div>
                      
                       Adicionar Frase
-                      <form action="${context}/ambientes/${idAmbiente}/view-list-chamada-funcionarios" 
+                      <form action="${context}/ambientes/${idAmbiente}/view-chamada-funcionarios" 
                             method="POST" 
                             id="ambiente-upload-frase" 
                             class="form" 

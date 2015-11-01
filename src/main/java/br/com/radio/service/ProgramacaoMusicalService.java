@@ -19,15 +19,16 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.digester.SetPropertiesRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.PosicaoVinheta;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Genero;
@@ -35,8 +36,11 @@ import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
 import br.com.radio.model.Transmissao;
+import br.com.radio.repository.AmbienteGeneroRepository;
+import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
 import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
@@ -54,6 +58,9 @@ public class ProgramacaoMusicalService {
 	
 	@Autowired
 	private ProgramacaoGeneroRepository programacaoGeneroRepo;
+	
+	@Autowired
+	private AmbienteRepository ambienteRepo;
 	
 	@Autowired
 	private MidiaRepository midiaRepo;
@@ -78,6 +85,12 @@ public class ProgramacaoMusicalService {
 	
 	@Autowired
 	private AmbienteService ambienteService;
+	
+	@Autowired
+	private GeneroRepository generoRepo;
+	
+	@Autowired
+	private AmbienteGeneroRepository ambienteGeneroRepo;
 	
 	
 	/**
@@ -132,6 +145,52 @@ public class ProgramacaoMusicalService {
 		return result;
 	}
 	
+	
+	
+	public void verificaECriaProgramacaoDefault( Long idAmbiente )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		verificaECriaProgramacaoDefault( ambiente );
+	}
+	
+	
+	
+	@Async
+	@Transactional
+	public void verificaECriaProgramacaoDefault( Ambiente ambiente )
+	{
+		// verificar se tem transmissão
+		List<Programacao> progList = programacaoRepo.findByAmbienteAndAtivoTrue( ambiente );
+		
+		if ( progList == null || progList.size() <= 0 )
+		{
+			Genero genero = generoRepo.findOne( 1l );  // Top 300 .... caso mude repensar isso
+			
+			AmbienteGenero ambienteGenero = ambienteGeneroRepo.findByAmbienteAndGenero( ambiente, genero );
+			
+			if ( ambienteGenero == null )
+				ambienteGeneroRepo.save( new AmbienteGenero( ambiente, genero ) );
+			
+			for ( DiaSemana dia : DiaSemana.values() )
+				gravaGenerosProgramacaoDiaInteiro( ambiente, dia, genero );
+			
+			geraTransmissao( ambiente, null );
+		}
+		
+	}
+	
+	
+	
+	
+	
+	public boolean gravaGenerosProgramacaoDiaInteiro( Ambiente ambiente, DiaSemana dia, Genero genero )
+	{
+		List<Genero> generos = new ArrayList<Genero>();
+		generos.add( genero );
+		
+		return gravaGenerosProgramacaoDiaInteiro( ambiente, dia, generos );
+	}
 	
 	
 	
@@ -460,8 +519,6 @@ public class ProgramacaoMusicalService {
 		int ignoradas = transmissaoRepo.setStatusIgnorada( ambiente ); // o que não tocou não será mais tocado... vou gerar uma nova playlist
 		int inativos = transmissaoRepo.setLinkInativo( ambiente );  // inativando os registros 
  
-		System.out.println( "Inativos : " + inativos );
-		
 		Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = selecaoMusicas( ambiente );
 		
 		musicasPorGenero.forEach( ( generosSet, dto ) -> {
@@ -473,7 +530,7 @@ public class ProgramacaoMusicalService {
 
 			validaClusters( dto );
 			
-			applyMergeBlocos( ambiente, dto );
+			applyMergeBlocosOriginal( ambiente, dto );
 
 			// imprimindo
 			dto.getMidias().forEach( m -> {
@@ -548,7 +605,8 @@ public class ProgramacaoMusicalService {
 	}
 
 	
-	private void applyMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
+	
+	private void applyMergeBlocosOriginal( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
 		List<Midia> musicas = dto.getMidias();
 
@@ -585,7 +643,7 @@ public class ProgramacaoMusicalService {
 			novaListaMidias.add( m );
 			countMusicas++;
 			
-			if ( countMusicas % stepComerciais == 0 )
+			if ( stepComerciais > 0 && countMusicas % stepComerciais == 0 )
 			{
 				if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
 					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
@@ -596,10 +654,10 @@ public class ProgramacaoMusicalService {
 					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
 			}
 			
-			if ( countMusicas % stepInstitucionais == 0 )  // Depois de n músicas
+			if ( stepInstitucionais > 0 && countMusicas % stepInstitucionais == 0 )  // Depois de n músicas
 				addIfNotNull( novaListaMidias, blocoInstitucionais.getNextRandom( rnd ) );
 			
-			if ( countMusicas % stepProgrametes == 0 )  // Depois de n músicas
+			if ( stepProgrametes > 0 && countMusicas % stepProgrametes == 0 )  // Depois de n músicas
 				addIfNotNull( novaListaMidias, blocoProgrametes.getNextRandom( rnd ) );
 
 		};
@@ -607,8 +665,6 @@ public class ProgramacaoMusicalService {
 		dto.setMidias( novaListaMidias );
 	}
 	
-	
-
 	
 	private void applySpotifyShuffle( ProgramacaoListMidiaListDTO dto )
 	{
@@ -662,8 +718,8 @@ public class ProgramacaoMusicalService {
 		
 		// Na verdade é bagunçadas.. porque nesse ponto o shuffle já deveria ter ocorrido
 		List<Midia> midiasOrdenadas = dto.getMidias();
-
-		String url = urlRequest + "/api/ambientes/"+ ambiente.getIdAmbiente() +"/transmissoes/" ;
+		
+		String url = "/api/ambientes/"+ ambiente.getIdAmbiente() +"/transmissoes/" ;
 		
 		Integer batchSize = getBatchSize();
 

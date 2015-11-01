@@ -101,4 +101,15 @@ public class UtilsStr {
 	{
 		System.out.println( generateCronExpression( "55", "0", "19", "*", "OCT", "*", "*" ) );
 	}
+	
+	
+	
+	public static boolean isAlphaNumeric(String s)
+	{
+		String pattern = "^[a-zA-Z0-9]*$";
+		if ( s.matches( pattern ) )
+			return true;
+		
+		return false;   
+	}
 }

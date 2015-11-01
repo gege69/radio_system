@@ -187,6 +187,7 @@ public class SecurityConfigMulti {
 				.invalidateHttpSession( true )
 				.and()
 
+				
 			// The session management is used to ensure the user only has one session. This isn't
 			// compulsory but can add some extra security to your application.
 			.sessionManagement()

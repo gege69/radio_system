@@ -2,11 +2,14 @@ package br.com.radio.web.config;
 
 
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import br.com.radio.config.AppConfig;
+import br.com.radio.web.listener.SessionListener;
 
 
 public class SpringConfigurationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer
@@ -29,6 +32,13 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
 		return new String[] { "/" };
 	}
 	
+	@Override
+	public void onStartup( ServletContext servletContext ) throws ServletException
+	{
+		super.onStartup( servletContext );
+		servletContext.addListener( new SessionListener() );
+	}
+
 	@Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
         registration.setMultipartConfig(getMultipartConfigElement());

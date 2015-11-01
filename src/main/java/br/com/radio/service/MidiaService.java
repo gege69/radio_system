@@ -337,6 +337,14 @@ public class MidiaService {
 	}
 
 
+	public Integer associaTodasMidiasParaAmbiente( Ambiente ambiente )
+	{
+		int linhas = midiaAmbienteRepo.insertMusicasAmbiente( ambiente.getIdAmbiente() );
+		
+		return linhas;
+	}
+	
+	
 	private void associaMidiaEAmbiente( Ambiente ambiente, Midia midia )
 	{
 		MidiaAmbiente assocMidiaAmbiente = midiaAmbienteRepo.findByAmbienteAndMidia( ambiente, midia );

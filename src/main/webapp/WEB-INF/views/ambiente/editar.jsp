@@ -3,6 +3,10 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <meta name="_csrf" th:content="${_csrf.token}"/>
 
+<script type="text/javascript" src="${context}/js/zxcvbn.js">
+</script>
+
+
   <div class="container">
   
     <div class="jumbotron">
@@ -132,7 +136,7 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Senha:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="password" class="form-control" id="password_amb" name="password" placeholder="Senha">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Senha">
                   </div>
                 </div>
                 
@@ -250,7 +254,7 @@
         var arrayCampos = [
                             {field: "nome_amb",      desc : "Nome do Ambiente"},
                             {field: "login_amb",         desc : "Login" }, 
-                            {field: "password_amb",      desc : "Senha"}
+                            {field: "password",      desc : "Senha"}
                           ];
         
         isOk = validaCampos( arrayCampos );
@@ -297,6 +301,11 @@
         $('#btnSalvar').on('click', salvar);
         
         getDados();
+        
+        $('#password').keyup( function( event ) {
+            keyup_validasenha( event );
+        });
+        
         
     });
 

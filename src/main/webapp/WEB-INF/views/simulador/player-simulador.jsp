@@ -47,7 +47,7 @@
           <li class="dropdown" id="menu-pesquisas">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" id="link-menu-pesquisas">Chamadas <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#"  id="menu-palavras">Proprietário de Veículo</a></li>
+              <li><a href="#"  id="btn-chamada-veiculo">Proprietário de Veículo</a></li>
               <li><a href="#"  id="menu-codigo-ncm">Funcionários</a></li>
               <li><a href="#"  id="menu-sumario">Chamada Instantânea</a></li>
               <li><a href="#"  id="menu-posicao">Horóscopo</a></li>
@@ -76,7 +76,7 @@
     </div>
   </nav>
   
-  <div class="container wrapper">
+  <div class="container">
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-body">
@@ -165,6 +165,11 @@
   </div>
   
   
+<div class="my-modal-base">
+  <div class="my-modal-cont"></div>
+</div>
+  
+  
 <script>
 
     var player = new MediaElementPlayer('#player2');
@@ -243,6 +248,13 @@
     };
     
     
+    var modalChamadaVeiculo = function(){ 
+        var url = "${context}/ambientes/${idAmbiente}/simulacoes/chamadaveiculos/view";
+        $('.my-modal-cont').load(url,function(result){
+            $('#myModal').modal({show:true});
+        });
+    };
+    
     $(document).ready(function() {
 
         player.pause();
@@ -267,6 +279,11 @@
         
         $(".campo-slider").on("slideStop", function(slideEvt) {
             alteraVolume(slideEvt.value);
+        });
+
+        
+        $('#btn-chamada-veiculo').click( function() {
+            modalChamadaVeiculo(); 
         });
         
     });

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -36,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.exception.ResourceNotFoundException;
+import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -274,6 +277,26 @@ public class AmbienteController extends AbstractController {
 	
 	
 	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/chamadaveiculos/view", method = RequestMethod.GET )
+	public String chamadaVeiculoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-chamada-veiculo";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	
+	
 	@RequestMapping( value = { "/ambientes/{idAmbiente}", "/api/ambientes/{idAmbiente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
 	public @ResponseBody Ambiente getAmbiente( @PathVariable Long idAmbiente, HttpServletResponse response )
@@ -313,7 +336,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/ambientes", "/api/ambientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Ambiente> listAmbiente( @RequestParam(value="pagina", required=false) Integer pagina, 
+	public @ResponseBody JSONBootstrapGridWrapper<Ambiente> listAmbiente( @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
 																 Principal principal )
 	{
@@ -322,11 +345,11 @@ public class AmbienteController extends AbstractController {
 		if ( usuario == null || usuario.getEmpresa() == null )
 			return null;
 		
-		Pageable pageable = getPageable( pagina, limit );
+		Pageable pageable = getPageable( pageNumber, limit );
 			
 		Page<Ambiente> ambientePage = ambienteRepo.findByEmpresa( pageable, usuario.getEmpresa() );
 		
-		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
+		JSONBootstrapGridWrapper<Ambiente> jsonList = new JSONBootstrapGridWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
 
 		return jsonList;
 	}
@@ -346,6 +369,8 @@ public class AmbienteController extends AbstractController {
 			try
 			{
 				ambienteService.saveAmbiente( ambiente );
+				
+				programacaoMusicalService.verificaECriaProgramacaoDefault( ambiente );
 				
 				jsonResult = writeOkResponse();
 			}
