@@ -2,6 +2,7 @@ package br.com.radio.service.programacaomusical;
 
 import java.util.List;
 
+import br.com.radio.model.Categoria;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 
@@ -11,7 +12,7 @@ public class ProgramacaoListMidiaListDTO {
 	
 	private List<Midia> midias;
 	
-	private List<Integer> midiaIds;
+	private Categoria musicaCategoria;
 
 	public List<Programacao> getProgramacoes()
 	{
@@ -46,22 +47,22 @@ public class ProgramacaoListMidiaListDTO {
 		this.midias = midias;
 	}
 
-	public ProgramacaoListMidiaListDTO( List<Programacao> programacoes, List<Midia> midias, List<Integer> midiaIds )
+	public ProgramacaoListMidiaListDTO( List<Programacao> programacoes, List<Midia> midias, Categoria musicaCategoria )
 	{
 		super();
 		this.programacoes = programacoes;
 		this.midias = midias;
-		this.midiaIds = midiaIds;
+		this.musicaCategoria = musicaCategoria;
 	}
 
-	public List<Integer> getMidiaIds()
+	public Categoria getMusicaCategoria()
 	{
-		return midiaIds;
+		return musicaCategoria;
 	}
 
-	public void setMidiaIds( List<Integer> midiaIds )
+	public void setMusicaCategoria( Categoria musicaCategoria )
 	{
-		this.midiaIds = midiaIds;
+		this.musicaCategoria = musicaCategoria;
 	}
 	
 	

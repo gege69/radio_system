@@ -4,6 +4,8 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
+
+
 <html lang="en" style="height: 100%">
   <head>
   
@@ -47,28 +49,62 @@
           <li class="dropdown" id="menu-pesquisas">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" id="link-menu-pesquisas">Chamadas <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#"  id="btn-chamada-veiculo">Proprietário de Veículo</a></li>
-              <li><a href="#"  id="menu-codigo-ncm">Funcionários</a></li>
-              <li><a href="#"  id="menu-sumario">Chamada Instantânea</a></li>
-              <li><a href="#"  id="menu-posicao">Horóscopo</a></li>
-              <li><a href="#"  id="menu-naladi">Comerciais</a></li>
-              <li><a href="#"  id="menu-tratamento">Institucionais</a></li>
+            
+              <c:if test="${configuracao != null && configuracao.chamVeiculo}">
+                <li><a href="#"  id="btn-chamada-veiculo">Proprietário de Veículo</a></li>
+              </c:if>
+              
+              <c:if test="${configuracao != null && configuracao.chamFuncionarios}">
+                <li><a href="#"  id="btn-chamada-funcionarios">Funcionários</a></li>
+              </c:if>
+              
+              <c:if test="${configuracao != null && configuracao.chamInstantanea}">
+                <li><a href="#"  id="btn-chamada-inst">Chamada Instantânea</a></li>
+              </c:if>
+
+              <c:if test="${configuracao != null && configuracao.horoscopo}">                
+                <li><a href="#"  id="btn-horoscopo">Horóscopo</a></li>
+              </c:if>
+              
+              <c:if test="${configuracao != null && configuracao.controleComerciais}">
+                <li><a href="#"  id="btn-config-comerciais">Comerciais</a></li>
+              </c:if>
+              
+              <c:if test="${configuracao != null && configuracao.controleInstitucionais}">
+                <li><a href="#"  id="btn-config-inst">Institucionais</a></li>
+              </c:if>
             </ul>
           </li>
           
           <li class="dropdown" id="menu-pesquisas">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" id="link-menu-pesquisas">Configurações <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#"  id="menu-palavras">Gêneros</a></li>
-              <li><a href="#"  id="menu-codigo-ncm">Blocos</a></li>
-              <li><a href="#"  id="menu-sumario">No-Break</a></li>
-              <li><a href="#"  id="menu-posicao">Downloads</a></li>
+              
+              <c:if test="${configuracao != null && configuracao.selecaoGenero}">
+                <li><a href="#"  id="btn-generos">Gêneros</a></li>
+              </c:if>
+
+              <c:if test="${configuracao != null && configuracao.controleBlocos}">              
+                <li><a href="#"  id="btn-blocos">Blocos</a></li>
+              </c:if>
+              
+              <c:if test="${configuracao != null && configuracao.nobreak}">
+                <li><a href="#"  id="btn-nobreak">No-Break</a></li>
+              </c:if>
+              
+              <c:if test="${configuracao != null && configuracao.menuDownloads}">
+                <li><a href="#"  id="btn-downloads">Downloads</a></li>
+              </c:if>
             </ul>
           </li>          
-          
-          <li><a href="#" id="menu-retrospectiva">Relatórios</a></li>
-          
-          <li><a href="#" id="menu-retrospectiva">Atendimento</a></li>          
+
+          <c:if test="${configuracao != null && configuracao.relatoriosMidia}">          
+            <li><a href="#" id="btn-relatorios">Relatórios</a></li>
+          </c:if>
+
+          <c:if test="${configuracao != null && configuracao.atendimento}">          
+            <li><a href="#" id="btn-atendimento">Atendimento</a></li>
+          </c:if>          
           
         </ul>
         
@@ -81,6 +117,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Simulador do Player<br/>
+            ${configuracao.chamVeiculo}
             <small></small>
           </h3>
           
@@ -131,26 +168,25 @@
         </div>
         <table style=" margin: 0 auto;">
           <tr>
-<!--             <td> -->
-<!--               <a class="btn btn-default" href="#" role="button"> -->
-<!--                 <i class="fa fa-backward"></i> -->
-<!--               </a> -->
-<!--             </td> -->
             <td>
               <a class="btn btn-default" href="#" id="botao-stop" role="button">
                 <i class="fa fa-stop"></i>
               </a>
             </td>
+            
             <td>
               <a class="btn btn-default" href="#" id="botao-play" role="button">
                 <i class="fa fa-play"></i>
               </a>
             </td>
-            <td>
-              <a class="btn btn-default" href="#" id="botao-next" role="button">
-                <i class="fa fa-forward"></i>
-              </a>
-            </td>
+            
+            <c:if test="${configuracao != null && configuracao.avancarRetornar}">
+              <td>
+                <a class="btn btn-default" href="#" id="botao-next" role="button">
+                  <i class="fa fa-forward"></i>
+                </a>
+              </td>
+            </c:if>
           </tr>
         </table>
         <div class="spacer-vertical20"></div>
@@ -173,12 +209,66 @@
 <script>
 
     var player = new MediaElementPlayer('#player2');
+    
+    var volumeMusicas = 100;
+    
+    var volumeChamadas = 100;
+    
+    var volumeComerciais = 100;
+    
+    var volumeGeral = 100;
+    
+    var volumeIndividual = false;
 
     var stop = function(){
         player.pause();
     };
     
-    var play = function( next ){
+    var alteraVolume = function( valor ) {
+
+        var volume = 1;
+        
+        if ( valor != null && valor >= 0 && valor <= 100 )
+            volume = valor / 100;
+        
+        player.media.volume = volume;
+    };
+    
+    var determinaVolume = function( json ){
+
+        if ( json != null  )
+        {
+            if ( volumeIndividual && json.categoria != null )    
+            {
+                var volume = 0;
+                
+                if ( json.categoria.codigo == 'musica' )
+                    volume = volumeMusicas;
+                
+                if ( json.categoria.codigo == 'chamada_inst' ||
+                     json.categoria.codigo == 'chamada_func_nome' ||
+                     json.categoria.codigo == 'chamada_func_frase'  )
+                    volume = volumeChamadas;
+                
+                if ( json.categoria.codigo == 'comercial' ||
+                     json.categoria.codigo == 'vinheta' ||
+                     json.categoria.codigo == 'inst' ||
+                     json.categoria.codigo == 'programete'  )
+                    volume = volumeComerciais;
+                
+                alteraVolume( volume );
+                $('#slider2').bootstrapSlider('setValue', volume );
+            }
+            else
+            {
+                alteraVolume( volumeGeral );
+                $('#slider2').bootstrapSlider('setValue', volumeGeral );
+            }
+        }
+        
+    }
+    
+    var play = function(){
 
         $.ajax({
             type: 'GET',
@@ -198,6 +288,8 @@
             if ( content.link != null && content.link != '' )
             {
                 console.log(content.link);
+                
+                determinaVolume( content );
                 
                 player.setSrc( content.link );
                 player.play();
@@ -227,6 +319,8 @@
             {
                 console.log(content.link);
                 
+                determinaVolume( content );
+                
                 player.setSrc( content.link );
                 player.play();
             }
@@ -237,23 +331,67 @@
     
     player.media.onended = function(){ next(); };
     
-    var alteraVolume = function( valor ) {
-
-        var volume = 1;
-        
-        if ( valor != null && valor >= 0 && valor <= 100 )
-            volume = valor / 100;
-        
-        player.media.volume = volume;
-    };
     
-    
-    var modalChamadaVeiculo = function(){ 
-        var url = "${context}/ambientes/${idAmbiente}/simulacoes/chamadaveiculos/view";
+    var abreModal = function( url ){ 
+        var url = "${context}/ambientes/${idAmbiente}/simulacoes" + url;
         $('.my-modal-cont').load(url,function(result){
-            $('#myModal').modal({show:true});
+            $('#myModal').modal({
+                show:true, 
+                backdrop: 'static',              
+                keyboard: false
+            });
         });
     };
+    
+    var getConfiguracoes = function(){
+        
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: '${context}/ambientes/${idAmbiente}/configuracoes',
+            dataType: 'json'
+        }).done( function(json) {
+            
+            if ( json != null )
+            {
+                if ( json.autoplay )
+                    play();
+                
+                if ( json.controleVolumeIndividual )
+                {
+                    volumeIndividual = true;
+                    
+                    volumeMusicas = json.volumeMusicas;
+                    volumeChamadas = json.volumeChamadas;
+                    volumeComerciais = json.volumeComerciais;
+                }
+                else
+                {
+                    volumeIndividual = false;
+                    
+                    volumeMusicas = json.volumeGeral;
+                    volumeChamadas = json.volumeGeral;
+                    volumeComerciais = json.volumeGeral;                
+                    
+                    alteraVolume(json.volumeGeral);
+                }
+                volumeGeral = json.volumeGeral;
+            }
+            else 
+            {
+                volumeGeral = 100;
+            }
+            
+        });
+    }
+    
+    
+    var registraModal = function( element, url ){
+        $(element).click( function() {
+            abreModal( url ); 
+        });
+    }
+    
     
     $(document).ready(function() {
 
@@ -281,10 +419,21 @@
             alteraVolume(slideEvt.value);
         });
 
+        registraModal('#btn-chamada-veiculo', "/chamadaveiculos/view");
+        registraModal('#btn-chamada-funcionarios', "/chamadafuncionarios/view");
+        registraModal('#btn-chamada-inst', "/chamadainst/view");
+        registraModal('#btn-horoscopo', "/horoscopo/view");
+        registraModal('#btn-config-comerciais', "/configcomerciais/view");
+        registraModal('#btn-config-inst', "/configinst/view");
         
-        $('#btn-chamada-veiculo').click( function() {
-            modalChamadaVeiculo(); 
-        });
+        registraModal('#btn-generos', "/generos/view");
+        registraModal('#btn-blocos', "/blocos/view");
+        registraModal('#btn-nobreak', "/nobreak/view");
+        registraModal('#btn-downloads', "/downloads/view");
+        registraModal('#btn-relatorios', "/relatorios/view");
+        registraModal('#btn-atendimento', "/atendimento/view");
+        
+        getConfiguracoes();
         
     });
 

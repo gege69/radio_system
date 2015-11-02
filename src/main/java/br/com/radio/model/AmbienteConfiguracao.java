@@ -136,6 +136,7 @@ public class AmbienteConfiguracao implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 	
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "id_usuario" )
 	private Usuario usuarioCriacao;
@@ -146,6 +147,7 @@ public class AmbienteConfiguracao implements Serializable {
 	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;
 
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "id_usuarioAlteracao" )
 	private Usuario usuarioAlteracao;

@@ -10,7 +10,7 @@ import br.com.radio.model.MidiaAmbiente;
 
 public interface MidiaAmbienteRepository extends JpaRepository<MidiaAmbiente, Long> {
 
-	MidiaAmbiente findByAmbienteAndMidia( Ambiente ambiente, Midia midia );
+	Long countByAmbienteAndMidia( Ambiente ambiente, Midia midia );
 	
 	@Modifying(clearAutomatically=true)
 	@Query(	value= 	"INSERT INTO midia_ambiente "+ 

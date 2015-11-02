@@ -8,15 +8,15 @@ public class SessionListener implements HttpSessionListener {
 	@Override
 	public void sessionCreated( HttpSessionEvent event )
 	{
-		System.out.println("==== Session is created ====");
+//		System.out.println("==== Session is created ====");
         event.getSession().setMaxInactiveInterval(30*60);
 	}
 
 	@Override
 	public void sessionDestroyed( HttpSessionEvent event )
 	{
-		// TODO Auto-generated method stub
-		System.out.println("==== Session is destroyed ====");
+//		 TODO Auto-generated method stub
+//		System.out.println("==== Session is destroyed ====");
 	}
 
 }

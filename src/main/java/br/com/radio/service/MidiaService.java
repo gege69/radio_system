@@ -347,13 +347,10 @@ public class MidiaService {
 	
 	private void associaMidiaEAmbiente( Ambiente ambiente, Midia midia )
 	{
-		MidiaAmbiente assocMidiaAmbiente = midiaAmbienteRepo.findByAmbienteAndMidia( ambiente, midia );
+		Long qtd = midiaAmbienteRepo.countByAmbienteAndMidia( ambiente, midia );
 
-		if ( assocMidiaAmbiente == null )
-		{
-			assocMidiaAmbiente = new MidiaAmbiente( ambiente, midia, new Date() );
-			midiaAmbienteRepo.saveAndFlush( assocMidiaAmbiente );
-		}
+		if ( qtd == null || qtd == 0 )
+			midiaAmbienteRepo.saveAndFlush( new MidiaAmbiente( ambiente, midia, new Date() ) );
 	}
 
 
@@ -433,9 +430,9 @@ public class MidiaService {
 
 	
 	
-	public List<Midia> getMidiasAtivasPorAmbienteCategoria( Ambiente ambiente, String codigo )
+	public List<Midia> getMidiasAtivasPorAmbienteCategoria( Ambiente ambiente, Categoria categoria )
 	{
-		List<Midia> result = midiaRepo.findByAmbientesAndCategorias_codigo( ambiente, codigo );
+		List<Midia> result = midiaRepo.findByAmbientesAndCategorias( ambiente, categoria );
 		
 		return result;
 	}

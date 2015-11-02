@@ -2,11 +2,8 @@ package br.com.radio.web;
 
 import java.io.File;
 import java.security.Principal;
-import java.util.Date;
 import java.util.List;
 
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,9 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Transmissao;
 import br.com.radio.model.Usuario;
+import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
@@ -54,6 +53,8 @@ public class MidiaAPIController extends AbstractController {
 	private MidiaRepository midiaRepo;
 	@Autowired
 	private TransmissaoRepository transmissaoRepo;
+	@Autowired
+	private AmbienteConfiguracaoRepository ambienteConfigRepo;
 	// DAOs =====================
 	
 	
@@ -270,6 +271,11 @@ public class MidiaAPIController extends AbstractController {
 		
 		if ( ambiente == null )
 			throw new RuntimeException( "Ambiente não encontrado" );
+		
+		AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
+		
+		if ( configuracao != null && configuracao.getAvancarRetornar() == false )
+			throw new RuntimeException( "Não é possível avançar a transmissão." );
 
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
 		

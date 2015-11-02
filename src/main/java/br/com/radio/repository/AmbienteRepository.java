@@ -13,7 +13,7 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 	
 	Long countByEmpresa( Empresa empresa );
 	
-	Long countByLogin( String login );
+	Long countByLoginAndIdAmbienteNot( String login, Long idAmbiente );
 	
 	/**
 	 * 

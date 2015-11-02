@@ -436,7 +436,7 @@ public class ProgramacaoMusicalService {
 			else
 				midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosInGroupBy( ambiente, categoria, generosSet );
 			
-			ProgramacaoListMidiaListDTO dto = new ProgramacaoListMidiaListDTO( programacaoList, midias );
+			ProgramacaoListMidiaListDTO dto = new ProgramacaoListMidiaListDTO( programacaoList, midias, categoria );
 			
 			result.put( generosSet, dto );
 		});
@@ -616,10 +616,15 @@ public class ProgramacaoMusicalService {
 		
 		ThreadLocalRandom rnd = ThreadLocalRandom.current();
 		
-		BlocosManipulacaoDTO blocoVinhetas = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, Categoria.VINHETA ) );
-		BlocosManipulacaoDTO blocoComerciais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, Categoria.COMERCIAL ) );
-		BlocosManipulacaoDTO blocoInstitucionais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, Categoria.INSTITUCIONAL ) );
-		BlocosManipulacaoDTO blocoProgrametes = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, Categoria.PROGRAMETE ) );
+		Categoria vinheta = categoriaRepo.findByCodigo( Categoria.VINHETA );
+		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
+		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
+		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
+		
+		BlocosManipulacaoDTO blocoVinhetas = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, vinheta ), vinheta );
+		BlocosManipulacaoDTO blocoComerciais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, comercial ), comercial );
+		BlocosManipulacaoDTO blocoInstitucionais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, institucional ), institucional );
+		BlocosManipulacaoDTO blocoProgrametes = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, programete ), programete );
 		
 		int qtdComerciais = bloco.getQtdComerciais();
 		
@@ -668,7 +673,6 @@ public class ProgramacaoMusicalService {
 	
 	private void applySpotifyShuffle( ProgramacaoListMidiaListDTO dto )
 	{
-		
 		List<Midia> musicas = dto.getMidias();
 		
 		Double tamanhoLista = Integer.valueOf( musicas.size() ).doubleValue();
@@ -691,6 +695,9 @@ public class ProgramacaoMusicalService {
 			
 			for ( Midia musica : musicasArtista )
 			{
+				// Marcando a mídia como música... faço isso nesse ponto para não ter que fazer OUTRO for... estou aproveitando esse LOOP
+				musica.setCategoriaSelecionada( dto.getMusicaCategoria() );
+				
 				musica.setPosicaoShuffle( Double.valueOf( posicao ) );
 				
 				int coinSignal = rnd.nextInt(2);
@@ -756,11 +763,9 @@ public class ProgramacaoMusicalService {
 				
 				transmissao.setAmbiente( prog.getAmbiente() );
 				transmissao.setDataCriacao( new Date() );
-				
 				transmissao.setDiaPlay( UtilsDates.asUtilDate( hoje ) );  //Só o dia
-
 				transmissao.setDuracao( midia.getDuracao() );
-				
+				transmissao.setCategoria( midia.getCategoriaSelecionada() );
 				
 				// posso ir armazenando todas essas transmissões e no final ir dando updates sucessivos... dessa maneira o consigo ver se pula horários ou não...
 				

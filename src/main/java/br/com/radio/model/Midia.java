@@ -70,6 +70,10 @@ public class Midia implements Serializable {
 	        @JoinColumn(name="id_categoria", nullable=false, updatable=false) })
     private List<Categoria> categorias;
 
+	/* Para saber por qual motivo essa mídia foi selecionada. Útil na geração da programação */
+	@Transient
+	private Categoria categoriaSelecionada;
+
 	@Transient
 	private Map<String,Boolean> categoriasView = new HashMap<String,Boolean>();
 
@@ -440,6 +444,16 @@ public class Midia implements Serializable {
 	public void setPosicaoShuffle( Double posicaoShuffle )
 	{
 		this.posicaoShuffle = posicaoShuffle;
+	}
+
+	public Categoria getCategoriaSelecionada()
+	{
+		return categoriaSelecionada;
+	}
+
+	public void setCategoriaSelecionada( Categoria categoriaSelecionada )
+	{
+		this.categoriaSelecionada = categoriaSelecionada;
 	}
 
 	

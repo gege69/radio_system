@@ -221,6 +221,15 @@
                 </div>
                 
                 <div class="spacer-vertical20"></div>
+                
+                <div class="checkbox col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <label>
+                  <input type="checkbox" id="controleVolumeIndividual" name="controleVolumeIndividual" value="true"> 
+                    Habilitar controle individual de volume
+                  </label>
+                </div>
+                
+                <div class="spacer-vertical20"></div>
 
                 <div class="row">
                   <div class="form-group col-lg-6 col-md-6">

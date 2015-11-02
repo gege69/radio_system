@@ -103,6 +103,10 @@ public class Transmissao implements Serializable {
 	@Column( name = "datacriacao" )
 	private Date dataCriacao;
 
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="id_categoria")
+	private Categoria categoria;
+	
 
 	public Long getIdTransmissao()
 	{
@@ -277,6 +281,19 @@ public class Transmissao implements Serializable {
 	{
 		this.diaPlay = diaPlay;
 	}
+
+
+	public Categoria getCategoria()
+	{
+		return categoria;
+	}
+
+
+	public void setCategoria( Categoria categoria )
+	{
+		this.categoria = categoria;
+	}
+	
 	
 	
 	

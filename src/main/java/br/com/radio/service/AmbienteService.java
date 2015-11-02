@@ -85,8 +85,9 @@ public class AmbienteService {
 		if ( StringUtils.isNotBlank( ambiente.getLogin() ) )
 		{
 			String login = ambiente.getLogin();
-			
-			Long count = ambienteRepo.countByLogin( login );
+
+			// Contando pra ver se tem algum outro login que não seja esse ambiente ( para o caso de update )
+			Long count = ambienteRepo.countByLoginAndIdAmbienteNot( login, ambiente.getIdAmbiente() );
 			
 			if ( count > 0 )
 				throw new RuntimeException( "O login informado não está disponível por favor insira outro." );
@@ -94,7 +95,7 @@ public class AmbienteService {
 			if ( StringUtils.contains( login , " " ) )
 				throw new RuntimeException( "O login informado não deve ter espaços." );
 			
-			if ( UtilsStr.isAlphaNumeric( login ) )
+			if ( !UtilsStr.isAlphaNumeric( login ) )
 				throw new RuntimeException( "Existem caracteres inválidos no login. Apenas números e letras são aceitos." );
 		}
 	}

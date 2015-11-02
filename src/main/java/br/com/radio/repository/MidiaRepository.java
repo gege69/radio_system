@@ -20,7 +20,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	List<Midia> findByAmbientesAndCategorias( Ambiente ambiente, Categoria categoria );
 	
 	Page<Midia> findByAmbientesAndCategorias_codigo( Pageable pageable, Ambiente ambiente, String codigo );
-	
+
 	List<Midia> findByAmbientesAndCategorias_codigo( Ambiente ambiente, String codigo );
 	
 	Page<Midia> findByAmbientes( Pageable pageable, Ambiente ambiente );
@@ -30,7 +30,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	Page<Midia> findByAmbientesAndNomeContainingAndCategoriasIn( Ambiente ambiente, String nome, List<Categoria> categorias, Pageable pageable );
 	
 	Midia findByFilehash( String filehash );
-
+	
 	// Procurando por midias desse ambiente, na categoria indicada, nos generos indicados, sem repetição
 	@Query("SELECT m FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE a = ?1 AND c = ?2 AND g IN ?3 group by m ")
 	List<Midia> findByAmbientesAndCategoriasAndGenerosInGroupBy( Ambiente ambiente, Categoria categoria, Set<Genero> genero );

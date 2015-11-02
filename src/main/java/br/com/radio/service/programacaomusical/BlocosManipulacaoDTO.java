@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import br.com.radio.model.Categoria;
 import br.com.radio.model.Midia;
 
 /**
@@ -19,7 +20,8 @@ public class BlocosManipulacaoDTO {
 	private List<Midia> midiasConsumir = new ArrayList<Midia>();
 	
 	private List<Midia> midiasUtilizadas = new ArrayList<Midia>();
-
+	
+	private Categoria categoria;
 	
 	public Midia getNextRandom( ThreadLocalRandom rnd )
 	{
@@ -39,12 +41,21 @@ public class BlocosManipulacaoDTO {
 		
 		midiasUtilizadas.add( m );
 		midiasConsumir.remove( indexSelect );
+
+		
+		// Mesmo que essa mídia seja várias coisas ao mesmo tempo ( Comercial e Programete ) preciso saber qual foi a escolha dela
+		m.setCategoriaSelecionada( this.categoria );
 		
 		return m;
 	}
 	
-	
-	
+	public BlocosManipulacaoDTO( List<Midia> midiasConsumir, Categoria categoria )
+	{
+		super();
+		this.midiasConsumir = midiasConsumir;
+		this.categoria = categoria;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -83,7 +94,15 @@ public class BlocosManipulacaoDTO {
 	{
 		this.midiasUtilizadas = midiasUtilizadas;
 	}
-	
-	
 
+	public Categoria getCategoria()
+	{
+		return categoria;
+	}
+
+	public void setCategoria( Categoria categoria )
+	{
+		this.categoria = categoria;
+	}
+	
 }

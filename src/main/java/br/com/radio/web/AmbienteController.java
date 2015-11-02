@@ -268,13 +268,16 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
+			
+			AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
+			
+			model.addAttribute( "configuracao", configuracao );
 		
 			return "simulador/player-simulador";
 		}
 		else
 			return "HTTPerror/404";
 	}
-	
 	
 	
 	
@@ -288,13 +291,201 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
-			return "simulador/modal-chamada-veiculo";
+			return "simulador/modal-chamada-veiculos";
 		}
 		else
 			return "HTTPerror/404";
 	}
 	
 	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/chamadafuncionarios/view", method = RequestMethod.GET )
+	public String chamadaFuncionariosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-chamada-funcionarios";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/chamadainst/view", method = RequestMethod.GET )
+	public String chamadaInstantaneaModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-chamada-instantanea";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/horoscopo/view", method = RequestMethod.GET )
+	public String horoscopoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-horoscopo";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/configcomerciais/view", method = RequestMethod.GET )
+	public String configComerciaisModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-config-comerciais";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/configinst/view", method = RequestMethod.GET )
+	public String configInstitucionaisModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-config-institucionais";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/generos/view", method = RequestMethod.GET )
+	public String generosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-generos";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/blocos/view", method = RequestMethod.GET )
+	public String blocosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-blocos";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/nobreak/view", method = RequestMethod.GET )
+	public String nobreakModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-nobreak";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/downloads/view", method = RequestMethod.GET )
+	public String downloadsModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-downloads";
+		}
+		else
+			return "HTTPerror/404";
+	}
+
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/relatorios/view", method = RequestMethod.GET )
+	public String relatoriosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-relatorios";
+		}
+		else
+			return "HTTPerror/404";
+	}
+
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/atendimento/view", method = RequestMethod.GET )
+	public String atendimentoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "simulador/modal-atendimento";
+		}
+		else
+			return "HTTPerror/404";
+	}
 	
 	
 	@RequestMapping( value = { "/ambientes/{idAmbiente}", "/api/ambientes/{idAmbiente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -345,8 +536,8 @@ public class AmbienteController extends AbstractController {
 		if ( usuario == null || usuario.getEmpresa() == null )
 			return null;
 		
-		Pageable pageable = getPageable( pageNumber, limit );
-			
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
+		
 		Page<Ambiente> ambientePage = ambienteRepo.findByEmpresa( pageable, usuario.getEmpresa() );
 		
 		JSONBootstrapGridWrapper<Ambiente> jsonList = new JSONBootstrapGridWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
@@ -364,8 +555,8 @@ public class AmbienteController extends AbstractController {
 			
 			jsonResult = writeErrorsAsJSONErroMessage(result);	
 		}
-		else{
-
+		else
+		{
 			try
 			{
 				ambienteService.saveAmbiente( ambiente );
