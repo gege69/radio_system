@@ -15,6 +15,8 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 	
 	Long countByLoginAndIdAmbienteNot( String login, Long idAmbiente );
 	
+	Long countByLogin( String login );
+	
 	/**
 	 * 
 	 * Exemplos

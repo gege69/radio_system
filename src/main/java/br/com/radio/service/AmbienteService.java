@@ -39,9 +39,6 @@ public class AmbienteService {
 	private EmpresaRepository empresaRepo;
 	
 	@Autowired
-	private ProgramacaoMusicalService progMusicalService;
-	
-	@Autowired
 	private MidiaService midiaService;
 	
 	@Autowired
@@ -85,9 +82,14 @@ public class AmbienteService {
 		if ( StringUtils.isNotBlank( ambiente.getLogin() ) )
 		{
 			String login = ambiente.getLogin();
+			
+			Long count = 0l;
 
 			// Contando pra ver se tem algum outro login que não seja esse ambiente ( para o caso de update )
-			Long count = ambienteRepo.countByLoginAndIdAmbienteNot( login, ambiente.getIdAmbiente() );
+			if ( ambiente.getIdAmbiente() != null )
+				count = ambienteRepo.countByLoginAndIdAmbienteNot( login, ambiente.getIdAmbiente() );
+			else
+				count = ambienteRepo.countByLogin( login );
 			
 			if ( count > 0 )
 				throw new RuntimeException( "O login informado não está disponível por favor insira outro." );
