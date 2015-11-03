@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONDateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,8 +48,7 @@ public class Usuario implements Serializable {
 	@Column( name = "nome", nullable = false, columnDefinition = "TEXT" )
 	private String nome;
 	
-	@NotNull( message = "O email do usuário é de preenchimento obrigatório" )
-	@Column( name = "email", nullable = false, length = 120 )
+	@Column( name = "email", nullable = true, length = 120 )
 	private String email;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
@@ -79,6 +81,10 @@ public class Usuario implements Serializable {
 	        @JoinColumn(name="id_perfil", nullable=false, updatable=false) })
 	private List<Perfil> perfis;
 
+	@Enumerated(EnumType.STRING)
+	@Column( name = "usuariotipo" )
+	private UsuarioTipo usuarioTipo;
+	
 	
 	public Usuario()
 	{
@@ -208,7 +214,7 @@ public class Usuario implements Serializable {
 	@Override
 	public String toString()
 	{
-		return String.format( "Usuario [idUsuario=%s, empresa=%s, nome=%s, email=%s, login=%s, password=%s, dataCriacao=%s]", idUsuario, empresa, nome, email, login, password, dataCriacao );
+		return String.format( "Usuario [idUsuario=%s, empresa=%s, nome=%s, email=%s, login=%s, password=%s, dataCriacao=%s, usuarioTipo=%s]", idUsuario, empresa, nome, email, login, password, dataCriacao, usuarioTipo );
 	}
 
 	public List<Perfil> getPerfis()
@@ -219,6 +225,16 @@ public class Usuario implements Serializable {
 	public void setPerfis( List<Perfil> perfis )
 	{
 		this.perfis = perfis;
+	}
+
+	public UsuarioTipo getUsuarioTipo()
+	{
+		return usuarioTipo;
+	}
+
+	public void setUsuarioTipo( UsuarioTipo usuarioTipo )
+	{
+		this.usuarioTipo = usuarioTipo;
 	}
 	
 	

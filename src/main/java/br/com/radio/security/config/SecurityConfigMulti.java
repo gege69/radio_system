@@ -17,13 +17,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +30,7 @@ import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeader
 public class SecurityConfigMulti {
 
 	
-	private static final String DEF_USERS_BY_USERNAME_QUERY = "SELECT LOGIN AS USERNAME, PASSWORD, ATIVO AS ENABLED FROM USUARIO WHERE LOGIN = ? ";
+	private static final String DEF_USERS_BY_USERNAME_QUERY = "SELECT LOGIN AS USERNAME, PASSWORD, ATIVO AS ENABLED FROM USUARIO WHERE LOGIN =  ? ";
 	
 	private static final String DEF_AUTHORITIES_BY_USERNAME_QUERY = " SELECT LOGIN AS USERNAME, CODIGO FROM USUARIO USU" + 
 																	" LEFT JOIN USUARIO_PERMISSAO USP ON USP.ID_USUARIO = USU.ID_USUARIO" + 
@@ -47,9 +46,7 @@ public class SecurityConfigMulti {
 																			" WHERE " +
 																			" USU.LOGIN = ? ";
 
-	@Resource
-    private Environment environment;
-	
+
 	@Autowired
 	private DataSource dataSource;
 
@@ -60,6 +57,11 @@ public class SecurityConfigMulti {
 		
 	}
 	
+	@Bean
+	public SimpleAuthenticationHandler getAuthenticationSuccessHandler(){
+		
+		return new SimpleAuthenticationHandler();		
+	}
 	
 	@Autowired
 	protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -81,7 +83,6 @@ public class SecurityConfigMulti {
 		
         protected void configure(HttpSecurity http) throws Exception {
         	
-        	
         	RequestMatcher csrfRequestMatcher = new RequestMatcher() 
         	{
 	    		// Always allow the HTTP GET method
@@ -89,7 +90,8 @@ public class SecurityConfigMulti {
 	    		  
 	    		// Disable CSFR protection on the following urls:
 	    		private AntPathRequestMatcher[] requestMatchers = {
-	    		    new AntPathRequestMatcher("/api/**")
+	    		    new AntPathRequestMatcher("/api/**"),
+	    		    new AntPathRequestMatcher("/player/**")
 	    		};
 	
 	    		@Override
@@ -113,8 +115,9 @@ public class SecurityConfigMulti {
             	// desabilitando o CSRF para as URLs de API
             	.csrf().requireCsrfProtectionMatcher( csrfRequestMatcher )
             	.and()
-                .antMatcher( "/api/**")                               
-                .authorizeRequests().anyRequest().authenticated()  
+            	.requestMatchers().antMatchers( "/api/**", "/player/**" )
+            	.and()
+            	.authorizeRequests().anyRequest().authenticated()
                 .and()
                 .httpBasic();
             
@@ -129,6 +132,9 @@ public class SecurityConfigMulti {
 	@Configuration
 	@Order(2)  
     public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+		
+		@Autowired
+		private SimpleAuthenticationHandler simpleAuthenticationHandler;
 		
 		@Override
 	    public void configure(WebSecurity web) throws Exception {
@@ -156,6 +162,7 @@ public class SecurityConfigMulti {
 				.antMatchers( "/register" ).permitAll()
 				.antMatchers( "/login**" ).permitAll()
 				.antMatchers( "/admin/**" ).hasRole( "ADMIN" )
+				.antMatchers( "/**" ).hasAuthority( "ADMINISTRAR_AMB" )
 				.anyRequest().authenticated()
 				.and()
 //			.requiresChannel()
@@ -173,6 +180,7 @@ public class SecurityConfigMulti {
 				.loginPage( "/login" )
 				.defaultSuccessUrl("/principal", true)
 				.failureUrl( "/login?err=1" )
+				.successHandler( simpleAuthenticationHandler )
 				.usernameParameter( "username" )
 				.passwordParameter( "password" )
 				.and()
@@ -185,6 +193,7 @@ public class SecurityConfigMulti {
 				.logoutSuccessUrl( "/login?out=1" )
 				.deleteCookies( "JSESSIONID" )
 				.invalidateHttpSession( true )
+				.permitAll()
 				.and()
 
 				

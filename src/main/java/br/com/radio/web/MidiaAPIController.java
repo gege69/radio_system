@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -293,5 +295,46 @@ public class MidiaAPIController extends AbstractController {
 
 	
 	
+	
+	
+	@RequestMapping(value = "/player", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public String player(Principal principal, HttpServletRequest request, ModelMap model ) 
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			throw new RuntimeException( "Usuário não encontrado" );
+		
+		if ( usuario.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR ) )
+			throw new RuntimeException( "Usuário não é do tipo Ambiente" );
+
+		Ambiente ambiente = ambienteRepo.findByLogin( usuario.getLogin() );
+			
+		if ( ambiente == null )
+			throw new RuntimeException( "Ambiente não encontrado. Por favor verifique o endereço" );
+		
+		System.out.println(ambiente.getEmpresa());
+		System.out.println(usuario.getEmpresa());
+		
+		if ( !ambiente.getEmpresa().getIdEmpresa().equals( usuario.getEmpresa().getIdEmpresa() ))
+			throw new RuntimeException( "Tentativa de autenticar em um player que não percence ao seu login" );
+
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+			
+			AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
+			
+			model.addAttribute( "configuracao", configuracao );
+		
+			return "simulador/player-simulador";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+		
 	
 }

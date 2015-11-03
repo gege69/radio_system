@@ -16,6 +16,7 @@ import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Empresa;
 import br.com.radio.model.Genero;
+import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
@@ -43,6 +44,9 @@ public class AmbienteService {
 	
 	@Autowired
 	private BlocoRepository blocoRepository;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
 
 	/**
@@ -63,6 +67,8 @@ public class AmbienteService {
 		}
 
 		validaLogin( ambiente );
+
+		replicaUsuarioLoginPlayer( ambiente );
 		
 		preencheValoresDefault( ambiente );
 		
@@ -74,6 +80,25 @@ public class AmbienteService {
 		
 		
 		return ambiente; 
+	}
+
+
+	/**
+	 * Para ter apenas um serviço de autenticação ( Spring security ) vou replicar esse login do player na tabela de usuários... 
+	 * 
+	 * @param ambiente
+	 */
+	private void replicaUsuarioLoginPlayer( Ambiente ambiente )
+	{
+		Usuario usuario = new Usuario();
+		usuario.setLogin( ambiente.getLogin() );
+		usuario.setPassword( ambiente.getPassword() );
+		usuario.setEmpresa( ambiente.getEmpresa() );
+		usuario.setNome( ambiente.getNome() );
+		
+		usuarioService.registerNewUserPlayer( usuario );
+		
+		ambiente.setPassword( "" ); // segurança
 	}
 
 

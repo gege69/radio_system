@@ -17,6 +17,8 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 	
 	Long countByLogin( String login );
 	
+	Ambiente findByLogin( String login );
+	
 	/**
 	 * 
 	 * Exemplos

@@ -11,6 +11,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
 	Long countByEmailOrLogin( String email, String login );
 	
+	Long countByLogin( String login );
+	
 	Usuario findByLogin( String login );
 	
 	Page<Usuario> findByEmpresa( Pageable pageable, Empresa empresa );

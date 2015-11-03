@@ -2,12 +2,14 @@ package br.com.radio.service;
 
 import java.security.Principal;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.UserDTO;
+import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.exception.EmailExistsException;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.UsuarioRepository;
@@ -53,6 +55,9 @@ public class UsuarioService {
 		if ( countUsuarios != null && countUsuarios > 0 )
 			throw new EmailExistsException( "Email ou Login já existe." );
 
+		if ( StringUtils.isBlank( dto.getCdEmail() ) )
+			throw new RuntimeException( "Email é obrigatório" );
+		
 		Usuario usuario = new Usuario();
 		
 		usuario.setEmail( dto.getCdEmail() );
@@ -62,11 +67,32 @@ public class UsuarioService {
 		usuario.setPassword( passwordEncoder.encode( dto.getPassword() ) );
 		
 		usuario.setAtivo( true );
+		usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
 		
 		usuarioRepository.saveAndFlush( usuario );
 		
 		return usuario;
 	}
+	
+	
+	
+	public Usuario registerNewUserPlayer( Usuario usuario )
+	{
+		Long countUsuarios = usuarioRepository.countByLogin( usuario.getLogin() ); 
+		
+		if ( countUsuarios != null && countUsuarios > 0 )
+			throw new EmailExistsException( "Login já existe." );
+
+		usuario.setPassword( passwordEncoder.encode( usuario.getPassword() ) );
+		usuario.setAtivo( true );
+		usuario.setUsuarioTipo( UsuarioTipo.PLAYER );
+		
+		usuarioRepository.saveAndFlush( usuario );
+		
+		return usuario;
+	}
+	
+	
 
 	
 	public Usuario getUserByPrincipal( Principal principal )

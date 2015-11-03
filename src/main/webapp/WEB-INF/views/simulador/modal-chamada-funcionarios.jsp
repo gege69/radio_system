@@ -88,6 +88,9 @@
         listaFuncionarios();
         listaFrase();
         
+        
+        player.stop();
+        
     });
 
 </script>
