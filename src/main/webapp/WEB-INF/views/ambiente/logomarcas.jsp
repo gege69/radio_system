@@ -82,7 +82,7 @@
               
                 <div class="panel-body">
                   <div class="row row-centered">
-                    <img alt="logo" src="${context}/ambientes/${idAmbiente}/logomarca" id="marca">
+                    <img alt="logo" src="${context}/ambientes/${idAmbiente}/logomarca" id="marca" style="max-height: 400px;">
                   </div>
                 </div>
               </div>

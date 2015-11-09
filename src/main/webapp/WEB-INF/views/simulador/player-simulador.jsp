@@ -15,7 +15,6 @@
     
     <!-- O SIMULADOR TEM UM CSS DIFERENTE -->
     <link href="${context}/css/bootstrap-themes/slate/bootstrap.css" rel="stylesheet">
-<%--     <link href="${context}/css/bootstrap.css" rel="stylesheet"> --%>
 
     <!-- Custom styles for this template -->
     <jsp:include page="/WEB-INF/views/customStyles.jsp" />
@@ -26,6 +25,7 @@
     <script src="${context}/mediaelement/mediaelement-and-player.js"></script>
     <link rel="stylesheet" href="${context}/mediaelement/mediaelementplayer.css" />
     
+    <script src="${context}/js/jquery-ui.min.js"></script> 
     <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
     <script src="${context}/js/bootstrap-slider.min.js" charset="UTF-8"></script>
       
@@ -73,6 +73,10 @@
               <c:if test="${configuracao != null && configuracao.controleInstitucionais}">
                 <li><a href="#"  id="btn-config-inst">Institucionais</a></li>
               </c:if>
+              
+              <c:if test="${configuracao != null && configuracao.controleProgrametes}">
+                <li><a href="#"  id="btn-config-programetes">Programetes</a></li>
+              </c:if>
             </ul>
           </li>
           
@@ -86,10 +90,6 @@
 
               <c:if test="${configuracao != null && configuracao.controleBlocos}">              
                 <li><a href="#"  id="btn-blocos">Blocos</a></li>
-              </c:if>
-              
-              <c:if test="${configuracao != null && configuracao.nobreak}">
-                <li><a href="#"  id="btn-nobreak">No-Break</a></li>
               </c:if>
               
               <c:if test="${configuracao != null && configuracao.menuDownloads}">
@@ -117,7 +117,6 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Simulador do Player<br/>
-            ${configuracao.chamVeiculo}
             <small></small>
           </h3>
           
@@ -131,7 +130,7 @@
               <div class="spacer-vertical40"></div>
                
               <div class="row row-centered" >
-                <img alt="logo" src="${context}/ambientes/${idAmbiente}/logomarca" id="marca" style="height: 200px;">
+                <img alt="logo" src="${context}/ambientes/${idAmbiente}/logomarca" id="marca" class="logotipoimagem" >
               </div>
               
               <div class="spacer-vertical40"></div>
@@ -163,6 +162,9 @@
       
       <div class="col-md-2 col-sm-2 col-xs-12 col-centered" >
         <div style="display: none;">
+          <audio id="player1" type="audio/mp3" controls="controls">   
+          </audio>
+          
           <audio id="player2" type="audio/mp3" controls="controls">   
           </audio>
         </div>
@@ -208,7 +210,9 @@
   
 <script>
 
-    var player = new MediaElementPlayer('#player2');
+    var player = new MediaElementPlayer('#player1');
+    
+    var player2 = new MediaElementPlayer('#player2');
     
     var volumeMusicas = 100;
     
@@ -219,7 +223,46 @@
     var volumeGeral = 100;
     
     var volumeIndividual = false;
+    
+    var playlist = [];
+    
+    var playSequence = function( array ){
+        
+        if ( array == null || array.length <= 0 )
+            return;
+        
+        playlist = array.slice();
+        
+        schedulePlay();
+    }
 
+    var schedulePlay = function()
+    {
+        var musicaAtual = playlist[0];
+        
+        if ( musicaAtual == null || musicaAtual == undefined )
+        {
+            var src = player.media.currentSrc;
+            if ( src == null || src == "" )
+                play();
+            else
+                player.play();
+            return;
+        }
+        
+        playlist.splice(0, 1);
+        
+        if ( player.media.paused == false )
+            player.pause();
+        
+        var url = '${context}/api/ambientes/${idAmbiente}/midia/'+ musicaAtual;
+        
+        player2.setSrc( url );
+        player2.play();
+
+        player2.media.onended = function() { schedulePlay(); };
+    }
+    
     var stop = function(){
         player.pause();
     };
@@ -267,8 +310,12 @@
         }
         
     }
+
     
     var play = function(){
+        
+        if ( player2.media.paused == false )
+            return;
 
         $.ajax({
             type: 'GET',
@@ -299,6 +346,9 @@
     };
 
     var next = function(){
+        
+        if ( player2.media.paused == false )
+            return;
 
         $.ajax({
             type: 'GET',
@@ -425,6 +475,7 @@
         registraModal('#btn-horoscopo', "/horoscopo/view");
         registraModal('#btn-config-comerciais', "/configcomerciais/view");
         registraModal('#btn-config-inst', "/configinst/view");
+        registraModal('#btn-config-programetes', "/configprogrametes/view");
         
         registraModal('#btn-generos', "/generos/view");
         registraModal('#btn-blocos', "/blocos/view");

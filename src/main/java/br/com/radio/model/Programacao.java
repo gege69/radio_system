@@ -132,6 +132,9 @@ public class Programacao implements Serializable {
 	        @JoinColumn(name="id_genero", nullable=false, updatable=false) })
 	private List<Genero> generos;
 
+	@Column(name="custom")
+	private Boolean custom;
+	
 	@JsonIgnore
 	@Transient
 	private Set<Genero> generosSet;
@@ -368,6 +371,16 @@ public class Programacao implements Serializable {
 	public void setGenerosSet( Set<Genero> generosSet )
 	{
 		this.generosSet = generosSet;
+	}
+
+	public Boolean getCustom()
+	{
+		return custom;
+	}
+
+	public void setCustom( Boolean custom )
+	{
+		this.custom = custom;
 	}
 	
 	

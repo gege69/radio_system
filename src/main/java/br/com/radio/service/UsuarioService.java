@@ -103,4 +103,14 @@ public class UsuarioService {
 	}
 
 	
+	public Long countByLogin( String login )
+	{
+		Long result = usuarioRepository.countByLogin( login ); 
+		
+		if ( result == null )
+			result = 0l;
+		
+		return result;
+	}
+	
 }

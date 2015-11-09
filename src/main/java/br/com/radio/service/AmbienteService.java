@@ -1,6 +1,7 @@
 package br.com.radio.service;
 
 import java.time.LocalTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,17 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.enumeration.PosicaoVinheta;
+import br.com.radio.enumeration.VozLocucao;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Empresa;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Usuario;
+import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
 import br.com.radio.repository.EmpresaRepository;
 import br.com.radio.repository.GeneroRepository;
+import br.com.radio.util.Constantes;
 import br.com.radio.util.UtilsStr;
 
 @Service
@@ -48,6 +53,8 @@ public class AmbienteService {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	@Autowired
+	private AmbienteConfiguracaoRepository ambienteConfigRepo;
 
 	/**
 	 * Esse método salva o ambiente tomando cuidado para verificar os emails e endereços.
@@ -73,6 +80,8 @@ public class AmbienteService {
 		preencheValoresDefault( ambiente );
 		
 		ambiente = ambienteRepo.saveAndFlush( ambiente );
+		
+		criaConfiguracoesDefault( ambiente );
 		
 		midiaService.associaTodasMidiasParaAmbiente( ambiente );
 		
@@ -116,6 +125,9 @@ public class AmbienteService {
 			else
 				count = ambienteRepo.countByLogin( login );
 			
+			if ( usuarioService.countByLogin( login ) > 0 )
+				throw new RuntimeException( "O login informado não está disponível por favor insira outro." );
+			 
 			if ( count > 0 )
 				throw new RuntimeException( "O login informado não está disponível por favor insira outro." );
 			
@@ -141,6 +153,51 @@ public class AmbienteService {
 		
 		if ( ambiente.getMinutoFimExpediente() == null )
 			ambiente.setMinutoFimExpediente( 59 );
+		
+		byte[] logo = Base64.getDecoder().decode( Constantes.logoRadio );
+		
+		ambiente.setLogomarca( logo );
+		ambiente.setLogomimetype( "image/png" );
+	}
+	
+	private void criaConfiguracoesDefault( Ambiente ambiente )
+	{
+		AmbienteConfiguracao config = new AmbienteConfiguracao();
+		
+		config.setAmbiente( ambiente );
+		
+		config.setAgendMidia( true );
+		config.setAtendimento( true );
+		config.setAutoplay( true );
+		config.setAvancarRetornar( true );   // Apenas avançar...
+		config.setChamFuncionarios( true );
+		config.setChamInstantanea( true );
+		config.setChamVariosFuncionarios( true );
+		config.setChamVeiculo( true );
+		config.setControleBlocos( true );
+		config.setControleComerciais( true );
+		config.setControleInstitucionais( true );
+		config.setControleProgrametes( true );
+		config.setGenerosByCC( true	);
+		config.setHoroscopo( true );
+		config.setLocutorVirtual( true );
+		config.setMenuDownloads( true );
+		config.setOpcionais( true );
+		config.setPedidoMusical( true );
+		config.setPedidoMusicalVinheta( true );
+		config.setRelatoriosMidia( true );
+		config.setRodoviarias( true );
+		config.setSelecaoGenero( true );
+		
+		config.setControleVolumeIndividual( false );
+		config.setVolumeChamadas( 100 );
+		config.setVolumeComerciais( 100 );
+		config.setVolumeGeral( 100 );
+		config.setVolumeMusicas( 100 );
+		config.setVozLocucao( VozLocucao.MASCULINA );
+
+		ambienteConfigRepo.save( config );
+		
 	}
 	
 	private void criaBlocoDefault( Ambiente ambiente )

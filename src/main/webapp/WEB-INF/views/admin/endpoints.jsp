@@ -4,6 +4,13 @@
 
 <html>
 <head><title>Endpoint list</title></head>
+
+<style>
+      tr:nth-of-type(odd) {
+      background-color:#9CB5C4;
+    }
+</style>
+
 <body>
 <table>
   <thead>

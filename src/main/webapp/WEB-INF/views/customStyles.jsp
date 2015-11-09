@@ -7,4 +7,4 @@
     <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
     <link href="${context}/css/bootstrap-dialog.css" rel="stylesheet">
     <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
-    <link href="${context}/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="${context}/css/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">

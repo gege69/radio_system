@@ -4,6 +4,7 @@
 <meta name="_csrf" th:content="${_csrf.token}"/>
 
 
+<script src="${context}/js/jquery-ui.min.js"></script>
 <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
 <script src="${context}/js/bootstrap-slider.min.js" charset="UTF-8"></script>
 
@@ -53,7 +54,7 @@
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
                       <input type="checkbox" id="avancarRetornar" name="avancarRetornar" value="true"> 
-                        Permitir "avançar" ou "retornar" músicas
+                        Permitir "avançar" músicas
                       </label>
                     </div>
                     

@@ -81,6 +81,11 @@ public class SecurityConfigMulti {
     @Order(1)                                                        
     public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 		
+//		@Override
+//	    public void configure(WebSecurity web) throws Exception {
+//	        web.ignoring().antMatchers("/favicon.ico", "/resources/**", "/bundle/**", "/css/**", "/faviconfolder/**", "/js/**" );
+//	    }
+		
         protected void configure(HttpSecurity http) throws Exception {
         	
         	RequestMatcher csrfRequestMatcher = new RequestMatcher() 

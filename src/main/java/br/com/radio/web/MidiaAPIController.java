@@ -179,6 +179,40 @@ public class MidiaAPIController extends AbstractController {
 
 	
 	
+	@RequestMapping(value = "/api/ambientes/{idAmbiente}/midia/{idMidia}", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<FileSystemResource> downloadMidia(@PathVariable Long idAmbiente, @PathVariable Long idMidia, Principal principal) {
+		
+		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		// Esse método por exemplo não vai ser chamado repetidas vezes pelo mesmo ambiente... no máximo 4 vezes em seguida...
+		
+		if ( ambiente == null )
+			return ResponseEntity.badRequest().body( null );
+		
+		Midia midia = midiaRepo.findOne( idMidia );
+		
+		if ( midia == null )
+			return ResponseEntity.unprocessableEntity().body( null );
+		
+		File arquivo = new File( midia.getFilepath() );
+		
+		FileSystemResource fsr = new FileSystemResource( arquivo );
+
+		String name = Integer.valueOf( midia.getNome().hashCode() ).toString();
+		
+		return ResponseEntity.ok()
+				.header( "Content-Disposition", "attachment; filename=\""+ name +"\"" )
+				.contentLength( midia.getFilesize() )
+				.contentType( MediaType.parseMediaType( midia.getMimetype() ) )
+				.body( fsr );
+	}
+
+	
+	
+	
+	
 	
 	@RequestMapping( value = { "/api/ambientes/{idAmbiente}/transmissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Transmissao> listTransmissaoAtiva( @PathVariable Long idAmbiente, Principal principal, HttpServletRequest request )

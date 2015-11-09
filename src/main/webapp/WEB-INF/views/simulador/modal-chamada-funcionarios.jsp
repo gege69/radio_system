@@ -28,7 +28,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">Ok</button>
+        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="botaoConfirma">Ok</button>
       </div>
     </div>
   </div>
@@ -49,8 +50,6 @@
             
             var listitems = "";
             $('#funcionario').empty();
-            
-            debugger;
             
             $.each( lista, function( idx, obj ){
                 listitems += '<option value=' + obj.idMidia + '>' + obj.descricao + '</option>';
@@ -82,14 +81,40 @@
         } );
     }
 
+    var confirma = function()
+    {
+        var primeiro = $('#funcionario').val();
+        var segundo = $('#frase').val();
+        
+        if ( primeiro == null || primeiro == undefined )
+        {
+            preencheErroField( "funcionario", "Preencha o campo" );
+            return;
+        }
+        
+        if ( segundo == null || segundo == undefined )
+        {
+            preencheErroField( "frase", "Preencha o campo" );
+            return;
+        }
+        
+        var array = [];
+        array[0] = primeiro;
+        array[1] = segundo;
+        
+        playSequence( array );
+        $('#myModal').modal('hide');
+    }
+    
 
     $(function(){
     
         listaFuncionarios();
         listaFrase();
         
-        
-        player.stop();
+        $("#botaoConfirma").click( function(){
+            confirma();
+        });          
         
     });
 

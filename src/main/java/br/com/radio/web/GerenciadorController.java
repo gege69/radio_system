@@ -10,6 +10,7 @@ import javax.json.Json;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -84,7 +85,13 @@ public class GerenciadorController extends AbstractController {
 			EndPointDTO dto = new EndPointDTO();
 			
 			dto.setController( method.getBeanType().getName() );
-			dto.setPatternsCondition( info.getPatternsCondition().toString() );
+			
+			String path = info.getPatternsCondition().toString();
+			
+			path = StringUtils.replaceAll( path, "||", "<br/>" );
+			
+			dto.setPatternsCondition( path );
+			
 			dto.setMethodsCondition( info.getMethodsCondition().toString() );
 			dto.setParamsCondition( info.getParamsCondition().toString() );
 			dto.setHeadersCondition( info.getHeadersCondition().toString() );

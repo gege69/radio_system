@@ -6,29 +6,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">x</button>
-        <h3>Chamada Proprietário de Veículo</h3>
+        <h3>Comerciais</h3>
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-lg-12 col-md-12">
-            <div class="form-group">
-              <label for="file">Exemplo:</label>
-              <select class="form-control" id="tipo" name="tipo">
-                <option value="1" >Carro</option>
-                <option value="2" >Moto</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-lg-12 col-md-12">
-            <div class="form-group">
-              <label for="file">Exemplo:</label>
-              <select class="form-control" id="marca" name="marca">
-                <option value="1" >Volkswagen</option>
-                <option value="2" >Fiat</option>
-                <option value="3" >Chevrolet</option>
-              </select>
-            </div>
-          </div>
+          
         </div>
       </div>
       <div class="modal-footer">
