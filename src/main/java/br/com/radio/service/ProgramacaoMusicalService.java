@@ -175,7 +175,7 @@ public class ProgramacaoMusicalService {
 			for ( DiaSemana dia : DiaSemana.values() )
 				gravaGenerosProgramacaoDiaInteiro( ambiente, dia, genero );
 			
-			geraTransmissao( ambiente, null );
+			geraTransmissao( ambiente );
 		}
 		
 	}
@@ -513,7 +513,7 @@ public class ProgramacaoMusicalService {
 	
 	
 	@Transactional
-	public void geraTransmissao( Ambiente ambiente, String urlRequest )
+	public void geraTransmissao( Ambiente ambiente )
 	{
 		// Gerar sempre....  inativando os registros de transmissão anteriores		
 		int ignoradas = transmissaoRepo.setStatusIgnorada( ambiente ); // o que não tocou não será mais tocado... vou gerar uma nova playlist
@@ -529,8 +529,9 @@ public class ProgramacaoMusicalService {
 			applySpotifyShuffle( dto );
 
 			validaClusters( dto );
-			
-			applyMergeBlocosOriginal( ambiente, dto );
+
+			applyMergeBlocosEnhanced( ambiente, dto );
+//			applyMergeBlocosOriginal( ambiente, dto );
 
 			// imprimindo
 			dto.getMidias().forEach( m -> {
@@ -538,7 +539,7 @@ public class ProgramacaoMusicalService {
 			});
 
 			// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
-			consomeMusicas( ambiente, dto, urlRequest );
+			consomeMusicas( ambiente, dto );
 		});
 	}
 
@@ -671,6 +672,65 @@ public class ProgramacaoMusicalService {
 	}
 	
 	
+	private void applyMergeBlocosEnhanced( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
+	{
+		List<Midia> musicas = dto.getMidias();
+
+		Bloco bloco = blocoRepo.findByAmbiente( ambiente ); 
+		
+		PosicaoVinheta posicaoVinheta = bloco.getPosicaoVinheta();
+		
+		ThreadLocalRandom rnd = ThreadLocalRandom.current();
+		
+		Categoria vinheta = categoriaRepo.findByCodigo( Categoria.VINHETA );
+		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
+		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
+		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
+		
+		BlocosManipulacaoDTO blocoVinhetas = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, vinheta ), vinheta );
+		BlocosManipulacaoDTO blocoComerciais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, comercial ), comercial );
+		BlocosManipulacaoDTO blocoInstitucionais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, institucional ), institucional );
+		BlocosManipulacaoDTO blocoProgrametes = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, programete ), programete );
+		
+		int stepComerciais = bloco.getQtdComerciais();
+		int stepInstitucionais = bloco.getIndexInstitucionais();
+		int stepProgrametes = bloco.getIndexProgrametes();
+		
+		LinkedList<Midia> novaListaMidias = new LinkedList<Midia>();
+
+		int countMusicas = 0;
+		
+		for ( Midia m : musicas )
+		{
+			if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_CADA_MUSICA ) )
+				addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+			
+			novaListaMidias.add( m );
+			countMusicas++;
+			
+			if ( stepComerciais > 0 && countMusicas % stepComerciais == 0 ) // Depois de n músicas
+			{
+				if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
+					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+				
+				addIfNotNull( novaListaMidias, blocoComerciais.getNextRandom( rnd ) );
+				
+				if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
+					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+			}
+			
+			if ( stepInstitucionais > 0 && countMusicas % stepInstitucionais == 0 )  // Depois de n músicas
+				addIfNotNull( novaListaMidias, blocoInstitucionais.getNextRandom( rnd ) );
+			
+			if ( stepProgrametes > 0 && countMusicas % stepProgrametes == 0 )  // Depois de n músicas
+				addIfNotNull( novaListaMidias, blocoProgrametes.getNextRandom( rnd ) );
+
+		};
+		
+		dto.setMidias( novaListaMidias );
+	}
+	
+	
 	private void applySpotifyShuffle( ProgramacaoListMidiaListDTO dto )
 	{
 		List<Midia> musicas = dto.getMidias();
@@ -719,7 +779,7 @@ public class ProgramacaoMusicalService {
 	}
 	
 	
-	public void consomeMusicas( Ambiente ambiente, ProgramacaoListMidiaListDTO dto, String urlRequest )
+	public void consomeMusicas( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
 		List<Programacao> programacoes = dto.getProgramacoes();
 		

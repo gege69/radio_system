@@ -114,6 +114,7 @@ public class Midia implements Serializable {
 	private Integer filesize;
 	
 	// Se o registro existe no filesystem (e pode ser acessado pelo servidor de aplicação) então está válido.
+	@JsonIgnore
 	@Column( name="valido")
 	private Boolean valido;
 
@@ -144,6 +145,9 @@ public class Midia implements Serializable {
 
 	@Column( name="genre", columnDefinition = "TEXT")
 	private String genre;
+	
+	@Column( name="ativo")
+	private Boolean ativo;
 	
 	@JsonIgnore
 	@ManyToMany(fetch=FetchType.LAZY)
@@ -456,6 +460,16 @@ public class Midia implements Serializable {
 		this.categoriaSelecionada = categoriaSelecionada;
 	}
 
-	
+	public Boolean getAtivo()
+	{
+		return ativo;
+	}
 
+	public void setAtivo( Boolean ativo )
+	{
+		this.ativo = ativo;
+	}
+
+	
+	
 }

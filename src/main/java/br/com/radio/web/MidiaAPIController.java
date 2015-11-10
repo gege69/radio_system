@@ -242,12 +242,14 @@ public class MidiaAPIController extends AbstractController {
 	@RequestMapping( value = "/api/ambientes/{idAmbiente}/transmissoes/new", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String geraTransmissao( @PathVariable Long idAmbiente, Principal principal, HttpServletRequest request )
 	{
+		// esse aqui também tem que proteger ou arrancar..
+		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
-		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
+//		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
 		
 		if ( ambiente != null )
-			progMusicalService.geraTransmissao( ambiente, baseURL );
+			progMusicalService.geraTransmissao( ambiente );
 		
 		return writeOkResponse();
 	}

@@ -39,9 +39,8 @@ public class Application {
 																																																																																																																			
 		Ambiente ambiente = ambRepo.findOne( 1L );
 				
-//		serv.geraTransmissao( ambiente, "http://localhost:8080/radiosystem" );
+		serv.geraTransmissao( ambiente );
 																																																								
-//		midiaService.getFromFileSystem();
 		
 	}
 	

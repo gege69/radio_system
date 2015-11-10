@@ -89,39 +89,40 @@
                         </div>
                         
                         <div class="form-group">
-                          <label for="qtdComerciais" class="control-label col-sm-4 col-md-3">Qtd Comerciais:</label>
+                          <label for="qtdComerciais" class="control-label col-sm-4 col-md-3">Index Comerciais:</label>
                           <div class="col-sm-6 col-md-8">
                             <select class="form-control" id="qtdComerciais" name="qtdComerciais">
-                              <option value="1" >1</option>
-                              <option value="2" >2</option>
-                              <option value="3" >3</option>
-                              <option value="4" >4</option>
-                              <option value="5" >5</option>
-                              <option value="6" >6</option>
-                              <option value="7" >7</option>
-                              <option value="8" >8</option>
-                              <option value="9" >9</option>
-                              <option value="10">10</option>
-                              <option value="11">11</option>
-                              <option value="12">12</option>
-                              <option value="13">13</option>
-                              <option value="14">14</option>
-                              <option value="15">15</option>
-                              <option value="16">16</option>
-                              <option value="17">17</option>
-                              <option value="18">18</option>
-                              <option value="19">19</option>
-                              <option value="20">20</option>
-                              <option value="21">21</option>
-                              <option value="22">22</option>
-                              <option value="23">23</option>
-                              <option value="24">24</option>
-                              <option value="25">25</option>
-                              <option value="26">26</option>
-                              <option value="27">27</option>
-                              <option value="28">28</option>
-                              <option value="29">29</option>
-                              <option value="30">30</option>
+                              <option value="0" >Não incluir comerciais</option>
+                              <option value="1" >Depois de 1 música</option>
+                              <option value="2" >Depois de 2 músicas</option>
+                              <option value="3" >Depois de 3 músicas</option>
+                              <option value="4" >Depois de 4 músicas</option>
+                              <option value="5" >Depois de 5 músicas</option>
+                              <option value="6" >Depois de 6 músicas</option>
+                              <option value="7" >Depois de 7 músicas</option>
+                              <option value="8" >Depois de 8 músicas</option>
+                              <option value="9" >Depois de 9 músicas</option>
+                              <option value="10">Depois de 10 músicas</option>
+                              <option value="11">Depois de 11 músicas</option>
+                              <option value="12">Depois de 12 músicas</option>
+                              <option value="13">Depois de 13 músicas</option>
+                              <option value="14">Depois de 14 músicas</option>
+                              <option value="15">Depois de 15 músicas</option>
+                              <option value="16">Depois de 16 músicas</option>
+                              <option value="17">Depois de 17 músicas</option>
+                              <option value="18">Depois de 18 músicas</option>
+                              <option value="19">Depois de 19 músicas</option>
+                              <option value="20">Depois de 20 músicas</option>
+                              <option value="21">Depois de 21 músicas</option>
+                              <option value="22">Depois de 22 músicas</option>
+                              <option value="23">Depois de 23 músicas</option>
+                              <option value="24">Depois de 24 músicas</option>
+                              <option value="25">Depois de 25 músicas</option>
+                              <option value="26">Depois de 26 músicas</option>
+                              <option value="27">Depois de 27 músicas</option>
+                              <option value="28">Depois de 28 músicas</option>
+                              <option value="29">Depois de 29 músicas</option>
+                              <option value="30">Depois de 30 músicas</option>
                             </select>
                           </div>
                         </div>

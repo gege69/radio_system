@@ -48,7 +48,7 @@ public class Bloco implements Serializable {
 	private Integer qtdMusicas;
 	
 	@Column( name = "qtdComerciais" )
-	private Integer qtdComerciais;
+	private Integer qtdComerciais;      // DEPOIS MUDAR O NOME DESSE CAMPO PARA SER IGUAL AOS INDEX DE INSTITUCIONAIS E PROGRAMETES
 	
 	@Column( name = "indexInstitucionais")
 	private Integer indexInstitucionais;    // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um INSTITUCIONAL ( Ex : 6 -> Após 6 músicas inserir um Institucional )
