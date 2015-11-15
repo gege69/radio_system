@@ -58,8 +58,8 @@ public class Transmissao implements Serializable {
 	@JoinColumn(name="id_midia" )
 	private Midia midia;
 	
-	@Column( name = "ordemplay", nullable = false )
-	private Long ordemPlay;
+	@Column( name = "posicaoplay", nullable = false )
+	private Double posicaoplay;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
@@ -259,15 +259,15 @@ public class Transmissao implements Serializable {
 	}
 
 
-	public Long getOrdemPlay()
+	public Double getPosicaoplay()
 	{
-		return ordemPlay;
+		return posicaoplay;
 	}
 
 
-	public void setOrdemPlay( Long ordemPlay )
+	public void setPosicaoplay( Double posicaoplay )
 	{
-		this.ordemPlay = ordemPlay;
+		this.posicaoplay = posicaoplay;
 	}
 
 

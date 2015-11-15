@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Transmissao;
@@ -21,14 +22,14 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	Transmissao findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( Long idAmbiente );
 	
 	// Esse método vai tentar encontrar o primeiro registro que exista pra tocar NO DIA.... 
-	Transmissao findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscOrdemPlayAsc( Ambiente ambiente, Date diaPlay );
+	Transmissao findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscPosicaoplayAsc( Ambiente ambiente, Date diaPlay );
 
 	
 	@Modifying(clearAutomatically=true)
 	@Query("update Transmissao t set t.link = ?1||t.idTransmissao||'/midia' where t.link is null")
 	int setLinkFor(String url);
 
-	List<Transmissao> findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscOrdemPlayAsc( Ambiente ambiente, Boolean linkativo );
+	List<Transmissao> findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscPosicaoplayAsc( Ambiente ambiente, Boolean linkativo );
 	
 	List<Transmissao> findByAmbienteAndStatusPlaybackAndDiaPlayBetween( Ambiente ambiente, StatusPlayback statusplay, Date diaPlayIni, Date diaPlayFim );
 
@@ -42,12 +43,13 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 
 	
 	// Para encontrar a próxima musica
-	Transmissao findByAmbienteAndLinkativoTrueAndOrdemPlay( Ambiente ambiente, Long ordemPlay );
+	Transmissao findByAmbienteAndLinkativoTrueAndPosicaoplay( Ambiente ambiente, Double posicaoplay );
 	
 	
 	@Modifying(clearAutomatically=true)
 	@Query("update Transmissao t set t.linkativo = false, t.downloadcompleto = true, t.dataFinishPlay = clock_timestamp(), t.statusPlayback = 'FIM' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao < ?2 ")
 	int setLinkInativoAnteriores( Ambiente ambiente, Long idTransmissao );    
 
+	
 	
 }

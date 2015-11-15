@@ -88,6 +88,8 @@
       
   </div> <!-- /container -->
   
+<script src="${context}/js/required/jquery.serializejson.js"></script>  
+  
 <script type="text/javascript">
 
 

@@ -130,7 +130,11 @@
   </div> <!-- /container -->
 
 
+<script src="${context}/js/required/jsrender.min.js"></script>
+<script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
+<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
 
+<link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 
 <script id="viewTmpl" type="text/x-jsrender">
 

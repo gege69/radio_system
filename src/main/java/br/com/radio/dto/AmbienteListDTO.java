@@ -28,21 +28,21 @@ public class AmbienteListDTO implements Serializable {
 	public static void main(String[] aaaa)
 	{
 		
-		
-		LocalDateTime inicio = LocalDateTime.now();
-
-		inicio = inicio.plusMinutes( 40 );
-		
-		System.out.println(inicio);
-		
-		inicio = inicio.plusMinutes( 1000 );
-		
-		
-		System.out.println(inicio);
-		
-		LocalDate hoje = LocalDate.now();
-		
-		System.out.println(UtilsDates.asUtilDate( hoje ));
+//		
+//		LocalDateTime inicio = LocalDateTime.now();
+//
+//		inicio = inicio.plusMinutes( 40 );
+//		
+//		System.out.println(inicio);
+//		
+//		inicio = inicio.plusMinutes( 1000 );
+//		
+//		
+//		System.out.println(inicio);
+//		
+//		LocalDate hoje = LocalDate.now();
+//		
+//		System.out.println(UtilsDates.asUtilDate( hoje ));
 
 		
 //		ThreadLocalRandom rnd = ThreadLocalRandom.current();

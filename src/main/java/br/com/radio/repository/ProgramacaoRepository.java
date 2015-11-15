@@ -18,4 +18,9 @@ public interface ProgramacaoRepository extends JpaRepository<Programacao, Long> 
 
 	Programacao findByAmbienteAndIdProgramacao( Ambiente ambiente, Long idProgramacao );
 
+	
+	// Essa query verifica se existe algum registro de programação para o momento atual.. ( não está levando em consideração o timezone )
+	@Query(value="select min(1) existe from programacao where dia = ?2 AND id_ambiente = ?1 and ativo = true and pg_catalog.time(datetime_inicio) > pg_catalog.time(clock_timestamp()) and pg_catalog.time(datetime_fim) <= pg_catalog.time(clock_timestamp()) ", nativeQuery=true)
+	Integer getExisteProgramacaoParaHorarioAtual( Ambiente ambiente, String diaSemanaStr );
+	
 }

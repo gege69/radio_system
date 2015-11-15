@@ -219,7 +219,7 @@ public class MidiaAPIController extends AbstractController {
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
-		List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscOrdemPlayAsc( ambiente, true );
+		List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscPosicaoplayAsc( ambiente, true );
 
 		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
 		

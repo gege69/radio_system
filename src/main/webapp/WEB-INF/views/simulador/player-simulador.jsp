@@ -5,7 +5,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 
-
 <html lang="en" style="height: 100%">
   <head>
   
@@ -16,18 +15,12 @@
     <!-- O SIMULADOR TEM UM CSS DIFERENTE -->
     <link href="${context}/css/bootstrap-themes/slate/bootstrap.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
     <jsp:include page="/WEB-INF/views/customStyles.jsp" />
+
+    <script type="text/javascript">
+       var contextPath = "${pageContext.request.contextPath}";
+    </script>
     
-    
-    <jsp:include page="/WEB-INF/views/scripts.jsp" />
-    
-    <script src="${context}/mediaelement/mediaelement-and-player.js"></script>
-    <link rel="stylesheet" href="${context}/mediaelement/mediaelementplayer.css" />
-    
-    <script src="${context}/js/jquery-ui.min.js"></script> 
-    <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
-    <script src="${context}/js/bootstrap-slider.min.js" charset="UTF-8"></script>
       
   </head>    
   
@@ -118,6 +111,8 @@
         <div class="panel-body">
           <h3>Simulador do Player<br/>
             <small></small>
+            
+            <input type="hidden" id="idAmbiente" value="${idAmbiente}">
           </h3>
           
 
@@ -207,290 +202,21 @@
   <div class="my-modal-cont"></div>
 </div>
   
+
   
-<script>
+<jsp:include page="/WEB-INF/views/scripts.jsp" />
 
-    var player = new MediaElementPlayer('#player1');
-    
-    var player2 = new MediaElementPlayer('#player2');
-    
-    var volumeMusicas = 100;
-    
-    var volumeChamadas = 100;
-    
-    var volumeComerciais = 100;
-    
-    var volumeGeral = 100;
-    
-    var volumeIndividual = false;
-    
-    var playlist = [];
-    
-    var playSequence = function( array ){
-        
-        if ( array == null || array.length <= 0 )
-            return;
-        
-        playlist = array.slice();
-        
-        schedulePlay();
-    }
+<script src="${context}/mediaelement/mediaelement-and-player.js"></script>
+<link rel="stylesheet" href="${context}/mediaelement/mediaelementplayer.css" />
 
-    var schedulePlay = function()
-    {
-        var musicaAtual = playlist[0];
-        
-        if ( musicaAtual == null || musicaAtual == undefined )
-        {
-            var src = player.media.currentSrc;
-            if ( src == null || src == "" )
-                play();
-            else
-                player.play();
-            return;
-        }
-        
-        playlist.splice(0, 1);
-        
-        if ( player.media.paused == false )
-            player.pause();
-        
-        var url = '${context}/api/ambientes/${idAmbiente}/midia/'+ musicaAtual;
-        
-        player2.setSrc( url );
-        player2.play();
+<script src="${context}/js/required/jquery-ui.min.js"></script> 
+<link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
+<script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
-        player2.media.onended = function() { schedulePlay(); };
-    }
-    
-    var stop = function(){
-        player.pause();
-    };
-    
-    var alteraVolume = function( valor ) {
+<script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>
+<script src="${context}/js/required/URI.js" charset="UTF-8"></script>
 
-        var volume = 1;
-        
-        if ( valor != null && valor >= 0 && valor <= 100 )
-            volume = valor / 100;
-        
-        player.media.volume = volume;
-    };
-    
-    var determinaVolume = function( json ){
-
-        if ( json != null  )
-        {
-            if ( volumeIndividual && json.categoria != null )    
-            {
-                var volume = 0;
-                
-                if ( json.categoria.codigo == 'musica' )
-                    volume = volumeMusicas;
-                
-                if ( json.categoria.codigo == 'chamada_inst' ||
-                     json.categoria.codigo == 'chamada_func_nome' ||
-                     json.categoria.codigo == 'chamada_func_frase'  )
-                    volume = volumeChamadas;
-                
-                if ( json.categoria.codigo == 'comercial' ||
-                     json.categoria.codigo == 'vinheta' ||
-                     json.categoria.codigo == 'inst' ||
-                     json.categoria.codigo == 'programete'  )
-                    volume = volumeComerciais;
-                
-                alteraVolume( volume );
-                $('#slider2').bootstrapSlider('setValue', volume );
-            }
-            else
-            {
-                alteraVolume( volumeGeral );
-                $('#slider2').bootstrapSlider('setValue', volumeGeral );
-            }
-        }
-        
-    }
-
-    
-    var play = function(){
-        
-        if ( player2.media.paused == false )
-            return;
-
-        $.ajax({
-            type: 'GET',
-            contentType: 'application/json',
-            url: '${context}/api/ambientes/${idAmbiente}/transmissoes/live',
-            dataType: 'json',
-        }).done( function( content ){
-            
-            if ( content.midia != null )
-            {
-                if ( content.midia.title == null || content.midia.title == '' )
-                    $('#nome-musica').html( content.midia.nome );
-                else
-                    $('#nome-musica').html( content.midia.title );
-            }
-            
-            if ( content.link != null && content.link != '' )
-            {
-                console.log(content.link);
-                
-                determinaVolume( content );
-                
-                player.setSrc( content.link );
-                player.play();
-            }
-
-        });
-    };
-
-    var next = function(){
-        
-        if ( player2.media.paused == false )
-            return;
-
-        $.ajax({
-            type: 'GET',
-            contentType: 'application/json',
-            url: '${context}/api/ambientes/${idAmbiente}/transmissoes/live/next',
-            dataType: 'json',
-        }).done( function( content ){
-            
-            if ( content.midia != null )
-            {
-                if ( content.midia.title == null || content.midia.title == '' )
-                    $('#nome-musica').html( content.midia.nome );
-                else
-                    $('#nome-musica').html( content.midia.title );
-            }
-            
-            if ( content.link != null && content.link != '' )
-            {
-                console.log(content.link);
-                
-                determinaVolume( content );
-                
-                player.setSrc( content.link );
-                player.play();
-            }
-
-        });
-        
-    };
-    
-    player.media.onended = function(){ next(); };
-    
-    
-    var abreModal = function( url ){ 
-        var url = "${context}/ambientes/${idAmbiente}/simulacoes" + url;
-        $('.my-modal-cont').load(url,function(result){
-            $('#myModal').modal({
-                show:true, 
-                backdrop: 'static',              
-                keyboard: false
-            });
-        });
-    };
-    
-    var getConfiguracoes = function(){
-        
-        $.ajax({
-            type: 'GET',
-            contentType: 'application/json',
-            url: '${context}/ambientes/${idAmbiente}/configuracoes',
-            dataType: 'json'
-        }).done( function(json) {
-            
-            if ( json != null )
-            {
-                if ( json.autoplay )
-                    play();
-                
-                if ( json.controleVolumeIndividual )
-                {
-                    volumeIndividual = true;
-                    
-                    volumeMusicas = json.volumeMusicas;
-                    volumeChamadas = json.volumeChamadas;
-                    volumeComerciais = json.volumeComerciais;
-                }
-                else
-                {
-                    volumeIndividual = false;
-                    
-                    volumeMusicas = json.volumeGeral;
-                    volumeChamadas = json.volumeGeral;
-                    volumeComerciais = json.volumeGeral;                
-                    
-                    alteraVolume(json.volumeGeral);
-                }
-                volumeGeral = json.volumeGeral;
-            }
-            else 
-            {
-                volumeGeral = 100;
-            }
-            
-        });
-    }
-    
-    
-    var registraModal = function( element, url ){
-        $(element).click( function() {
-            abreModal( url ); 
-        });
-    }
-    
-    
-    $(document).ready(function() {
-
-        player.pause();
-
-        $(".campo-slider").bootstrapSlider({
-            ticks: [0, 20, 40, 60, 80, 100],
-            ticks_labels: ['0', '20', '40', '60', '80', '100'],
-            ticks_snap_bounds: 3
-        });
-        
-        $('#botao-stop').click( function(){
-            stop();
-        });
-        
-        $('#botao-play').click( function(){
-            play();
-        });
-        
-        $('#botao-next').click( function(){
-            next();
-        });
-        
-        $(".campo-slider").on("slideStop", function(slideEvt) {
-            alteraVolume(slideEvt.value);
-        });
-
-        registraModal('#btn-chamada-veiculo', "/chamadaveiculos/view");
-        registraModal('#btn-chamada-funcionarios', "/chamadafuncionarios/view");
-        registraModal('#btn-chamada-inst', "/chamadainst/view");
-        registraModal('#btn-horoscopo', "/horoscopo/view");
-        registraModal('#btn-config-comerciais', "/configcomerciais/view");
-        registraModal('#btn-config-inst', "/configinst/view");
-        registraModal('#btn-config-programetes', "/configprogrametes/view");
-        
-        registraModal('#btn-generos', "/generos/view");
-        registraModal('#btn-blocos', "/blocos/view");
-        registraModal('#btn-nobreak', "/nobreak/view");
-        registraModal('#btn-downloads', "/downloads/view");
-        registraModal('#btn-relatorios', "/relatorios/view");
-        registraModal('#btn-atendimento', "/atendimento/view");
-        
-        getConfiguracoes();
-        
-    });
-
-
-</script>
-  
+<script src="${context}/js/simulador/simulador.js" charset="UTF-8"></script>
      
   
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

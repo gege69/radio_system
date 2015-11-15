@@ -23,7 +23,7 @@ public class SimulacoesController extends AbstractController {
 	private AmbienteConfiguracaoRepository ambienteConfigRepo;
 
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/view", method = RequestMethod.GET )
 	public String playerSimulador( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -45,7 +45,7 @@ public class SimulacoesController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/chamadaveiculos/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/chamadaveiculos/view", method = RequestMethod.GET )
 	public String chamadaVeiculoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -62,7 +62,7 @@ public class SimulacoesController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/chamadafuncionarios/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/chamadafuncionarios/view", method = RequestMethod.GET )
 	public String chamadaFuncionariosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -79,7 +79,7 @@ public class SimulacoesController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/chamadainst/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/chamadainst/view", method = RequestMethod.GET )
 	public String chamadaInstantaneaModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -97,7 +97,7 @@ public class SimulacoesController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/horoscopo/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/horoscopo/view", method = RequestMethod.GET )
 	public String horoscopoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -114,7 +114,7 @@ public class SimulacoesController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/configcomerciais/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/configcomerciais/view", method = RequestMethod.GET )
 	public String configComerciaisModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -131,7 +131,7 @@ public class SimulacoesController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/configinst/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/configinst/view", method = RequestMethod.GET )
 	public String configInstitucionaisModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -147,7 +147,7 @@ public class SimulacoesController extends AbstractController {
 			return "HTTPerror/404";
 	}
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/configprogrametes/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/configprogrametes/view", method = RequestMethod.GET )
 	public String configProgramentesModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -164,7 +164,7 @@ public class SimulacoesController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/generos/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/generos/view", method = RequestMethod.GET )
 	public String generosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -181,7 +181,7 @@ public class SimulacoesController extends AbstractController {
 	}
 	
 
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/blocos/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/blocos/view", method = RequestMethod.GET )
 	public String blocosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -198,7 +198,7 @@ public class SimulacoesController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/nobreak/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/nobreak/view", method = RequestMethod.GET )
 	public String nobreakModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -216,7 +216,7 @@ public class SimulacoesController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/downloads/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/downloads/view", method = RequestMethod.GET )
 	public String downloadsModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -233,7 +233,7 @@ public class SimulacoesController extends AbstractController {
 	}
 
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/relatorios/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/relatorios/view", method = RequestMethod.GET )
 	public String relatoriosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -251,7 +251,7 @@ public class SimulacoesController extends AbstractController {
 
 	
 	
-	@RequestMapping( value = "/ambientes/{idAmbiente}/simulacoes/atendimento/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/atendimento/view", method = RequestMethod.GET )
 	public String atendimentoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );

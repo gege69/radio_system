@@ -81,7 +81,7 @@
       
   </div> <!-- /container -->
 
-
+<script src="${context}/js/required/jsrender.min.js"></script>
 
 <script id="viewTmpl" type="text/x-jsrender">
     

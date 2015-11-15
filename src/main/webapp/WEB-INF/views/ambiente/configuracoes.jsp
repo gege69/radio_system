@@ -4,11 +4,6 @@
 <meta name="_csrf" th:content="${_csrf.token}"/>
 
 
-<script src="${context}/js/jquery-ui.min.js"></script>
-<link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
-<script src="${context}/js/bootstrap-slider.min.js" charset="UTF-8"></script>
-
-
   <div class="container">
   
     <div class="jumbotron">
@@ -316,6 +311,17 @@
     
       
   </div> <!-- /container -->
+  
+  
+<script src="${context}/js/required/jquery.serializejson.js"></script>
+<script src="${context}/js/required/jquery.populate.js"></script>
+
+<script src="${context}/js/required/jquery-ui.min.js"></script>
+<script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>
+
+<link href="${context}/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet">
+<link href="${context}/css/custom-theme/jquery.ui.1.10.0.ie.css" rel="stylesheet">
+<link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
 
 
 

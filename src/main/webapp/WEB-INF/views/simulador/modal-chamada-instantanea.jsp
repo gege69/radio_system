@@ -19,27 +19,7 @@
               </select>
             </div>
           </div>
-<!--           <div class="col-lg-12 col-md-12"> -->
-<!--             <table   -->
-<!--                id="table" -->
-<!--                data-toggle="table" -->
-<%--                data-url="${context}/ambientes/${idAmbiente}/midias-por-categoria?codigo=chamada_inst" --%>
-<!--                data-height="400" -->
-<!--                data-side-pagination="server" -->
-<!--                data-pagination="true" -->
-<!--                data-page-size=5 -->
-<!--                data-page-list="[5]" -->
-<!--                data-locale = "pt_BR" -->
-<!--                data-query-params="queryParams" > -->
-<!--               <thead> -->
-<!--                 <tr> -->
-<!--                     <th data-field="nome">Nome</th> -->
-<!--                     <th data-field="descricao">Descrição</th> -->
-<!--                     <th data-field="dataUpload">Data Upload</th> -->
-<!--                 </tr> -->
-<!--               </thead> -->
-<!--             </table> -->
-<!--           </div>                         -->
+
         </div>
       </div>
       <div class="modal-footer">
@@ -51,50 +31,4 @@
 </div>
 
 
-<script  type="text/javascript">
-
-    var listaChamadas = function(){
-        
-        $.ajax({
-            type: 'GET',
-            contentType: 'application/json',
-            url: '${context}/ambientes/${idAmbiente}/midias-por-categoria?codigo=chamada_inst',
-            dataType: 'json'
-        }).done( function(json){
-            
-            var lista = json.rows;
-            
-            var listitems = "";
-            $('#chamada_inst').empty();
-            
-            $.each( lista, function( idx, obj ){
-                listitems += '<option value=' + obj.idMidia + '>' + obj.descricao + '</option>';
-            });
-            
-            $('#chamada_inst').append(listitems);
-        } );
-    }
-
-    var confirma = function()
-    {
-        var primeiro = $('#chamada_inst').val();
-        
-        var array = [];
-        array[0] = primeiro;
-        
-        playSequence( array );
-        $('#myModal').modal('hide');
-    }
-    
-
-    $(function(){
-        
-        listaChamadas();
-        
-        $("#botaoConfirma").click( function(){
-            confirma();
-        });          
-        
-    });
-
-</script>
+<script src="${context}/js/simulador/modal-chamada-instantanea.js" charset="UTF-8"></script>

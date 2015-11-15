@@ -179,6 +179,8 @@
   </div> <!-- /container -->
 
 
+<script src="${context}/js/required/jquery.serializejson.js"></script>
+<script src="${context}/js/required/jquery.populate.js"></script>
 
 <script type="text/javascript">
 

@@ -24,6 +24,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.jcraft.jorbis.JOrbisException;
+
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.PosicaoVinheta;
 import br.com.radio.enumeration.StatusPlayback;
@@ -451,7 +453,7 @@ public class ProgramacaoMusicalService {
 		Transmissao result = null;
 		
 		if ( atual != null )
-			result = transmissaoRepo.findByAmbienteAndLinkativoTrueAndOrdemPlay( ambiente, atual.getOrdemPlay() + 1 );
+			result = transmissaoRepo.findByAmbienteAndLinkativoTrueAndPosicaoplay( ambiente, atual.getPosicaoplay() + 1 );
 		
 		return result;
 	}
@@ -461,15 +463,37 @@ public class ProgramacaoMusicalService {
 
 	private Transmissao getTransmissaoAtual( Ambiente ambiente )
 	{
+		Transmissao result = null;
+		
 		// Vai utilizar a hora do servidor do banco de dados para encontrar a música que deveria estar tocando.... horário do servidor tem que estar configurado corretamente ( TIMEZONE BRASIL GMT +3 SÃO PAULO )
-		Transmissao result = transmissaoRepo.findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( ambiente.getIdAmbiente() );
+		result = transmissaoRepo.findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( ambiente.getIdAmbiente() );
 
 		// Se não tem música no horário atual ... é preciso ver se o expediente já começou e pegar o primeiro que tiver pra tocar...
 		if ( result == null && ambienteService.isExpedienteOn( ambiente  ) )
 		{
 			LocalDate hoje = LocalDate.now();
-			result = transmissaoRepo.findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscOrdemPlayAsc( ambiente, UtilsDates.asUtilDate( hoje ) );
+			result = transmissaoRepo.findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscPosicaoplayAsc( ambiente, UtilsDates.asUtilDate( hoje ) );
 		}
+		
+		// Não tem múisca nem transmissões configuradas... talvez seja necessário gerar 
+		if ( result == null )  // isso pode ser explorado... tem que fazer um batch pra rodar todo dia de manhã...
+		{
+			LocalDateTime hoje = LocalDateTime.now();
+			
+			DiaSemana diaSemana = DiaSemana.getByIndex( hoje.getDayOfWeek().getValue() );
+
+			Integer existeProgramacao = programacaoRepo.getExisteProgramacaoParaHorarioAtual( ambiente, diaSemana.name() );
+			
+			if ( existeProgramacao != null && existeProgramacao > 0 )
+			{
+				geraTransmissao( ambiente );  // espera terminar...
+				
+				result = transmissaoRepo.findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( ambiente.getIdAmbiente() );
+			}
+		}
+		
+		// verificar se não tem nada programado.... pelo horário se tiver... criar um registro
+
 		
 		return result;
 	}
@@ -796,7 +820,7 @@ public class ProgramacaoMusicalService {
 		Comparator<Programacao> pelaHoraInicial = ( p1, p2 ) -> p1.getHoraInicio().compareTo( p2.getHoraInicio() );
 		programacoes.sort( pelaHoraInicial );
 		
-		Long ordemplay = 1l;
+		Double posicaoplay = 1D;
 		
 		for ( Programacao prog : programacoes )
 		{
@@ -836,7 +860,7 @@ public class ProgramacaoMusicalService {
 				transmissao.setMidia( midia );
 				transmissao.setProgramacao( prog );
 				transmissao.setStatusPlayback( StatusPlayback.GERADA );
-				transmissao.setOrdemPlay( ordemplay++ );
+				transmissao.setPosicaoplay( posicaoplay++ );
 
 				transmissaoRepo.save( transmissao );
 				
@@ -911,6 +935,8 @@ public class ProgramacaoMusicalService {
 		return result;
 	}
 
+	
+	
 	
 	
 	

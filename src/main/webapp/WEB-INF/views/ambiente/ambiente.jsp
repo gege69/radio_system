@@ -75,6 +75,9 @@
   </div> <!-- /container -->
 
 
+<script src="${context}/js/required/jsrender.min.js"></script>
+
+
 <script id="viewTmpl" type="text/x-jsrender">
   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
   <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}{{:url_funcionalidade}}">
@@ -83,6 +86,8 @@
   </a>
   </div>
 </script>  
+
+
 
 
 <script type="text/javascript">

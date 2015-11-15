@@ -12,10 +12,14 @@
     
     <link href="${context}/css/bootstrap.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
     <jsp:include page="/WEB-INF/views/customStyles.jsp" />
     
     <jsp:include page="/WEB-INF/views/scripts.jsp" />
+    
+    <script type="text/javascript">
+       var contextPath = "${pageContext.request.contextPath}";
+    </script>
+     
     
   </head>
 

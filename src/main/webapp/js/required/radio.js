@@ -17,6 +17,12 @@
 //	return JSON.stringify(obj);
 //};
 
+var buildUrl = function( path , data )
+{
+    var url = URI.expand( contextPath + path, data ).toString();
+    
+    return url;
+}
 
 
 var makeRodapeTmpl = function( total, paginaAtual, listFunction ){
