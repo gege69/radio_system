@@ -82,7 +82,7 @@ public class Usuario implements Serializable {
 	private List<Perfil> perfis;
 
 	@Enumerated(EnumType.STRING)
-	@Column( name = "usuariotipo" )
+	@Column( name = "usuariotipo" , columnDefinition= " TEXT default 'GERENCIADOR' ")
 	private UsuarioTipo usuarioTipo;
 	
 	

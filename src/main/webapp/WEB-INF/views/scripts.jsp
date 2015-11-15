@@ -3,9 +3,5 @@
 
     <script src="${context}/js/required/jquery-1.11.3.min.js"></script>
     <script src="${context}/js/required/bootstrap.min.js"></script>   
-    
-<%--     <script src="${context}/js/required/bootstrap-datepickerdatepicker.min.js"></script> --%>
-
     <script src="${context}/js/required/radio.js" charset="UTF-8" ></script>  
-
     <script src="${context}/js/required/json2.js"></script>

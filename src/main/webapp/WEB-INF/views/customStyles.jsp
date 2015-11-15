@@ -2,5 +2,5 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
     <link href="${context}/css/estilo.css" rel="stylesheet">
-<%--     <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet"> --%>
+
     <link href="${context}/css/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">

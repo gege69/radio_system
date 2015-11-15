@@ -3,8 +3,6 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <meta name="_csrf" th:content="${_csrf.token}"/>
 
-<script type="text/javascript" src="${context}/js/zxcvbn.js">
-</script>
 
   <div class="container">
   
@@ -81,7 +79,9 @@
   </div> <!-- /container -->
   
   
-<script src="${context}/js/required/jquery.serializejson.js"></script>  
+<script type="text/javascript" src="${context}/js/required/jquery.serializejson.js"></script>
+<script type="text/javascript" src="${context}/js/required/zxcvbn.js"></script>
+  
   
 <script type="text/javascript">
 

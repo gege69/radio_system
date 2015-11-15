@@ -3,10 +3,9 @@ package br.com.radio.web;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -44,6 +43,7 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
+import br.com.radio.model.Evento;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Programacao;
@@ -52,6 +52,7 @@ import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
+import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.service.AmbienteService;
@@ -75,6 +76,8 @@ public class AmbienteController extends AbstractController {
 	private BlocoRepository blocoRepo;
 	@Autowired
 	private ProgramacaoRepository programacaoRepo;
+	@Autowired
+	private EventoRepository eventoRepo;
 	// DAOs ==================
 	
 	
@@ -256,6 +259,24 @@ public class AmbienteController extends AbstractController {
 			return "HTTPerror/404";
 	}
 	
+	
+	
+	@RequestMapping( value = "/ambientes/{idAmbiente}/eventos/view", method = RequestMethod.GET )
+	public String eventos( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "ambiente/eventos";
+		}
+		else
+			return "HTTPerror/404";
+	}
+
 	
 	
 	
@@ -765,6 +786,37 @@ public class AmbienteController extends AbstractController {
 		}
 		
 	}
+	
+	
+	
+	/**
+	 * Retorna uma lista com os eventos que estão associados com esse ambiente específico.
+	 * 
+	 * @param idAmbiente
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/eventos", "/api/ambientes/{idAmbiente}/eventos" }, 
+						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Evento> getEventos( @PathVariable Long idAmbiente, 
+			@RequestParam(value="pageNumber", required = false) Integer pageNumber,
+			@RequestParam(value="limit", required = false) Integer limit, 
+			 HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		Pageable pageable = getPageable( pageNumber, limit, "DESC", "idEvento" ); 
+		
+		Page<Evento> eventos = eventoRepo.findByAmbiente( ambiente, pageable );
+
+		JSONListWrapper<Evento> jsonList = new JSONListWrapper<Evento>( eventos.getContent(), eventos.getTotalElements() );
+		
+		return jsonList;
+	}
+	
+
+	
+	
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/testeprog" }, method = { RequestMethod.GET } )

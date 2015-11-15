@@ -133,7 +133,7 @@ public class Programacao implements Serializable {
 	private List<Genero> generos;
 
 	@Column(name="custom")
-	private Boolean custom;
+	private Boolean custom = false;
 	
 	@JsonIgnore
 	@Transient
