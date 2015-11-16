@@ -13,12 +13,29 @@ public class JSONDateSerializer extends JsonSerializer<Date> {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	
+	private SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+	
 	@Override
 	public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException, JsonProcessingException {
 		
 		if ( date != null ){
 			
-			String dateAsText = sdf.format(date);
+			String dateAsText = ""; 
+			try
+			{
+				dateAsText = sdf.format(date);
+			}
+			catch ( Exception e )
+			{
+				try
+				{
+					dateAsText = sdf2.format(date);
+				}
+				catch ( Exception e1 )
+				{
+					e1.printStackTrace();
+				}
+			}
 			
 			jsonGenerator.writeString(dateAsText);
 		}

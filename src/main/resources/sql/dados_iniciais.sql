@@ -133,7 +133,7 @@ insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Relatórios
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Downloads' ,       			'/ambientes/%d/downloads/view' ,         	'fa-floppy-o'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Restrições' ,      			'/ambientes/%d/restricoes/view' ,        	'fa-unlock-alt'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Logomarca' ,       			'/ambientes/%d/logomarcas/view' ,         	'fa-trademark'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'Simular' ,       				'/ambientes/%d/simulacoes/view' ,         	'fa-play'); 
+insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'Simular' ,       				'/player/ambientes/%d/simulacoes/view' ,         	'fa-play'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 19, 'SendVoice' ,       			'/ambientes/%d/sendvoices/view' ,         	'fa-microphone'); 
 
 

@@ -1,6 +1,7 @@
 
 var $table = $('#table-eventos');
 
+var idAmbiente = $('#idAmbiente').val();
 
 function queryParamsEventos(params) {
 
@@ -23,17 +24,37 @@ var preencheTela = function()
     
 }
 
+var validaForm = function(){
+    
+    var isOk = true;
+    
+    removeErros( $('#form-evento') );
+    
+    var arrayCampos = [
+                        {field: "combocategoria",       desc : "Tipo de Mídia"},
+                        {field: "combomidia",           desc : "Mídia" } 
+                      ];
+    
+    isOk = validaCampos( arrayCampos );
+    
+    return isOk;
+};
+
 var salvar = function()
 {
     if ( validaForm() )
     {
+        var url = buildUrl( "/ambientes/{idAmbiente}/eventos", {
+            idAmbiente : idAmbiente
+        });
+        
         $.ajax({
             
             type: 'POST',
             contentType: 'application/json',
-            url: '${context}/ambientes',
+            url: url,
             dataType: 'json',
-            data:  JSON.stringify( $('#ambiente-form').serializeJSON() )
+            data:  JSON.stringify( $('#form-evento').serializeJSON() )
             
         }).done( function(json){ 
 
@@ -58,6 +79,60 @@ var makeListTmpl = function(json){
 };
 
 
+var getCategorias = function()
+{
+    var url = buildUrl( "/api/categorias?simpleUpload=true" );
+
+    $('#combocategoria').empty();
+    
+    $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json'
+    }).done( function(json) {
+        
+        $('#combocategoria').append('<option value="" disabled selected>Selecione o tipo de m&iacute;dia</option>');
+        
+        $.each( json.rows , function (i, cat){
+            $('#combocategoria').append($('<option>', { 
+                value: cat.idCategoria,
+                text : cat.descricao  
+            }));
+        });
+    });
+    
+}
+
+
+
+var getMidias = function()
+{
+    var url = buildUrl( "/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/", {
+        idAmbiente : idAmbiente,
+        idCategoria : $('#combocategoria').val()
+    });
+
+    $('#combomidia').empty();
+    
+    $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json'
+    }).done( function(json) {
+        
+        $('#combomidia').append('<option value="" disabled selected>Selecione a m&iacute;dia</option>');
+        
+        $.each( json.rows , function (i, mid){
+            $('#combomidia').append($('<option>', { 
+                value: mid.idMidia,
+                text : mid.descricao  
+            }));
+        });
+    });
+}
+
 $(function(){
 
     var token = $("input[name='_csrf']").val();
@@ -66,7 +141,7 @@ $(function(){
         xhr.setRequestHeader(header, token);
     });
     
-    $('#btnUploadMidia').on('click', function(){
+    $('#btnSalvarEvento').on('click', function(){
         salvar();
     });
     
@@ -74,14 +149,23 @@ $(function(){
         format: "dd/mm/yyyy",
         clearBtn: true,
         language: "pt-BR",
+        todayBtn : "linked",
         autoclose : true
     });
     
     $('#linkAddHorario').on('click', function(event){
         
         event.preventDefault();
-        makeListTmpl({rows:[{hora:1, minuto:1}]});
+        makeListTmpl({rows:[{id: 1, hora:1, minuto:1}]});
         $(".spinner").spinner();
     });
+    
+    getCategorias();
+    
+    $('#combocategoria').on('change', function(event){
+        getMidias();
+    });
+//    
+
     
 });

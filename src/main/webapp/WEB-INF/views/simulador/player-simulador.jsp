@@ -211,10 +211,10 @@
 
 <script src="${context}/js/required/jquery-ui.min.js"></script> 
 <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
+
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>
-<script src="${context}/js/required/URI.js" charset="UTF-8"></script>
 
 <script src="${context}/js/simulador/simulador.js" charset="UTF-8"></script>
      

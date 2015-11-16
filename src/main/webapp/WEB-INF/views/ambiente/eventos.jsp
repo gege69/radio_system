@@ -31,18 +31,17 @@
                   <div class="panel-body">
                     <div class="row">
                       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                      <input type="hidden" id="idAmbiente" value="${idAmbiente}" />
                       
                       <div class="col-lg-12 col-md-12 col-sm-12">
                         <div class="form-group">
-                          <select class="form-control" id="combocategoria" name="combocategoria"  >
+                          <select class="form-control" id="combocategoria" name="categoria[idCategoria]" >
                             <option value="" disabled selected>Selecione o tipo de mídia</option>
-                            <option value="" >teste</option>
-                            <option value="" >teste</option>
                           </select>
                         </div>
                         
                         <div class="form-group">
-                          <select class="form-control" id="combomidia" name="combomidia"  >
+                          <select class="form-control" id="combomidia" name="midia[idMidia]"  >
                             <option value="" disabled selected>Selecione a mídia</option>
                           </select>
                         </div>
@@ -50,37 +49,37 @@
                         <div class="form-group">
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirDomingo"> Domingo
+                              <input type="checkbox" id="repetirDomingo" name="repetirDomingo" value="true"> Domingo
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirSegunda"> Segunda
+                              <input type="checkbox" id="repetirDomingo" name="repetirSegunda" value="true"> Segunda
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirTerca"> Terça
+                              <input type="checkbox" id="repetirDomingo" name="repetirTerca" value="true"> Terça
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirQuarta"> Quarta
+                              <input type="checkbox" id="repetirDomingo" name="repetirQuarta" value="true"> Quarta
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirQuinta"> Quinta
+                              <input type="checkbox" id="repetirDomingo" name="repetirQuinta" value="true"> Quinta
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirSexta"> Sexta
+                              <input type="checkbox" id="repetirDomingo" name="repetirSexta" value="true"> Sexta
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirSabado"> Sábado
+                              <input type="checkbox" id="repetirDomingo" name="repetirSabado" value="true"> Sábado
                             </label>
                           </div>
                         </div>
@@ -126,7 +125,7 @@
                               <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
                                 <label class="control-label" for="chave">Hora:</label>
                                 <div class="input-group spinner" data-trigger="spinner">
-                                  <input type="text" value="1" data-rule="hour" class="form-control" name="horarioEvento[hora]" >
+                                  <input type="text" value="1" data-rule="hour" class="form-control" name="horarios[][hora]" >
                                   <span class="input-group-addon">
                                     <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-angle-up"></i></a>
                                     <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-angle-down"></i></a>
@@ -136,7 +135,7 @@
                               <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
                                 <label class="control-label" for="chave">Minuto:</label>
                                 <div class="input-group spinner" data-trigger="spinner">
-                                  <input type="text" value="1" data-rule="minute" class="form-control" name="horarioEvento[minuto]" >
+                                  <input type="text" value="1" data-rule="minute" class="form-control" name="horarios[][minuto]" >
                                   <span class="input-group-addon">
                                     <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-angle-up"></i></a>
                                     <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-angle-down"></i></a>
@@ -189,7 +188,7 @@
           <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
               <div class="">
-                <a class="btn btn-primary text-center" href="#" id="btnUploadMidia"> Salvar Alterações</a>
+                <a class="btn btn-primary text-center" href="#" id="btnSalvarEvento"> Salvar Alterações</a>
               </div>
             </div>
           </div>          
@@ -217,27 +216,31 @@
   </div> <!-- /container -->
 
 
-
-<script src="${context}/js/required/jquery-ui.min.js"></script> 
-<script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
-<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
-<script src="${context}/js/required/bootstrap-datepicker.min.js"></script>
-<script src="${context}/js/required/jquery.spinner.min.js"></script>
-<script src="${context}/js/required/jsrender.min.js"></script>
-
-
-<script src="${context}/js/ambiente/eventos.js"></script>
-
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
 <link href="${context}/css/bootstrap-spinner.css" rel="stylesheet">
 
 
-<script id="viewTmplHorarios" type="text/x-jsrender">
+<script src="${context}/js/required/jquery-ui.min.js"></script> 
+<script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
+<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
+
+<script src="${context}/js/required/bootstrap-datepicker.min.js"></script>
+<script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script>
+
+<script src="${context}/js/required/jquery.spinner.min.js"></script>
+<script src="${context}/js/required/jsrender.min.js"></script>
+<script src="${context}/js/required/jquery.serializejson.js"></script>
+
+
+<script src="${context}/js/ambiente/eventos.js"  charset="UTF-8"></script>
+
+
+<script id="viewTmplHorarios" type="text/x-jsrender"  charset="UTF-8">
 <div class="row spacer-vertical10">
   <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
   <div class="input-group spinner" data-trigger="spinner">
-    <input type="text" data-rule="hour" class="form-control" name="horarioEvento[hora]" value="{{:hora}}" >
+    <input type="text" data-rule="hour" class="form-control" name="horarios[{{:id}}][hora]" value="{{:hora}}" >
     <span class="input-group-addon">
     <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-angle-up"></i></a>
     <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-angle-down"></i></a>
@@ -247,7 +250,7 @@
   
   <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
   <div class="input-group spinner" data-trigger="spinner">
-    <input type="text" data-rule="minute" class="form-control" name="horarioEvento[minuto]" value="{{:minuto}}" >
+    <input type="text" data-rule="minute" class="form-control" name="horarios[{{:id}}][minuto]" value="{{:minuto}}" >
     <span class="input-group-addon">
     <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-angle-up"></i></a>
     <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-angle-down"></i></a>

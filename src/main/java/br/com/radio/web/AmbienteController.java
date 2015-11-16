@@ -799,9 +799,9 @@ public class AmbienteController extends AbstractController {
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/eventos", "/api/ambientes/{idAmbiente}/eventos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Evento> getEventos( @PathVariable Long idAmbiente, 
-			@RequestParam(value="pageNumber", required = false) Integer pageNumber,
-			@RequestParam(value="limit", required = false) Integer limit, 
-			 HttpServletResponse response )
+															 @RequestParam(value="pageNumber", required = false) Integer pageNumber,
+															 @RequestParam(value="limit", required = false) Integer limit, 
+															 HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -815,6 +815,42 @@ public class AmbienteController extends AbstractController {
 	}
 	
 
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/eventos", "/api/ambientes/{idAmbiente}/eventos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveEvento( @PathVariable Long idAmbiente, @RequestBody Evento eventoDTO, BindingResult result )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() )
+			jsonResult = writeErrorsAsJSONErroMessage( result );
+		else
+		{
+			try
+			{
+				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+				
+				if ( ambiente != null )
+				{
+					eventoDTO.setAmbiente( ambiente );
+					eventoRepo.save( eventoDTO );
+				}
+								
+				if ( eventoDTO != null && eventoDTO.getIdEvento() > 0 )
+					jsonResult = writeOkResponse();
+				else
+					throw new RuntimeException("Não foi possível gravar o Evento");
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+		
+		return jsonResult;
+	}	
+
+	
 	
 	
 	

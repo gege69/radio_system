@@ -38,8 +38,10 @@ public class Application {
 		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
 																																																																																																																			
 		Ambiente ambiente = ambRepo.findOne( 1L );
-				
-		serv.geraTransmissao( ambiente );
+
+		midiaService.getFromFileSystem();
+		
+//		serv.geraTransmissao( ambiente );
 																																																								
 		
 	}

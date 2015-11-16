@@ -18,9 +18,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
@@ -39,52 +41,49 @@ public class Evento implements Serializable {
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn( name="id_ambiente", nullable=false )
 	private Ambiente ambiente;
-	
-	@OneToOne(fetch=FetchType.LAZY)
+
+	@NotNull
+	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn( name="id_categoria", nullable=false )
 	private Categoria categoria;
-	
-	@OneToOne(fetch=FetchType.LAZY)
+
+	@NotNull
+	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn( name="id_midia", nullable=false )
 	private Midia midia;
 
+	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataInicio", nullable = false )
 	private Date dataInicio;
-	
+
+	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataFim", nullable = false )
 	private Date dataFim;
 	
-	@NotNull
-	@Column( name = "repete_domingo", columnDefinition = " boolean default false " )
-	private Boolean repeteDomingo;
+	@Column( name = "repete_domingo", nullable = false, columnDefinition = " boolean default false " )
+	private boolean repeteDomingo;
 	
-	@NotNull
-	@Column( name = "repete_segunda", columnDefinition = " boolean default false " )
-	private Boolean repeteSegunda;
+	@Column( name = "repete_segunda", nullable = false, columnDefinition = " boolean default false " )
+	private boolean repeteSegunda;
 	
-	@NotNull
-	@Column( name = "repete_terca", columnDefinition = " boolean default false " )
-	private Boolean repeteTerca;
+	@Column( name = "repete_terca", nullable = false, columnDefinition = " boolean default false " )
+	private boolean repeteTerca;
 	
-	@NotNull
-	@Column( name = "repete_quarta", columnDefinition = " boolean default false " )
-	private Boolean repeteQuarta;
+	@Column( name = "repete_quarta", nullable = false, columnDefinition = " boolean default false " )
+	private boolean repeteQuarta;
 	
-	@NotNull
-	@Column( name = "repete_quinta", columnDefinition = " boolean default false " )
-	private Boolean repeteQuinta;
+	@Column( name = "repete_quinta", nullable = false, columnDefinition = " boolean default false " )
+	private boolean repeteQuinta;
 	
-	@NotNull
-	@Column( name = "repete_sexta", columnDefinition = " boolean default false " )
-	private Boolean repeteSexta;
+	@Column( name = "repete_sexta", nullable = false, columnDefinition = " boolean default false " )
+	private boolean repeteSexta;
 
-	@NotNull
-	@Column( name = "repete_sabado", columnDefinition = " boolean default false " )
-	private Boolean repeteSabado;
+	@Column( name = "repete_sabado", nullable = false, columnDefinition = " boolean default false " )
+	private boolean repeteSabado;
 	
 	@OneToMany(mappedBy="idEventoHorario")
     private List<EventoHorario> horarios;
@@ -95,7 +94,6 @@ public class Evento implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 	
-	@NotNull
 	@Column( name = "ativo" )
 	private Boolean ativo;
 
@@ -108,6 +106,7 @@ public class Evento implements Serializable {
 	{
 		super();
 		this.dataCriacao = new Date();
+		this.ativo = true;
 	}
 
 
