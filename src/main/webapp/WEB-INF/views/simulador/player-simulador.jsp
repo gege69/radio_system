@@ -206,17 +206,19 @@
   
 <jsp:include page="/WEB-INF/views/scripts.jsp" />
 
-<script src="${context}/mediaelement/mediaelement-and-player.js"></script>
-<link rel="stylesheet" href="${context}/mediaelement/mediaelementplayer.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/2.18.2/mediaelement-and-player.min.js"></script>
+<%-- <script src="${context}/mediaelement/mediaelement-and-player.js"></script> --%>
 
-<script src="${context}/js/required/jquery-ui.min.js"></script> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/2.18.2/mediaelementplayer.min.css" />
+<%-- <link rel="stylesheet" href="${context}/mediaelement/mediaelementplayer.css" /> --%>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
+
 <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
 
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
-<script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>
-
-<script src="${context}/js/simulador/simulador.js" charset="UTF-8"></script>
+<script src="${context}/js/simulador/player-simulador.js" charset="UTF-8"></script>
      
   
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

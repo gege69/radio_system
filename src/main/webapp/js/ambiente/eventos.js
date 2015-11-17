@@ -10,12 +10,69 @@ function queryParamsEventos(params) {
     return params;
 }
 
-function detailFormatter(index, row) {
+
+function formatter( index, row, short ) {
+    
     var html = [];
-    $.each(row, function (key, value) {
-        html.push('<p><b>' + key + ':</b> ' + value + '</p>');
-    });
-    return html.join('');
+
+    var inicio = "";
+    var fim = "";
+    
+    if ( row.dataInicio != null )
+        inicio = row.dataInicio.substring(0,10);
+    
+    if ( row.dataFim != null )
+        fim = row.dataFim.substring(0,10);
+    
+    html.push( '<b>Período</b> : '+ inicio + ' à ' + fim  );
+
+    if ( short == null || short == false )
+    {
+        html.push( '<b>Tipo</b> : '+ row.categoria.descricao  );
+        
+        html.push( '<b>Mídia</b> : '+ row.midia.descricao );
+    }
+    
+    if ( row.horarios != null && row.horarios.length > 0 )
+    {
+        var inner = [];
+        
+        inner.push('<b>Horários</b> : ' );
+        var existe = false;
+        
+        $.each(row.horarios, function (key, horario) {
+
+            var hora = padLeft( horario.hora, 2, '0' );
+            var minuto = padLeft( horario.minuto, 2, '0' );
+            
+            var str = hora + ':' + minuto;
+            if ( existe )
+                str = ', ' + str;
+            inner.push( str );
+            existe = true;
+            
+        });
+
+        html.push( inner.join('') );
+    }
+    
+    return html;
+}
+
+
+function linhaFormatter(value, row) {
+    
+    var html = formatter( 0, row, true );
+    
+    return html.join(' ');;
+}
+
+
+function detailFormatter(index, row) {
+    
+    var html = formatter( index, row );
+    
+    return "<p>" + html.join('</p><p>') + "</p>";
 }
 
 
@@ -60,6 +117,7 @@ var salvar = function()
 
             if (json.ok == 1){
                 preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
+                $table.bootstrapTable('refresh');
                 jump(''); // topo da pagina
             }
             else{
@@ -152,6 +210,8 @@ $(function(){
         todayBtn : "linked",
         autoclose : true
     });
+    
+    $('.input-group.date').datepicker('update', new Date());
     
     $('#linkAddHorario').on('click', function(event){
         

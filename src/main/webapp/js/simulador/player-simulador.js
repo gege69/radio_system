@@ -50,7 +50,7 @@ var schedulePlay = function()
         idAmbiente: idAmbiente,
         musicaAtual: musicaAtual
     });
-    
+
     player2.setSrc( url );
     player2.play();
 
@@ -136,7 +136,7 @@ var play = function(){
             
             determinaVolume( content );
             
-            player.setSrc( content.link );
+            player.media.src = content.link;
             player.play();
         }
 
@@ -172,8 +172,8 @@ var next = function(){
             console.log(content.link);
             
             determinaVolume( content );
-            
-            player.setSrc( content.link );
+
+            player.media.src = content.link;
             player.play();
         }
 

@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
@@ -32,6 +33,7 @@ public class EventoHorario implements Serializable {
 	@Column( name = "id_eventohorario", nullable = false )
 	private Long idEventoHorario;
 	
+	@JsonIgnore
 	@OneToOne( fetch = FetchType.LAZY )
 	@JoinColumn( name="id_evento", nullable=false )
 	private Evento evento;
@@ -48,7 +50,8 @@ public class EventoHorario implements Serializable {
 	@Column( name = "segundo", nullable = false )   // por enquanto não suportado
 	private Integer segundo;
 	
-	@JsonSerialize( using = JSONDateSerializer.class )
+	
+	@JsonIgnore
 	@NotNull( message = "A data de criação do usuário é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )
@@ -59,6 +62,7 @@ public class EventoHorario implements Serializable {
 	{
 		super();
 		this.dataCriacao = new Date();
+		this.segundo = 0;
 	}
 
 

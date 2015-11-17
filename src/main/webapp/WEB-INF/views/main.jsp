@@ -10,7 +10,8 @@
   
     <title>Radio System</title>
     
-    <link href="${context}/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<%--     <link href="${context}/css/bootstrap.css" rel="stylesheet"> --%>
 
     <jsp:include page="/WEB-INF/views/customStyles.jsp" />
     

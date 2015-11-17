@@ -3,7 +3,6 @@ package br.com.radio.web;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -44,6 +42,7 @@ import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Evento;
+import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Programacao;
@@ -52,6 +51,7 @@ import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
+import br.com.radio.repository.EventoHorarioRepository;
 import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.ProgramacaoRepository;
@@ -78,6 +78,8 @@ public class AmbienteController extends AbstractController {
 	private ProgramacaoRepository programacaoRepo;
 	@Autowired
 	private EventoRepository eventoRepo;
+	@Autowired
+	private EventoHorarioRepository eventoHorarioRepo;
 	// DAOs ==================
 	
 	
@@ -827,13 +829,7 @@ public class AmbienteController extends AbstractController {
 		{
 			try
 			{
-				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-				
-				if ( ambiente != null )
-				{
-					eventoDTO.setAmbiente( ambiente );
-					eventoRepo.save( eventoDTO );
-				}
+				eventoDTO = ambienteService.saveEvento( idAmbiente, eventoDTO );
 								
 				if ( eventoDTO != null && eventoDTO.getIdEvento() > 0 )
 					jsonResult = writeOkResponse();
@@ -851,70 +847,31 @@ public class AmbienteController extends AbstractController {
 	}	
 
 	
-	
-	
-	
-	
-	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/testeprog" }, method = { RequestMethod.GET } )
-	public @ResponseBody String teste( @PathVariable Long idAmbiente, Model model, HttpServletRequest request )
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/eventos/{idEvento}/horarios", "/api/ambientes/{idAmbiente}/eventos/{idEvento}/horarios" }, 
+				method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<EventoHorario> getEventoHorarios( 
+													 @PathVariable Long idAmbiente,
+													 @PathVariable Long idEvento, 
+													 @RequestParam(value="pageNumber", required = false) Integer pageNumber,
+													 @RequestParam(value="limit", required = false) Integer limit, 
+													 HttpServletResponse response )
 	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
-		System.out.println(request.getRequestURL());  
-		System.out.println(request.getServletPath()); 
-		System.out.println(request.getContextPath());
+		Evento evento = eventoRepo.findOne( idEvento );
 		
-//		http://localhost:8080/radiosystem/ambientes/1/testeprog
-//		/ambientes/1/testeprog
+		Pageable pageable = getPageable( pageNumber, limit, "ASC", "hora" );
 		
-		System.out.println(StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" ));
+		Page<EventoHorario> horarios = eventoHorarioRepo.findByEvento( evento, pageable );
 		
-//		System.out.println(request.getPathInfo());
+		JSONListWrapper<EventoHorario> jsonList = new JSONListWrapper<EventoHorario>( horarios.getContent(), horarios.getTotalElements() );
 		
-		JsonObject obj = Json.createObjectBuilder()
-				.add("requesturl", request.getRequestURL().toString())
-				.add("servletpath", request.getServletPath())
-				.add("contextpath", request.getContextPath())
-				.build();
-		
-		return obj.toString();
-				
-		
-		
-//		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-//		
-//		Programacao p = new Programacao();
-//		
-//		Random r = new Random();
-//		int mindia = 1;
-//		int maxdia = 7;
-//
-//		int minhora = 0;
-//		int maxhora = 23;
-//		
-//		int minmin = 0;
-//		int maxmin = 59;
-//		
-//		p.setAmbiente( ambienteRepo.findOne( idAmbiente ) );
-//		p.setAtivo( true );
-//		p.setDiaSemana( DiaSemana.getByIndex( r.nextInt(maxdia-mindia) + mindia ) );
-//		
-//		p.setHoraInicio( r.nextInt(maxhora-minhora) + minhora );
-//		p.setHoraFim( r.nextInt(maxhora-p.getHoraInicio()) + p.getHoraInicio() );
-//		
-//		
-//		p.setMinutoInicio( r.nextInt(maxmin-minmin) + minmin );
-//		p.setMinutoFim( r.nextInt(maxmin-p.getMinutoInicio()) + p.getMinutoInicio() );
-//		
-//		p.setDateTimeInicio( p.getDate( p.getHoraInicio(), p.getMinutoInicio() ) );
-//		p.setDateTimeFim( p.getDate( p.getHoraFim(), p.getMinutoFim() ) );
-//		
-//		programacaoMusicalService.saveProgramacao( ambiente, p );
-//		
-////		programacaoRepo.save( p );
-//		
-//		System.out.println(p.toString());
-		
-		
+		return jsonList;
 	}
+	
+	
+	
+	
+	
 	
 }

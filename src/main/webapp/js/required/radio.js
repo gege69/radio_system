@@ -309,3 +309,35 @@ var keyup_validasenha = function( event ) {
     }
 }
 
+
+var padLeft = function (content, len, chr) {
+    var self = content+'';
+    return (this<0 && '-' || '')+
+            (String(Math.pow( 10, (len || 2)-self.length))
+              .slice(1).replace(/0/g,chr||'0') + self);
+}
+
+
+
+/**
+ * Creates an array in which the contents of the given array are interspersed
+ * with... something. If that something is a function, it will be called on each
+ * insertion.
+ */
+function intersperse(array, something) {
+  if (array.length < 2) { return array }
+  var result = [], i = 0, l = array.length
+  if (typeof something == 'function') {
+    for (; i < l; i ++) {
+      if (i !== 0) { result.push(something()) }
+      result.push(array[i])
+    }
+  }
+  else {
+    for (; i < l; i ++) {
+      if (i !== 0) { result.push(something) }
+      result.push(array[i])
+    }
+  }
+  return result
+}

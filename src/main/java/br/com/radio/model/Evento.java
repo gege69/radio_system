@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -85,7 +86,8 @@ public class Evento implements Serializable {
 	@Column( name = "repete_sabado", nullable = false, columnDefinition = " boolean default false " )
 	private boolean repeteSabado;
 	
-	@OneToMany(mappedBy="idEventoHorario")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="evento")
+	@OrderBy("hora, minuto")
     private List<EventoHorario> horarios;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)

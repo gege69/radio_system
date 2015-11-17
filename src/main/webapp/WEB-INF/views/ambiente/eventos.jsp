@@ -49,44 +49,44 @@
                         <div class="form-group">
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirDomingo" value="true"> Domingo
+                              <input type="checkbox" id="repeteDomingo" name="repeteDomingo" value="true"> Domingo
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirSegunda" value="true"> Segunda
+                              <input type="checkbox" id="repeteDomingo" name="repeteSegunda" value="true"> Segunda
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirTerca" value="true"> Terça
+                              <input type="checkbox" id="repeteDomingo" name="repeteTerca" value="true"> Terça
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirQuarta" value="true"> Quarta
+                              <input type="checkbox" id="repeteDomingo" name="repeteQuarta" value="true"> Quarta
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirQuinta" value="true"> Quinta
+                              <input type="checkbox" id="repeteDomingo" name="repeteQuinta" value="true"> Quinta
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirSexta" value="true"> Sexta
+                              <input type="checkbox" id="repeteDomingo" name="repeteSexta" value="true"> Sexta
                             </label>
                           </div>
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="repetirDomingo" name="repetirSabado" value="true"> Sábado
+                              <input type="checkbox" id="repeteDomingo" name="repeteSabado" value="true"> Sábado
                             </label>
                           </div>
                         </div>
                         
                         <div class="form-group">
                           <label class="control-label" for="chave">Data Início:</label>
-                          <div class="input-group date">
+                          <div class="input-group date col-lg-4 col-md-6 col-sm-5">
                             <input type="text" class="form-control" id="dataInicio" name="dataInicio">
                               <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
@@ -96,7 +96,7 @@
                         
                         <div class="form-group">
                           <label class="control-label" for="chave">Data Fim:</label>
-                          <div class="input-group date">
+                          <div class="input-group date col-lg-4 col-md-6 col-sm-5">
                             <input type="text" class="form-control" id="dataFim" name="dataFim">
                               <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
@@ -163,16 +163,16 @@
                  data-url="${context}/ambientes/${idAmbiente}/eventos/"
                  data-side-pagination="server"
                  data-pagination="true"
-                 data-page-size=7
-                 data-page-list="[7]"
+                 data-page-size=9
+                 data-page-list="[5]"
                  data-locale = "pt_BR"
-                 data-height="400"
+                 data-height="500"
                  data-detail-formatter="detailFormatter"
                  data-query-params="queryParamsEventos" >
                   <thead>
                     <tr>
-                        <th data-field="dataInicio">Data Início</th>
-                        <th data-field="dataFim">Data Fim</th>
+<!--                         <th data-field="idEvento" >Id</th> -->
+                        <th data-field="idEvento" data-formatter="linhaFormatter">Eventos Programados</th>
                     </tr>
                   </thead>
                 </table>
@@ -220,8 +220,9 @@
 <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
 <link href="${context}/css/bootstrap-spinner.css" rel="stylesheet">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<%-- <script src="${context}/js/required/jquery-ui.min.js"></script>  --%>
 
-<script src="${context}/js/required/jquery-ui.min.js"></script> 
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
 
@@ -230,7 +231,9 @@
 
 <script src="${context}/js/required/jquery.spinner.min.js"></script>
 <script src="${context}/js/required/jsrender.min.js"></script>
-<script src="${context}/js/required/jquery.serializejson.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js"></script>
+<%-- <script src="${context}/js/required/jquery.serializejson.js"></script> --%>
 
 
 <script src="${context}/js/ambiente/eventos.js"  charset="UTF-8"></script>
