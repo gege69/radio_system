@@ -16,9 +16,14 @@
       <div class="row" id="alertArea">
       </div>
       
+      <div class="row">
+        <div class="loader" id="ajaxload" style="display : none;"></div>
+      </div>
+      
+      
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Eventos <br/>
+          <h3>Eventos   <br/>
             <small>Reprodução de Mídias com hora marcada</small>
           </h3>
           
@@ -32,6 +37,8 @@
                     <div class="row">
                       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                       <input type="hidden" id="idAmbiente" value="${idAmbiente}" />
+                      
+                      <input type="hidden" id="idEvento" name="idEvento" value="" />
                       
                       <div class="col-lg-12 col-md-12 col-sm-12">
                         <div class="form-group">
@@ -114,7 +121,7 @@
                             
                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                               <div class=" pull-right">
-                                <a href="#" id="linkAddHorario">Adicionar Horário</a>
+                                <a href="#" id="linkAddHorario" style="color: #326432;"><i class="fa fa-lg fa-plus-circle"></i> Adicionar Horário</a>
                               </div>
                             </div>
                           </div>
@@ -122,26 +129,30 @@
                           <div class="col-lg-12" id="containerHorarios">
                                                     
                             <div class="row spacer-vertical10">
-                              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
+                            
+                              <input type="hidden"   name="horarios[][idEventoHorario]" id="idEventoHorario0"  />
+                            
+                              <div class="col-lg-3 col-md-4 col-sm-5 col-xs-4">
                                 <label class="control-label" for="chave">Hora:</label>
                                 <div class="input-group spinner" data-trigger="spinner">
-                                  <input type="text" value="1" data-rule="hour" class="form-control" name="horarios[][hora]" >
+                                  <input type="text" value="1" data-rule="hour" class="form-control input-horario" name="horarios[][hora]" id="hora0">
                                   <span class="input-group-addon">
                                     <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-angle-up"></i></a>
                                     <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-angle-down"></i></a>
                                   </span>
                                 </div>
                               </div>
-                              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
+                              <div class="col-lg-3 col-md-4 col-sm-5 col-xs-4">
                                 <label class="control-label" for="chave">Minuto:</label>
                                 <div class="input-group spinner" data-trigger="spinner">
-                                  <input type="text" value="1" data-rule="minute" class="form-control" name="horarios[][minuto]" >
+                                  <input type="text" value="1" data-rule="minute" class="form-control input-horario" name="horarios[][minuto]" id="minuto0">
                                   <span class="input-group-addon">
                                     <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-angle-up"></i></a>
                                     <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-angle-down"></i></a>
                                   </span>
                                 </div>
                               </div>
+                              
                             </div>
                              
                           </div> <!-- col -->
@@ -158,6 +169,7 @@
               <div class="col-lg-6 col-md-6">
                 <table  
                  id="table-eventos"
+                 class="tabela-eventos"
                  data-toggle="table"
                  data-detail-view="true"
                  data-url="${context}/ambientes/${idAmbiente}/eventos/"
@@ -189,6 +201,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
               <div class="">
                 <a class="btn btn-primary text-center" href="#" id="btnSalvarEvento"> Salvar Alterações</a>
+                <a class="btn btn-default text-center" href="#" id="btnLimpar"> Limpar</a>
               </div>
             </div>
           </div>          
@@ -212,6 +225,9 @@
       </div>
     </div>
     
+    <div id='ajax_loader' style="position: fixed; left: 50%; top: 50%; display: none;">
+        
+    </div>
       
   </div> <!-- /container -->
 
@@ -235,13 +251,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js"></script>
 <%-- <script src="${context}/js/required/jquery.serializejson.js"></script> --%>
 
+<script src="${context}/js/required/jquery.populate.js"></script>
 
 <script src="${context}/js/ambiente/eventos.js"  charset="UTF-8"></script>
 
 
 <script id="viewTmplHorarios" type="text/x-jsrender"  charset="UTF-8">
-<div class="row spacer-vertical10">
-  <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
+<div class="row spacer-vertical10 linha-horarios">
+  
+  <input type="hidden"   name="horarios[{{:id}}][idEventoHorario]" value="{{:id}}" />
+
+  <div class="col-lg-3 col-md-4 col-sm-5 col-xs-4">
   <div class="input-group spinner" data-trigger="spinner">
     <input type="text" data-rule="hour" class="form-control" name="horarios[{{:id}}][hora]" value="{{:hora}}" >
     <span class="input-group-addon">
@@ -251,7 +271,7 @@
   </div>
   </div>
   
-  <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6">
+  <div class="col-lg-3 col-md-4 col-sm-5 col-xs-4">
   <div class="input-group spinner" data-trigger="spinner">
     <input type="text" data-rule="minute" class="form-control" name="horarios[{{:id}}][minuto]" value="{{:minuto}}" >
     <span class="input-group-addon">
@@ -260,8 +280,26 @@
     </span>
   </div>
   </div>
+
+  <div class="col-lg-3 col-md-4 col-sm-2 col-xs-4">
+    <div class="input-group" style=" margin-top: 6px;">
+      <a href="javascript:;" style="color : #B23F3F;" class="removerLink"><i class="fa fa-lg fa-minus-circle"></i> Remover</a>
+    </div>
+  </div>
+
 </div>
 </script>  
+
+
+<style type="text/css">
+
+.tabela-eventos tr{
+  cursor: pointer;
+}
+
+  
+</style>
+
 
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

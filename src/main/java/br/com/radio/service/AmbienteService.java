@@ -2,6 +2,7 @@ package br.com.radio.service;
 
 import java.time.LocalTime;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -310,6 +311,7 @@ public class AmbienteService {
 	}
 	
 	
+	@Transactional
 	public Evento saveEvento( Long idAmbiente, Evento evento )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -319,11 +321,27 @@ public class AmbienteService {
 			evento.setAmbiente( ambiente );
 			eventoRepo.save( evento );
 			
-			for ( EventoHorario horario : evento.getHorarios() )
+			Comparator<EventoHorario> porHoraMinuto = ( um, outro ) -> {
+				int i = um.getHora().compareTo( outro.getHora() );
+				if ( i != 0 ) return i;
+				return um.getMinuto().compareTo( outro.getMinuto() );
+			};
+			
+			eventoHorarioRepo.deleteByEvento( evento );
+			
+			List<EventoHorario> horarios = evento.getHorarios();
+			
+			horarios = horarios.stream().filter( h -> h != null ).collect( Collectors.toList() );
+			
+			horarios.sort( porHoraMinuto );
+			
+			for ( EventoHorario horario : horarios )
 			{
 				horario.setEvento( evento );
 				eventoHorarioRepo.save( horario );
 			}
+			
+			// depois verificar os repetidos.
 		}
 
 		return evento;

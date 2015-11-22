@@ -115,7 +115,7 @@ public class MidiaService {
 	
 	
 	
-	public void getFromFileSystem()
+	public void getNewMusicFromFileSystem()
 	{
 		try
 		{
@@ -233,6 +233,25 @@ public class MidiaService {
 		}
 		
 	}
+
+	
+	public void syncMusicFileSystem()
+	{
+		
+		File diretorio = new File("/home/pazin/musicas/Exceto Sertanejas/");
+		
+		Collection<File> arquivos = FileUtils.listFiles( diretorio, new String[]{ "mp3" }, true );
+		
+		try
+		{
+			
+		}
+		catch ( Exception e )
+		{
+			// TODO: handle exception
+		}
+	}
+	
 	
 	
 	

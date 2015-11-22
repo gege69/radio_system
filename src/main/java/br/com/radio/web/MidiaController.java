@@ -365,7 +365,7 @@ public class MidiaController extends AbstractController {
 	@RequestMapping( value = "/arquivos", method = RequestMethod.GET)
 	public @ResponseBody String testeArquivos()
 	{
-		midiaService.getFromFileSystem();
+		midiaService.getNewMusicFromFileSystem();
 		
 		return writeOkResponse();
 	}

@@ -164,7 +164,7 @@ var getCategorias = function()
 
 
 
-var getMidias = function()
+var getMidias = function( id_pre_selecao )
 {
     var url = buildUrl( "/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/", {
         idAmbiente : idAmbiente,
@@ -188,8 +188,87 @@ var getMidias = function()
                 text : mid.descricao  
             }));
         });
+        
+        if ( id_pre_selecao != null )
+            $('#combomidia').val( id_pre_selecao );
     });
 }
+
+
+var removerHorario = function( element )
+{
+    console.log(element);
+    
+    var $div = element.parents('.linha-horarios');
+    
+    $div.remove();
+    
+    $('.removerLink').off('click');
+    $('.removerLink').on('click', function(event){
+        removerHorario( $(this) );
+    });
+}
+
+
+var editGrid = function( e, row, el )
+{
+    $('#ajaxload').show();
+    
+    var rowcopy = extend( row );
+
+    var cat = rowcopy.categoria;
+    if ( cat != null )
+        $('#combocategoria').val( cat.idCategoria );
+    
+    if ( rowcopy.midia != null )
+        getMidias( rowcopy.midia.idMidia );
+
+    formReset( $('#form-evento') );
+   
+    var horarios = rowcopy.horarios;
+   
+    delete rowcopy["horarios"];
+    
+    $('#form-evento').populate(rowcopy);
+    
+    $('.linha-horarios').remove()
+    
+    $.each(horarios, function (key, horario) {
+        if ( key == 0)
+        {
+            $('#hora0').val( horario.hora );
+            $('#minuto0').val( horario.minuto );
+            $('#idEventoHorario0').val( horario.idEventoHorario );
+        }
+        else
+        {
+            makeListTmpl({rows:[{id: horario.idEventoHorario, hora: horario.hora , minuto: horario.minuto }]});
+        }
+    });
+    
+        
+   
+    $('#ajaxload').hide();
+}
+
+
+
+var limparForm = function(){
+    
+    $('#combomidia').empty();
+    $('#combomidia').append('<option value="" disabled selected>Selecione a m&iacute;dia</option>');
+    
+    formReset( $('#form-evento') );
+    $('#idEvento').val('');
+    
+    $('.input-group.date').datepicker('update', new Date());
+    
+    $(".input-horario").val('1');
+    $('.linha-horarios').remove()
+}
+
+
+
 
 $(function(){
 
@@ -216,8 +295,13 @@ $(function(){
     $('#linkAddHorario').on('click', function(event){
         
         event.preventDefault();
-        makeListTmpl({rows:[{id: 1, hora:1, minuto:1}]});
+        makeListTmpl({rows:[{id: "", hora:1, minuto:1}]});
         $(".spinner").spinner();
+
+        $('.removerLink').off('click');
+        $('.removerLink').on('click', function(event){
+            removerHorario( $(this) );
+         });
     });
     
     getCategorias();
@@ -225,7 +309,19 @@ $(function(){
     $('#combocategoria').on('change', function(event){
         getMidias();
     });
-//    
+    
+    $('.removerLink').off('click');
+    $('#removerLink').on('click', function(event){
+       removerHorario( $(this) );
+    });
 
+    
+    $('#table-eventos').on('click-row.bs.table', function( e, row, el ){
+        editGrid( e, row, el );
+    });
+
+    $('#btnLimpar').on('click', function(){
+        limparForm();
+    })
     
 });

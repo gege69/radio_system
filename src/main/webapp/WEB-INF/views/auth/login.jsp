@@ -3,11 +3,16 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css" rel="stylesheet">
 
   <div class="container theme-showcase">
   
     <div class="jumbotron">
-      <h1>Logotipo aqui!</h1>
+      <h1 >
+        <div class="row row-centered">
+          <img id="logo" src="${context}/images/eterion.jpg"> 
+        </div>
+      </h1>
     </div>
 
     <div class="row row-centered">
@@ -49,6 +54,22 @@
   </div> <!-- /container -->
 
 
+
+<script type="text/javascript">
+
+$(function(){
+
+    var opcoes = ['hinge', 'rotateIn', 'tada', 'hinge', 'jello', 'fadeInLeft', 'hinge', 'flipInX', 'lighSpeedIn'];
+    
+    var minimum = 0;
+    var maximum = 8;
+    var randomnumber = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+    
+    $('#logo').addClass('animated infinite ' + opcoes[randomnumber]);
+    
+});
+
+</script>
 
 
 <jsp:include page="../bottom.jsp" />

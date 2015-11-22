@@ -39,7 +39,7 @@ public class Application {
 																																																																																																																			
 		Ambiente ambiente = ambRepo.findOne( 1L );
 
-		midiaService.getFromFileSystem();
+		midiaService.getNewMusicFromFileSystem();
 		
 //		serv.geraTransmissao( ambiente );
 																																																								

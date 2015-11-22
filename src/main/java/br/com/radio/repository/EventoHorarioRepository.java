@@ -9,6 +9,8 @@ import br.com.radio.model.EventoHorario;
 
 public interface EventoHorarioRepository extends JpaRepository<EventoHorario, Long> {
 	
-	Page findByEvento( Evento evento, Pageable pageable );
+	Page<EventoHorario> findByEvento( Evento evento, Pageable pageable );
+	
+	Long deleteByEvento( Evento evento );
 
 }
