@@ -33,7 +33,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableJpaRepositories( basePackages = { "br.com.radio.*" } )
 @EnableTransactionManagement
 @EnableAsync
-@Import( { WebAppConfig.class, SecurityConfigMulti.class } )
+@Import( { WebAppConfig.class, SecurityConfigMulti.class, SchedulingConfig.class } )
 public class AppConfig {
 
 	private static final Logger logger = Logger.getLogger(AppConfig.class);
@@ -126,6 +126,6 @@ public class AppConfig {
 
 		return exceptionTranslationPostProcessor;
 	}
-
+	
 
 }

@@ -1,5 +1,7 @@
 package br.com.radio.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +12,10 @@ import br.com.radio.model.Empresa;
 public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 
 	Page<Ambiente> findByEmpresa( Pageable pageable, Empresa empresa );
+	
+	List<Ambiente> findByEmpresa( Empresa empresa );
+	
+	List<Ambiente> findByAtivo( Boolean ativo );
 	
 	Long countByEmpresa( Empresa empresa );
 	

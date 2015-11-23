@@ -21,10 +21,17 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and linkativo = true and clock_timestamp() between t.dataprevisaoplay and t.dataprevisaoplay + ( t.duracao * interval '1 second' ) order by t.dataprevisaoplay asc limit 1 ", nativeQuery=true )
 	Transmissao findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( Long idAmbiente );
 	
+	// Esse método vai tentar encontrar um registro que esteja mais ou menos no horário que foi passado por parametro .... útil para evento
+	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and linkativo = true and ?2 between t.dataprevisaoplay and t.dataprevisaoplay + ( t.duracao * interval '1 second' ) order by t.dataprevisaoplay asc limit 1 ", nativeQuery=true )
+	Transmissao findByIdAmbienteAndLinkativoTrueAndDataPrevisaoplay( Long idAmbiente, Date dataPrevisaoPlay );
+
+	
+	
 	// Esse método vai tentar encontrar o primeiro registro que exista pra tocar NO DIA.... 
 	Transmissao findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscPosicaoplayAsc( Ambiente ambiente, Date diaPlay );
 
 	
+	// Pelo fato de eu ainda não ter o ID do registro preciso fazer o update com o link depois de ter gravado a transmissao
 	@Modifying(clearAutomatically=true)
 	@Query("update Transmissao t set t.link = ?1||t.idTransmissao||'/midia' where t.link is null")
 	int setLinkFor(String url);

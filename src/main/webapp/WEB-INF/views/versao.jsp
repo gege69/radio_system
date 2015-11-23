@@ -1,5 +1,5 @@
   <div class="row row-centered">
     <div class="col-centered" style="font-size: x-small;">
-      versão 0.04 17/11/2015 00:41:15 PM
+      versão 0.05 22/11/2015 23:51:15 PM
     </div>
   </div>

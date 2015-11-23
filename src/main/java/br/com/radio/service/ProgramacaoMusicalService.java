@@ -2,6 +2,7 @@ package br.com.radio.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,12 +20,11 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import com.jcraft.jorbis.JOrbisException;
 
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.PosicaoVinheta;
@@ -33,6 +33,7 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Categoria;
+import br.com.radio.model.Evento;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
@@ -93,7 +94,9 @@ public class ProgramacaoMusicalService {
 	
 	@Autowired
 	private AmbienteGeneroRepository ambienteGeneroRepo;
+
 	
+	private static final Logger logger = Logger.getLogger(ProgramacaoMusicalService.class);
 	
 	/**
 	 * Esse método vai obter os registros de programação do banco de dados e validar se existe colisão.
@@ -475,7 +478,7 @@ public class ProgramacaoMusicalService {
 			result = transmissaoRepo.findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscPosicaoplayAsc( ambiente, UtilsDates.asUtilDate( hoje ) );
 		}
 		
-		// Não tem múisca nem transmissões configuradas... talvez seja necessário gerar 
+		// Não tem música nem transmissões configuradas... talvez seja necessário gerar 
 		if ( result == null )  // isso pode ser explorado... tem que fazer um batch pra rodar todo dia de manhã...
 		{
 			LocalDateTime hoje = LocalDateTime.now();
@@ -492,9 +495,6 @@ public class ProgramacaoMusicalService {
 			}
 		}
 		
-		// verificar se não tem nada programado.... pelo horário se tiver... criar um registro
-
-		
 		return result;
 	}
 	
@@ -504,6 +504,8 @@ public class ProgramacaoMusicalService {
 	public Transmissao getTransmissaoAoVivo( Ambiente ambiente )
 	{
 		Transmissao result = getTransmissaoAtual( ambiente ); 
+		
+//		dfasdfasdfasdf
 
 		if ( result != null && result.getIdTransmissao() != null )
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
@@ -517,7 +519,13 @@ public class ProgramacaoMusicalService {
 	{
 		Transmissao atual = getTransmissaoAtual( ambiente ); 
 		
+//		asdfasdfasdf
+		
 		Transmissao result = getProximaTransmissaoAtualPeloIdAtual( ambiente, atual );
+		
+		
+		
+		
 
 		Long idTransmissao = null;
 		
@@ -567,6 +575,28 @@ public class ProgramacaoMusicalService {
 		});
 	}
 
+	
+	
+	/**
+	 * Esse método vai criar programação caso não exista nenhuma para o ambiente.
+	 * 
+	 *  Esse método vai rodar todo dia de madrugada ( TarefasAgendadas.java )
+	 * 
+	 * @param ambiente
+	 */
+	@Transactional
+	public void criaProgramacaoMusicalDoDiaParaAmbiente( Ambiente ambiente )
+	{
+		LocalDate hoje = LocalDate.now();
+		
+		Transmissao transmissao = transmissaoRepo.findFirstByAmbienteAndLinkativoTrueAndDiaPlayOrderByIdTransmissaoAscPosicaoplayAsc( ambiente, UtilsDates.asUtilDate( hoje ) );
+		
+		if ( transmissao == null )  // se não tem, gerar
+		{
+			this.geraTransmissao( ambiente );
+		}
+	}
+	
 
 
 
@@ -824,7 +854,12 @@ public class ProgramacaoMusicalService {
 		
 		for ( Programacao prog : programacoes )
 		{
-			int duracaoProgramacao = ( ( prog.getHoraFim() - prog.getHoraInicio() ) * 60 ) * 60;  // por enquanto fica simples assim ( sem contar os minutos )
+			int horafim = prog.getHoraFim();
+			
+			if ( horafim <= 0 )
+				horafim = 24;
+			
+			int duracaoProgramacao = ( ( horafim - prog.getHoraInicio() ) * 60 ) * 60;  // por enquanto fica simples assim ( sem contar os minutos )
 			
 			// Obtém uma sublista com mais ou menos a duração da programação
 			List<Midia> midiasPeriodoProgramacao = consomePorPeriodoTempo( midiasOrdenadas, index, duracaoProgramacao );
@@ -936,6 +971,56 @@ public class ProgramacaoMusicalService {
 	}
 
 	
+	
+	public Transmissao getTransmissaoEmHorarioAproximado( Ambiente ambiente, LocalTime horario )
+	{
+		LocalDateTime agora = LocalDateTime.now().withHour( horario.getHour() ).withMinute( horario.getMinute() );
+		
+		Transmissao result = transmissaoRepo.findByIdAmbienteAndLinkativoTrueAndDataPrevisaoplay( ambiente.getIdAmbiente(), UtilsDates.fromLocalDateTime( agora ) );
+		
+		return result;
+	}
+	
+	
+	
+	/**
+	 * Esse método vai inserir o evento logo após o registro "anterior" que está em um horário próximo
+	 * 
+	 * @param evento
+	 * @param anterior
+	 * @param ambiente
+	 */
+	@Transactional
+	public void criaRegistroTransmissaoPorEvento( Evento evento, Transmissao anterior, Ambiente ambiente )
+	{
+		Midia midia = evento.getMidia();
+
+		LocalDate hoje = LocalDate.now();
+		
+		Transmissao transmissao = new Transmissao();
+		
+		transmissao.setAmbiente( ambiente );
+		transmissao.setDataCriacao( new Date() );
+		transmissao.setDiaPlay( UtilsDates.asUtilDate( hoje ) );  //Só o dia
+		transmissao.setDuracao( midia.getDuracao() );
+		transmissao.setCategoria( midia.getCategoriaSelecionada() );
+		
+		transmissao.setDataPrevisaoPlay( anterior.getDataPrevisaoPlay() );  // copia do anterior.. não importa
+		
+		transmissao.setLinkativo( true );
+		transmissao.setMidia( midia );
+		transmissao.setProgramacao( anterior.getProgramacao() );
+		transmissao.setStatusPlayback( StatusPlayback.GERADA );
+		transmissao.setPosicaoplay( anterior.getPosicaoplay() + 0.2 );
+		
+		transmissaoRepo.save( transmissao );
+		
+		String url = "/api/ambientes/"+ ambiente.getIdAmbiente() +"/transmissoes/" ;
+		
+		transmissaoRepo.setLinkFor( url );
+		
+		logger.info( String.format( "Transmissao de evento inserida (%d)", transmissao.getIdTransmissao() ) );
+	}
 	
 	
 	

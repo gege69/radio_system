@@ -134,4 +134,13 @@ public class EventoHorario implements Serializable {
 		this.dataCriacao = dataCriacao;
 	}
 
+
+	@Override
+	public String toString()
+	{
+		return String.format( "EventoHorario [idEventoHorario=%s, hora=%s, minuto=%s, segundo=%s]", idEventoHorario, hora, minuto, segundo );
+	}
+	
+	
+
 }

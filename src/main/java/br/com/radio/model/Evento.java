@@ -315,6 +315,16 @@ public class Evento implements Serializable {
 		this.dataFim = dataFim;
 	}
 
+
+	@Override
+	public String toString()
+	{
+		return String
+				.format(
+						"Evento [idEvento=%s, ambiente=%s, categoria=%s, midia=%s, dataInicio=%s, dataFim=%s, repeteDomingo=%s, repeteSegunda=%s, repeteTerca=%s, repeteQuarta=%s, repeteQuinta=%s, repeteSexta=%s, repeteSabado=%s, horarios=%s, ativo=%s]",
+						idEvento, ambiente, categoria, midia, dataInicio, dataFim, repeteDomingo, repeteSegunda, repeteTerca, repeteQuarta, repeteQuinta, repeteSexta, repeteSabado, horarios, ativo );
+	}
+
 	
 
 	

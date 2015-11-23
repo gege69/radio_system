@@ -1,7 +1,6 @@
 package br.com.radio.boot;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,13 +10,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 
 import br.com.radio.model.Ambiente;
-import br.com.radio.model.Categoria;
-import br.com.radio.model.Midia;
+import br.com.radio.model.Evento;
 import br.com.radio.repository.AmbienteRepository;
-import br.com.radio.repository.MidiaRepository;
+import br.com.radio.repository.EventoRepository;
+import br.com.radio.service.EventoService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
-import br.com.radio.service.programacaomusical.BlocosManipulacaoDTO;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
@@ -37,11 +35,23 @@ public class Application {
 		ProgramacaoMusicalService serv = ctx.getBean( ProgramacaoMusicalService.class );
 		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
 																																																																																																																			
-		Ambiente ambiente = ambRepo.findOne( 1L );
+		Ambiente ambiente = ambRepo.findOne( 2L );
 
-		midiaService.getNewMusicFromFileSystem();
+		EventoRepository eRepo = ctx.getBean( EventoRepository.class );
+
+//		List<Evento> es = eRepo.findByHorarioAndIdAmbiente( ambiente.getIdAmbiente() );
+
+//		es.forEach( e -> System.out.println(e) );
+		
+//		EventoService service = ctx.getBean( EventoService.class );
+		
+//		service.existeEventoAgoraPorAmbiente( ambiente );
+		
+//		midiaService.getNewMusicFromFileSystem();
 		
 //		serv.geraTransmissao( ambiente );
+		
+		System.out.println("fim");
 																																																								
 		
 	}

@@ -858,7 +858,7 @@ public class AmbienteController extends AbstractController {
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
-		Evento evento = eventoRepo.findOne( idEvento );
+		Evento evento = eventoRepo.findByIdEventoAndAmbiente( idEvento, ambiente );
 		
 		Pageable pageable = getPageable( pageNumber, limit, "ASC", "hora" );
 		
