@@ -34,6 +34,7 @@ import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Evento;
+import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
@@ -456,7 +457,7 @@ public class ProgramacaoMusicalService {
 		Transmissao result = null;
 		
 		if ( atual != null )
-			result = transmissaoRepo.findByAmbienteAndLinkativoTrueAndPosicaoplay( ambiente, atual.getPosicaoplay() + 1 );
+			result = transmissaoRepo.findByAmbienteAndLinkativoTrueAndPosicaoplay( ambiente.getIdAmbiente(), atual.getPosicaoplay() );
 		
 		return result;
 	}
@@ -519,13 +520,7 @@ public class ProgramacaoMusicalService {
 	{
 		Transmissao atual = getTransmissaoAtual( ambiente ); 
 		
-//		asdfasdfasdf
-		
 		Transmissao result = getProximaTransmissaoAtualPeloIdAtual( ambiente, atual );
-		
-		
-		
-		
 
 		Long idTransmissao = null;
 		
@@ -977,6 +972,14 @@ public class ProgramacaoMusicalService {
 		LocalDateTime agora = LocalDateTime.now().withHour( horario.getHour() ).withMinute( horario.getMinute() );
 		
 		Transmissao result = transmissaoRepo.findByIdAmbienteAndLinkativoTrueAndDataPrevisaoplay( ambiente.getIdAmbiente(), UtilsDates.fromLocalDateTime( agora ) );
+
+		Transmissao eventoJaProgramado = transmissaoRepo.findByIdAmbienteAndLinkativoTrueAndEventoJaProgramado( ambiente.getIdAmbiente(), result.getPosicaoplay() );
+		
+		if ( eventoJaProgramado != null )
+		{
+			logger.info( eventoJaProgramado.toString() );
+			result = eventoJaProgramado;
+		}
 		
 		return result;
 	}
@@ -991,7 +994,7 @@ public class ProgramacaoMusicalService {
 	 * @param ambiente
 	 */
 	@Transactional
-	public void criaRegistroTransmissaoPorEvento( Evento evento, Transmissao anterior, Ambiente ambiente )
+	public void criaRegistroTransmissaoPorEvento( Evento evento, EventoHorario eventoHorario, Transmissao anterior, Ambiente ambiente )
 	{
 		Midia midia = evento.getMidia();
 
@@ -1003,15 +1006,30 @@ public class ProgramacaoMusicalService {
 		transmissao.setDataCriacao( new Date() );
 		transmissao.setDiaPlay( UtilsDates.asUtilDate( hoje ) );  //Só o dia
 		transmissao.setDuracao( midia.getDuracao() );
-		transmissao.setCategoria( midia.getCategoriaSelecionada() );
 		
+		transmissao.setCategoria( anterior.getCategoria() );
 		transmissao.setDataPrevisaoPlay( anterior.getDataPrevisaoPlay() );  // copia do anterior.. não importa
 		
 		transmissao.setLinkativo( true );
 		transmissao.setMidia( midia );
 		transmissao.setProgramacao( anterior.getProgramacao() );
 		transmissao.setStatusPlayback( StatusPlayback.GERADA );
-		transmissao.setPosicaoplay( anterior.getPosicaoplay() + 0.2 );
+		
+		// Para o caso de vários eventos no mesmo minuto.... vai incrementando 0.1. Ou seja, é possível até 9 eventos no mesmo slot. ( futuramente para acomodar mais é só diminuir o decimal para 0.01 )
+		if ( anterior.getEventoHorario() != null )
+		{
+			double novoPosicaoplay = anterior.getPosicaoplay();
+			
+			if ( ( anterior.getPosicaoplay() % 1 ) != 0 || anterior.getEventoHorario() != null ) 
+				novoPosicaoplay = novoPosicaoplay + 0.1;
+			
+			transmissao.setPosicaoplay( novoPosicaoplay );
+		}
+		else
+			transmissao.setPosicaoplay( anterior.getPosicaoplay() + 0.1 );
+		
+		
+		transmissao.setEventoHorario( eventoHorario );
 		
 		transmissaoRepo.save( transmissao );
 		

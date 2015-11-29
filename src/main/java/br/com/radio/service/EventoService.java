@@ -1,11 +1,13 @@
 package br.com.radio.service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class EventoService {
 	@Autowired
 	private ProgramacaoMusicalService progMusicalService;
 	
+	private static final Logger logger = Logger.getLogger(EventoService.class);
 	
 	/**
 	 * 
@@ -125,7 +128,9 @@ public class EventoService {
 	{
 		List<Evento> eventos = getEventosHojePorAmbiente( ambiente );
 		
-		LocalTime agora = LocalTime.now();
+		LocalTime agora = LocalTime.now().withSecond( 0 ).withNano( 0 );
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 		
 		eventos.forEach( e -> {
 
@@ -135,14 +140,18 @@ public class EventoService {
 				
 				LocalTime horaEvento = LocalTime.of( h.getHora(), h.getMinuto() );
 				
-				Long minutesBetween = ChronoUnit.MINUTES.between(horaEvento, agora);
+				Long minutesBetween = ChronoUnit.MINUTES.between(agora, horaEvento);
 				
-				if ( minutesBetween > 0 && minutesBetween <= 5 )
+				if ( minutesBetween >= 0 && minutesBetween < 5 )
 				{
+					logger.info( minutesBetween );
+					logger.info( horaEvento );
+					logger.info( agora );
+					
 					Transmissao transmissaoAnterior = progMusicalService.getTransmissaoEmHorarioAproximado( ambiente, horaEvento );
 
 					if ( transmissaoAnterior != null )
-						progMusicalService.criaRegistroTransmissaoPorEvento( e, transmissaoAnterior, ambiente );
+						progMusicalService.criaRegistroTransmissaoPorEvento( e, h, transmissaoAnterior, ambiente );
 				}
 				
 			});

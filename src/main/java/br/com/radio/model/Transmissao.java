@@ -107,6 +107,12 @@ public class Transmissao implements Serializable {
 	@JoinColumn(name="id_categoria")
 	private Categoria categoria;
 	
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_eventohorario")
+	private EventoHorario eventoHorario;
+	
+	
 
 	public Long getIdTransmissao()
 	{
@@ -292,6 +298,25 @@ public class Transmissao implements Serializable {
 	public void setCategoria( Categoria categoria )
 	{
 		this.categoria = categoria;
+	}
+
+
+	public EventoHorario getEventoHorario()
+	{
+		return eventoHorario;
+	}
+
+
+	public void setEventoHorario( EventoHorario eventoHorario )
+	{
+		this.eventoHorario = eventoHorario;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Transmissao [idTransmissao=%s, posicaoplay=%s, dataPrevisaoPlay=%s, eventoHorario=%s]", idTransmissao, posicaoplay, dataPrevisaoPlay, eventoHorario );
 	}
 	
 	

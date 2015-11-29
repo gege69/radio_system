@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Transmissao;
@@ -21,10 +20,13 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and linkativo = true and clock_timestamp() between t.dataprevisaoplay and t.dataprevisaoplay + ( t.duracao * interval '1 second' ) order by t.dataprevisaoplay asc limit 1 ", nativeQuery=true )
 	Transmissao findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( Long idAmbiente );
 	
-	// Esse método vai tentar encontrar um registro que esteja mais ou menos no horário que foi passado por parametro .... útil para evento
-	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and linkativo = true and ?2 between t.dataprevisaoplay and t.dataprevisaoplay + ( t.duracao * interval '1 second' ) order by t.dataprevisaoplay asc limit 1 ", nativeQuery=true )
+	// Esse método vai tentar encontrar um registro que esteja mais ou menos no horário que foi passado por parametro ( e que não seja um evento ) .... método utilizado para inserir eventos na programação 
+	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and linkativo = true and ?2 between t.dataprevisaoplay and t.dataprevisaoplay + ( t.duracao * interval '1 second' ) and t.id_eventohorario is null order by t.dataprevisaoplay desc limit 1 ", nativeQuery=true )
 	Transmissao findByIdAmbienteAndLinkativoTrueAndDataPrevisaoplay( Long idAmbiente, Date dataPrevisaoPlay );
 
+	// Esse método vai verificar se já tem uma transmissão de evento programada próxima dessa posicao
+	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and linkativo = true and ( posicaoplay > ?2 and posicaoplay < ?2 + 1 ) and id_eventohorario is not null order by posicaoplay desc limit 1 ", nativeQuery= true)
+	Transmissao findByIdAmbienteAndLinkativoTrueAndEventoJaProgramado( Long idAmbiente, double posicaoplay );
 	
 	
 	// Esse método vai tentar encontrar o primeiro registro que exista pra tocar NO DIA.... 
@@ -50,7 +52,11 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 
 	
 	// Para encontrar a próxima musica
-	Transmissao findByAmbienteAndLinkativoTrueAndPosicaoplay( Ambiente ambiente, Double posicaoplay );
+//	Transmissao findByAmbienteAndLinkativoTrueAndPosicaoplay( Ambiente ambiente, Double posicaoplay );
+	
+	// Para encontrar a próxima música agora com eventos	
+	@Query(value="select t.* from transmissao t where t.id_ambiente = ?1 and t.linkativo = true and t.posicaoplay > ?2 order by posicaoplay asc, id_transmissao desc limit 1 ", nativeQuery=true)
+	Transmissao findByAmbienteAndLinkativoTrueAndPosicaoplay( Long idAmbiente, Double posicaoplay );
 	
 	
 	@Modifying(clearAutomatically=true)

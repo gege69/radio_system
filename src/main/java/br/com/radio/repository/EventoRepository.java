@@ -19,7 +19,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 	@Query(value=
 	" select e.* "+
 	" from evento e "+
-	" where e.datafim > date_trunc('day', clock_timestamp()) and e.datainicio <= date_trunc('day', clock_timestamp()) "+
+	" where e.datafim >= date_trunc('day', clock_timestamp()) and e.datainicio <= date_trunc('day', clock_timestamp()) "+
 	" and e.id_ambiente = ?1 ", nativeQuery= true)
 	List<Evento> findByHorarioAndIdAmbiente( Long idAmbiente );
 	
