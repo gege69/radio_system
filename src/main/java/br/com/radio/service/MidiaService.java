@@ -39,6 +39,7 @@ import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.Parametro;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.EmpresaRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
 import br.com.radio.repository.MidiaGeneroRepository;
@@ -74,6 +75,9 @@ public class MidiaService {
 	
 	@Autowired
 	private GeneroRepository generoRepo;
+	
+	@Autowired
+	private EmpresaRepository empresaRepo;
 	
 	@PersistenceContext
 	protected EntityManager em;
@@ -237,18 +241,117 @@ public class MidiaService {
 	
 	public void syncMusicFileSystem()
 	{
-		
-		File diretorio = new File("/home/pazin/musicas/Exceto Sertanejas/");
-		
-		Collection<File> arquivos = FileUtils.listFiles( diretorio, new String[]{ "mp3" }, true );
-		
 		try
 		{
+			Empresa empresa = empresaRepo.findOne( 1l );
+			
+			Parametro parametro = parametroRepo.findByCodigoAndEmpresa( "BASE_MIDIA_PATH", empresa );
+			String basePath = parametro.getValor();
+			
+			File diretorio = new File( basePath );
+			
+			Collection<File> arquivos = FileUtils.listFiles( diretorio, null, true );
+			
+			List<Genero> generos = generoRepo.findFirst10By();  //findAll();
+			
+			Random rand = new Random(); 
+
+			Integer iteracoes = 0;
+			
+			Categoria categoria = categoriaRepo.findByCodigo( Categoria.MUSICA );
+			
+			List<MidiaGenero> midiaGeneros = new ArrayList<MidiaGenero>();
+			
+			String grupoArtista = null;
+			
+			int index = 0;
+			int max = 0;
+			
+			for ( File f : arquivos )
+			{
+				boolean troca = false;
+				
+				String pasta = StringUtils.substring( f.getParent(), f.getParent().lastIndexOf( "/" ) + 1 );
+				
+				System.out.println( pasta );
+				
+				iteracoes++;
+				
+				System.out.println(f.getName() + " | " + f.length());
+
+				String hash = "";
+				
+				FileInputStream fis = null;
+				try
+				{
+					fis = new FileInputStream( f );
+					
+					byte[] bytes = IOUtils.toByteArray( fis );
+					
+					hash = geraHashDoArquivo( bytes );
+					
+					fis.close();
+				}
+				catch ( Exception e )
+				{
+					e.printStackTrace();
+				}
+				
+				Long size = f.length();
+				
+				Midia midia = gravaMidia( null, f.getName(), empresa, new Long[] { categoria.getIdCategoria() }, hash, "", size.intValue() );
+				
+				if ( StringUtils.isBlank( midia.getArtist() ) )
+					midia.setArtist( pasta );
+				
+				midiaRepo.saveAndFlush( midia );
+
+				Long countGenero = midiaGeneroRepo.countByMidia( midia );
+				
+				if ( countGenero == null || countGenero <= 0 )
+				{
+					if ( !StringUtils.equals( grupoArtista, midia.getArtist() ) )
+					{
+						grupoArtista = midia.getArtist();
+						troca = true;
+					}
+
+					if ( troca )
+					{
+						midiaGeneros.clear();
+						
+						max = rand.nextInt(2) + 1;
+
+						for ( int i = 0; i < max ; i++ )
+						{
+							MidiaGenero mg = new MidiaGenero();
+							
+							mg.setMidia(  midia );
+							
+							index = rand.nextInt( generos.size() );
+							
+							mg.setGenero( generos.get( index ) );
+							
+							midiaGeneros.add( mg );
+						}
+					}
+					else
+					{
+						for ( MidiaGenero mg : midiaGeneros )
+						{
+							mg.setIdMediagen( null );
+							mg.setMidia( midia );
+						}
+					}
+					
+					midiaGeneroRepo.save( midiaGeneros );	
+				}
+			}
 			
 		}
 		catch ( Exception e )
 		{
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 	
@@ -290,8 +393,14 @@ public class MidiaService {
 		return midia;
 	}
 
-
+	
 	public Midia gravaMidia( InputStream is, String originalName, Empresa empresa, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		return gravaMidia( is, originalName, empresa, categorias, hash, descricao, null );
+	}
+	
+
+	public Midia gravaMidia( InputStream is, String originalName, Empresa empresa, Long[] categorias, String hash, String descricao, Integer fileSize ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		List<Categoria> categoriaList = null;
 		File arquivo = null;
@@ -305,7 +414,6 @@ public class MidiaService {
 			Parametro parametro = parametroRepo.findByCodigoAndEmpresa( "BASE_MIDIA_PATH", empresa );
 			basePath = parametro.getValor();
 
-			
 			midia = midiaRepo.findByFilehash( hash );
 			
 			if ( midia == null )
@@ -313,8 +421,14 @@ public class MidiaService {
 				String path = basePath + hash;
 				
 				arquivo = new File( path );
-
-				size = IOUtils.copy( is, new FileOutputStream( arquivo ) );
+				
+				// Talvez não precise mover o arquivo... se o filesize estiver preenchido é um sinal disso
+				if ( is != null )
+				{
+					size = IOUtils.copy( is, new FileOutputStream( arquivo ) );
+				}
+				else
+					size = fileSize;
 				
 				midia = new Midia();
 				

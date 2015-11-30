@@ -34,7 +34,9 @@
           <span class="sr-only">Toggle navigation</span>
           <span class="fa fa-bars"></span>
         </button>
-        <a class="navbar-brand" href="${context}/ambientes/${idAmbiente}/view">${nome}</a>
+        <a class="navbar-brand" href="#">
+          ${nome}
+        </a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav">

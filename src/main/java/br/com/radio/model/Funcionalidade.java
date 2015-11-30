@@ -31,6 +31,9 @@ public class Funcionalidade implements Serializable {
 
 	@Column( name = "icone", columnDefinition = "TEXT" )
 	private String icone;
+	
+	@Column( name="extrahtml", columnDefinition = "TEXT" )
+	private String extrahtml;
 
 	public Long getIdFuncionalidade()
 	{
@@ -80,6 +83,18 @@ public class Funcionalidade implements Serializable {
 	public void setIcone( String icone )
 	{
 		this.icone = icone;
+	}
+	
+	
+
+	public String getExtrahtml()
+	{
+		return extrahtml;
+	}
+
+	public void setExtrahtml( String extrahtml )
+	{
+		this.extrahtml = extrahtml;
 	}
 
 	@Override

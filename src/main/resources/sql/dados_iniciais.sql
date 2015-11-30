@@ -32,6 +32,7 @@ insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) value
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'SOFTWARES', '', null);
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'USUARIOS', '', null);
 insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'MOBILE', '', null);
+insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) values ( nextval('permissao_id_permissao_seq') , 'PLAYER', '', null);
 
 
 
@@ -66,13 +67,14 @@ INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'
 INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'SOFTWARES' ) );
 INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'USUARIOS' ) );
 INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'MOBILE' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'DESENVOLVEDOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'PLAYER' ) );
 
 
 INSERT INTO USUARIO_PERFIL VALUES ( nextval('usuario_perfil_id_usuperf_seq'), (select id_perfil from perfil where nome = 'DESENVOLVEDOR'), (SELECT id_usuario FROM USUARIO WHERE login = 'fpazin') );
 INSERT INTO USUARIO_PERFIL VALUES ( nextval('usuario_perfil_id_usuperf_seq'), (select id_perfil from perfil where nome = 'DESENVOLVEDOR'), (SELECT id_usuario FROM USUARIO WHERE login = 'gaugusto') );
 
 
-INSERT INTO USUARIO_PERMISSAO VALUES ( NEXTVAL('USUARIO_PERMISSAO_ID_USUPERM_SEQ'), NOW(), ( SELECT ID_PERMISSAO FROM PERMISSAO WHERE CODIGO = 'INCLUIR_AMB'), (SELECT ID_USUARIO FROM USUARIO WHERE LOGIN = 'FPAZIN') );
+--INSERT INTO USUARIO_PERMISSAO VALUES ( NEXTVAL('USUARIO_PERMISSAO_ID_USUPERM_SEQ'), NOW(), ( SELECT ID_PERMISSAO FROM PERMISSAO WHERE CODIGO = 'INCLUIR_AMB'), (SELECT ID_USUARIO FROM USUARIO WHERE LOGIN = 'FPAZIN') );
 
 
 
@@ -133,7 +135,7 @@ insert into funcionalidade ( ordem, nome, url, icone ) values ( 14, 'Relatórios
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 15, 'Downloads' ,       			'/ambientes/%d/downloads/view' ,         	'fa-floppy-o'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Restrições' ,      			'/ambientes/%d/restricoes/view' ,        	'fa-unlock-alt'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Logomarca' ,       			'/ambientes/%d/logomarcas/view' ,         	'fa-trademark'); 
-insert into funcionalidade ( ordem, nome, url, icone ) values ( 18, 'Simular' ,       				'/player/ambientes/%d/simulacoes/view' ,         	'fa-play'); 
+insert into funcionalidade ( ordem, nome, url, icone, extrahtml ) values ( 18, 'Simular' ,       				'/player/ambientes/%d/simulacoes/view' ,         	'fa-play' , ' target="_blank" '); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 19, 'SendVoice' ,       			'/ambientes/%d/sendvoices/view' ,         	'fa-microphone'); 
 
 

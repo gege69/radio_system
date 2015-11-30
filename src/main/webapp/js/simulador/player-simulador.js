@@ -276,6 +276,10 @@ $(document).ready(function() {
         next();
     });
     
+    $(".campo-slider").on("slide", function(slideEvt) {
+        alteraVolume(slideEvt.value);
+    });
+    
     $(".campo-slider").on("slideStop", function(slideEvt) {
         alteraVolume(slideEvt.value);
     });

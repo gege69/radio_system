@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -305,11 +306,16 @@ public class AmbienteController extends AbstractController {
 		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
 		funcionalidades.stream().forEach( f -> {
-			JsonObject obj = Json.createObjectBuilder()
-					.add("url_funcionalidade", String.format( f.getUrl(), idAmbiente ) )
-					.add("nome_funcionalidade", f.getNome() )
-					.add("icone_funcionalidade", f.getIcone() )
-					.build();
+			
+			JsonObjectBuilder builder = Json.createObjectBuilder()
+			.add("url_funcionalidade", String.format( f.getUrl(), idAmbiente ) )
+			.add("nome_funcionalidade", f.getNome() )
+			.add("icone_funcionalidade", f.getIcone() );
+			
+			if ( StringUtils.isNotBlank( f.getExtrahtml() ) )
+				builder.add( "extra", f.getExtrahtml() );
+			
+			JsonObject obj = builder.build();
 			
 			jsonArrayBuilder.add(obj);
 		});

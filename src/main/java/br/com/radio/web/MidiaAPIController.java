@@ -370,6 +370,16 @@ public class MidiaAPIController extends AbstractController {
 		else
 			return "HTTPerror/404";
 	}
+
+	
+	@RequestMapping( value = "/api/syncfilesystem", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String sync()
+	{
+		midiaService.syncMusicFileSystem();
+		
+		return writeOkResponse();
+	}
+		
 	
 		
 	

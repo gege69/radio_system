@@ -76,7 +76,7 @@ public class AuthenticationController extends AbstractController {
 		{
 			try
 			{
-				usuario = userService.registerNewUserAccount( accountDto );				
+				usuario = userService.registraNovoUsuarioGerenciador( accountDto );				
 			}
 			catch ( Exception e )
 			{

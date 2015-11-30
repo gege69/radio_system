@@ -1,6 +1,10 @@
 package br.com.radio.service;
 
 import java.security.Principal;
+import java.util.Date;
+import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,23 +13,31 @@ import org.springframework.stereotype.Service;
 
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.UserDTO;
+import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.exception.EmailExistsException;
+import br.com.radio.model.Ambiente;
+import br.com.radio.model.Perfil;
 import br.com.radio.model.Usuario;
+import br.com.radio.model.UsuarioPerfil;
+import br.com.radio.repository.UsuarioPerfilRepository;
 import br.com.radio.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
 
 	@Autowired
-	private UsuarioRepository usuarioRepository;
+	private UsuarioRepository usuarioRepo;
+	
+	@Autowired
+	private UsuarioPerfilRepository usuarioPerfilRepo;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	public void changeUserPassword( String name, AlterarSenhaDTO alterarSenhaDTO )
 	{
-		Usuario usuario = usuarioRepository.findByLogin( name );
+		Usuario usuario = usuarioRepo.findByLogin( name );
 
 		if ( usuario == null )
 			throw new RuntimeException( "Usuário não encontrado" );
@@ -42,15 +54,15 @@ public class UsuarioService {
 			
 			usuario.setPassword( novaSenhaEncriptada );
 			
-			usuarioRepository.save( usuario );
+			usuarioRepo.save( usuario );
 		}
 	}
 
-	public Usuario registerNewUserAccount( UserDTO dto )
+	public Usuario registraNovoUsuarioGerenciador( UserDTO dto )
 	{
 		// Proteger de algum jeito contra brute force com memoization talvez
 		
-		Long countUsuarios = usuarioRepository.countByEmailOrLogin( dto.getCdEmail(), dto.getCdLogin() ); 
+		Long countUsuarios = usuarioRepo.countByEmailOrLogin( dto.getCdEmail(), dto.getCdLogin() ); 
 		
 		if ( countUsuarios != null && countUsuarios > 0 )
 			throw new EmailExistsException( "Email ou Login já existe." );
@@ -69,16 +81,92 @@ public class UsuarioService {
 		usuario.setAtivo( true );
 		usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
 		
-		usuarioRepository.saveAndFlush( usuario );
+		usuarioRepo.saveAndFlush( usuario );
 		
 		return usuario;
 	}
 	
 	
 	
-	public Usuario registerNewUserPlayer( Usuario usuario )
+	@Transactional
+	public Usuario saveUsuarioGerenciador( UsuarioGerenciadorDTO usuarioGerenciadorDTO )
 	{
-		Long countUsuarios = usuarioRepository.countByLogin( usuario.getLogin() ); 
+		Long countUsuarios = 0l;
+		
+		Usuario usuarioDTO = usuarioGerenciadorDTO.getUsuario();
+		
+		if ( usuarioDTO.getIdUsuario() != null && usuarioDTO.getIdUsuario() > 0 )
+			countUsuarios = usuarioRepo.countByEmailOrLoginAndIdUsuarioNot( usuarioDTO.getEmail() , usuarioDTO.getLogin(), usuarioDTO.getIdUsuario() );		
+		else
+			countUsuarios = usuarioRepo.countByEmailOrLogin( usuarioDTO.getEmail() , usuarioDTO.getLogin() ); 
+		
+		if ( countUsuarios != null && countUsuarios > 0 )
+			throw new EmailExistsException( "Email ou Login já existe." );
+
+		if ( StringUtils.isBlank( usuarioDTO.getEmail() ) )
+			throw new RuntimeException( "Email é obrigatório" );
+
+		if ( StringUtils.isBlank( usuarioDTO.getNome() ) )
+			throw new RuntimeException( "Nome é obrigatório" );
+
+		Usuario usuario = null;
+		
+		if ( usuarioDTO.getIdUsuario() != null && usuarioDTO.getIdUsuario() > 0 )
+			usuario = usuarioRepo.findOne( usuarioDTO.getIdUsuario() );
+		else
+		{
+			usuario = new Usuario();
+			usuario.setAtivo( true );
+			usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
+		}
+		
+		usuario.setNome( usuarioDTO.getNome() );
+		usuario.setLogin( usuarioDTO.getLogin() );
+		usuario.setEmail( usuarioDTO.getEmail() );
+
+		if ( usuarioDTO.getAtivo() == null )
+			usuarioDTO.setAtivo( false );
+		
+		usuario.setAtivo( usuarioDTO.getAtivo() );
+		
+		if ( StringUtils.isNotBlank( usuarioDTO.getPassword() ) )
+			usuario.setPassword( passwordEncoder.encode( usuarioDTO.getPassword() ) );
+		
+		usuario.setDataAlteracao( new Date() );
+
+		usuarioRepo.save( usuario );
+		
+		if ( usuario != null && usuario.getIdUsuario() > 0 )
+		{
+			List<Perfil> perfisDTO = usuarioGerenciadorDTO.getPerfis();
+			
+			usuarioPerfilRepo.deleteByUsuario( usuario );
+			
+			for ( Perfil perf : perfisDTO )
+			{
+				UsuarioPerfil usuPerf = new UsuarioPerfil();
+				
+				usuPerf.setUsuario( usuario );
+				usuPerf.setPerfil( perf );
+				
+				usuarioPerfilRepo.save( usuPerf );
+			}
+		}
+		
+		return usuario;
+	}
+	
+	
+	
+	public Usuario registerNewUserPlayer( Ambiente ambiente )
+	{
+		Usuario usuario = new Usuario();
+		usuario.setLogin( ambiente.getLogin() );
+		usuario.setPassword( ambiente.getPassword() );
+		usuario.setEmpresa( ambiente.getEmpresa() );
+		usuario.setNome( ambiente.getNome() );
+		
+		Long countUsuarios = usuarioRepo.countByLogin( usuario.getLogin() ); 
 		
 		if ( countUsuarios != null && countUsuarios > 0 )
 			throw new EmailExistsException( "Login já existe." );
@@ -86,18 +174,23 @@ public class UsuarioService {
 		usuario.setPassword( passwordEncoder.encode( usuario.getPassword() ) );
 		usuario.setAtivo( true );
 		usuario.setUsuarioTipo( UsuarioTipo.PLAYER );
-		
-		usuarioRepository.saveAndFlush( usuario );
+		usuario.setAmbiente( ambiente );		
 		
 		return usuario;
 	}
 	
 	
+	public Usuario save( Usuario usuario )
+	{
+		usuarioRepo.save( usuario );
+		
+		return usuario;
+	}
 
 	
 	public Usuario getUserByPrincipal( Principal principal )
 	{
-		Usuario usuario = usuarioRepository.findByLogin( principal.getName() );
+		Usuario usuario = usuarioRepo.findByLogin( principal.getName() );
 		
 		return usuario;
 	}
@@ -105,7 +198,7 @@ public class UsuarioService {
 	
 	public Long countByLogin( String login )
 	{
-		Long result = usuarioRepository.countByLogin( login ); 
+		Long result = usuarioRepo.countByLogin( login ); 
 		
 		if ( result == null )
 			result = 0l;

@@ -29,15 +29,20 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.EndPointDTO;
+import br.com.radio.dto.UsuarioGerenciadorDTO;
+import br.com.radio.enumeration.UsuarioTipo;
+import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
+import br.com.radio.model.Perfil;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.GeneroRepository;
+import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.UsuarioService;
 
@@ -64,7 +69,8 @@ public class GerenciadorController extends AbstractController {
 	private FusoHorarioRepository fusoRepo;
 	@Autowired
 	private CategoriaRepository categoriaRepo;
-
+	@Autowired
+	private PerfilRepository perfilRepo;
 
 	@Autowired
 	private UsuarioService usuarioService;
@@ -112,7 +118,7 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping(value="/principal", method=RequestMethod.GET)
-	public String viewPrincipal( ModelMap model, Principal principal )
+	public String principal( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -138,7 +144,7 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping(value="/senha/edit", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
-	public String viewAlterarSenha( ModelMap model )
+	public String alterarSenha( ModelMap model )
 	{
 		return "gerenciador/alterar-senha";
 	}
@@ -155,7 +161,7 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping(value="/view-atalho-cham-func", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('CHAMADA_FUNCIO')")
-	public String viewAtalhoChamadaFunc( HttpServletResponse response )
+	public String atalhoChamadaFunc( HttpServletResponse response )
 	{
 		return "gerenciador/view-atalho-cham-func";
 	}
@@ -163,7 +169,7 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping(value="/view-list-usuarios-sistema", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('USUARIOS')")
-	public String viewListUsuariosSistema( ModelMap model )
+	public String usuariosSistema( ModelMap model )
 	{
 		return "gerenciador/view-list-usuarios-sistema";
 	}
@@ -171,7 +177,7 @@ public class GerenciadorController extends AbstractController {
 
 	@RequestMapping(value={ "/usuarios/view", "/usuarios/{idUsuario}/view" } , method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('USUARIOS')")
-	public String viewUsuario( @PathVariable Map<String, String> pathVariables, ModelMap model )
+	public String usuarios( @PathVariable Map<String, String> pathVariables, ModelMap model )
 	{
 		if ( pathVariables.containsKey( "idUsuario" ) )
 		{
@@ -180,20 +186,21 @@ public class GerenciadorController extends AbstractController {
 			if ( usuario != null )
 			{
 				model.addAttribute( "idUsuario", usuario.getIdUsuario() );
+				model.addAttribute( "idEmpresa", usuario.getEmpresa().getIdEmpresa() );
 			
-				return "gerenciador/view-usuario";
+				return "gerenciador/usuario";
 			}
 			else
 				return "HTTPerror/404";
 		}
 		else
-			return "gerenciador/view-usuario";
+			return "gerenciador/usuario";
 	}
 	
 	
 	@RequestMapping( value = { "/usuarios", "/api/usuarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('USUARIOS')")
-	public @ResponseBody JSONListWrapper<Usuario> listUsuarios( @RequestParam(value="pagina", required=false) Integer pagina, 
+	public @ResponseBody JSONListWrapper<Usuario> getUsuarios( @RequestParam(value="pagina", required=false) Integer pagina, 
 																 @RequestParam(value="limit", required=false) Integer limit,
 																 Principal principal )
 	{
@@ -205,7 +212,7 @@ public class GerenciadorController extends AbstractController {
 		
 		Pageable pageable = getPageable( pagina, limit );
 			
-		Page<Usuario> usuarioPage = usuarioRepo.findByEmpresa( pageable, usuario.getEmpresa() );
+		Page<Usuario> usuarioPage = usuarioRepo.findByEmpresaAndUsuarioTipo( pageable, usuario.getEmpresa(), UsuarioTipo.GERENCIADOR );
 		
 		JSONListWrapper<Usuario> jsonList = new JSONListWrapper<Usuario>(usuarioPage.getContent(), usuarioPage.getTotalElements() );
 
@@ -215,22 +222,66 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping( value = { "/usuarios/{idUsuario}", "/api/usuarios/{idUsuario}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('USUARIOS')")
-	public @ResponseBody Usuario getAmbiente( @PathVariable Long idUsuario, HttpServletResponse response )
+	public @ResponseBody Usuario getUsuario( @PathVariable Long idUsuario, HttpServletResponse response )
 	{
 		Usuario usuario = usuarioRepo.findOne( idUsuario );
 		
 		return usuario;
 	}
+
+	
+	
+	@RequestMapping( value = { "/usuarios", "/api/usuarios" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveUsuario( @RequestBody @Valid UsuarioGerenciadorDTO usuarioGerenciadorDTO, BindingResult result )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				usuarioService.saveUsuarioGerenciador( usuarioGerenciadorDTO );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+	
+	
+	
+	@RequestMapping( value = { "/perfis", "/api/perfis" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<Perfil> getPerfis()
+	{
+		List<Perfil> perfilList = perfilRepo.findAll();
+		
+		int total = perfilList.size();
+		
+		JSONBootstrapGridWrapper<Perfil> jsonList = new JSONBootstrapGridWrapper<Perfil>(perfilList, total);
+
+		return jsonList;
+	}
+	
 	
 	
 	@RequestMapping( value = { "/fusohorarios", "/api/fusohorarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<FusoHorario> listFusos()
+	public @ResponseBody JSONListWrapper<FusoHorario> getFusos()
 	{
-		List<FusoHorario> ncmList = fusoRepo.findAllWithSortByOrderComum();
+		List<FusoHorario> fusoList = fusoRepo.findAllWithSortByOrderComum();
 		
-		int total = ncmList.size();
+		int total = fusoList.size();
 		
-		JSONListWrapper<FusoHorario> jsonList = new JSONListWrapper<FusoHorario>(ncmList, total);
+		JSONListWrapper<FusoHorario> jsonList = new JSONListWrapper<FusoHorario>(fusoList, total);
 
 		return jsonList;
 	}	

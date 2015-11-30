@@ -87,40 +87,34 @@ public class AmbienteService {
 		}
 
 		validaLogin( ambiente );
-
-		replicaUsuarioLoginPlayer( ambiente );
 		
-		preencheValoresDefault( ambiente );
+		criaExpedienteDefault( ambiente );
+
+		Usuario usuario = usuarioService.registerNewUserPlayer( ambiente );
+		
+		ambiente.setPassword( "" );
 		
 		ambiente = ambienteRepo.saveAndFlush( ambiente );
+		
+		usuario.setAmbiente( ambiente );
+		usuarioService.save( usuario );
 		
 		criaConfiguracoesDefault( ambiente );
 		
 		midiaService.associaTodasMidiasParaAmbiente( ambiente );
 		
 		criaBlocoDefault( ambiente );
-		
-		
+
 		return ambiente; 
 	}
 
 
-	/**
-	 * Para ter apenas um serviço de autenticação ( Spring security ) vou replicar esse login do player na tabela de usuários... 
-	 * 
-	 * @param ambiente
-	 */
-	private void replicaUsuarioLoginPlayer( Ambiente ambiente )
+	private void criaExpedienteDefault( Ambiente ambiente )
 	{
-		Usuario usuario = new Usuario();
-		usuario.setLogin( ambiente.getLogin() );
-		usuario.setPassword( ambiente.getPassword() );
-		usuario.setEmpresa( ambiente.getEmpresa() );
-		usuario.setNome( ambiente.getNome() );
-		
-		usuarioService.registerNewUserPlayer( usuario );
-		
-		ambiente.setPassword( "" ); // segurança
+		 ambiente.setHoraIniExpediente( 0 ); 
+		 ambiente.setHoraFimExpediente( 23 ); 
+		 ambiente.setMinutoIniExpediente( 0 );
+		 ambiente.setMinutoFimExpediente( 59 );
 	}
 
 

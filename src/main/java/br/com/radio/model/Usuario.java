@@ -85,6 +85,12 @@ public class Usuario implements Serializable {
 	@Column( name = "usuariotipo" , columnDefinition= " TEXT default 'GERENCIADOR' ")
 	private UsuarioTipo usuarioTipo;
 	
+	// Quando o usuário for um ambiente já terei um acesso fácil. Não precisa procurar por login
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn( name="id_ambiente", nullable=true )
+	private Ambiente ambiente;
+	
 	
 	public Usuario()
 	{
@@ -236,6 +242,17 @@ public class Usuario implements Serializable {
 	{
 		this.usuarioTipo = usuarioTipo;
 	}
+
+	public Ambiente getAmbiente()
+	{
+		return ambiente;
+	}
+
+	public void setAmbiente( Ambiente ambiente )
+	{
+		this.ambiente = ambiente;
+	}
+	
 	
 	
 	
