@@ -2,6 +2,8 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +16,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -55,6 +60,9 @@ public class Mensagem implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_conversa")
 	private Conversa conversa;
+
+	@Transient
+	private Map<String,String> mensagemView = new HashMap<String,String>();
 	
 
 	public Long getIdMensagem()
@@ -142,7 +150,19 @@ public class Mensagem implements Serializable {
 		this.conversa = conversa;
 	}
 
-	
+	@JsonAnyGetter
+	public Map<String, String> getMensagemView()
+	{
+		return mensagemView;
+	}
+
+	@JsonAnySetter
+	public void setMensagemView( Map<String, String> mensagemView )
+	{
+		this.mensagemView = mensagemView;
+	}
+
+
 	
 	
 

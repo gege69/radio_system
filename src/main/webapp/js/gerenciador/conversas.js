@@ -9,17 +9,6 @@ function queryParamsConversas(params) {
     return params;
 }
 
-function ultimaMsgFormatter(value, row) {
-    
-    if ( row != null && row.mensagens != null && row.mensagens.length > 0 )
-    {
-        var mensagens = row.mensagens;
-        
-        var ultima = mensagens[mensagens.length-1];
-    }
-    
-    return ultima;
-}
 
 
 var carregaMensagens = function( e, row, el )
@@ -40,6 +29,8 @@ var carregaMensagens = function( e, row, el )
         
         makeListTmpl( json );
         
+        $("#idConversa").val( row.idConversa );
+        
         $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
         
     });
@@ -49,11 +40,13 @@ var carregaMensagens = function( e, row, el )
 
 var makeListTmpl = function(json){
     
+    $('#conversa').empty();
+    
     var tmpl = $.templates('#viewTmplMensagem');
     
     var content = tmpl.render(json.rows);
     
-    $('#container').append(content);
+    $('#conversa').append(content);
 };
 
 

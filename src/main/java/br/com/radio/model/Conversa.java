@@ -2,7 +2,9 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,10 +21,13 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -91,6 +96,9 @@ public class Conversa implements Serializable {
 	
 	@Column(name="ativo")  // caso precise esconder a mensagem e manter o log
 	private Boolean ativo;
+	
+	@Transient
+	private Map<String,String> conversaView = new HashMap<String,String>();
 	
 
 	public Long getIdConversa()
@@ -220,6 +228,18 @@ public class Conversa implements Serializable {
 	public void setEmpresa( Empresa empresa )
 	{
 		this.empresa = empresa;
+	}
+
+	@JsonAnyGetter
+	public Map<String, String> getConversaView()
+	{
+		return conversaView;
+	}
+
+	@JsonAnySetter
+	public void setConversaView( Map<String, String> conversaView )
+	{
+		this.conversaView = conversaView;
 	}
 
 	

@@ -62,7 +62,13 @@ public class MensagemController extends AbstractController {
 		
 		Page<Conversa> conversaPage = conversaRepo.findByEmpresaAndAtivo( pageable, usuario.getEmpresa(), true );
 		
-		JSONBootstrapGridWrapper<Conversa> jsonList = new JSONBootstrapGridWrapper<Conversa>(conversaPage.getContent(), conversaPage.getTotalElements() );
+		List<Conversa> conversas = conversaPage.getContent();
+		
+		conversas.forEach( c -> {
+			c.getConversaView().put( "ambiente.nome", c.getAmbiente().getNome() );
+		});
+		
+		JSONBootstrapGridWrapper<Conversa> jsonList = new JSONBootstrapGridWrapper<Conversa>(conversas, conversaPage.getTotalElements() );
 
 		return jsonList;
 	}
@@ -88,6 +94,13 @@ public class MensagemController extends AbstractController {
 			throw new RuntimeException( "Problema com a Empresa" );
 
 		List<Mensagem> mensagens = conversa.getMensagens();
+		
+		mensagens.stream().forEach( m -> {
+			if ( m.getUsuario().getIdUsuario().equals( usuario.getIdUsuario() ) )
+				m.getMensagemView().put( "htmlclass", "self" );
+			else
+				m.getMensagemView().put( "htmlclass", "other" );
+		});
 		
 		JSONBootstrapGridWrapper<Mensagem> jsonList = new JSONBootstrapGridWrapper<Mensagem>(mensagens, mensagens.size() );
 

@@ -12,59 +12,72 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Mensagens</h3>
-          
-          <div class="col-lg-6 col-md-6">
-            <table  
-             id="table-conversas"
-             class="tabela-conversas"
-             data-toggle="table"
-             data-url="${context}/conversas"
-             data-side-pagination="server"
-             data-pagination="true"
-             data-page-size=7
-             data-page-list="[5]"
-             data-locale = "pt_BR"
-             data-height="400"
-             data-query-params="queryParamsConversas" >
-              <thead>
-                <tr>
-<!--                     <th data-field="idConversa" data-formatter="linhaFormatter">Mensagens</th> -->
-                    <th data-field="idConversa">Id</th>
-                    <th data-field="dataVigenciaInicio">Início</th>
-                    <th data-field="dataVigenciaFim">Fim</th>
-                    <th data-field="idConversa" data-formatter="ultimaMsgFormatter">Ult Msg</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-          
-          <div class="col-lg-6 col-md-6">
-            
-            <div class="panel panel-default">
-              <div class="panel-body">
-                <div id="conversa" class="fill">
-                  <ol class="conversation" id="container">
-                  </ol>
-                </div>
-                
-                <form action="#" id="form-evento" class="form" >
-                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                  <input type="hidden" id="idConversa" value="" />
-              
-                  <div class="col-lg-10 col-md-9 col-sm-10 col-xs-10">
-                    <div class="form-group">
-                      <input type="text" class="form-control" id="conteudo" name="conteudo" />
-                    </div>
+
+          <div class="row">   
+                   
+            <div class="col-lg-6 col-md-6">
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="pull-right">
+                    <a class="btn btn-primary" href="#"><i class="fa fa-envelope-o"></i> Nova Mensagem</a>
                   </div>
-                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 pull-right">
-                    <a class="btn btn-default" href="#">Enviar</a>
-                  </div>
-                </form>
+                </div>  
+              </div>
+
+              <div class="row spacer-vertical10">            
+                <table  
+                 id="table-conversas"
+                 class="tabela-conversas"
+                 data-toggle="table"
+                 data-url="${context}/conversas"
+                 data-side-pagination="server"
+                 data-pagination="true"
+                 data-page-size=7
+                 data-page-list="[5]"
+                 data-locale = "pt_BR"
+                 data-height="400"
+                 data-query-params="queryParamsConversas" >
+                  <thead>
+                    <tr>
+    <!--                     <th data-field="idConversa" data-formatter="linhaFormatter">Mensagens</th> -->
+                        <th data-field="idConversa">Id</th>
+                        <th data-field="dataCriacao">Data Conversa</th>
+                        <th data-field="dataVigenciaInicio">Vigência Início</th>
+                        <th data-field="dataVigenciaFim">Vigência Fim</th>
+                        <th data-field="ambiente.nome">Ambiente</th>
+                    </tr>
+                  </thead>
+                </table>
               </div>
             </div>
           
+            <div class="col-lg-6 col-md-6">
+              
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <div id="conversa" class="conversa">
+                  </div>
+                  
+                  <form action="#" id="form-evento" class="form" >
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    <input type="hidden" id="idConversa" value="" />
+                
+                    <div class="col-lg-10 col-md-9 col-sm-10 col-xs-10">
+                      <div class="form-group">
+                        <textarea class="form-control" rows="3" id="conteudo" name="conteudo"></textarea>
+                      </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 pull-right">
+                      <a class="btn btn-default" href="#">Enviar</a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            
+            </div>
+            
           </div>
-
           
         </div>
       </div>
@@ -96,12 +109,12 @@
 
 
 <script id="viewTmplMensagem" type="text/x-jsrender">
-<li class="self">
-  <div class="messages">
+<div class="col-lg-12 col-md-12">
+  <div class="{{:htmlclass}} col-lg-10 col-md-10 col-sm-10 col-xs-10">
     <p>{{:conteudo}}</p>
-    <span>{{:usuario.nome}}</span>
+    <span>{{:usuario.nome}}</span><span class="tempo"> - {{:dataEnvio}}</span>
   </div>
-</li>
+</div>
 </script>  
 
 <script src="${context}/js/gerenciador/conversas.js"></script>
@@ -113,26 +126,32 @@
   cursor: pointer;
 }
 
-.conversation li {
-  display: flex;
+.conversa {
+  height: 300px;
+  overflow: auto;
+
 }
 
+.self {
+  margin: 5px 5px 5px 5px;
+  padding: 5px 5px 5px 5px;
+  border: 1px solid #D5C3C3;
 
-
-html,body{
-height:100%;
+  float : right;
 }
 
-.fill { 
-    min-height: 100%;
-    height: 300px;
-    overflow: auto;
-}
-  
-.messages {
-  margin-right: 10px;
-}  
+.other {
+  margin: 5px 5px 5px 5px;
+  padding: 5px 5px 5px 5px;
+  border: 1px solid #D5C3C3;
 
+  float : left;
+}
+
+.tempo {
+  font-size: small;
+  color: #9d9d9d;
+}
 
 </style>
 
