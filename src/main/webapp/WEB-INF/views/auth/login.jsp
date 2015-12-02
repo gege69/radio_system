@@ -65,7 +65,9 @@ $(function(){
     var maximum = 8;
     var randomnumber = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
     
-    $('#logo').addClass('animated infinite ' + opcoes[randomnumber]);
+//     $('#logo').addClass('animated intfinite' + opcoes[randomnumber]);
+
+    $('#logo').addClass('animated flipInX');
     
 });
 

@@ -30,6 +30,8 @@ var carregaMensagens = function( e, row, el )
         makeListTmpl( json );
         
         $("#idConversa").val( row.idConversa );
+        $("#dataVigenciaInicio").val( row.dataVigenciaInicio );
+        $("#dataVigenciaFim").val( row.dataVigenciaFim );
         
         $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
         
@@ -107,6 +109,16 @@ $(function(){
     });
    
     $('#btnSalvar').on('click', salvar);
+    
+    $('.input-group.date').datepicker({
+        format: "dd/mm/yyyy",
+        clearBtn: true,
+        language: "pt-BR",
+        todayBtn : "linked",
+        autoclose : true
+    });
+    
+//    $('.input-group.date').datepicker('update', new Date());
     
 //    getDados( $('#idUsuario').val() );
     

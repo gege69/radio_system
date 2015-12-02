@@ -3,13 +3,17 @@ package br.com.radio.web;
 import java.security.Principal;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,6 +75,33 @@ public class MensagemController extends AbstractController {
 		JSONBootstrapGridWrapper<Conversa> jsonList = new JSONBootstrapGridWrapper<Conversa>(conversas, conversaPage.getTotalElements() );
 
 		return jsonList;
+	}
+	
+	
+	@RequestMapping( value = { "/conversas", "/api/conversas" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveAmbiente( @RequestBody @Valid Conversa conversaDTO, BindingResult result )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
 	}
 	
 	
