@@ -89,6 +89,12 @@ public class AmbienteService {
 		validaLogin( ambiente );
 		
 		criaExpedienteDefault( ambiente );
+		
+		byte[] logo = Base64.getDecoder().decode( Constantes.logoRadio );
+		
+		ambiente.setLogomarca( logo );
+		ambiente.setLogomimetype( "image/png" );
+		
 
 		Usuario usuario = usuarioService.registerNewUserPlayer( ambiente );
 		

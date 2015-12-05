@@ -17,9 +17,12 @@ import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.exception.EmailExistsException;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.Empresa;
 import br.com.radio.model.Perfil;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.UsuarioPerfil;
+import br.com.radio.repository.EmpresaRepository;
+import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.UsuarioPerfilRepository;
 import br.com.radio.repository.UsuarioRepository;
 
@@ -34,6 +37,12 @@ public class UsuarioService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private EmpresaRepository empresaRepo;
+	
+	@Autowired
+	private PerfilRepository perfilRepo;
 	
 	public void changeUserPassword( String name, AlterarSenhaDTO alterarSenhaDTO )
 	{
@@ -58,6 +67,8 @@ public class UsuarioService {
 		}
 	}
 
+	
+	@Transactional
 	public Usuario registraNovoUsuarioGerenciador( UserDTO dto )
 	{
 		// Proteger de algum jeito contra brute force com memoization talvez
@@ -70,6 +81,9 @@ public class UsuarioService {
 		if ( StringUtils.isBlank( dto.getCdEmail() ) )
 			throw new RuntimeException( "Email é obrigatório" );
 		
+		if ( StringUtils.isBlank( dto.getPassword() ) )
+			throw new RuntimeException( "Senha está em branco." );
+		
 		Usuario usuario = new Usuario();
 		
 		usuario.setEmail( dto.getCdEmail() );
@@ -81,7 +95,29 @@ public class UsuarioService {
 		usuario.setAtivo( true );
 		usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
 		
+		Empresa empresa = new Empresa();
+		
+		empresa.setAtivo( true );
+		empresa.setCnpj( "46511666000105" );
+		empresa.setRazaosocial( "teste" );
+		empresa.setCodigo( "teste" );
+		empresa.setDominio( "teste" );
+		empresa.setDataCriacao( new Date() );
+		empresa.setNomefantasia( "teste" );
+		
+		empresaRepo.save( empresa );
+		
+
+		usuario.setEmpresa( empresa );
+		
 		usuarioRepo.saveAndFlush( usuario );
+		
+		UsuarioPerfil usuPerfil = new UsuarioPerfil();
+		
+		usuPerfil.setPerfil( perfilRepo.findByNome( "DESENVOLVEDOR" ) );
+		usuPerfil.setUsuario( usuario );
+		
+		usuarioPerfilRepo.save( usuPerfil );
 		
 		return usuario;
 	}
@@ -91,6 +127,8 @@ public class UsuarioService {
 	@Transactional
 	public Usuario saveUsuarioGerenciador( UsuarioGerenciadorDTO usuarioGerenciadorDTO )
 	{
+		Empresa empresa = empresaRepo.findOne( 1l );
+		
 		Long countUsuarios = 0l;
 		
 		Usuario usuarioDTO = usuarioGerenciadorDTO.getUsuario();
@@ -123,6 +161,11 @@ public class UsuarioService {
 		usuario.setNome( usuarioDTO.getNome() );
 		usuario.setLogin( usuarioDTO.getLogin() );
 		usuario.setEmail( usuarioDTO.getEmail() );
+		
+		if ( usuarioDTO.getEmpresa() != null )
+			usuario.setEmpresa( usuarioDTO.getEmpresa() );
+		else
+			usuario.setEmpresa( empresa );
 
 		if ( usuarioDTO.getAtivo() == null )
 			usuarioDTO.setAtivo( false );

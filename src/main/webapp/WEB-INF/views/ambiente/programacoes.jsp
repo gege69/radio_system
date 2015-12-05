@@ -348,7 +348,7 @@
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: '${context}/generos',    // busca a lista de gêneros geral ( não restringe pelo ambiente )
+            url: '${context}/ambientes/${idAmbiente}/generos',
             dataType: 'json'
         }).done( function(json){
             

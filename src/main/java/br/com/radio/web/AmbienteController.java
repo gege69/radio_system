@@ -334,7 +334,7 @@ public class AmbienteController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getEmpresa().getIdEmpresa() == null )
 			return null;
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
@@ -348,7 +348,7 @@ public class AmbienteController extends AbstractController {
 
 	
 	@RequestMapping( value = { "/ambientes", "/api/ambientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result )
+	public @ResponseBody String saveAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
 		
@@ -360,6 +360,13 @@ public class AmbienteController extends AbstractController {
 		{
 			try
 			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getEmpresa().getIdEmpresa() == null )
+					throw new RuntimeException("Empresa do usuário não econtrada");
+				
+				ambiente.setEmpresa( usuario.getEmpresa() );
+				
 				ambienteService.saveAmbiente( ambiente );
 				
 				programacaoMusicalService.verificaECriaProgramacaoDefault( ambiente );

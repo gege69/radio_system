@@ -6,6 +6,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import br.com.radio.config.AppConfig;
@@ -44,6 +46,14 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
         registration.setMultipartConfig(getMultipartConfigElement());
     }
  
+	
+//	@Override
+//    protected DispatcherServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
+//        final DispatcherServlet dispatcherServlet = super.createDispatcherServlet(servletAppContext);
+//        dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
+//        return dispatcherServlet;
+//    }
+	
     private MultipartConfigElement getMultipartConfigElement() {
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement( LOCATION, MAX_FILE_SIZE, MAX_REQUEST_SIZE, FILE_SIZE_THRESHOLD);
         return multipartConfigElement;

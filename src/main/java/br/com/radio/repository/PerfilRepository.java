@@ -6,6 +6,6 @@ import br.com.radio.model.Perfil;
 
 public interface PerfilRepository extends JpaRepository<Perfil, Long> {
 
-	// talvez coloque o campo empresa aqui nos perfis
+	Perfil findByNome( String nome );
 	
 }
