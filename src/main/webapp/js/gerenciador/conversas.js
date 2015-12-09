@@ -2,6 +2,8 @@
 
 var $table = $('#table-conversas');
 
+var $tableparticipantes = $('#table-participantes');
+
 function queryParamsConversas(params) {
 
     params.pageNumber = $table.bootstrapTable('getOptions').pageNumber;
@@ -9,6 +11,12 @@ function queryParamsConversas(params) {
     return params;
 }
 
+function queryParamsParticipantes(params) {
+
+    params.pageNumber = $tableparticipantes.bootstrapTable('getOptions').pageNumber;
+    
+    return params;
+}
 
 
 var carregaMensagens = function( e, row, el )
@@ -34,6 +42,8 @@ var carregaMensagens = function( e, row, el )
         $("#dataVigenciaFim").val( row.dataVigenciaFim );
         
         $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
+        
+        mostraMensagens();
         
     });
 }
@@ -100,6 +110,47 @@ var salvar = function(){
     
 };
 
+var habilitaNovaMensagem = function(){
+    
+    $('#btnNovaMensagem').removeClass('btn-default');
+    $('#btnNovaMensagem').addClass('btn-primary');
+}
+
+var desabilitaNovaMensagem = function(){
+    
+    $('#btnNovaMensagem').removeClass('btn-primary');
+    $('#btnNovaMensagem').addClass('btn-default');
+}
+
+
+var mostraSelecaoParticipantes = function(){
+
+    desabilitaNovaMensagem();
+    
+    $tableparticipantes.bootstrapTable('uncheckAll');
+    
+    $tableparticipantes.bootstrapTable('refresh');
+    
+    $('#selecao-participantes').show();
+    $('#painel-mensagens').hide();
+    
+    
+};
+
+var mostraMensagens = function(){
+
+    habilitaNovaMensagem();
+    
+    $tableparticipantes.bootstrapTable('uncheckAll');
+    $tableparticipantes.bootstrapTable('refresh');
+    
+    $('#selecao-participantes').hide();
+    $('#painel-mensagens').show();
+    
+    
+};
+
+
 $(function(){
     
     var token = $("input[name='_csrf']").val();
@@ -124,6 +175,11 @@ $(function(){
     
     $('#table-conversas').on('click-row.bs.table', function( e, row, el ){
         carregaMensagens( e, row, el );
+    });
+    
+    
+    $('#btnNovaMensagem').on('click', function(){
+        mostraSelecaoParticipantes();        
     });
 
     

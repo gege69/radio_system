@@ -202,6 +202,7 @@ public class GerenciadorController extends AbstractController {
 	@PreAuthorize("hasAuthority('USUARIOS')")
 	public @ResponseBody JSONListWrapper<Usuario> getUsuarios( @RequestParam(value="pagina", required=false) Integer pagina, 
 																 @RequestParam(value="limit", required=false) Integer limit,
+																 @RequestParam(value="all", required=false) Boolean all,
 																 Principal principal )
 	{
 		// Pegando a empresa pelo usuário logado
@@ -211,8 +212,15 @@ public class GerenciadorController extends AbstractController {
 			return null;
 		
 		Pageable pageable = getPageable( pagina, limit );
-			
-		Page<Usuario> usuarioPage = usuarioRepo.findByEmpresaAndUsuarioTipo( pageable, usuario.getEmpresa(), UsuarioTipo.GERENCIADOR );
+		
+		
+		Page<Usuario> usuarioPage = null;
+		
+		if ( all != null && all )
+			usuarioPage = usuarioRepo.findByEmpresa( pageable, usuario.getEmpresa() );
+		else
+			usuarioPage = usuarioRepo.findByEmpresaAndUsuarioTipo( pageable, usuario.getEmpresa(), UsuarioTipo.GERENCIADOR );
+
 		
 		JSONListWrapper<Usuario> jsonList = new JSONListWrapper<Usuario>(usuarioPage.getContent(), usuarioPage.getTotalElements() );
 

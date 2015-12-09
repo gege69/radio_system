@@ -22,4 +22,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	
 	Page<Usuario> findByEmpresaAndUsuarioTipo( Pageable pageable, Empresa empresa, UsuarioTipo usuarioTipo );
 	
+	Page<Usuario> findByEmpresa( Pageable pageable, Empresa empresa );
+	
 }

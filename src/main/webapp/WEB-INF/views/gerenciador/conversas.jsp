@@ -20,7 +20,7 @@
               <div class="row">
                 <div class="col-lg-12">
                   <div class="pull-right">
-                    <a class="btn btn-primary" href="#"><i class="fa fa-envelope-o"></i> Nova Mensagem</a>
+                    <a class="btn btn-primary" href="#" id="btnNovaMensagem"><i class="fa fa-envelope-o"></i> Nova Mensagem</a>
                   </div>
                 </div>  
               </div>
@@ -51,44 +51,49 @@
               </div>
             </div>
           
-            <div id="selecao-ambientes" class="col-lg-6 col-md-6" style="display: none;" >
-
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="pull-right">
-                    <a class="btn btn-primary" href="#"><i class="fa fa-envelope-o"></i> Nova Mensagem</a>
-                  </div>
-                </div>  
-              </div>
-
-              <div class="row spacer-vertical10">            
-                <table  
-                 id="table-conversas"
-                 class="tabela-conversas"
-                 data-toggle="table"
-                 data-url="${context}/conversas"
-                 data-side-pagination="server"
-                 data-pagination="true"
-                 data-page-size=7
-                 data-page-list="[5]"
-                 data-locale = "pt_BR"
-                 data-height="400"
-                 data-query-params="queryParamsConversas" >
-                  <thead>
-                    <tr>
-                        <th data-field="idConversa">Id</th>
-                        <th data-field="dataCriacao">Data Conversa</th>
-                        <th data-field="ambiente.nome">Ambiente</th>
-                        <th data-field="dataVigenciaInicio">Vigência Início</th>
-                        <th data-field="dataVigenciaFim">Vigência Fim</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
-          
-            <div class="col-lg-6 col-md-6">
+            <div id="selecao-participantes" class="col-lg-6 col-md-6" style="display: none;" >
               
+              <div class="panel panel-default">
+                <div class="panel-body">
+
+                  <h4>Escolha os participantes da Conversação <br/><small>Você será incluído automaticamente</small></h4>
+                  <div class="row spacer-vertical10">            
+                    <table  
+                     id="table-participantes"
+                     class="table-participantes"
+                     data-toggle="table"
+                     data-url="${context}/usuarios?all=true"
+                     data-side-pagination="server"
+                     data-pagination="true"
+                     data-page-size=6
+                     data-page-list="[5]"
+                     data-locale = "pt_BR"
+                     data-height="300"
+                     data-query-params="queryParamsParticipantes" >
+                      <thead>
+                        <tr>
+                            <th data-field="state" data-checkbox="true"></th>
+                            <th data-field="nome">Nome</th>
+                            <th data-field="login">Login</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="pull-right">
+                        <a class="btn btn-primary" href="#" id="btnIniciarConversa">Iniciar <i class="fa fa-arrow-right"></i></a>
+                      </div>
+                    </div>  
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          
+            <div id="painel-mensagens" class="col-lg-6 col-md-6">
+
               <div class="panel panel-default">
                 <div class="panel-body">
                 
@@ -139,7 +144,6 @@
                   
                 </div>
               </div>
-            
             </div>
             
           </div>
