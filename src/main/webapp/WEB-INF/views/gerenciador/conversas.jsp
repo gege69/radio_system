@@ -9,6 +9,11 @@
     </div>
 
     <div class="row">
+    
+      <div class="row" id="alertArea"> 
+      </div>
+      
+    
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Mensagens</h3>
@@ -28,7 +33,7 @@
               <div class="row spacer-vertical10">            
                 <table  
                  id="table-conversas"
-                 class="tabela-conversas"
+                 class="table-conversas"
                  data-toggle="table"
                  data-url="${context}/conversas"
                  data-side-pagination="server"
@@ -56,7 +61,7 @@
               <div class="panel panel-default">
                 <div class="panel-body">
 
-                  <h4>Escolha os participantes da Conversação <br/><small>Você será incluído automaticamente</small></h4>
+                  <h4>Escolha os participantes da Conversação <br/><small>(Você será incluído automaticamente)</small></h4>
                   <div class="row spacer-vertical10">            
                     <table  
                      id="table-participantes"
@@ -64,10 +69,9 @@
                      data-toggle="table"
                      data-url="${context}/usuarios?all=true"
                      data-side-pagination="server"
-                     data-pagination="true"
-                     data-page-size=6
-                     data-page-list="[5]"
+                     data-pagination="false"
                      data-locale = "pt_BR"
+                     data-show-pagination-switch = "false"
                      data-height="300"
                      data-query-params="queryParamsParticipantes" >
                       <thead>
@@ -80,10 +84,44 @@
                     </table>
                   </div>
                   
-                  <div class="row">
+                  <div class="row spacer-vertical10">
+                    
+                    <form action="#" id="form-inicio-conversa" class="form" >
+                    
+                      <div class="form-group col-lg-9 col-md-9 col-sm-9">
+                        <label for="dataVigenciaInicio" class="control-label col-lg-4 col-md-4 col-sm-4">Início:</label>
+                        <div class="input-group date col-lg-7 col-md-7 col-sm-6">
+                          <input type="text" class="form-control" id="dataVigenciaInicio" name="dataVigenciaInicio"/>
+                          <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="form-group col-lg-9 col-md-9 col-sm-9">
+                        <label for="dataVigenciaFim" class="control-label col-lg-4 col-md-4 col-sm-4">Fim:</label>
+                        <div class="input-group date col-lg-7 col-md-7 col-sm-6">
+                          <input type="text" class="form-control" id="dataVigenciaFim" name="dataVigenciaFim">
+                          <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div class="form-group col-lg-9 col-md-9 col-sm-9">
+                        <label for="emailContato" class="control-label col-lg-4 col-md-4 col-sm-4">Email Contato:</label>
+                        <div class="input-group col-lg-7 col-md-7 col-sm-6">
+                          <input type="email" class="form-control" id="emailContato"  name="emailContato">
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </form>
+                  
+                  <div class="row spacer-vertical10">
                     <div class="col-lg-12">
                       <div class="pull-right">
-                        <a class="btn btn-primary" href="#" id="btnIniciarConversa">Iniciar <i class="fa fa-arrow-right"></i></a>
+                        <a class="btn btn-primary" href="#" id="btnIniciar">Iniciar <i class="fa fa-arrow-right"></i></a>
                       </div>
                     </div>  
                   </div>
@@ -97,7 +135,7 @@
               <div class="panel panel-default">
                 <div class="panel-body">
                 
-                  <form action="#" id="form-evento" class="form" >
+                  <form action="#" id="form-mensagem" class="form" >
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     <input type="hidden" id="idConversa" name="idConversa" value="" />
                     
@@ -117,28 +155,7 @@
                       </div>
                     </div>
                     
-                    <div class="row spacer-vertical10">
                     
-                      <div class="form-group col-lg-7 col-md-7 col-sm-7">
-                        <label for="login" class="control-label col-lg-3 col-md-3 col-sm-3">Início:</label>
-                        <div class="input-group date col-lg-8 col-md-8 col-sm-6">
-                          <input type="text" class="form-control" id="dataVigenciaInicio" name="dataVigenciaInicio"/>
-                          <span class="input-group-addon">
-                            <i class="fa fa-calendar"></i>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div class="form-group col-lg-7 col-md-7 col-sm-7">
-                        <label for="login" class="control-label col-lg-3 col-md-3 col-sm-3">Fim:</label>
-                        <div class="input-group date col-lg-8 col-md-8 col-sm-6">
-                          <input type="text" class="form-control" id="dataVigenciaFim" name="dataVigenciaFim">
-                          <span class="input-group-addon">
-                            <i class="fa fa-calendar"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
                   </form>
                   
                   
@@ -171,6 +188,8 @@
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
@@ -197,22 +216,26 @@
 
 <style type="text/css">
 
-.tabela-conversas tr{
+.table-conversas tr{
+  cursor: pointer;
+}
+
+.table-participantes tr{
   cursor: pointer;
 }
 
 .conversa {
   height: 300px;
   overflow: auto;
-  background: #e5e5e5; 
-
 }
 
 .message {
   margin: 5px 5px 5px 5px;
   padding: 5px 5px 5px 5px;
 
-  background: white;
+/*   background: #e5e5e5; */
+  background: #DDDDDD;
+  
   border-radius: 2px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 

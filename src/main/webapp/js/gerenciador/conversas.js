@@ -15,6 +15,8 @@ function queryParamsParticipantes(params) {
 
     params.pageNumber = $tableparticipantes.bootstrapTable('getOptions').pageNumber;
     
+    params.sort = "nome";
+    
     return params;
 }
 
@@ -63,50 +65,55 @@ var makeListTmpl = function(json){
 
 
 
-var validaForm = function(){
-    
-    var isOk = true;
-    
-    removeErros( $('#usuario-form') );
-    
-    var arrayCampos = [
-                        {field: "conteudo",           desc : "Conteúdo"}
-                      ];
-    
-    isOk = validaCampos( arrayCampos );
-    
-    return isOk;
-};
-
-
-
 var salvar = function(){
     
-    if ( validaForm() ){
+    var dados = JSON.stringify( $('#form-inicio-conversa').serializeJSON() );
 
-        var dados = JSON.stringify( $('#mensagem-form').serializeJSON() );
-        
-        var url = buildUrl( "/usuarios" );
-
-        $.ajax({
-            
-            type: 'POST',
-            contentType: 'application/json',
-            url: url,
-            dataType: 'json',
-            data:  dados
-            
-        }).done( function(json){ 
-
-            if (json.ok == 1){
-                
-                jump(''); // topo da pagina
-            }
-            else{
-                preencheErros( json.errors );
-            }
-        });
+    var selecao = $tableparticipantes.bootstrapTable('getSelections');
+    
+    if ( selecao.length <= 1 )
+    {
+        preencheAlertGeral("alertArea", "Escolha ao menos 2 participantes para essa conversa.", "danger");
+        return false;
     }
+    
+    var countPlayers = 0;
+    
+    $(selecao).each(function(){
+        var linha = this;
+
+        if ( linha.usuarioTipo == "PLAYER" )
+            countPlayers++;
+    });
+    
+    if ( countPlayers > 1 )
+    {
+        preencheAlertGeral("alertArea", "Escolha apenas 1 ambiente para conversar.", "danger");
+        return false;
+    }
+    
+    
+    
+    var url = buildUrl( "/conversa" );
+
+    $.ajax({
+        
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data:  dados
+        
+    }).done( function(json){ 
+
+        if (json.idConversa != null){
+            
+            $("#idConversa").val( json.idConversa );
+        }
+        else{
+            preencheErros( json.errors );
+        }
+    });
     
 };
 
@@ -151,6 +158,25 @@ var mostraMensagens = function(){
 };
 
 
+var iniciaConversa = function()
+{
+    salvar();
+    
+    mostraMensagens();
+    
+    $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
+}
+
+
+var marcaLinha = function( e, row, el )
+{
+    var index = $(el).attr('data-index');
+
+    if ( index != null && index >= 0 )
+        $tableparticipantes.bootstrapTable('check', index); 
+}
+
+
 $(function(){
     
     var token = $("input[name='_csrf']").val();
@@ -169,17 +195,20 @@ $(function(){
         autoclose : true
     });
     
-//    $('.input-group.date').datepicker('update', new Date());
-    
-//    getDados( $('#idUsuario').val() );
-    
     $('#table-conversas').on('click-row.bs.table', function( e, row, el ){
         carregaMensagens( e, row, el );
     });
     
+    $('#table-participantes').on('click-row.bs.table', function( e, row, el ){
+        marcaLinha( e, row, el );
+    });
     
     $('#btnNovaMensagem').on('click', function(){
         mostraSelecaoParticipantes();        
+    });
+    
+    $('#btnIniciar').click( function(){ 
+       iniciaConversa();       
     });
 
     

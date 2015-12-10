@@ -200,9 +200,10 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping( value = { "/usuarios", "/api/usuarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('USUARIOS')")
-	public @ResponseBody JSONListWrapper<Usuario> getUsuarios( @RequestParam(value="pagina", required=false) Integer pagina, 
+	public @ResponseBody JSONListWrapper<Usuario> getUsuarios( @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
 																 @RequestParam(value="all", required=false) Boolean all,
+																 @RequestParam(value="sort", required=false) String sort,
 																 Principal principal )
 	{
 		// Pegando a empresa pelo usuário logado
@@ -211,7 +212,7 @@ public class GerenciadorController extends AbstractController {
 		if ( usuario == null || usuario.getEmpresa() == null )
 			return null;
 		
-		Pageable pageable = getPageable( pagina, limit );
+		Pageable pageable = getPageable( pageNumber, limit, "asc", sort );
 		
 		
 		Page<Usuario> usuarioPage = null;
