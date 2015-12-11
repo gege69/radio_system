@@ -67,7 +67,7 @@
                      id="table-participantes"
                      class="table-participantes"
                      data-toggle="table"
-                     data-url="${context}/usuarios?all=true"
+                     data-url="${context}/conversas/usuarios?all=true"
                      data-side-pagination="server"
                      data-pagination="false"
                      data-locale = "pt_BR"

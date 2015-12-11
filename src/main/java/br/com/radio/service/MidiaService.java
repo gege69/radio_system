@@ -245,7 +245,7 @@ public class MidiaService {
 		{
 			Empresa empresa = empresaRepo.findOne( 1l );
 			
-			Parametro parametro = parametroRepo.findByCodigoAndEmpresa( "BASE_MIDIA_PATH", empresa );
+			Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
 			String basePath = parametro.getValor();
 			
 			File diretorio = new File( basePath );
@@ -411,7 +411,7 @@ public class MidiaService {
 		{
 			String basePath = "";
 			
-			Parametro parametro = parametroRepo.findByCodigoAndEmpresa( "BASE_MIDIA_PATH", empresa );
+			Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
 			basePath = parametro.getValor();
 
 			midia = midiaRepo.findByFilehash( hash );

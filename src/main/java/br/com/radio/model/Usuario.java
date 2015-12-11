@@ -2,7 +2,9 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,11 +21,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -91,6 +96,10 @@ public class Usuario implements Serializable {
 	@JoinColumn( name="id_ambiente", nullable=true )
 	private Ambiente ambiente;
 	
+	
+	@Transient
+	private Map<String,String> usuarioView = new HashMap<String,String>();
+
 	
 	public Usuario()
 	{
@@ -252,6 +261,19 @@ public class Usuario implements Serializable {
 	{
 		this.ambiente = ambiente;
 	}
+
+	@JsonAnyGetter
+	public Map<String, String> getUsuarioView()
+	{
+		return usuarioView;
+	}
+
+	@JsonAnySetter
+	public void setUsuarioView( Map<String, String> usuarioView )
+	{
+		this.usuarioView = usuarioView;
+	}
+	
 	
 	
 	

@@ -9,4 +9,6 @@ public interface ParametroRepository extends JpaRepository<Parametro, Long> {
 
 	Parametro findByCodigoAndEmpresa( String codigo, Empresa empresa );
 	
+	Parametro findByCodigo( String codigo );
+	
 }

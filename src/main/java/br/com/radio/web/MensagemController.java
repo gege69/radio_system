@@ -19,13 +19,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONBootstrapGridWrapper;
+import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Conversa;
 import br.com.radio.model.Mensagem;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.ConversaRepository;
 import br.com.radio.repository.MensagemRepository;
+import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.UsuarioService;
 
 @Controller
@@ -41,6 +44,9 @@ public class MensagemController extends AbstractController {
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Autowired
+	private UsuarioRepository usuarioRepo;
+
 
 	@RequestMapping(value="/conversas/view", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('MENSAGENS')")
@@ -91,6 +97,10 @@ public class MensagemController extends AbstractController {
 		{
 			try
 			{
+				if ( conversaDTO != null )
+					System.out.println("opa");
+				
+				
 				
 				jsonResult = writeOkResponse();
 			}
@@ -104,6 +114,46 @@ public class MensagemController extends AbstractController {
 		return jsonResult;
 	}
 	
+	
+	
+	
+	@RequestMapping( value = { "/conversas/usuarios", "/api/conversas/usuarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Usuario> getUsuarios( @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 @RequestParam(value="all", required=false) Boolean all,
+																 @RequestParam(value="sort", required=false) String sort,
+																 Principal principal )
+	{
+		// Pegando a empresa pelo usuário logado
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getEmpresa() == null )
+			return null;
+		
+		Pageable pageable = getPageable( pageNumber, limit, "asc", sort );
+		
+		
+		Page<Usuario> usuarioPage = null;
+		
+		if ( all != null && all )
+			usuarioPage = usuarioRepo.findByEmpresa( pageable, usuario.getEmpresa() );
+		else
+			usuarioPage = usuarioRepo.findByEmpresaAndUsuarioTipo( pageable, usuario.getEmpresa(), UsuarioTipo.GERENCIADOR );
+
+		List<Usuario> usuariosList = usuarioPage.getContent();
+		
+		usuariosList.forEach( u -> {
+
+			if ( u.getAmbiente() != null )
+				u.getUsuarioView().put( "idAmbiente", u.getAmbiente().getIdAmbiente().toString() );
+		});
+		
+		
+		JSONListWrapper<Usuario> jsonList = new JSONListWrapper<Usuario>(usuarioPage.getContent(), usuarioPage.getTotalElements() );
+
+		return jsonList;
+	}
+
 	
 	
 	@RequestMapping( value = { "/conversas/{idConversa}/mensagens", "/api/conversas/{idConversa}/mensagens" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )

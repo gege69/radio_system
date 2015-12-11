@@ -79,11 +79,16 @@ var salvar = function(){
     
     var countPlayers = 0;
     
+    var idPlayer = 0;
+    
     $(selecao).each(function(){
         var linha = this;
 
         if ( linha.usuarioTipo == "PLAYER" )
+        {
             countPlayers++;
+            idPlayer = linha.idUsuario;
+        }
     });
     
     if ( countPlayers > 1 )
@@ -92,9 +97,18 @@ var salvar = function(){
         return false;
     }
     
-    
-    
     var url = buildUrl( "/conversa" );
+
+    var usuariosArray = [];
+    
+    usuariosArray.push( { idUsuario : idPlayer} );
+    
+    var conversa = {};
+    
+    conversa.ambiente = { idAmbiente : 1 };  
+    conversa.usuarios = usuariosArray;
+    conversa.dataVigenciaInicio = $("#dataVigenciaInicio").val(); 
+    conversa.dataVigenciaFim = $("#dataVigenciaFim").val(); 
 
     $.ajax({
         
@@ -102,7 +116,7 @@ var salvar = function(){
         contentType: 'application/json',
         url: url,
         dataType: 'json',
-        data:  dados
+        data:  conversa
         
     }).done( function(json){ 
 
