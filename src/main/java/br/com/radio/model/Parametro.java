@@ -26,8 +26,8 @@ public class Parametro implements Serializable {
 	private Long idParametro;
 	
 	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn( name="id_empresa", nullable=false )
-	private Empresa empresa;
+	@JoinColumn( name="id_cliente", nullable=false )
+	private Cliente cliente;
 	
 	@NotNull( message = "O código do parâmetro é de preenchimento obrigatório" )
 	@Column( name = "codigo", nullable = false, columnDefinition = "TEXT" )
@@ -53,14 +53,14 @@ public class Parametro implements Serializable {
 		this.idParametro = idParametro;
 	}
 
-	public Empresa getEmpresa()
+	public Cliente getCliente()
 	{
-		return empresa;
+		return cliente;
 	}
 
-	public void setEmpresa( Empresa empresa )
+	public void setCliente( Cliente cliente )
 	{
-		this.empresa = empresa;
+		this.cliente = cliente;
 	}
 
 	public String getDescricao()
@@ -135,7 +135,7 @@ public class Parametro implements Serializable {
 	@Override
 	public String toString()
 	{
-		return String.format( "Parametro [idParametro=%s, empresa=%s, codigo=%s, valor=%s, descricao=%s, type=%s]", idParametro, empresa, codigo, valor, descricao, type );
+		return String.format( "Parametro [idParametro=%s, cliente=%s, codigo=%s, valor=%s, descricao=%s, type=%s]", idParametro, cliente, codigo, valor, descricao, type );
 	}
 	
 }

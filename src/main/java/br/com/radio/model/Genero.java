@@ -13,19 +13,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 
 /**
  * Gênero
  * 
- * TODO: Talvez colocar um ID_EMPRESA porque alguns gêneros são muito característicos de uma certa empresa....
+ * TODO: Talvez colocar um ID_CLIENTE porque alguns gêneros são muito característicos de uma certa empresa....
  * 
  * @author pazin
  *

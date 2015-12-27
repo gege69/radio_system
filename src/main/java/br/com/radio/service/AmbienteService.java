@@ -18,7 +18,7 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
-import br.com.radio.model.Empresa;
+import br.com.radio.model.Cliente;
 import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Genero;
@@ -27,7 +27,7 @@ import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
-import br.com.radio.repository.EmpresaRepository;
+import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.EventoHorarioRepository;
 import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.GeneroRepository;
@@ -47,7 +47,7 @@ public class AmbienteService {
 	private AmbienteGeneroRepository ambienteGeneroRepo;
 	
 	@Autowired
-	private EmpresaRepository empresaRepo;
+	private ClienteRepository clienteRepo;
 	
 	@Autowired
 	private MidiaService midiaService;
@@ -78,12 +78,11 @@ public class AmbienteService {
 	public Ambiente saveAmbiente( Ambiente ambiente )
 	{
 		// colocar aqui validações de endereço antes de salvar...
-		if ( ambiente.getEmpresa() == null )
+		if ( ambiente.getCliente() == null )
 		{
-			Empresa empresa = empresaRepo.findByCodigo( "Eterion" );
-			ambiente.setEmpresa( empresa );
-			
-//			throw new RuntimeException("Empresa não determinada");
+			Cliente cliente = clienteRepo.findByCodigo( "Eterion" );
+			ambiente.setCliente( cliente );
+
 		}
 
 		validaLogin( ambiente );

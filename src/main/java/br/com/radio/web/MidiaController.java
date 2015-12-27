@@ -135,7 +135,7 @@ public class MidiaController extends AbstractController {
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -158,7 +158,7 @@ public class MidiaController extends AbstractController {
 			{
 				try
 				{
-					midiaService.saveUpload( file, categorias, usuario.getEmpresa(), ambiente, descricao );
+					midiaService.saveUpload( file, categorias, usuario.getCliente(), ambiente, descricao );
 					
 					model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
 				}
@@ -195,14 +195,14 @@ public class MidiaController extends AbstractController {
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
 		if ( !file.isEmpty() )
 		{
 			try
 			{
-				midiaService.saveUploadMulti( file, categorias, usuario.getEmpresa(), ambientes );
+				midiaService.saveUploadMulti( file, categorias, usuario.getCliente(), ambientes );
 				
 				model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
 			}
@@ -235,7 +235,7 @@ public class MidiaController extends AbstractController {
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -249,7 +249,7 @@ public class MidiaController extends AbstractController {
 			{
 				try
 				{
-					midiaService.saveUpload( file, codigo, usuario.getEmpresa(), ambiente, descricao );
+					midiaService.saveUpload( file, codigo, usuario.getCliente(), ambiente, descricao );
 					
 					model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
 				}

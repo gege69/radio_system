@@ -19,24 +19,24 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 @Entity
-@Table(name="empresa")
-public class Empresa implements Serializable {
+@Table(name="cliente")
+public class Cliente implements Serializable {
 
 	private static final long serialVersionUID = -7625966973767359067L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_empresa", nullable = false )
-	private Long idEmpresa;
+	@Column( name = "id_cliente", nullable = false )
+	private Long idCliente;
 	
-	@NotNull( message = "O CNPJ da empresa é de preenchimento obrigatório" )
+	@NotNull( message = "O CNPJ do cliente é de preenchimento obrigatório" )
 	@Column( name = "cnpj", nullable = false, length = 14 )
 	private String cnpj;
 
 	@Column( name = "codigo", columnDefinition = "TEXT" )
 	private String codigo;
 	
-	@NotNull( message = "A razão social da empresa é de preenchimento obrigatório" )
+	@NotNull( message = "A razão social do cliente é de preenchimento obrigatório" )
 	@Column( name = "razaosocial", nullable = false, columnDefinition = "TEXT" )
 	private String razaosocial;
 	
@@ -47,7 +47,7 @@ public class Empresa implements Serializable {
 	private String dominio;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)
-	@NotNull( message = "A data de criação da empresa é de preenchimento obrigatório" )	
+	@NotNull( message = "A data de criação do cliente é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
@@ -61,20 +61,20 @@ public class Empresa implements Serializable {
 	@Column( name = "ativo" )
 	private Boolean ativo;
 		
-	public Empresa()
+	public Cliente()
 	{
 		super();
 		this.dataCriacao = new Date();
 	}
 
-	public Long getIdEmpresa()
+	public Long getIdCliente()
 	{
-		return idEmpresa;
+		return idCliente;
 	}
 
-	public void setIdEmpresa( Long idEmpresa )
+	public void setIdCliente( Long idCliente )
 	{
-		this.idEmpresa = idEmpresa;
+		this.idCliente = idCliente;
 	}
 
 	public String getCnpj()
@@ -158,11 +158,17 @@ public class Empresa implements Serializable {
 	}
 
 	@Override
+	public String toString()
+	{
+		return String.format( "Cliente [idCliente=%s, cnpj=%s, nomefantasia=%s]", idCliente, cnpj, nomefantasia );
+	}
+
+	@Override
 	public int hashCode()
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ( ( idEmpresa == null ) ? 0 : idEmpresa.hashCode() );
+		result = prime * result + ( ( idCliente == null ) ? 0 : idCliente.hashCode() );
 		return result;
 	}
 
@@ -175,23 +181,17 @@ public class Empresa implements Serializable {
 			return false;
 		if ( getClass() != obj.getClass() )
 			return false;
-		Empresa other = (Empresa) obj;
-		if ( idEmpresa == null )
+		Cliente other = (Cliente) obj;
+		if ( idCliente == null )
 		{
-			if ( other.idEmpresa != null )
+			if ( other.idCliente != null )
 				return false;
 		}
-		else if ( !idEmpresa.equals( other.idEmpresa ) )
+		else if ( !idCliente.equals( other.idCliente ) )
 			return false;
 		return true;
 	}
 
-	@Override
-	public String toString()
-	{
-		return String.format( "Empresa [idEmpresa=%s, cnpj=%s, razaosocial=%s]", idEmpresa, cnpj, razaosocial );
-	}
-	
-	
+		
 	
 }

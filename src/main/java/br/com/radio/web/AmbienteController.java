@@ -147,10 +147,10 @@ public class AmbienteController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return null;
 		
-		Long count = ambienteRepo.countByEmpresa( usuario.getEmpresa() );
+		Long count = ambienteRepo.countByCliente( usuario.getCliente() );
 		
 		model.addAttribute( "qtdAmbientes", count );
 		
@@ -334,12 +334,12 @@ public class AmbienteController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa().getIdEmpresa() == null )
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
 			return null;
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
 		
-		Page<Ambiente> ambientePage = ambienteRepo.findByEmpresa( pageable, usuario.getEmpresa() );
+		Page<Ambiente> ambientePage = ambienteRepo.findByCliente( pageable, usuario.getCliente() );
 		
 		JSONBootstrapGridWrapper<Ambiente> jsonList = new JSONBootstrapGridWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
 
@@ -362,10 +362,10 @@ public class AmbienteController extends AbstractController {
 			{
 				Usuario usuario = usuarioService.getUserByPrincipal( principal );
 				
-				if ( usuario == null || usuario.getEmpresa().getIdEmpresa() == null )
-					throw new RuntimeException("Empresa do usuário não econtrada");
+				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+					throw new RuntimeException("Cliente do usuário não econtrado");
 				
-				ambiente.setEmpresa( usuario.getEmpresa() );
+				ambiente.setCliente( usuario.getCliente() );
 				
 				ambienteService.saveAmbiente( ambiente );
 				
@@ -718,7 +718,7 @@ public class AmbienteController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
@@ -775,7 +775,7 @@ public class AmbienteController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			throw new ResourceNotFoundException();
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );

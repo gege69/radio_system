@@ -17,11 +17,11 @@ import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.exception.EmailExistsException;
 import br.com.radio.model.Ambiente;
-import br.com.radio.model.Empresa;
+import br.com.radio.model.Cliente;
 import br.com.radio.model.Perfil;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.UsuarioPerfil;
-import br.com.radio.repository.EmpresaRepository;
+import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.UsuarioPerfilRepository;
 import br.com.radio.repository.UsuarioRepository;
@@ -39,7 +39,7 @@ public class UsuarioService {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private EmpresaRepository empresaRepo;
+	private ClienteRepository clienteRepo;
 	
 	@Autowired
 	private PerfilRepository perfilRepo;
@@ -95,20 +95,20 @@ public class UsuarioService {
 		usuario.setAtivo( true );
 		usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
 		
-		Empresa empresa = new Empresa();
+		Cliente cliente = new Cliente();
 		
-		empresa.setAtivo( true );
-		empresa.setCnpj( "46511666000105" );
-		empresa.setRazaosocial( "teste" );
-		empresa.setCodigo( "teste" );
-		empresa.setDominio( "teste" );
-		empresa.setDataCriacao( new Date() );
-		empresa.setNomefantasia( "teste" );
+		cliente.setAtivo( true );
+		cliente.setCnpj( "46511666000105" );
+		cliente.setRazaosocial( "teste" );
+		cliente.setCodigo( "teste" );
+		cliente.setDominio( "teste" );
+		cliente.setDataCriacao( new Date() );
+		cliente.setNomefantasia( "teste" );
 		
-		empresaRepo.save( empresa );
+		clienteRepo.save( cliente );
 		
 
-		usuario.setEmpresa( empresa );
+		usuario.setCliente( cliente );
 		
 		usuarioRepo.saveAndFlush( usuario );
 		
@@ -127,7 +127,7 @@ public class UsuarioService {
 	@Transactional
 	public Usuario saveUsuarioGerenciador( UsuarioGerenciadorDTO usuarioGerenciadorDTO )
 	{
-		Empresa empresa = empresaRepo.findOne( 1l );
+		Cliente cliente = clienteRepo.findOne( 1l );
 		
 		Long countUsuarios = 0l;
 		
@@ -162,10 +162,10 @@ public class UsuarioService {
 		usuario.setLogin( usuarioDTO.getLogin() );
 		usuario.setEmail( usuarioDTO.getEmail() );
 		
-		if ( usuarioDTO.getEmpresa() != null )
-			usuario.setEmpresa( usuarioDTO.getEmpresa() );
+		if ( usuarioDTO.getCliente() != null )
+			usuario.setCliente( usuarioDTO.getCliente() );
 		else
-			usuario.setEmpresa( empresa );
+			usuario.setCliente( cliente );
 
 		if ( usuarioDTO.getAtivo() == null )
 			usuarioDTO.setAtivo( false );
@@ -206,7 +206,7 @@ public class UsuarioService {
 		Usuario usuario = new Usuario();
 		usuario.setLogin( ambiente.getLogin() );
 		usuario.setPassword( ambiente.getPassword() );
-		usuario.setEmpresa( ambiente.getEmpresa() );
+		usuario.setCliente( ambiente.getCliente() );
 		usuario.setNome( ambiente.getNome() );
 		
 		Long countUsuarios = usuarioRepo.countByLogin( usuario.getLogin() ); 

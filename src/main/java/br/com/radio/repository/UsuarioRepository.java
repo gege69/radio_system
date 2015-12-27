@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import br.com.radio.enumeration.UsuarioTipo;
-import br.com.radio.model.Empresa;
+import br.com.radio.model.Cliente;
 import br.com.radio.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
@@ -20,8 +20,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	
 	Usuario findByLogin( String login );
 	
-	Page<Usuario> findByEmpresaAndUsuarioTipo( Pageable pageable, Empresa empresa, UsuarioTipo usuarioTipo );
+	Page<Usuario> findByClienteAndUsuarioTipo( Pageable pageable, Cliente cliente, UsuarioTipo usuarioTipo );
 	
-	Page<Usuario> findByEmpresa( Pageable pageable, Empresa empresa );
+	Page<Usuario> findByCliente( Pageable pageable, Cliente cliente );
 	
 }

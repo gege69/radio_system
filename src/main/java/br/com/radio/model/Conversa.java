@@ -54,8 +54,8 @@ public class Conversa implements Serializable {
 	// Já existe no ambiente... apenas para facilitar
 	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_empresa")
-	private Empresa empresa;
+	@JoinColumn(name="id_cliente")
+	private Cliente cliente;
 	
 	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY)
@@ -220,14 +220,14 @@ public class Conversa implements Serializable {
 		return true;
 	}
 
-	public Empresa getEmpresa()
+	public Cliente getCliente()
 	{
-		return empresa;
+		return cliente;
 	}
 
-	public void setEmpresa( Empresa empresa )
+	public void setCliente( Cliente cliente )
 	{
-		this.empresa = empresa;
+		this.cliente = cliente;
 	}
 
 	@JsonAnyGetter
@@ -242,8 +242,5 @@ public class Conversa implements Serializable {
 		this.conversaView = conversaView;
 	}
 
-	
-	
-	
 	
 }

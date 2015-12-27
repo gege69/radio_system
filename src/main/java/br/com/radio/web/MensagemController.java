@@ -65,12 +65,12 @@ public class MensagemController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return null;
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", "idConversa" );
 		
-		Page<Conversa> conversaPage = conversaRepo.findByEmpresaAndAtivo( pageable, usuario.getEmpresa(), true );
+		Page<Conversa> conversaPage = conversaRepo.findByClienteAndAtivo( pageable, usuario.getCliente(), true );
 		
 		List<Conversa> conversas = conversaPage.getContent();
 		
@@ -127,7 +127,7 @@ public class MensagemController extends AbstractController {
 		// Pegando a empresa pelo usuário logado
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return null;
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", sort );
@@ -136,9 +136,9 @@ public class MensagemController extends AbstractController {
 		Page<Usuario> usuarioPage = null;
 		
 		if ( all != null && all )
-			usuarioPage = usuarioRepo.findByEmpresa( pageable, usuario.getEmpresa() );
+			usuarioPage = usuarioRepo.findByCliente( pageable, usuario.getCliente() );
 		else
-			usuarioPage = usuarioRepo.findByEmpresaAndUsuarioTipo( pageable, usuario.getEmpresa(), UsuarioTipo.GERENCIADOR );
+			usuarioPage = usuarioRepo.findByClienteAndUsuarioTipo( pageable, usuario.getCliente(), UsuarioTipo.GERENCIADOR );
 
 		List<Usuario> usuariosList = usuarioPage.getContent();
 		
@@ -161,7 +161,7 @@ public class MensagemController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return null;
 		
 		Conversa conversa = conversaRepo.findOne( idConversa );
@@ -169,10 +169,10 @@ public class MensagemController extends AbstractController {
 		if ( conversa == null )
 			throw new RuntimeException( "Conversação não encontrada" );
 
-		boolean mesmaEmpresa = conversa.getAmbiente().getEmpresa().getIdEmpresa().equals( usuario.getEmpresa().getIdEmpresa() );
+		boolean mesmaCliente = conversa.getAmbiente().getCliente().getIdCliente().equals( usuario.getCliente().getIdCliente() );
 		
-		if ( conversa.getAmbiente() == null || !mesmaEmpresa )
-			throw new RuntimeException( "Problema com a Empresa" );
+		if ( conversa.getAmbiente() == null || !mesmaCliente )
+			throw new RuntimeException( "Problema com a Cliente" );
 
 		List<Mensagem> mensagens = conversa.getMensagens();
 		

@@ -122,10 +122,10 @@ public class GerenciadorController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return null;
 		
-		Long count = ambienteRepo.countByEmpresa( usuario.getEmpresa() );
+		Long count = ambienteRepo.countByCliente( usuario.getCliente() );
 		
 		model.addAttribute( "qtdAmbientes", count );
 		
@@ -186,7 +186,7 @@ public class GerenciadorController extends AbstractController {
 			if ( usuario != null )
 			{
 				model.addAttribute( "idUsuario", usuario.getIdUsuario() );
-				model.addAttribute( "idEmpresa", usuario.getEmpresa().getIdEmpresa() );
+				model.addAttribute( "idCliente", usuario.getCliente().getIdCliente() );
 			
 				return "gerenciador/usuario";
 			}
@@ -206,10 +206,10 @@ public class GerenciadorController extends AbstractController {
 																 @RequestParam(value="sort", required=false) String sort,
 																 Principal principal )
 	{
-		// Pegando a empresa pelo usuário logado
+		// Pegando a cliente pelo usuário logado
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			return null;
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", sort );
@@ -218,9 +218,9 @@ public class GerenciadorController extends AbstractController {
 		Page<Usuario> usuarioPage = null;
 		
 		if ( all != null && all )
-			usuarioPage = usuarioRepo.findByEmpresa( pageable, usuario.getEmpresa() );
+			usuarioPage = usuarioRepo.findByCliente( pageable, usuario.getCliente() );
 		else
-			usuarioPage = usuarioRepo.findByEmpresaAndUsuarioTipo( pageable, usuario.getEmpresa(), UsuarioTipo.GERENCIADOR );
+			usuarioPage = usuarioRepo.findByClienteAndUsuarioTipo( pageable, usuario.getCliente(), UsuarioTipo.GERENCIADOR );
 
 		
 		JSONListWrapper<Usuario> jsonList = new JSONListWrapper<Usuario>(usuarioPage.getContent(), usuarioPage.getTotalElements() );
@@ -299,7 +299,7 @@ public class GerenciadorController extends AbstractController {
 
 	
 	/**
-	 * Lista todos os gêneros que estejam cadastrados no banco de dados ( não restringe por empresa, talvez possa melhorar )
+	 * Lista todos os gêneros que estejam cadastrados no banco de dados ( não restringe por cliente, talvez possa melhorar )
 	 * 
 	 * @param idAmbiente
 	 * @param response

@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
-import br.com.radio.model.Empresa;
+import br.com.radio.model.Cliente;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.MidiaAmbiente;
@@ -39,7 +39,7 @@ import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.Parametro;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
-import br.com.radio.repository.EmpresaRepository;
+import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
 import br.com.radio.repository.MidiaGeneroRepository;
@@ -77,14 +77,14 @@ public class MidiaService {
 	private GeneroRepository generoRepo;
 	
 	@Autowired
-	private EmpresaRepository empresaRepo;
+	private ClienteRepository clienteRepo;
 	
 	@PersistenceContext
 	protected EntityManager em;
 	
 	
 	@Transactional
-	public void saveUploadMulti( MultipartFile multiPartFile, Long[] categorias, Empresa empresa, Long[] ambientes ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public void saveUploadMulti( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Long[] ambientes ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
@@ -96,7 +96,7 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), empresa, categorias, hash, null );
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, categorias, hash, null );
 
 		boolean aoMenosUm = false;
 		for ( Long id : ambientes )
@@ -180,7 +180,7 @@ public class MidiaService {
 
 				fis = new FileInputStream( f );
 				
-				Midia midia = gravaMidia( fis, f.getName(), ambiente.getEmpresa(), new Long[] { categoria.getIdCategoria() }, hash, "" );
+				Midia midia = gravaMidia( fis, f.getName(), ambiente.getCliente(), new Long[] { categoria.getIdCategoria() }, hash, "" );
 				
 				fis.close();
 				
@@ -243,7 +243,7 @@ public class MidiaService {
 	{
 		try
 		{
-			Empresa empresa = empresaRepo.findOne( 1l );
+			Cliente cliente = clienteRepo.findOne( 1l );
 			
 			Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
 			String basePath = parametro.getValor();
@@ -299,7 +299,7 @@ public class MidiaService {
 				
 				Long size = f.length();
 				
-				Midia midia = gravaMidia( null, f.getName(), empresa, new Long[] { categoria.getIdCategoria() }, hash, "", size.intValue() );
+				Midia midia = gravaMidia( null, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, "", size.intValue() );
 				
 				if ( StringUtils.isBlank( midia.getArtist() ) )
 					midia.setArtist( pasta );
@@ -358,26 +358,26 @@ public class MidiaService {
 	
 	
 	
-	public Midia saveUpload( MultipartFile multiPartFile, String codigoCategoria, Empresa empresa, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUpload( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
 		
 		if ( categoria == null )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
-		return saveUpload( multiPartFile, new Long[] { categoria.getIdCategoria() }, empresa, ambiente, descricao );
+		return saveUpload( multiPartFile, new Long[] { categoria.getIdCategoria() }, cliente, ambiente, descricao );
 	}
 	
 
 	
-	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Empresa empresa, Ambiente ambiente ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		return saveUpload( multiPartFile, categorias, empresa, ambiente, null );
+		return saveUpload( multiPartFile, categorias, cliente, ambiente, null );
 	}
 	
 	
 	@Transactional
-	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Empresa empresa, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
@@ -386,7 +386,7 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), empresa, categorias, hash, descricao );
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, categorias, hash, descricao );
 		
 		associaMidiaEAmbiente( ambiente, midia );
 		
@@ -394,13 +394,13 @@ public class MidiaService {
 	}
 
 	
-	public Midia gravaMidia( InputStream is, String originalName, Empresa empresa, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		return gravaMidia( is, originalName, empresa, categorias, hash, descricao, null );
+		return gravaMidia( is, originalName, cliente, categorias, hash, descricao, null );
 	}
 	
 
-	public Midia gravaMidia( InputStream is, String originalName, Empresa empresa, Long[] categorias, String hash, String descricao, Integer fileSize ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String descricao, Integer fileSize ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		List<Categoria> categoriaList = null;
 		File arquivo = null;

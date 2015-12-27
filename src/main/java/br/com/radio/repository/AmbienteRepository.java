@@ -7,17 +7,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.radio.model.Ambiente;
-import br.com.radio.model.Empresa;
+import br.com.radio.model.Cliente;
 
 public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 
-	Page<Ambiente> findByEmpresa( Pageable pageable, Empresa empresa );
+	Page<Ambiente> findByCliente( Pageable pageable, Cliente cliente );
 	
-	List<Ambiente> findByEmpresa( Empresa empresa );
+	List<Ambiente> findByCliente( Cliente cliente );
 	
 	List<Ambiente> findByAtivo( Boolean ativo );
 	
-	Long countByEmpresa( Empresa empresa );
+	Long countByCliente( Cliente cliente );
 	
 	Long countByLoginAndIdAmbienteNot( String login, Long idAmbiente );
 	

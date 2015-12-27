@@ -46,8 +46,8 @@ public class Usuario implements Serializable {
 	
 	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn( name="id_empresa", nullable=false )
-	private Empresa empresa;
+	@JoinColumn( name="id_cliente", nullable=false )
+	private Cliente cliente;
 	
 	@NotNull( message = "O nome do usuário é de preenchimento obrigatório" )
 	@Column( name = "nome", nullable = false, columnDefinition = "TEXT" )
@@ -187,14 +187,14 @@ public class Usuario implements Serializable {
 		this.ativo = ativo;
 	}
 
-	public Empresa getEmpresa()
+	public Cliente getCliente()
 	{
-		return empresa;
+		return cliente;
 	}
 
-	public void setEmpresa( Empresa empresa )
+	public void setCliente( Cliente cliente )
 	{
-		this.empresa = empresa;
+		this.cliente = cliente;
 	}
 
 	@Override
@@ -229,7 +229,7 @@ public class Usuario implements Serializable {
 	@Override
 	public String toString()
 	{
-		return String.format( "Usuario [idUsuario=%s, empresa=%s, nome=%s, email=%s, login=%s, password=%s, dataCriacao=%s, usuarioTipo=%s]", idUsuario, empresa, nome, email, login, password, dataCriacao, usuarioTipo );
+		return String.format( "Usuario [idUsuario=%s, cliente=%s, nome=%s, email=%s, login=%s, password=%s, dataCriacao=%s, usuarioTipo=%s]", idUsuario, cliente, nome, email, login, password, dataCriacao, usuarioTipo );
 	}
 
 	public List<Perfil> getPerfis()

@@ -57,8 +57,8 @@ public class Ambiente implements Serializable {
 	
 	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn( name="id_empresa", nullable=false )
-	private Empresa empresa;
+	@JoinColumn( name="id_cliente", nullable=false )
+	private Cliente cliente;
 	
 	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY, mappedBy= "ambiente")
@@ -441,14 +441,14 @@ public class Ambiente implements Serializable {
 		this.urlambiente = urlambiente;
 	}
 
-	public Empresa getEmpresa()
+	public Cliente getCliente()
 	{
-		return empresa;
+		return cliente;
 	}
 
-	public void setEmpresa( Empresa empresa )
+	public void setCliente( Cliente cliente )
 	{
-		this.empresa = empresa;
+		this.cliente = cliente;
 	}
 
 	@JsonAnyGetter

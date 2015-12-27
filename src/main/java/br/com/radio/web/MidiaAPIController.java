@@ -112,8 +112,8 @@ public class MidiaAPIController extends AbstractController {
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Empresa não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -123,7 +123,7 @@ public class MidiaAPIController extends AbstractController {
 			{
 				try
 				{
-					midiaService.saveUpload( file, codigo, usuario.getEmpresa(), ambiente, descricao );
+					midiaService.saveUpload( file, codigo, usuario.getCliente(), ambiente, descricao );
 							
 					jsonResult = writeOkResponse();
 				}
@@ -338,7 +338,7 @@ public class MidiaAPIController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getEmpresa() == null )
+		if ( usuario == null || usuario.getCliente() == null )
 			throw new RuntimeException( "Usuário não encontrado" );
 		
 		if ( usuario.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR ) )
@@ -349,10 +349,10 @@ public class MidiaAPIController extends AbstractController {
 		if ( ambiente == null )
 			throw new RuntimeException( "Ambiente não encontrado. Por favor verifique o endereço" );
 		
-		System.out.println(ambiente.getEmpresa());
-		System.out.println(usuario.getEmpresa());
+		System.out.println(ambiente.getCliente());
+		System.out.println(usuario.getCliente());
 		
-		if ( !ambiente.getEmpresa().getIdEmpresa().equals( usuario.getEmpresa().getIdEmpresa() ))
+		if ( !ambiente.getCliente().getIdCliente().equals( usuario.getCliente().getIdCliente() ))
 			throw new RuntimeException( "Tentativa de autenticar em um player que não percence ao seu login" );
 
 		
