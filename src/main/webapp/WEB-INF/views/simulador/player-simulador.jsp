@@ -158,13 +158,34 @@
       </div>
       
       <div class="col-md-2 col-sm-2 col-xs-12 col-centered" >
-        <div style="display: none;">
-          <audio id="player1" type="audio/mp3" controls="controls">   
-          </audio>
-          
-          <audio id="player2" type="audio/mp3" controls="controls">   
-          </audio>
+      
+
+        <div class="player" id="player1" style="display : none;">
+            <audio controls>
+                Audio files
+                <source src="https://cdn.selz.com/plyr/1.0/logistics-96-sample.ogg" type="audio/ogg">
+        
+                Fallback for browsers that don't support the <audio> element
+                <a href="https://cdn.selz.com/plyr/1.0/logistics-96-sample.mp3">Download</a>
+            </audio>
         </div>
+
+        <div class="player" id="player2" style="display : none;">
+            <audio controls>
+                Audio files
+                <source src="https://cdn.selz.com/plyr/1.0/logistics-96-sample.ogg" type="audio/ogg">
+        
+                Fallback for browsers that don't support the <audio> element
+                <a href="https://cdn.selz.com/plyr/1.0/logistics-96-sample.mp3">Download</a>
+            </audio>
+        </div>
+      
+<!--         <div style="display: none;"> -->
+<!--           <audio id="player1" type="audio/mp3" controls="controls">    -->
+<!--           </audio> -->
+<!--           <audio id="player2" type="audio/mp3" controls="controls">    -->
+<!--           </audio> -->
+<!--         </div> -->
         <table style=" margin: 0 auto;">
           <tr>
             <td>
@@ -208,10 +229,13 @@
   
 <jsp:include page="/WEB-INF/views/scripts.jsp" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/2.18.2/mediaelement-and-player.min.js"></script>
+<link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css">
+<script src="https://cdn.plyr.io/1.3.7/plyr.js"></script>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/2.18.2/mediaelement-and-player.min.js"></script> -->
 <%-- <script src="${context}/mediaelement/mediaelement-and-player.js"></script> --%>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/2.18.2/mediaelementplayer.min.css" />
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/2.18.2/mediaelementplayer.min.css" /> -->
 <%-- <link rel="stylesheet" href="${context}/mediaelement/mediaelementplayer.css" /> --%>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
@@ -220,7 +244,9 @@
 
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
-<script src="${context}/js/simulador/player-simulador.js" charset="UTF-8"></script>
+<%-- <script src="${context}/js/simulador/player-simulador.js" charset="UTF-8"></script> --%>
+<script src="${context}/js/simulador/player-simulador-plyr.js" charset="UTF-8"></script>
+
      
   
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

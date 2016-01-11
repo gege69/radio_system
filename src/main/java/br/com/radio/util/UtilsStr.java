@@ -99,7 +99,11 @@ public class UtilsStr {
 	
 	public static void main(String[] aaa )
 	{
-		System.out.println( generateCronExpression( "55", "0", "19", "*", "OCT", "*", "*" ) );
+		String s = " asdhfklaj sfahsd flkjahd \ng"
+				+ "aaskdjhfa asdfjh\naskdjhf "
+				+ "asdlfaskdjghghghas\n dg slk gashg ";
+		
+		System.out.println( replaceNewLineHtml( s ) );
 	}
 	
 	
@@ -112,4 +116,15 @@ public class UtilsStr {
 		
 		return false;   
 	}
+	
+	
+	public static String replaceNewLineHtml( String s )
+	{
+		if ( s == null )
+			return "";
+		
+		return s.replace( "\n", "<br/>" );
+	}
+	
+	
 }

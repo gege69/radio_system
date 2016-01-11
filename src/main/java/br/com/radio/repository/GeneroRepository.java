@@ -12,5 +12,7 @@ public interface GeneroRepository extends JpaRepository<Genero, Long> {
 	
 	List<Genero> findFirst10By();
 	
+	List<Genero> findFirst5By();
+	
 }
 	

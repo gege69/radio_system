@@ -37,16 +37,16 @@ insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) value
 
 
 
-INSERT INTO EMPRESA ( id_empresa ,cnpj ,codigo ,razaosocial ,nomefantasia ,dominio ,datacriacao ,dataalteracao ,ativo )
-VALUES ( nextval('empresa_id_empresa_seq'), '28372714000140', 'Eterion', 'Eterion', 'Eterion', 'www.eterion.com.br', now(), null, true );
+INSERT INTO CLIENTE ( id_cliente ,cnpj ,codigo ,razaosocial ,nomefantasia ,dominio ,datacriacao ,dataalteracao ,ativo )
+VALUES ( nextval('cliente_id_cliente_seq'), '28372714000140', 'Eterion', 'Eterion', 'Eterion', 'www.eterion.com.br', now(), null, true );
 
 
 
 -- Usuários Padrão
-insert into usuario ( id_usuario, login, password, id_empresa, dataalteracao, datacriacao, ativo, nome, email ) 
-values ( nextval('usuario_id_usuario_seq'), 'fpazin', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_empresa from empresa where codigo = 'Eterion' ), null, now(), true, 'Fernando Pazin', 'pazinfernando@gmail.com');
-insert into usuario ( id_usuario, login, password, id_empresa, dataalteracao, datacriacao, ativo, nome, email ) 
-values ( nextval('usuario_id_usuario_seq'), 'gaugusto', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_empresa from empresa where codigo = 'Eterion' ), null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
+insert into usuario ( id_usuario, login, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
+values ( nextval('usuario_id_usuario_seq'), 'fpazin', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_cliente from cliente where codigo = 'Eterion' ), null, now(), true, 'Fernando Pazin', 'pazinfernando@gmail.com');
+insert into usuario ( id_usuario, login, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
+values ( nextval('usuario_id_usuario_seq'), 'gaugusto', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_cliente from cliente where codigo = 'Eterion' ), null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
 
 insert into perfil values ( nextval('perfil_id_perfil_seq'), 'DESENVOLVEDOR' );
 insert into perfil values ( nextval('perfil_id_perfil_seq'), 'ADMINISTRADOR' );
@@ -110,11 +110,11 @@ insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval
 
 
 
-insert into  PARAMETRO ( id_parametro, id_empresa, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA WHERE CODIGO = 'Eterion' ), 'BASE_MIDIA_PATH', '/home/pazin/teste/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'BASE_MIDIA_PATH', '/home/pazin/teste/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
 
-insert into  PARAMETRO ( id_parametro, id_empresa, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_EMPRESA FROM EMPRESA WHERE CODIGO = 'Eterion' ), 'SERVER_REQUEST_PATH', '', 'A definir', null );
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'SERVER_REQUEST_PATH', '', 'A definir', null );
 
 
 

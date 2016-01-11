@@ -22,12 +22,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.dto.MusicTags;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
@@ -96,7 +101,7 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, categorias, hash, null );
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, categorias, hash, multiPartFile.getContentType(), null );
 
 		boolean aoMenosUm = false;
 		for ( Long id : ambientes )
@@ -123,11 +128,20 @@ public class MidiaService {
 	{
 		try
 		{
-			File diretorio = new File("/home/pazin/musicas/Exceto Sertanejas/");
+			File diretorio = new File("/home/pazin/musicas/Exceto Sertanejas/AC-DC/");
+//			File diretorio = new File("/home/pazin/ogg/");
+			
+//			String contentType = "audio/ogg";
+			String contentType = "audio/mpeg";
 			
 			Collection<File> arquivos = FileUtils.listFiles( diretorio, new String[]{ "mp3" }, true );
+
+			Genero genero = generoRepo.findOne( 1L );
+			Genero genero2 = generoRepo.findOne( 2L );
 			
-			List<Genero> generos = generoRepo.findFirst10By();  //findAll();
+			List<Genero> generos =  new ArrayList<Genero>(); ///generoRepo.findFirst10By();  //findAll();
+			generos.add( genero );
+			generos.add( genero2 );
 			
 			Random rand = new Random(); 
 
@@ -180,7 +194,7 @@ public class MidiaService {
 
 				fis = new FileInputStream( f );
 				
-				Midia midia = gravaMidia( fis, f.getName(), ambiente.getCliente(), new Long[] { categoria.getIdCategoria() }, hash, "" );
+				Midia midia = gravaMidia( fis, f.getName(), ambiente.getCliente(), new Long[] { categoria.getIdCategoria() }, hash, "", contentType );
 				
 				fis.close();
 				
@@ -244,6 +258,8 @@ public class MidiaService {
 		try
 		{
 			Cliente cliente = clienteRepo.findOne( 1l );
+
+			String contenttype = "audio/mpeg";
 			
 			Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
 			String basePath = parametro.getValor();
@@ -299,7 +315,7 @@ public class MidiaService {
 				
 				Long size = f.length();
 				
-				Midia midia = gravaMidia( null, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, "", size.intValue() );
+				Midia midia = gravaMidia( null, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, "", contenttype, size.intValue() );
 				
 				if ( StringUtils.isBlank( midia.getArtist() ) )
 					midia.setArtist( pasta );
@@ -386,7 +402,7 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, categorias, hash, descricao );
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, categorias, hash, multiPartFile.getContentType(), descricao );
 		
 		associaMidiaEAmbiente( ambiente, midia );
 		
@@ -394,13 +410,13 @@ public class MidiaService {
 	}
 
 	
-	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String contentType, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		return gravaMidia( is, originalName, cliente, categorias, hash, descricao, null );
+		return gravaMidia( is, originalName, cliente, categorias, hash, descricao, contentType, null );
 	}
 	
 
-	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String descricao, Integer fileSize ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String contentType, String descricao, Integer fileSize ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		List<Categoria> categoriaList = null;
 		File arquivo = null;
@@ -419,14 +435,15 @@ public class MidiaService {
 			if ( midia == null )
 			{
 				String path = basePath + hash;
+
+				if ( "audio/ogg".equals( contentType ) )
+					path = path + ".ogg";
 				
 				arquivo = new File( path );
 				
 				// Talvez não precise mover o arquivo... se o filesize estiver preenchido é um sinal disso
 				if ( is != null )
-				{
 					size = IOUtils.copy( is, new FileOutputStream( arquivo ) );
-				}
 				else
 					size = fileSize;
 				
@@ -436,13 +453,13 @@ public class MidiaService {
 				midia.setNome( originalName );
 				midia.setFilepath( path );
 				midia.setFilehash( hash );
-				midia.setMimetype( "audio/mpeg" );  // file.getContentType()
+				midia.setMimetype( contentType ); 
 				midia.setFilesize( size );
 				midia.setExtensao( FilenameUtils.getExtension( originalName ) );
 				midia.setValido( true );
 				midia.setCached( false );
-				
-				preencheInformacoesMP3( midia, arquivo );
+
+				preencheTags( contentType, arquivo, midia );
 			}
 			
 			midia.setDescricao( descricao );
@@ -463,10 +480,27 @@ public class MidiaService {
 				 ( midia == null || midia.getIdMidia() == null || midia.getIdMidia().equals( 0L ) ) )
 				arquivo.delete();
 			
-			throw e;
+			throw new RuntimeException( e.getMessage(), e );
 		}
 		
 		return midia;
+	}
+
+
+
+
+
+	private void preencheTags( String contentType, File arquivo, Midia midia ) throws IOException, UnsupportedTagException, InvalidDataException
+	{
+		MusicTags tags = null;
+		
+		if ( "audio/ogg".equals( contentType ) )
+			tags = obtemInformacoesOGG( arquivo );
+		else if ( "audio/mpeg".equals( contentType ) )
+			tags = obtemInformacoesMP3( arquivo );
+		
+		if ( tags != null )
+			tags.copyToMidia( midia );
 	}
 
 
@@ -497,13 +531,45 @@ public class MidiaService {
 		return hash;
 	}
 
-	private void preencheInformacoesMP3( Midia midia, File arquivo ) throws IOException, UnsupportedTagException, InvalidDataException
+	
+	private MusicTags obtemInformacoesOGG( File arquivo ) 
 	{
+		MusicTags tags = new MusicTags();
+		
+		if ( arquivo.length() > 0 )
+		{
+			try
+			{
+				AudioFile f = AudioFileIO.read( arquivo );
+				Tag tag = f.getTag();
+				
+				tags.trackLength = f.getAudioHeader().getTrackLength();
+
+				tags.title = tag.getFirst( FieldKey.TITLE );
+				tags.artist = tag.getFirst( FieldKey.ARTIST );
+				tags.album = tag.getFirst( FieldKey.ALBUM );
+				tags.comment = tag.getFirst( FieldKey.COMMENT );
+				tags.date = tag.getFirst( FieldKey.YEAR );
+				tags.genre = tag.getFirst( FieldKey.GENRE );
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		return tags;
+	}
+	
+	private MusicTags obtemInformacoesMP3( File arquivo ) throws IOException, UnsupportedTagException, InvalidDataException
+	{
+		MusicTags tags = new MusicTags();
+		
 		if ( arquivo.length() > 0 )
 		{
 			Mp3File mp3File = new Mp3File( arquivo );
 
-			midia.setDuracao( Long.valueOf( mp3File.getLengthInSeconds() ).intValue() );
+			tags.trackLength = Long.valueOf( mp3File.getLengthInSeconds() ).intValue();
 			
 			if ( mp3File.hasId3v2Tag() )
 			{
@@ -511,12 +577,12 @@ public class MidiaService {
 				
 				id3v2Tag = mp3File.getId3v2Tag();
 				
-				midia.setTitle( id3v2Tag.getTitle() );
-				midia.setArtist( id3v2Tag.getArtist() );
-				midia.setAlbum( id3v2Tag.getAlbum() );
-				midia.setComment( id3v2Tag.getComment() );
-				midia.setDatetag( id3v2Tag.getYear() );
-				midia.setGenre( id3v2Tag.getGenreDescription() );
+				tags.title = id3v2Tag.getTitle();
+				tags.artist = id3v2Tag.getArtist();
+				tags.album = id3v2Tag.getAlbum();
+				tags.comment = id3v2Tag.getComment();
+				tags.date = id3v2Tag.getYear();
+				tags.genre = id3v2Tag.getGenreDescription();
 			}
 			else if ( mp3File.hasId3v1Tag() )
 			{
@@ -524,14 +590,16 @@ public class MidiaService {
 				
 				id3v1Tag = mp3File.getId3v1Tag();
 				
-				midia.setTitle( id3v1Tag.getTitle() );
-				midia.setArtist( id3v1Tag.getArtist() );
-				midia.setAlbum( id3v1Tag.getAlbum() );
-				midia.setComment( id3v1Tag.getComment() );
-				midia.setDatetag( id3v1Tag.getYear() );
-				midia.setGenre( id3v1Tag.getGenreDescription() );
+				tags.title = id3v1Tag.getTitle();
+				tags.artist = id3v1Tag.getArtist();
+				tags.album = id3v1Tag.getAlbum();
+				tags.comment = id3v1Tag.getComment();
+				tags.date = id3v1Tag.getYear();
+				tags.genre = id3v1Tag.getGenreDescription();
 			}
 		}
+		
+		return tags;
 	}
 	
 	

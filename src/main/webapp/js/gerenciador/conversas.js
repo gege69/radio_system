@@ -21,13 +21,21 @@ function queryParamsParticipantes(params) {
 }
 
 
-var carregaMensagens = function( e, row, el )
+var carregaMensagensByGrid = function( e, row, el )
 {
     if ( row == null )
         return;
     
+    carregaMensagens( row );
+    
+    jump( "painel-mensagens" );
+}
+
+
+var carregaMensagens = function( record )
+{
     var url = buildUrl( "/conversas/{idConversa}/mensagens", { 
-        idConversa: row.idConversa 
+        idConversa: record.idConversa 
     });
 
     $.ajax({
@@ -39,14 +47,13 @@ var carregaMensagens = function( e, row, el )
         
         makeListTmpl( json );
         
-        $("#idConversa").val( row.idConversa );
-        $("#dataVigenciaInicio").val( row.dataVigenciaInicio );
-        $("#dataVigenciaFim").val( row.dataVigenciaFim );
+        $("#idConversa").val( record.idConversa );
+        $("#dataVigenciaInicio").val( record.dataVigenciaInicio );
+        $("#dataVigenciaFim").val( record.dataVigenciaFim );
         
         $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
         
         mostraMensagens();
-        
     });
 }
 
@@ -64,72 +71,132 @@ var makeListTmpl = function(json){
 };
 
 
+var addSingleTmpl = function(json){
+    
+    var tmpl = $.templates('#viewTmplMensagem');
+    
+    rows = [ json ];
+    
+    var content = tmpl.render( rows );
+    
+    $('#conversa').append(content);
+};
+
+
 
 var salvar = function(){
     
-    var dados = JSON.stringify( $('#form-inicio-conversa').serializeJSON() );
-
     var selecao = $tableparticipantes.bootstrapTable('getSelections');
     
-    if ( selecao.length <= 1 )
+    var idUsuarioAtual = $('#idUsuario').val();
+    
+    var count = 0;
+    
+    $(selecao).each(function(){
+        var linha = this;
+
+        if ( linha.idUsuario == idUsuarioAtual )
+            return true;  // continue
+        else
+            count++;
+    });
+    
+    if ( count < 1 )
     {
-        preencheAlertGeral("alertArea", "Escolha ao menos 2 participantes para essa conversa.", "danger");
+        preencheAlertGeral("alertArea", "Escolha ao menos 1 participantes para essa conversa. Você será incluído automaticamente.", "danger");
         return false;
     }
     
     var countPlayers = 0;
     
-    var idPlayer = 0;
+    var usuariosArray = [];
     
     $(selecao).each(function(){
         var linha = this;
 
-        if ( linha.usuarioTipo == "PLAYER" )
-        {
-            countPlayers++;
-            idPlayer = linha.idUsuario;
-        }
+        usuariosArray.push( { idUsuario : linha.idUsuario } );    
     });
     
-    if ( countPlayers > 1 )
-    {
-        preencheAlertGeral("alertArea", "Escolha apenas 1 ambiente para conversar.", "danger");
-        return false;
-    }
-    
-    var url = buildUrl( "/conversa" );
+    var url = buildUrl( "/conversas" );
 
-    var usuariosArray = [];
-    
-    usuariosArray.push( { idUsuario : idPlayer} );
-    
-    var conversa = {};
-    
-    conversa.ambiente = { idAmbiente : 1 };  
+    var conversa = $('#form-inicio-conversa').serializeJSON();
     conversa.usuarios = usuariosArray;
-    conversa.dataVigenciaInicio = $("#dataVigenciaInicio").val(); 
-    conversa.dataVigenciaFim = $("#dataVigenciaFim").val(); 
 
+    console.log( conversa );
+    
+    console.log( JSON.stringify( conversa ) );
+    
     $.ajax({
         
         type: 'POST',
         contentType: 'application/json',
         url: url,
         dataType: 'json',
-        data:  conversa
+        data:  JSON.stringify( conversa )
         
     }).done( function(json){ 
 
         if (json.idConversa != null){
             
             $("#idConversa").val( json.idConversa );
+            
+            $table.bootstrapTable('refresh');
+            
+            carregaMensagens( json )
+            
+            mostraMensagens();
         }
         else{
             preencheErros( json.errors );
         }
     });
     
+    return true;
+    
 };
+
+
+var enviarMensagem = function(){
+    
+    var conteudo = $('#conteudo').val();
+    
+    if ( conteudo == "" || conteudo == null )
+        return;
+    
+    var mensagem = $('#form-mensagem').serializeJSON();
+    
+    mensagem.conversa = { idConversa : mensagem.idConversa };   // para o jackson ler direto no VO
+
+    var url = buildUrl( "/conversas/{idConversa}/mensagens", { 
+        idConversa: $("#idConversa").val()
+    });
+    
+    $.ajax({
+        
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data:  JSON.stringify( mensagem )
+        
+    }).done( function(json){ 
+
+        if (json.idMensagem != null){
+            
+            $('#conteudo').val('');
+            
+            addSingleTmpl( json );
+            $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
+            
+            jump( "painel-mensagens" );
+        }
+        else{
+            preencheErros( json.errors );
+        }
+    });
+    
+}
+
 
 var habilitaNovaMensagem = function(){
     
@@ -168,18 +235,7 @@ var mostraMensagens = function(){
     $('#selecao-participantes').hide();
     $('#painel-mensagens').show();
     
-    
 };
-
-
-var iniciaConversa = function()
-{
-    salvar();
-    
-    mostraMensagens();
-    
-    $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
-}
 
 
 var marcaLinha = function( e, row, el )
@@ -199,8 +255,6 @@ $(function(){
         xhr.setRequestHeader(header, token);
     });
    
-    $('#btnSalvar').on('click', salvar);
-    
     $('.input-group.date').datepicker({
         format: "dd/mm/yyyy",
         clearBtn: true,
@@ -210,7 +264,7 @@ $(function(){
     });
     
     $('#table-conversas').on('click-row.bs.table', function( e, row, el ){
-        carregaMensagens( e, row, el );
+        carregaMensagensByGrid( e, row, el );
     });
     
     $('#table-participantes').on('click-row.bs.table', function( e, row, el ){
@@ -222,8 +276,14 @@ $(function(){
     });
     
     $('#btnIniciar').click( function(){ 
-       iniciaConversa();       
+        salvar();       
     });
 
+    $('#btnEnviarMensagem').on('click', function(){
+        enviarMensagem();        
+    });
+    
+    
+    
     
 });

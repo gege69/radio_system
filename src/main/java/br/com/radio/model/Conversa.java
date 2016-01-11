@@ -57,11 +57,6 @@ public class Conversa implements Serializable {
 	@JoinColumn(name="id_cliente")
 	private Cliente cliente;
 	
-	@JsonIgnore
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_ambiente")
-	private Ambiente ambiente;
-	
 	@ManyToMany(fetch=FetchType.EAGER)
 	   @JoinTable(name="conversa_usuario", joinColumns = { 
 	        @JoinColumn(name="id_conversa", nullable=false, updatable=false) }, inverseJoinColumns = { 
@@ -109,16 +104,6 @@ public class Conversa implements Serializable {
 	public void setIdConversa( Long idConversa )
 	{
 		this.idConversa = idConversa;
-	}
-
-	public Ambiente getAmbiente()
-	{
-		return ambiente;
-	}
-
-	public void setAmbiente( Ambiente ambiente )
-	{
-		this.ambiente = ambiente;
 	}
 
 	public List<Usuario> getUsuarios()
@@ -242,5 +227,36 @@ public class Conversa implements Serializable {
 		this.conversaView = conversaView;
 	}
 
+	
+	
+	public String resumoParticipantes()
+	{
+		String result = "";
+		
+		if ( usuarios != null && usuarios.size() > 0 )
+		{
+			for ( Usuario u : usuarios )
+			{
+				if ( !result.equals( "" ) )
+					result += ", " + u.getNome(); 
+				else
+					result += u.getNome();
+				
+				if ( result.length() > 28 )
+				{
+					result += " ... (" +usuarios.size() + " no total)";
+					break;
+				}				
+			}
+		}
+		
+		return result;
+	}
+	
+	public void buildView()
+	{
+		conversaView.put( "participantes", this.resumoParticipantes() );
+	}
+	
 	
 }

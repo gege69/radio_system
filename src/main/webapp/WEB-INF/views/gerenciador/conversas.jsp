@@ -1,6 +1,7 @@
 <jsp:include page="/WEB-INF/views/main.jsp" />    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
+<meta name="_csrf" th:content="${_csrf.token}"/>
 
   <div class="container">
   
@@ -17,6 +18,9 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Mensagens</h3>
+
+          <input type="hidden" id="idUsuario" value="${idUsuario}"> 
+          
 
           <div class="row">   
                    
@@ -47,7 +51,7 @@
                     <tr>
                         <th data-field="idConversa">Id</th>
                         <th data-field="dataCriacao">Data Conversa</th>
-                        <th data-field="ambiente.nome">Ambiente</th>
+                        <th data-field="participantes">Ambiente(s)</th>
                         <th data-field="dataVigenciaInicio">Vigência Início</th>
                         <th data-field="dataVigenciaFim">Vigência Fim</th>
                     </tr>
@@ -87,6 +91,8 @@
                   <div class="row spacer-vertical10">
                     
                     <form action="#" id="form-inicio-conversa" class="form" >
+                    
+                      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     
                       <div class="form-group col-lg-9 col-md-9 col-sm-9">
                         <label for="dataVigenciaInicio" class="control-label col-lg-4 col-md-4 col-sm-4">Início:</label>
@@ -145,13 +151,13 @@
                     </div>
                   
                     <div class="row">
-                      <div class="col-lg-10 col-md-9 col-sm-10 col-xs-10">
+                      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-9">
                         <div class="form-group">
                           <textarea class="form-control" rows="3" id="conteudo" name="conteudo"></textarea>
                         </div>
                       </div>
-                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 pull-right">
-                        <a class="btn btn-primary" href="#">Enviar</a>
+                      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        <a class="btn btn-primary" href="#"  id="btnEnviarMensagem">Enviar</a>
                       </div>
                     </div>
                     
@@ -205,8 +211,8 @@
 <script id="viewTmplMensagem" type="text/x-jsrender">
 <div class="col-lg-12 col-md-12">
   <div class="message {{:htmlclass}} col-lg-10 col-md-10 col-sm-10 col-xs-10">
-    <p>{{:conteudo}}</p>
-    <div class="nome-tempo {{:htmlclass}}">{{:usuario.nome}} - {{:dataEnvio}}</div>
+    <p>{{:conteudoHtml}}</p>
+    <div class="nome-tempo {{:htmlclass}}">{{:usuario}} - {{:dataEnvio}}</div>
   </div>
 </div>
 </script>  

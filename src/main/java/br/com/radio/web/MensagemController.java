@@ -1,6 +1,7 @@
 package br.com.radio.web;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
-import br.com.radio.model.Ambiente;
 import br.com.radio.model.Conversa;
 import br.com.radio.model.Mensagem;
 import br.com.radio.model.Usuario;
@@ -50,8 +50,13 @@ public class MensagemController extends AbstractController {
 
 	@RequestMapping(value="/conversas/view", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('MENSAGENS')")
-	public String conversas( ModelMap model )
+	public String conversas( ModelMap model, Principal principal )
 	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario != null )
+			model.addAttribute( "idUsuario", usuario.getIdUsuario() );
+		
 		return "gerenciador/conversas";
 	}
 	
@@ -74,9 +79,7 @@ public class MensagemController extends AbstractController {
 		
 		List<Conversa> conversas = conversaPage.getContent();
 		
-		conversas.forEach( c -> {
-			c.getConversaView().put( "ambiente.nome", c.getAmbiente().getNome() );
-		});
+		conversas.forEach( c -> c.buildView() );
 		
 		JSONBootstrapGridWrapper<Conversa> jsonList = new JSONBootstrapGridWrapper<Conversa>(conversas, conversaPage.getTotalElements() );
 
@@ -85,10 +88,10 @@ public class MensagemController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/conversas", "/api/conversas" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveAmbiente( @RequestBody @Valid Conversa conversaDTO, BindingResult result )
+	public @ResponseBody String saveConversa( @RequestBody @Valid Conversa conversa, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
-		
+
 		if ( result.hasErrors() ){
 			
 			jsonResult = writeErrorsAsJSONErroMessage(result);	
@@ -97,12 +100,22 @@ public class MensagemController extends AbstractController {
 		{
 			try
 			{
-				if ( conversaDTO != null )
-					System.out.println("opa");
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
 				
+				if ( usuario == null || usuario.getCliente() == null )
+					throw new RuntimeException( "Impossível determinar o Cliente do usuário" );
 				
+				if ( conversa != null )
+				{
+					conversa.setCliente( usuario.getCliente() );
+					conversa.setAtivo( true );
+					conversa.setDataCriacao( new Date() );
+					conversaRepo.save( conversa );	
+				}
 				
-				jsonResult = writeOkResponse();
+				conversa.buildView();
+				
+				jsonResult = writeObjectAsString( conversa );
 			}
 			catch ( Exception e )
 			{
@@ -141,13 +154,11 @@ public class MensagemController extends AbstractController {
 			usuarioPage = usuarioRepo.findByClienteAndUsuarioTipo( pageable, usuario.getCliente(), UsuarioTipo.GERENCIADOR );
 
 		List<Usuario> usuariosList = usuarioPage.getContent();
-		
-		usuariosList.forEach( u -> {
 
+		usuariosList.forEach( u -> {
 			if ( u.getAmbiente() != null )
 				u.getUsuarioView().put( "idAmbiente", u.getAmbiente().getIdAmbiente().toString() );
 		});
-		
 		
 		JSONListWrapper<Usuario> jsonList = new JSONListWrapper<Usuario>(usuarioPage.getContent(), usuarioPage.getTotalElements() );
 
@@ -169,24 +180,58 @@ public class MensagemController extends AbstractController {
 		if ( conversa == null )
 			throw new RuntimeException( "Conversação não encontrada" );
 
-		boolean mesmaCliente = conversa.getAmbiente().getCliente().getIdCliente().equals( usuario.getCliente().getIdCliente() );
+		boolean mesmaCliente = conversa.getCliente().getIdCliente().equals( usuario.getCliente().getIdCliente() );
 		
-		if ( conversa.getAmbiente() == null || !mesmaCliente )
-			throw new RuntimeException( "Problema com a Cliente" );
+		if ( mesmaCliente == false )
+			throw new RuntimeException( "Conversa não encontrada" );
 
-		List<Mensagem> mensagens = conversa.getMensagens();
+		List<Mensagem> mensagens =  mensagemRepo.findByConversa( conversa );
 		
-		mensagens.stream().forEach( m -> {
-			if ( m.getUsuario().getIdUsuario().equals( usuario.getIdUsuario() ) )
-				m.getMensagemView().put( "htmlclass", "self" );
-			else
-				m.getMensagemView().put( "htmlclass", "other" );
-		});
+		mensagens.stream().forEach( m -> m.buildView( usuario ) );
 		
 		JSONBootstrapGridWrapper<Mensagem> jsonList = new JSONBootstrapGridWrapper<Mensagem>(mensagens, mensagens.size() );
 
 		return jsonList;
 	}
+	
+	
+	@RequestMapping( value = { "/conversas/{idConversa}/mensagens", "/api/conversas/{idConversa}/mensagens" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveMensagem( @RequestBody @Valid Mensagem mensagem, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuarioLogado = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuarioLogado == null || usuarioLogado.getCliente() == null )
+					throw new RuntimeException( "Impossível determinar o Cliente do usuário" );
+				
+				mensagem.setDataEnvio( new Date() );
+				mensagem.setUsuario( usuarioLogado );
+				
+				mensagemRepo.save( mensagem );
+				
+				mensagem.buildView( usuarioLogado );
+				
+				jsonResult = writeObjectAsString( mensagem );
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+	
 	
 	
 }

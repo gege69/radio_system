@@ -18,11 +18,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.util.UtilsStr;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -44,6 +48,7 @@ public class Mensagem implements Serializable {
 	@Column( name = "id_mensagem", nullable = false )
 	private Long idMensagem;
 
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="id_usuario")
 	private Usuario usuario;
@@ -163,7 +168,17 @@ public class Mensagem implements Serializable {
 	}
 
 
-	
+	public void buildView( Usuario usuarioLogado )
+	{
+		mensagemView.put( "usuario", getUsuario().getNome() );
+		
+		if ( getUsuario().getIdUsuario().equals( usuarioLogado.getIdUsuario() ) )
+			mensagemView.put( "htmlclass", "self" );
+		else
+			mensagemView.put( "htmlclass", "other" );
+		
+		mensagemView.put( "conteudoHtml", UtilsStr.replaceNewLineHtml( conteudo ) );
+	}
 	
 
 }
