@@ -315,7 +315,7 @@ public class MidiaService {
 				
 				Long size = f.length();
 				
-				Midia midia = gravaMidia( null, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, "", contenttype, size.intValue() );
+				Midia midia = gravaMidia( null, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, contenttype, "", size.intValue() );
 				
 				if ( StringUtils.isBlank( midia.getArtist() ) )
 					midia.setArtist( pasta );
