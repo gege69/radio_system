@@ -52,6 +52,4 @@ public class AlterarSenhaDTO implements IPasswordMatch {
 	}
 
 	
-	
-	
 }

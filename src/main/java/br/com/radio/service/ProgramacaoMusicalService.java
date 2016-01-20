@@ -3,6 +3,7 @@ package br.com.radio.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +28,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import br.com.radio.enumeration.DiaSemana;
+import br.com.radio.enumeration.PosicaoComercial;
 import br.com.radio.enumeration.PosicaoVinheta;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
@@ -566,7 +568,7 @@ public class ProgramacaoMusicalService {
 			});
 
 			// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
-			consomeMusicas( ambiente, dto );
+			consomeMidias( ambiente, dto );
 		});
 	}
 
@@ -656,71 +658,6 @@ public class ProgramacaoMusicalService {
 
 	
 	
-	private void applyMergeBlocosOriginal( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
-	{
-		List<Midia> musicas = dto.getMidias();
-
-		Bloco bloco = blocoRepo.findByAmbiente( ambiente ); 
-		
-		PosicaoVinheta posicaoVinheta = bloco.getPosicaoVinheta();
-		
-		ThreadLocalRandom rnd = ThreadLocalRandom.current();
-		
-		Categoria vinheta = categoriaRepo.findByCodigo( Categoria.VINHETA );
-		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
-		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
-		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
-		
-		BlocosManipulacaoDTO blocoVinhetas = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, vinheta ), vinheta );
-		BlocosManipulacaoDTO blocoComerciais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, comercial ), comercial );
-		BlocosManipulacaoDTO blocoInstitucionais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, institucional ), institucional );
-		BlocosManipulacaoDTO blocoProgrametes = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, programete ), programete );
-		
-		int qtdComerciais = bloco.getQtdComerciais();
-		
-		int stepComerciais = 0;
-		
-		if ( qtdComerciais > 0 )
-			stepComerciais = musicas.size() / qtdComerciais;
-		
-		int stepInstitucionais = bloco.getIndexInstitucionais();
-		int stepProgrametes = bloco.getIndexProgrametes();
-		
-		LinkedList<Midia> novaListaMidias = new LinkedList<Midia>();
-
-		int countMusicas = 0;
-		
-		for ( Midia m : musicas )
-		{
-			if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_CADA_MUSICA ) )
-				addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
-			
-			novaListaMidias.add( m );
-			countMusicas++;
-			
-			if ( stepComerciais > 0 && countMusicas % stepComerciais == 0 )
-			{
-				if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
-					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
-				
-				addIfNotNull( novaListaMidias, blocoComerciais.getNextRandom( rnd ) );
-				
-				if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
-					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
-			}
-			
-			if ( stepInstitucionais > 0 && countMusicas % stepInstitucionais == 0 )  // Depois de n músicas
-				addIfNotNull( novaListaMidias, blocoInstitucionais.getNextRandom( rnd ) );
-			
-			if ( stepProgrametes > 0 && countMusicas % stepProgrametes == 0 )  // Depois de n músicas
-				addIfNotNull( novaListaMidias, blocoProgrametes.getNextRandom( rnd ) );
-
-		};
-		
-		dto.setMidias( novaListaMidias );
-	}
-	
-	
 	private void applyMergeBlocosEnhanced( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
 		List<Midia> musicas = dto.getMidias();
@@ -780,6 +717,146 @@ public class ProgramacaoMusicalService {
 	}
 	
 	
+	
+	private boolean verificaMomentoVinheta( PosicaoVinheta posicaoVinhetaAtual, PosicaoVinheta posicaoVinhetaVerificar, BlocosManipulacaoDTO blocoVinhetas )  
+	{
+		return ( posicaoVinhetaAtual.equals( posicaoVinhetaVerificar ) && blocoVinhetas.temRegistro() );
+	}
+	
+	
+	private boolean verificaMomentoComercial( PosicaoComercial posicaoComercialConfigurado, PosicaoComercial posicaoComercialVerificar, BlocosManipulacaoDTO blocoComerciais )  
+	{
+		return ( posicaoComercialConfigurado.equals( posicaoComercialVerificar ) && blocoComerciais.temRegistro() );
+	}
+	
+	
+	
+	private void applyMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
+	{
+		ArrayDeque<Midia> musicasEmbaralhadas = new ArrayDeque<Midia>( dto.getMidias() );
+
+		Bloco bloco = blocoRepo.findByAmbiente( ambiente ); 
+		
+		PosicaoVinheta posicaoVinheta = bloco.getPosicaoVinheta();
+		PosicaoComercial posicaoComercial = bloco.getPosicaoComercial();
+		
+		ThreadLocalRandom rnd = ThreadLocalRandom.current();
+		
+		Categoria vinheta = categoriaRepo.findByCodigo( Categoria.VINHETA );
+		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
+		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
+		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
+		
+		BlocosManipulacaoDTO blocoVinhetas = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, vinheta ), vinheta );
+		BlocosManipulacaoDTO blocoComerciais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, comercial ), comercial );
+		BlocosManipulacaoDTO blocoInstitucionais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, institucional ), institucional );
+		BlocosManipulacaoDTO blocoProgrametes = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, programete ), programete );
+		
+		int qtdMusicasSequencia = bloco.getQtdMusicas();
+		int qtdComerciaisSequencia = bloco.getQtdComerciais();
+		
+		int stepInstitucionais = bloco.getIndexInstitucionais();
+		int stepProgrametes = bloco.getIndexProgrametes();
+		
+		LinkedList<Midia> novaListaMidias = new LinkedList<Midia>();
+		
+		int countMusicasInseridas = 0;
+
+		while ( !musicasEmbaralhadas.isEmpty() )
+		{
+			List<Midia> sequenciaMusicas = consomeN( musicasEmbaralhadas, qtdMusicasSequencia );
+			
+			if ( verificaMomentoVinheta( posicaoVinheta, PosicaoVinheta.ANTES_CADA_MUSICA, blocoVinhetas ) )
+			{
+				for ( Midia m : sequenciaMusicas )
+				{
+					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+					novaListaMidias.add( m );
+					countMusicasInseridas++;
+				}
+			}
+			else
+			{
+				novaListaMidias.addAll( sequenciaMusicas );
+				countMusicasInseridas = countMusicasInseridas + sequenciaMusicas.size();
+			}
+				
+			if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.DEPOIS_MUSICAS, blocoComerciais ) )
+			{
+				if ( verificaMomentoVinheta( posicaoVinheta, PosicaoVinheta.ANTES_BLOCO_COMERCIAL, blocoVinhetas ) )
+					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+				
+				novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+				
+				if ( verificaMomentoVinheta( posicaoVinheta, PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL, blocoVinhetas ) )
+					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+				
+			}
+
+			
+			if ( stepInstitucionais > 0 && countMusicasInseridas % stepInstitucionais == 0 )  // Depois de n músicas
+			{
+				if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.ANTES_INSTITUCIONAL, blocoComerciais ) )
+					novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+				
+				addIfNotNull( novaListaMidias, blocoInstitucionais.getNextRandom( rnd ) );
+				
+				if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.DEPOIS_INSTITUCIONAL, blocoComerciais ) )
+					novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+			}
+				
+			
+			if ( stepProgrametes > 0 && countMusicasInseridas % stepProgrametes == 0 )  // Depois de n músicas
+			{
+				if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.ANTES_PROGRAMETE, blocoComerciais ) )
+					novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+				
+				addIfNotNull( novaListaMidias, blocoProgrametes.getNextRandom( rnd ) );
+				
+				if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.DEPOIS_PROGRAMETE, blocoComerciais ) )
+					novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+			}
+				
+		}
+		
+		dto.setMidias( novaListaMidias );
+	}
+	
+	
+	
+	public static <T extends Object> List<T> consomeN( ArrayDeque<T> lista, Integer n )
+	{
+		List<T> result = new ArrayList<T>();
+
+		int x = 0;
+		
+		while( !lista.isEmpty() && x < n )
+		{
+			x++;
+			result.add( lista.removeFirst() );
+		}
+		
+		return result;
+	}
+	
+
+	
+	public List<Midia> consomeNFromBlocoManipulacao( BlocosManipulacaoDTO blocoDTO, Integer n, ThreadLocalRandom rnd )
+	{
+		List<Midia> result = new LinkedList<Midia>();
+		
+		int x = 0;
+		
+		while ( result.size() < n )
+			result.add( blocoDTO.getNextRandom( rnd ) );
+		
+		return result;
+	}
+	
+	
+	
+	
+	
 	private void applySpotifyShuffle( ProgramacaoListMidiaListDTO dto )
 	{
 		List<Midia> musicas = dto.getMidias();
@@ -828,7 +905,7 @@ public class ProgramacaoMusicalService {
 	}
 	
 	
-	public void consomeMusicas( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
+	public void consomeMidias( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
 		List<Programacao> programacoes = dto.getProgramacoes();
 		

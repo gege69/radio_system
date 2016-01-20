@@ -23,6 +23,12 @@ public class BlocosManipulacaoDTO {
 	
 	private Categoria categoria;
 	
+	// Se não tiver registro nem leva em consideração
+	public boolean temRegistro()
+	{
+		return !( midiasConsumir.size() == 0 && midiasUtilizadas.size() == 0 );
+	}
+	
 	public Midia getNextRandom( ThreadLocalRandom rnd )
 	{
 		if ( midiasConsumir.size() == 0 && midiasUtilizadas.size() == 0 )
