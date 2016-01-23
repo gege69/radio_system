@@ -70,7 +70,7 @@ public class Midia implements Serializable {
 	        @JoinColumn(name="id_categoria", nullable=false, updatable=false) })
     private List<Categoria> categorias;
 
-	/* Para saber por qual motivo essa mídia foi selecionada. Útil na geração da programação */
+	/* Para saber por qual motivo essa mídia foi selecionada. Útil na geração da programação, é gravada no registro de transmissao */
 	@Transient
 	private Categoria categoriaSelecionada;
 

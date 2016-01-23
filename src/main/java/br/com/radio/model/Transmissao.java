@@ -319,7 +319,4 @@ public class Transmissao implements Serializable {
 		return String.format( "Transmissao [idTransmissao=%s, posicaoplay=%s, dataPrevisaoPlay=%s, eventoHorario=%s]", idTransmissao, posicaoplay, dataPrevisaoPlay, eventoHorario );
 	}
 	
-	
-	
-	
 }

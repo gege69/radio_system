@@ -9,8 +9,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -128,13 +132,15 @@ public class MidiaService {
 	{
 		try
 		{
-			File diretorio = new File("/home/pazin/musicas/Exceto Sertanejas/AC-DC/");
-//			File diretorio = new File("/home/pazin/ogg/");
+//			File diretorio = new File("/home/pazin/musicas/Exceto Sertanejas/AC-DC/");
+			File diretorio = new File("/home/pazin/ogg/");
 			
-//			String contentType = "audio/ogg";
-			String contentType = "audio/mpeg";
+			Map<String,String> mapasMimeType = new HashMap<String,String>();
+			mapasMimeType.put( "ogg", "audio/ogg" );
+			mapasMimeType.put( "mp3", "audio/mpeg" );
 			
-			Collection<File> arquivos = FileUtils.listFiles( diretorio, new String[]{ "mp3" }, true );
+			
+			Collection<File> arquivos = FileUtils.listFiles( diretorio, new String[]{ "ogg", "mp3" }, true );
 
 			Genero genero = generoRepo.findOne( 1L );
 			Genero genero2 = generoRepo.findOne( 2L );
@@ -145,10 +151,7 @@ public class MidiaService {
 			
 			Random rand = new Random(); 
 
-			Ambiente ambiente = ambienteRepo.findOne( 1L );
-			
-			if ( ambiente == null )
-				throw new RuntimeException("Ambiente não cadastrado ainda....");
+			Cliente cliente = clienteRepo.findOne( 1L );
 			
 			Integer iteracoes = 0;
 			
@@ -175,6 +178,8 @@ public class MidiaService {
 
 				String hash = "";
 				
+				String contentType = mapasMimeType.get( FilenameUtils.getExtension( f.getName() ) );
+				
 				FileInputStream fis = null;
 				try
 				{
@@ -194,7 +199,7 @@ public class MidiaService {
 
 				fis = new FileInputStream( f );
 				
-				Midia midia = gravaMidia( fis, f.getName(), ambiente.getCliente(), new Long[] { categoria.getIdCategoria() }, hash, "", contentType );
+				Midia midia = gravaMidia( fis, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, "", contentType );
 				
 				fis.close();
 				
@@ -202,9 +207,13 @@ public class MidiaService {
 					midia.setArtist( pasta );
 				
 				midiaRepo.saveAndFlush( midia );
+
+				List<Ambiente> ambientes = ambienteRepo.findAll();
 				
-				associaMidiaEAmbiente( ambiente, midia );
-				
+				for ( Ambiente ambiente : ambientes )
+				{
+					associaTodasMidiasParaAmbiente( ambiente );
+				}
 				
 				if ( !StringUtils.equals( grupoArtista, midia.getArtist() ) )
 				{
@@ -259,7 +268,9 @@ public class MidiaService {
 		{
 			Cliente cliente = clienteRepo.findOne( 1l );
 
-			String contenttype = "audio/mpeg";
+			Map<String,String> mapasMimeType = new HashMap<String,String>();
+			mapasMimeType.put( "ogg", "audio/ogg" );
+			mapasMimeType.put( "mp3", "audio/mpeg" );
 			
 			Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
 			String basePath = parametro.getValor();
@@ -282,6 +293,8 @@ public class MidiaService {
 			
 			int index = 0;
 			int max = 0;
+
+			String contenttype = "";
 			
 			for ( File f : arquivos )
 			{
@@ -296,6 +309,8 @@ public class MidiaService {
 				System.out.println(f.getName() + " | " + f.length());
 
 				String hash = "";
+				
+				contenttype = mapasMimeType.get( FilenameUtils.getExtension( f.getName() ) );
 				
 				FileInputStream fis = null;
 				try
@@ -412,7 +427,7 @@ public class MidiaService {
 	
 	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String contentType, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		return gravaMidia( is, originalName, cliente, categorias, hash, descricao, contentType, null );
+		return gravaMidia( is, originalName, cliente, categorias, hash, contentType, descricao, null );
 	}
 	
 
@@ -434,7 +449,7 @@ public class MidiaService {
 			
 			if ( midia == null )
 			{
-				String path = basePath + hash;
+				String path = basePath + "md_" + hash;
 
 				if ( "audio/ogg".equals( contentType ) )
 					path = path + ".ogg";
@@ -496,7 +511,7 @@ public class MidiaService {
 		
 		if ( "audio/ogg".equals( contentType ) )
 			tags = obtemInformacoesOGG( arquivo );
-		else if ( "audio/mpeg".equals( contentType ) )
+		else if ( "audio/mpeg".equals( contentType ) || "audio/mp3".equals( contentType ) )
 			tags = obtemInformacoesMP3( arquivo );
 		
 		if ( tags != null )
@@ -540,6 +555,8 @@ public class MidiaService {
 		{
 			try
 			{
+				Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
+				
 				AudioFile f = AudioFileIO.read( arquivo );
 				Tag tag = f.getTag();
 				

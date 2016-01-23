@@ -559,8 +559,8 @@ public class ProgramacaoMusicalService {
 
 			validaClusters( dto );
 
-			applyMergeBlocosEnhanced( ambiente, dto );
-//			applyMergeBlocosOriginal( ambiente, dto );
+//			applyMergeBlocosEnhanced( ambiente, dto );
+			applyMergeBlocos( ambiente, dto );
 
 			// imprimindo
 			dto.getMidias().forEach( m -> {
@@ -1029,7 +1029,10 @@ public class ProgramacaoMusicalService {
 			Midia m = midiasOrdenadas.get( i );
 			
 			if ( m == null || m.getDuracao() == null || m.getDuracao().equals( 0 ) )
+			{
+				logger.error( "Mídia está nula ou com duração nula" );
 				continue;
+			}
 			
 			duracaoAtual += m.getDuracao();
 			
@@ -1116,7 +1119,6 @@ public class ProgramacaoMusicalService {
 		
 		logger.info( String.format( "Transmissao de evento inserida (%d)", transmissao.getIdTransmissao() ) );
 	}
-	
 	
 	
 	

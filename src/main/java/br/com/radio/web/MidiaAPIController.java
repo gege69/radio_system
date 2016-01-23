@@ -2,8 +2,13 @@ package br.com.radio.web;
 
 import java.io.File;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -251,7 +258,27 @@ public class MidiaAPIController extends AbstractController {
 		if ( ambiente != null )
 			progMusicalService.geraTransmissao( ambiente );
 		
-		return writeOkResponse();
+		List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscPosicaoplayAsc( ambiente, true ); 
+
+		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+		
+		transmissoes.forEach( t -> {
+			
+			Midia m = t.getMidia();
+		
+			JsonObject obj = Json.createObjectBuilder()
+				.add( "nome", m.getNome() )
+				.add( "ordem", t.getPosicaoplay() )
+				.add( "tipo", t.getCategoria().getDescricao() ).build();
+			
+			jsonArrayBuilder.add( obj );
+		});
+		
+		JsonObject jsonObject = Json.createObjectBuilder()
+				.add("transmissao", jsonArrayBuilder)
+				.build();
+		
+		return jsonObject.toString();
 	}
 	
 	

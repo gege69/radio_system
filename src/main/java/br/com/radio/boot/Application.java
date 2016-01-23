@@ -11,7 +11,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import br.com.radio.service.MidiaService;
+import br.com.radio.model.Ambiente;
+import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.service.ProgramacaoMusicalService;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
@@ -29,20 +31,20 @@ public class Application {
 
 		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 		
-		MidiaService midiaService = ctx.getBean( MidiaService.class );
-		
-		midiaService.getNewMusicFromFileSystem();
-		
-		
-//		AmbienteRepository ambServ = ctx.getBean( AmbienteRepository.class );
-//			
-//		Ambiente ambiente = ambServ.findOne( 1L );
+//		MidiaService midiaService = ctx.getBean( MidiaService.class );
 //		
-//		midiaService.associaTodasMidiasParaAmbiente( ambiente );
+//		midiaService.getNewMusicFromFileSystem();
+
+		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
+		
+		ProgramacaoMusicalService progMusicalService = ctx.getBean( ProgramacaoMusicalService.class );
+
+		Ambiente amb = ambRepo.findOne( 1L );
+		
+		progMusicalService.criaProgramacaoMusicalDoDiaParaAmbiente( amb );	
 		
 		System.out.println("fim");
 																																																								
-		
 	}
 	
 }
