@@ -560,7 +560,7 @@ public class ProgramacaoMusicalService {
 			validaClusters( dto );
 
 //			applyMergeBlocosEnhanced( ambiente, dto );
-			applyMergeBlocos( ambiente, dto );
+			aplicaMergeBlocos( ambiente, dto );
 
 			// imprimindo
 			dto.getMidias().forEach( m -> {
@@ -718,20 +718,20 @@ public class ProgramacaoMusicalService {
 	
 	
 	
-	private boolean verificaMomentoVinheta( PosicaoVinheta posicaoVinhetaAtual, PosicaoVinheta posicaoVinhetaVerificar, BlocosManipulacaoDTO blocoVinhetas )  
+	private boolean verificaMomentoVinhetaMerge( PosicaoVinheta posicaoVinhetaAtual, PosicaoVinheta posicaoVinhetaVerificar, BlocosManipulacaoDTO blocoVinhetas )  
 	{
 		return ( posicaoVinhetaAtual.equals( posicaoVinhetaVerificar ) && blocoVinhetas.temRegistro() );
 	}
 	
 	
-	private boolean verificaMomentoComercial( PosicaoComercial posicaoComercialConfigurado, PosicaoComercial posicaoComercialVerificar, BlocosManipulacaoDTO blocoComerciais )  
+	private boolean verificaMomentoComercialMerge( PosicaoComercial posicaoComercialConfigurado, PosicaoComercial posicaoComercialVerificar, BlocosManipulacaoDTO blocoComerciais )  
 	{
 		return ( posicaoComercialConfigurado.equals( posicaoComercialVerificar ) && blocoComerciais.temRegistro() );
 	}
 	
 	
 	
-	private void applyMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
+	private void aplicaMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
 		ArrayDeque<Midia> musicasEmbaralhadas = new ArrayDeque<Midia>( dto.getMidias() );
 
@@ -766,7 +766,7 @@ public class ProgramacaoMusicalService {
 		{
 			List<Midia> sequenciaMusicas = consomeN( musicasEmbaralhadas, qtdMusicasSequencia );
 			
-			if ( verificaMomentoVinheta( posicaoVinheta, PosicaoVinheta.ANTES_CADA_MUSICA, blocoVinhetas ) )
+			if ( verificaMomentoVinhetaMerge( posicaoVinheta, PosicaoVinheta.ANTES_CADA_MUSICA, blocoVinhetas ) )
 			{
 				for ( Midia m : sequenciaMusicas )
 				{
@@ -781,45 +781,51 @@ public class ProgramacaoMusicalService {
 				countMusicasInseridas = countMusicasInseridas + sequenciaMusicas.size();
 			}
 				
-			if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.DEPOIS_MUSICAS, blocoComerciais ) )
-			{
-				if ( verificaMomentoVinheta( posicaoVinheta, PosicaoVinheta.ANTES_BLOCO_COMERCIAL, blocoVinhetas ) )
-					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
-				
-				novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
-				
-				if ( verificaMomentoVinheta( posicaoVinheta, PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL, blocoVinhetas ) )
-					addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
-				
-			}
+			if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_MUSICAS, blocoComerciais ) )
+				adicionaComercialMerge( posicaoVinheta, rnd, blocoVinhetas, blocoComerciais, qtdComerciaisSequencia, novaListaMidias );
 
 			
 			if ( stepInstitucionais > 0 && countMusicasInseridas % stepInstitucionais == 0 )  // Depois de n músicas
 			{
-				if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.ANTES_INSTITUCIONAL, blocoComerciais ) )
-					novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.ANTES_INSTITUCIONAL, blocoComerciais ) )
+					adicionaComercialMerge( posicaoVinheta, rnd, blocoVinhetas, blocoComerciais, qtdComerciaisSequencia, novaListaMidias );
 				
+				// INSTITUCIONAL
 				addIfNotNull( novaListaMidias, blocoInstitucionais.getNextRandom( rnd ) );
 				
-				if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.DEPOIS_INSTITUCIONAL, blocoComerciais ) )
-					novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_INSTITUCIONAL, blocoComerciais ) )
+					adicionaComercialMerge( posicaoVinheta, rnd, blocoVinhetas, blocoComerciais, qtdComerciaisSequencia, novaListaMidias );
 			}
 				
 			
 			if ( stepProgrametes > 0 && countMusicasInseridas % stepProgrametes == 0 )  // Depois de n músicas
 			{
-				if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.ANTES_PROGRAMETE, blocoComerciais ) )
-					novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.ANTES_PROGRAMETE, blocoComerciais ) )
+					adicionaComercialMerge( posicaoVinheta, rnd, blocoVinhetas, blocoComerciais, qtdComerciaisSequencia, novaListaMidias );
 				
+				// PROGRAMETE
 				addIfNotNull( novaListaMidias, blocoProgrametes.getNextRandom( rnd ) );
 				
-				if ( verificaMomentoComercial( posicaoComercial, PosicaoComercial.DEPOIS_PROGRAMETE, blocoComerciais ) )
-					novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_PROGRAMETE, blocoComerciais ) )
+					adicionaComercialMerge( posicaoVinheta, rnd, blocoVinhetas, blocoComerciais, qtdComerciaisSequencia, novaListaMidias );
 			}
 				
 		}
 		
 		dto.setMidias( novaListaMidias );
+	}
+
+
+
+	private void adicionaComercialMerge( PosicaoVinheta posicaoVinheta, ThreadLocalRandom rnd, BlocosManipulacaoDTO blocoVinhetas, BlocosManipulacaoDTO blocoComerciais, int qtdComerciaisSequencia, LinkedList<Midia> novaListaMidias )
+	{
+		if ( verificaMomentoVinhetaMerge( posicaoVinheta, PosicaoVinheta.ANTES_BLOCO_COMERCIAL, blocoVinhetas ) )
+			addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+		
+		novaListaMidias.addAll( consomeNFromBlocoManipulacao( blocoComerciais, qtdComerciaisSequencia, rnd ) );
+		
+		if ( verificaMomentoVinhetaMerge( posicaoVinheta, PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL, blocoVinhetas ) )
+			addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
 	}
 	
 	
