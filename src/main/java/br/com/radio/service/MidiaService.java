@@ -12,9 +12,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -51,6 +53,7 @@ import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
+import br.com.radio.repository.MidiaCategoriaRepository;
 import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
@@ -68,6 +71,15 @@ public class MidiaService {
 	private MidiaRepository midiaRepo;
 	
 	@Autowired
+	private MidiaAmbienteRepository midiaAmbienteRepo;
+
+	@Autowired
+	private MidiaGeneroRepository midiaGeneroRepo;
+	
+	@Autowired
+	private MidiaCategoriaRepository midiaCategoriaRepo;
+	
+	@Autowired
 	private CategoriaRepository categoriaRepo;
 
 	@Autowired
@@ -76,11 +88,6 @@ public class MidiaService {
 	@Autowired
 	private AmbienteRepository ambienteRepo;
 	
-	@Autowired
-	private MidiaAmbienteRepository midiaAmbienteRepo;
-
-	@Autowired
-	private MidiaGeneroRepository midiaGeneroRepo;
 	
 	@Autowired
 	private GeneroRepository generoRepo;
@@ -199,7 +206,7 @@ public class MidiaService {
 
 				fis = new FileInputStream( f );
 				
-				Midia midia = gravaMidia( fis, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, "", contentType );
+				Midia midia = gravaMidia( fis, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, contentType, "" );
 				
 				fis.close();
 				
@@ -656,6 +663,41 @@ public class MidiaService {
 	}
 	
 
+	@Transactional
+	public boolean excluiMidiaSePossivel( Long idMidia, Ambiente ambiente )
+	{
+		boolean result = false;
+
+		
+		Midia midia = midiaRepo.findOne( idMidia );
+		
+		if ( midia == null )
+			throw new RuntimeException( "Mídia não encontrada" );
+		
+		List<MidiaAmbiente> associacoesAmbientes = midiaAmbienteRepo.findByMidia( midia );
+
+		Optional<MidiaAmbiente> associacaoOptional = associacoesAmbientes.stream().filter( ma -> ma.getAmbiente().equals( ambiente ) ).findFirst();
+
+		if ( !associacaoOptional.isPresent() )
+			throw new RuntimeException( "Midia não está associada à esse ambiente" );
+			
+		MidiaAmbiente associacao = associacaoOptional.get();
+		
+		midiaAmbienteRepo.delete( associacao );
+		midiaAmbienteRepo.flush();
+		
+		midia = midiaRepo.findOne( idMidia );
+		
+		List<MidiaAmbiente> outrasAssociacoes = associacoesAmbientes.stream().filter( ma -> !ma.getAmbiente().equals( ambiente ) ).collect( Collectors.toList() );
+		
+		if ( outrasAssociacoes == null || outrasAssociacoes.size() <= 0 )
+		{
+			midiaRepo.delete( midia );
+		}
+		
+		return result;
+	}
+	
 	
 	
 	

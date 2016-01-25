@@ -19,6 +19,7 @@
 
 var buildUrl = function( path , data )
 {
+    // contextPath definido no main.jsp
     var url = URI.expand( contextPath + path, data ).toString();
     
     return url;

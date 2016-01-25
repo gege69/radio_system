@@ -2,13 +2,11 @@ package br.com.radio.web;
 
 import java.io.File;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,8 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -359,6 +355,41 @@ public class MidiaAPIController extends AbstractController {
 	
 	
 	
+	@RequestMapping(value="/ambientes/{idAmbiente}/midia/{idMidia}", method=RequestMethod.DELETE)
+	public ResponseEntity<String> inativaMidia( @PathVariable Long idAmbiente, @PathVariable Long idMidia, Principal principal, Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			try
+			{
+				midiaService.excluiMidiaSePossivel( idMidia, ambiente );
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			}
+		}
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+    }	
+
+	
+	
+	
+	
 	
 	@RequestMapping(value = "/player", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public String player(Principal principal, HttpServletRequest request, ModelMap model ) 
@@ -374,10 +405,7 @@ public class MidiaAPIController extends AbstractController {
 		Ambiente ambiente = ambienteRepo.findByLogin( usuario.getLogin() );
 			
 		if ( ambiente == null )
-			throw new RuntimeException( "Ambiente não encontrado. Por favor verifique o endereço" );
-		
-		System.out.println(ambiente.getCliente());
-		System.out.println(usuario.getCliente());
+			throw new RuntimeException( "Ambiente não encontrado." );
 		
 		if ( !ambiente.getCliente().getIdCliente().equals( usuario.getCliente().getIdCliente() ))
 			throw new RuntimeException( "Tentativa de autenticar em um player que não percence ao seu login" );

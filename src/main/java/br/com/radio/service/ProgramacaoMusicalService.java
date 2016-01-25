@@ -173,7 +173,7 @@ public class ProgramacaoMusicalService {
 		
 		if ( progList == null || progList.size() <= 0 )
 		{
-			Genero genero = generoRepo.findOne( 1l );  // Top 300 .... caso mude repensar isso
+			Genero genero = generoRepo.findOne( 1L );  // Top 300 .... caso mude repensar isso
 			
 			AmbienteGenero ambienteGenero = ambienteGeneroRepo.findByAmbienteAndGenero( ambiente, genero );
 			
@@ -796,7 +796,7 @@ public class ProgramacaoMusicalService {
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_INSTITUCIONAL, blocoComerciais ) )
 					adicionaComercialMerge( posicaoVinheta, rnd, blocoVinhetas, blocoComerciais, qtdComerciaisSequencia, novaListaMidias );
 			}
-				
+			
 			
 			if ( stepProgrametes > 0 && countMusicasInseridas % stepProgrametes == 0 )  // Depois de n músicas
 			{

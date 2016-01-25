@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.dto.GeneroListDTO;
+import br.com.radio.enumeration.PosicaoComercial;
 import br.com.radio.enumeration.PosicaoVinheta;
 import br.com.radio.enumeration.VozLocucao;
 import br.com.radio.model.Ambiente;
@@ -109,6 +110,8 @@ public class AmbienteService {
 		midiaService.associaTodasMidiasParaAmbiente( ambiente );
 		
 		criaBlocoDefault( ambiente );
+		
+		associaGeneroDefault( ambiente );
 
 		return ambiente; 
 	}
@@ -221,10 +224,20 @@ public class AmbienteService {
 		bloco.setIndexInstitucionais( 0 );
 		bloco.setIndexProgrametes( 0 );
 		bloco.setPosicaoVinheta( PosicaoVinheta.ANTES_BLOCO_COMERCIAL );
+		bloco.setPosicaoComercial( PosicaoComercial.DEPOIS_MUSICAS );
 		bloco.setQtdMusicas( 3 );
 		bloco.setQtdComerciais( 2 );
 
 		blocoRepository.saveAndFlush( bloco );
+	}
+	
+	
+	private void associaGeneroDefault( Ambiente ambiente )
+	{
+//		Genero generoDefault = generoRepo.findOne( 1L );
+		
+				
+		
 	}
 	
 	

@@ -362,6 +362,7 @@ public class MidiaController extends AbstractController {
 	}
 	
 	
+	
 	@RequestMapping( value = "/arquivos", method = RequestMethod.GET)
 	public @ResponseBody String testeArquivos()
 	{
@@ -369,6 +370,9 @@ public class MidiaController extends AbstractController {
 		
 		return writeOkResponse();
 	}
+	
+	
+	
 	
 	
 }

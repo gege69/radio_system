@@ -111,7 +111,7 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Simulador do Player<br/>
+          <h3>Player<br/>
             <small></small>
             
             <input type="hidden" id="idAmbiente" value="${idAmbiente}">
@@ -232,21 +232,12 @@
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css">
 <script src="https://cdn.plyr.io/1.3.7/plyr.js"></script>
 
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/2.18.2/mediaelement-and-player.min.js"></script> -->
-<%-- <script src="${context}/mediaelement/mediaelement-and-player.js"></script> --%>
-
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/2.18.2/mediaelementplayer.min.css" /> -->
-<%-- <link rel="stylesheet" href="${context}/mediaelement/mediaelementplayer.css" /> --%>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
 
 <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
 
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
-<%-- <script src="${context}/js/simulador/player-simulador.js" charset="UTF-8"></script> --%>
-<script src="${context}/js/simulador/player-simulador-plyr.js" charset="UTF-8"></script>
-
-     
+<script src="${context}/js/player-web/player-simulador-plyr.js" charset="UTF-8"></script>
   
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

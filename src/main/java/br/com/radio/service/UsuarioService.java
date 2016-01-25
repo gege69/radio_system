@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.UserDTO;
+import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.exception.EmailExistsException;
@@ -21,6 +22,7 @@ import br.com.radio.model.Cliente;
 import br.com.radio.model.Perfil;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.UsuarioPerfil;
+import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.UsuarioPerfilRepository;
@@ -43,6 +45,10 @@ public class UsuarioService {
 	
 	@Autowired
 	private PerfilRepository perfilRepo;
+	
+	@Autowired
+	private AmbienteRepository ambienteRepo;
+	
 	
 	public void changeUserPassword( String name, AlterarSenhaDTO alterarSenhaDTO )
 	{
@@ -248,5 +254,33 @@ public class UsuarioService {
 		
 		return result;
 	}
+	
+	
+	public UsuarioAmbienteDTO getUsuarioAmbienteByPrincipal( Long idAmbiente, Principal principal )
+	{
+		Usuario usuario = getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException( "Usuário não encontrado" );
+
+		
+		
+		
+//		if ( usuario.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR ) )
+//			throw new RuntimeException( "Usuário não é do tipo Ambiente" );
+
+		Ambiente ambiente = ambienteRepo.findByLogin( usuario.getLogin() );
+			
+		if ( ambiente == null )
+			throw new RuntimeException( "Ambiente não encontrado." );
+		
+		if ( !ambiente.getCliente().getIdCliente().equals( usuario.getCliente().getIdCliente() ))
+			throw new RuntimeException( "Tentativa de autenticar em um player que não percence ao seu login" );
+		
+		UsuarioAmbienteDTO dto = new UsuarioAmbienteDTO( usuario, ambiente );
+		
+		return dto;
+	}
+	
 	
 }

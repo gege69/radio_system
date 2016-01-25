@@ -52,6 +52,8 @@
                       
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                         <input type="hidden" id="idCategoria" name="idCategoria" value="${idCategoria}">
+                        <input type="hidden" id="idAmbiente" name="idAmbiente" value="${idAmbiente}">
+                        
                         
                         <div class="col-lg-7 col-md-9 col-sm-12">
                           <div class="form-group">
@@ -109,14 +111,15 @@
                          data-query-params="queryParams" >
                         <thead>
                           <tr>
-                              <th data-field="idMidia">ID</th>
+<!--                               <th data-field="idMidia">ID</th> -->
                               <th data-field="nome">Nome</th>
                               <th data-field="dataUpload">Data Upload</th>
-                              <th data-field="vinheta" data-formatter="catFormatter">Vinheta</th>
-                              <th data-field="inst" data-formatter="catFormatter">Institucional</th>
-                              <th data-field="comercial" data-formatter="catFormatter">Comercial</th>
-                              <th data-field="programete" data-formatter="catFormatter">Programete</th>
-                              <th data-field="chamada-inst" data-formatter="catFormatter">Cham. Instantânea</th>
+                              <th data-field="vinheta" data-formatter="catFormatter" data-align="center">Vinheta</th>
+                              <th data-field="inst" data-formatter="catFormatter" data-align="center">Institucional</th>
+                              <th data-field="comercial" data-formatter="catFormatter" data-align="center">Comercial</th>
+                              <th data-field="programete" data-formatter="catFormatter" data-align="center">Programete</th>
+                              <th data-field="chamada-inst" data-formatter="catFormatter" data-align="center">Cham. Instantânea</th>
+                              <th data-field="idMidia" data-formatter="deleteFormatter" data-align="center">Deletar</th>
                           </tr>
                         </thead>
                       </table>
@@ -148,8 +151,10 @@
 
 
 <script src="${context}/js/required/jsrender.min.js"></script>
+<script src="${context}/js/required/bootbox.min.js"></script>
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
+
 
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 
@@ -159,110 +164,9 @@
 </label>
 </script>  
 
+<script src="${context}/js/ambiente/upload-midia.js"  charset="UTF-8"></script>
 
 
-<script type="text/javascript">
-
-    var $table = $('#table');
-    
-    function catFormatter(value, row) {
-        
-        var icon = value == true ? 'fa-check' : 'fa-circle-thin';
-
-        return '<i class="fa '+ icon + '"></i>';
-    }
-    
-    function queryParams(params) {
-
-        params.pageNumber = $('#table').bootstrapTable('getOptions').pageNumber;
-        
-        return params;
-    }
-    
-    
-    var listaCategorias = function( doJump ){
-        
-        $.ajax({
-            type: 'GET',
-            contentType: 'application/json',
-            url: '${context}/categorias?simpleUpload=true',
-            dataType: 'json'
-        }).done( function(json){
-            makeListTmpl(json);
-            
-            var lista = json.rows;
-            
-            var id_categoria_tela = $('#idCategoria').val();
-
-            $.each( lista, function( idx, obj ){
-
-                if ( obj.idCategoria == id_categoria_tela )
-                    $('#inlineCheck'+obj.idCategoria).prop('checked', true);
-            });
-            
-        } );
-    }
-    
-    
-    var makeListTmpl = function(json){
-        
-        var tmpl = $.templates('#viewTmpl');
-        
-        $('#checkBoxContainer').empty();
-        
-        var content = tmpl.render(json.rows);
-        
-        $('#checkBoxContainer').append(content);
-    };
-    
-    // futuramente tornar esse Upload em ajax
-    var upload = function( idAmbiente )
-    {
-        $('#btnUploadMidia').disable();
-        
-        // pegar as categorias e fazer a listinha de strings 
-        $("#ambiente-upload-midia").submit();
-        
-        $("#ambiente-upload-midia").bind('ajax:complete', function() {
-            console.log('teste');
-        });
-    }
-
-    $(function(){
-        
-        jQuery.fn.extend({
-            disable: function(state) {
-                return this.each(function() {
-                    var $this = $(this);
-                    if($this.is('input, button'))
-                        this.disabled = state;
-                    else
-                        $this.toggleClass('disabled', state);
-                });
-            }
-        });
-        
-        $('body').on('click', 'a.disabled', function(event) {
-            event.preventDefault();
-        });
-
-        var token = $("input[name='_csrf']").val();
-        var header = "X-CSRF-TOKEN";
-        $(document).ajaxSend(function(e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
-        
-        var idAmbiente = $('#idAmbiente').val();
-        
-        $('#btnUploadMidia').on('click', function(){
-            upload( $('#idAmbiente').val() );
-        });
-        
-        listaCategorias();
-        
-    });
-
-</script>
 
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

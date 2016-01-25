@@ -1,5 +1,7 @@
 package br.com.radio.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +20,9 @@ public interface MidiaAmbienteRepository extends JpaRepository<MidiaAmbiente, Lo
 					" INNER JOIN midia_categoria mc ON mc.id_midia = m.id_midia "+
 					" INNER JOIN categoria cat ON cat.id_categoria = mc.id_categoria "+
 					" WHERE cat.codigo = 'musica' ", nativeQuery = true)
-	int insertMusicasAmbiente( Long idAmbiente );    
+	int insertMusicasAmbiente( Long idAmbiente );
+	
+	
+	List<MidiaAmbiente> findByMidia( Midia midia );
 
 }
