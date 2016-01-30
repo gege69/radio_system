@@ -213,15 +213,13 @@ public class Usuario implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Usuario other = (Usuario) obj;
-		if ( idUsuario == null )
+		if ( getIdUsuario() == null )
 		{
-			if ( other.idUsuario != null )
+			if ( other.getIdUsuario() != null )
 				return false;
 		}
-		else if ( !idUsuario.equals( other.idUsuario ) )
+		else if ( !getIdUsuario().equals( other.getIdUsuario() ) )
 			return false;
 		return true;
 	}

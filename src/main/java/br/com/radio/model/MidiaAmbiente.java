@@ -127,8 +127,6 @@ public class MidiaAmbiente implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		MidiaAmbiente other = (MidiaAmbiente) obj;
 		if ( idMidiaamb == null )
 		{

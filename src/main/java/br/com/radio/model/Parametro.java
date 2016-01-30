@@ -119,8 +119,6 @@ public class Parametro implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Parametro other = (Parametro) obj;
 		if ( idParametro == null )
 		{

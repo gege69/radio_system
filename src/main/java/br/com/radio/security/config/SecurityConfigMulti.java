@@ -166,7 +166,7 @@ public class SecurityConfigMulti {
 			.authorizeRequests()
 				.antMatchers( "/register" ).permitAll()
 				.antMatchers( "/login**" ).permitAll()
-				.antMatchers( "/admin/**" ).hasRole( "ADMIN" )
+				.antMatchers( "/admin/**" ).hasAuthority( "ADM_SISTEMA" )
 				.antMatchers( "/**" ).hasAuthority( "ADMINISTRAR_AMB" )
 				.anyRequest().authenticated()
 				.and()

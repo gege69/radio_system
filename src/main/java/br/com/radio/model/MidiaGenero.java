@@ -86,8 +86,6 @@ public class MidiaGenero implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		MidiaGenero other = (MidiaGenero) obj;
 		if ( idMediagen == null )
 		{

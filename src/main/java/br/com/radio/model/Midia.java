@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -417,8 +416,6 @@ public class Midia implements Serializable {
 		if ( this == obj )
 			return true;
 		if ( obj == null )
-			return false;
-		if ( getClass() != obj.getClass() )
 			return false;
 		Midia other = (Midia) obj;
 		if ( idMidia == null )

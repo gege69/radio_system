@@ -770,7 +770,7 @@ public class AmbienteController extends AbstractController {
 
 	
 	
-	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/logomarca" }, method = { RequestMethod.GET } )
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/logomarca", "/api/ambientes/{idAmbiente}/logomarca" }, method = { RequestMethod.GET } )
 	public void getLogomarca( @PathVariable Long idAmbiente, Principal principal, HttpServletResponse response )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );

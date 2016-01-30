@@ -114,8 +114,6 @@ public class Permissao implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Permissao other = (Permissao) obj;
 		if ( idPermissao == null )
 		{

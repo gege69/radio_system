@@ -18,8 +18,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 import br.com.radio.util.UtilsStr;
@@ -131,8 +129,6 @@ public class Mensagem implements Serializable {
 		if ( this == obj )
 			return true;
 		if ( obj == null )
-			return false;
-		if ( getClass() != obj.getClass() )
 			return false;
 		Mensagem other = (Mensagem) obj;
 		if ( idMensagem == null )

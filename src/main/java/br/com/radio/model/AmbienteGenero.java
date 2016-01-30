@@ -89,8 +89,6 @@ public class AmbienteGenero implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		AmbienteGenero other = (AmbienteGenero) obj;
 		if ( idAmbgen == null )
 		{

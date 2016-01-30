@@ -325,6 +325,35 @@ public class Evento implements Serializable {
 						idEvento, ambiente, categoria, midia, dataInicio, dataFim, repeteDomingo, repeteSegunda, repeteTerca, repeteQuarta, repeteQuinta, repeteSexta, repeteSabado, horarios, ativo );
 	}
 
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idEvento == null ) ? 0 : idEvento.hashCode() );
+		return result;
+	}
+
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		Evento other = (Evento) obj;
+		if ( idEvento == null )
+		{
+			if ( other.idEvento != null )
+				return false;
+		}
+		else if ( !idEvento.equals( other.idEvento ) )
+			return false;
+		return true;
+	}
+
 	
 
 	

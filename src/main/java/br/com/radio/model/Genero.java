@@ -109,8 +109,6 @@ public class Genero implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Genero other = (Genero) obj;
 		if ( idGenero == null )
 		{

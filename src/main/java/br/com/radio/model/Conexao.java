@@ -138,8 +138,6 @@ public class Conexao implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Conexao other = (Conexao) obj;
 		if ( idConexao == null )
 		{

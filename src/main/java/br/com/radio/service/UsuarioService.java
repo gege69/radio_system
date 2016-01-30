@@ -263,19 +263,29 @@ public class UsuarioService {
 		if ( usuario == null || usuario.getCliente() == null )
 			throw new RuntimeException( "Usuário não encontrado" );
 
+		Ambiente ambiente = null;
 		
-		
-		
-//		if ( usuario.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR ) )
-//			throw new RuntimeException( "Usuário não é do tipo Ambiente" );
+		boolean isGerenciador = usuario.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR );
+		boolean isPlayer = usuario.getUsuarioTipo().equals( UsuarioTipo.PLAYER );
 
-		Ambiente ambiente = ambienteRepo.findByLogin( usuario.getLogin() );
-			
+		// Se está logado como gerenciado tem que usar as urls de simulação
+		if ( isGerenciador  && ( idAmbiente == null || idAmbiente < 0 ) )
+			throw new RuntimeException( "Ambiente não informado" );
+		
+		if ( idAmbiente == null && isPlayer )
+			ambiente = ambienteRepo.findByLogin( usuario.getLogin() );
+
+		if ( ambiente == null && idAmbiente != null )
+			ambiente =ambienteRepo.findOne( idAmbiente );
+		
 		if ( ambiente == null )
 			throw new RuntimeException( "Ambiente não encontrado." );
+
+		if ( isPlayer && ( usuario.getAmbiente() == null || !ambiente.equals( usuario.getAmbiente() ) ) )
+			throw new RuntimeException( "Tentativa de autenticar em um player que não pertence ao seu login" );
 		
 		if ( !ambiente.getCliente().getIdCliente().equals( usuario.getCliente().getIdCliente() ))
-			throw new RuntimeException( "Tentativa de autenticar em um player que não percence ao seu login" );
+			throw new RuntimeException( "Tentativa de autenticar em um player que não pertence ao seu login" );
 		
 		UsuarioAmbienteDTO dto = new UsuarioAmbienteDTO( usuario, ambiente );
 		

@@ -113,8 +113,6 @@ public class Funcionalidade implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Funcionalidade other = (Funcionalidade) obj;
 		if ( idFuncionalidade == null )
 		{

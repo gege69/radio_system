@@ -192,8 +192,6 @@ public class Conversa implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Conversa other = (Conversa) obj;
 		if ( idConversa == null )
 		{

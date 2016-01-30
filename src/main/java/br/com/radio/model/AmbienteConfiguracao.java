@@ -525,8 +525,6 @@ public class AmbienteConfiguracao implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		AmbienteConfiguracao other = (AmbienteConfiguracao) obj;
 		if ( idAmbConfig == null )
 		{

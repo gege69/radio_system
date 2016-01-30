@@ -113,8 +113,6 @@ public class PerfilPermissao implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		PerfilPermissao other = (PerfilPermissao) obj;
 		if ( idPerfperm == null )
 		{

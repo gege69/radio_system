@@ -86,8 +86,6 @@ public class UsuarioPerfil implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		UsuarioPerfil other = (UsuarioPerfil) obj;
 		if ( idUsuperf == null )
 		{

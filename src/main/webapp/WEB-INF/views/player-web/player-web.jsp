@@ -127,7 +127,7 @@
               <div class="spacer-vertical40"></div>
                
               <div class="row row-centered" >
-                <img alt="logo" src="${context}/ambientes/${idAmbiente}/logomarca" id="marca" class="logotipoimagem" >
+                <img alt="logo" src="${context}/api/ambientes/${idAmbiente}/logomarca" id="marca" class="logotipoimagem" >
               </div>
               
               <div class="spacer-vertical40"></div>
@@ -238,6 +238,6 @@
 
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
-<script src="${context}/js/player-web/player-simulador-plyr.js" charset="UTF-8"></script>
+<script src="${context}/js/player-web/player-web-plyr.js" charset="UTF-8"></script>
   
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

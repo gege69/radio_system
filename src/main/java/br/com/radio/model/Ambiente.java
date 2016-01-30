@@ -539,15 +539,15 @@ public class Ambiente implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
+		if ( !( obj instanceof Ambiente ) )
 			return false;
 		Ambiente other = (Ambiente) obj;
-		if ( idAmbiente == null )
+		if ( getIdAmbiente() == null )
 		{
-			if ( other.idAmbiente != null )
+			if ( other.getIdAmbiente() != null )
 				return false;
 		}
-		else if ( !idAmbiente.equals( other.idAmbiente ) )
+		else if ( !getIdAmbiente().equals( other.getIdAmbiente() ) )
 			return false;
 		return true;
 	}

@@ -174,8 +174,6 @@ public class Bloco implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Bloco other = (Bloco) obj;
 		if ( idBloco == null )
 		{

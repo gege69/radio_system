@@ -318,5 +318,36 @@ public class Transmissao implements Serializable {
 	{
 		return String.format( "Transmissao [idTransmissao=%s, posicaoplay=%s, dataPrevisaoPlay=%s, eventoHorario=%s]", idTransmissao, posicaoplay, dataPrevisaoPlay, eventoHorario );
 	}
+
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idTransmissao == null ) ? 0 : idTransmissao.hashCode() );
+		return result;
+	}
+
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		Transmissao other = (Transmissao) obj;
+		if ( idTransmissao == null )
+		{
+			if ( other.idTransmissao != null )
+				return false;
+		}
+		else if ( !idTransmissao.equals( other.idTransmissao ) )
+			return false;
+		return true;
+	}
+	
+	
 	
 }

@@ -142,8 +142,6 @@ public class Categoria implements Serializable {
 			return true;
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
 		Categoria other = (Categoria) obj;
 		if ( idCategoria == null )
 		{
