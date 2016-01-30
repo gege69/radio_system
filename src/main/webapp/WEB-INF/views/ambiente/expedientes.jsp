@@ -69,8 +69,8 @@
                           </div>
                           <div class="form-inline col-lg-2 col-md-3 col-sm-3 col-xs-4 ">
                             <select class="form-control" name="minutoIniExpediente" id="minutoIniExpediente">
-                              <option value="0 ">00</option>
-                              <option value="5 ">05</option>
+                              <option value="0">00</option>
+                              <option value="5">05</option>
                               <option value="10">10</option>
                               <option value="15">15</option>
                               <option value="20">20</option>
@@ -118,8 +118,8 @@
                           </div>
                           <div class="form-inline col-lg-2 col-md-3 col-sm-3 col-xs-4 ">
                             <select class="form-control" name="minutoFimExpediente" id="minutoFimExpediente">
-                              <option value="0 ">00</option>
-                              <option value="5 ">05</option>
+                              <option value="0">00</option>
+                              <option value="5">05</option>
                               <option value="10">10</option>
                               <option value="15">15</option>
                               <option value="20">20</option>
@@ -219,7 +219,7 @@
             dataType: 'json'
         }).done( function(json) {
             
-//             debugger;
+            debugger;
             removeErros( $('#ambiente-expediente-form') );
              $('#ambiente-expediente-form').populate(json);
             jump('ambiente-expediente-form');
