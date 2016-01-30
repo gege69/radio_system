@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import br.com.radio.dto.UsuarioAmbienteDTO;
-import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
-import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.service.UsuarioService;

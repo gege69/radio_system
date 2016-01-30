@@ -31,4 +31,4 @@
 </div>
 
 
-<script src="${context}/js/simulador/modal-chamada-instantanea.js" charset="UTF-8"></script>
+<script src="${context}/js/player-web/modal-chamada-instantanea.js" charset="UTF-8"></script>

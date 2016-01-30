@@ -35,5 +35,5 @@
   </div>
 </div>
 
-<script src="${context}/js/simulador/modal-chamada-funcionarios.js" charset="UTF-8"></script>
+<script src="${context}/js/player-web/modal-chamada-funcionarios.js" charset="UTF-8"></script>
 

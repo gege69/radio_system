@@ -223,4 +223,4 @@
 </div>
 
 
-<script src="${context}/js/simulador/modal-blocos.js" charset="UTF-8"></script>
+<script src="${context}/js/player-web/modal-blocos.js" charset="UTF-8"></script>

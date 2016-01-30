@@ -28,7 +28,7 @@ var listaFuncionarios = function(){
 
 var listaFrase = function(){
     
-    var url = buildUrl( "/api/ambientes/{idAmbiente}/midias-por-categoria?codigo=chamada_func_nome", { 
+    var url = buildUrl( "/api/ambientes/{idAmbiente}/midias-por-categoria?codigo=chamada_func_frase", { 
         idAmbiente: idAmbiente
     });
     

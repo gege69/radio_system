@@ -38,6 +38,7 @@ var schedulePlay = function()
             play();
         else
             player.play();
+        
         return;
     }
     
@@ -54,10 +55,6 @@ var schedulePlay = function()
     player2.source( url );
     player2.play();
 
-    player.media.addEventListener("ended", function() { 
-        schedulePlay();
-    });
-    
 }
 
 var stop = function(){
@@ -193,7 +190,7 @@ var abreModal = function( tela ){
         idAmbiente: idAmbiente,
         tela : tela
      });
-    
+
     $('.my-modal-cont').load( url, function(result){
         $('#myModal').modal({
             show:true, 
@@ -269,6 +266,10 @@ $(document).ready(function() {
         next();
     });
     
+    player2.media.addEventListener("ended", function() { 
+        schedulePlay();
+    });
+    
     $(".campo-slider").bootstrapSlider({
         ticks: [0, 20, 40, 60, 80, 100],
         ticks_labels: ['0', '20', '40', '60', '80', '100'],
@@ -311,5 +312,6 @@ $(document).ready(function() {
     registraModal('#btn-atendimento', "atendimento");
     
     getConfiguracoes();
+    
     
 });

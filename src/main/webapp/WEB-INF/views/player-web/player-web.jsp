@@ -12,7 +12,7 @@
   
     <title>Radio System</title>
     
-    <!-- O SIMULADOR TEM UM CSS DIFERENTE -->
+    <!-- O player-web TEM UM CSS DIFERENTE -->
     <link href="${context}/css/bootstrap-themes/slate/bootstrap.css" rel="stylesheet">
 
     <jsp:include page="/WEB-INF/views/customStyles.jsp" />

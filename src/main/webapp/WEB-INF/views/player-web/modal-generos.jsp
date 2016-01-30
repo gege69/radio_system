@@ -45,5 +45,5 @@
 </script>  
 
 
-<script src="${context}/js/simulador/modal-generos.js" charset="UTF-8"></script>
+<script src="${context}/js/player-web/modal-generos.js" charset="UTF-8"></script>
 
