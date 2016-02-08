@@ -411,7 +411,7 @@ public class MidiaService {
 	 * @throws InvalidDataException
 	 */
 	@Transactional
-	public Midia saveUploadMusica( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, String descricao, String[] arrayGeneros ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUploadMusica( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, String descricao, Long[] arrayGeneros ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
 		
@@ -434,9 +434,9 @@ public class MidiaService {
 	
 	
 
-	private void associaGenerosParaMusica( Midia midia, String[] arrayGeneros )
+	private void associaGenerosParaMusica( Midia midia, Long[] arrayGeneros )
 	{
-		List<Genero> generos = generoRepo.findByNomeIn( Arrays.asList( arrayGeneros ) );
+		List<Genero> generos = generoRepo.findByIdGeneroIn( Arrays.asList( arrayGeneros ) );
 		
 		if ( generos == null || generos.size() == 0 )
 			throw new RuntimeException("Nenhum gênero passado corresponde aos gêneros cadastrados no banco de dados" );

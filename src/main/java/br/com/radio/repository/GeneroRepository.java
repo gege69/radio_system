@@ -16,5 +16,6 @@ public interface GeneroRepository extends JpaRepository<Genero, Long> {
 
 	List<Genero> findByNomeIn( List<String> generosList );
 	
+	List<Genero> findByIdGeneroIn( List<Long> idList );
 }
 	

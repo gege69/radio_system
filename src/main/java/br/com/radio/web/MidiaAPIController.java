@@ -1,7 +1,9 @@
 package br.com.radio.web;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.json.Json;
@@ -151,7 +153,7 @@ public class MidiaAPIController extends AbstractController {
 	public ResponseEntity<String> uploadMusica(
     		@RequestParam("file") MultipartFile file, 
     		@RequestParam(name="descricao", required=false) String descricao,
-    		@RequestParam("generos[]") String[] generos,
+    		@RequestParam("generos[]") Long[] generos,
     		Principal principal, 
     		Model model )
 	{
@@ -172,7 +174,7 @@ public class MidiaAPIController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				//e.printStackTrace();
 
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
