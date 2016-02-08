@@ -103,6 +103,20 @@ public class MidiaGenero implements Serializable {
 		return String.format( "MidiaGenero [idMediagen=%s, genero=%s, midia=%s]", idMediagen, genero, midia );
 	}
 
+	public MidiaGenero()
+	{
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public MidiaGenero( Genero genero, Midia midia )
+	{
+		super();
+		this.genero = genero;
+		this.midia = midia;
+	}
+
+	
 	
 
 

@@ -147,6 +147,45 @@ public class MidiaAPIController extends AbstractController {
     }	
 
 	
+	@RequestMapping(value="/api/upload-musica", method=RequestMethod.POST)
+	public ResponseEntity<String> uploadMusica(
+    		@RequestParam("file") MultipartFile file, 
+    		@RequestParam(name="descricao", required=false) String descricao,
+    		@RequestParam("generos[]") String[] generos,
+    		Principal principal, 
+    		Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+		if ( file != null && !file.isEmpty() )
+		{
+			try
+			{
+				midiaService.saveUploadMusica( file, "musica", usuario.getCliente(), descricao, generos );
+						
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			}
+		}
+		else
+		{
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
+			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+		}
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+    }	
 
 	@RequestMapping(value = "/api/ambientes/{idAmbiente}/transmissoes/{idTransmissao}/midia", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<FileSystemResource> downloadTransmissao(@PathVariable Long idAmbiente, @PathVariable Long idTransmissao, Principal principal) {

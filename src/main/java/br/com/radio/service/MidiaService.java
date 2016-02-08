@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -395,6 +396,60 @@ public class MidiaService {
 	
 	
 	
+	/**
+	 * Esse método é exclusivo para músicas pois também é passada uma lista de gêneros e a música precisa ser associada para todos os ambientes do cliente.
+	 * 
+	 * @param multiPartFile
+	 * @param codigoCategoria
+	 * @param cliente
+	 * @param descricao
+	 * @param arrayGeneros
+	 * @return
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws UnsupportedTagException
+	 * @throws InvalidDataException
+	 */
+	@Transactional
+	public Midia saveUploadMusica( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, String descricao, String[] arrayGeneros ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
+		
+		if ( categoria == null )
+			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
+		
+		byte[] bytes = multiPartFile.getBytes();
+		
+		String hash = geraHashDoArquivo( bytes );
+		
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
+		
+		associaGenerosParaMusica( midia, arrayGeneros );
+		
+		associaMidiaParaTodosAmbientesDoCliente( cliente, midia );
+		
+		return midia;
+	}	
+
+	
+	
+
+	private void associaGenerosParaMusica( Midia midia, String[] arrayGeneros )
+	{
+		List<Genero> generos = generoRepo.findByNomeIn( Arrays.asList( arrayGeneros ) );
+		
+		if ( generos == null || generos.size() == 0 )
+			throw new RuntimeException("Nenhum gênero passado corresponde aos gêneros cadastrados no banco de dados" );
+		
+		for ( Genero genero : generos )
+		{
+			MidiaGenero md = new MidiaGenero( genero, midia );
+			
+			midiaGeneroRepo.save( md );
+		}
+	}
+	
+
 	
 	public Midia saveUpload( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
@@ -542,6 +597,19 @@ public class MidiaService {
 			midiaAmbienteRepo.saveAndFlush( new MidiaAmbiente( ambiente, midia, new Date() ) );
 	}
 
+
+	private void associaMidiaParaTodosAmbientesDoCliente( Cliente cliente, Midia midia )
+	{
+		List<Ambiente> ambientes = ambienteRepo.findByCliente( cliente );
+		
+		for ( Ambiente ambiente : ambientes )
+		{
+			Long qtd = midiaAmbienteRepo.countByAmbienteAndMidia( ambiente, midia );
+
+			if ( qtd == null || qtd == 0 )
+				midiaAmbienteRepo.saveAndFlush( new MidiaAmbiente( ambiente, midia, new Date() ) );
+		}
+	}
 
 	private String geraHashDoArquivo( byte[] bytes ) throws IOException
 	{
