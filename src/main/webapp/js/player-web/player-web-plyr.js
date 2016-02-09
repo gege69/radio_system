@@ -3,6 +3,8 @@ var player = null;
 
 var player2 = null;
 
+var player3 = null;
+
 var idAmbiente = $('#idAmbiente').val();
 
 var volumeMusicas = 100;
@@ -16,6 +18,8 @@ var volumeGeral = 100;
 var volumeIndividual = false;
 
 var playlist = [];
+
+var micRetorna = player;
 
 var playSequence = function( array ){
     
@@ -254,13 +258,73 @@ var registraModal = function( element, url ){
 }
 
 
+
+var retornaMusica = function()
+{
+    if ( micRetorna != null && micRetorna != undefined )
+    {
+        micRetorna.play();
+    }
+}
+
+
+
+
+var desligaMicrofone = function()
+{
+    var iconMic = $("#icon-mic");
+    iconMic.removeClass("fa-microphone");
+    iconMic.addClass("fa-microphone-slash");
+    iconMic.addClass("player-mic-off");
+    iconMic.removeClass("player-mic-on");
+   
+    retornaMusica();
+}
+
+var ligaMicrofone = function()
+{
+    var iconMic = $("#icon-mic");
+    iconMic.addClass("fa-microphone");
+    iconMic.removeClass("fa-microphone-slash");
+    iconMic.removeClass("player-mic-off");
+    iconMic.addClass("player-mic-on");
+   
+    if ( player.media.paused == false )
+    {
+        player.pause();
+        micRetorna = player;
+    }
+    else if ( player2.media.paused == false )
+    {
+        player2.pause();
+        micRetorna = player2;
+    }
+
+    player3.play();
+}
+
+var toggleMicrofone = function()
+{
+    var iconMic = $("#icon-mic");
+    if ( iconMic.hasClass("fa-microphone") ) 
+    {
+        desligaMicrofone();
+    }
+    else if ( iconMic.hasClass("fa-microphone-slash") )
+    {
+        ligaMicrofone();
+    }
+}
+
 $(document).ready(function() {
 
     plyr.setup();
     
     player = $('#player1')[0].plyr;
 
-    player2 = $('#player2')[0].plyr
+    player2 = $('#player2')[0].plyr;
+
+    player3 = $('#playerDing')[0].plyr;
 
     player.media.addEventListener("ended", function() { 
         next();
@@ -269,6 +333,7 @@ $(document).ready(function() {
     player2.media.addEventListener("ended", function() { 
         schedulePlay();
     });
+    
     
     $(".campo-slider").bootstrapSlider({
         ticks: [0, 20, 40, 60, 80, 100],
@@ -281,10 +346,12 @@ $(document).ready(function() {
     });
     
     $('#botao-play').click( function(){
+        desligaMicrofone();
         play();
     });
     
     $('#botao-next').click( function(){
+        desligaMicrofone();
         next();
     });
     
@@ -313,5 +380,8 @@ $(document).ready(function() {
     
     getConfiguracoes();
     
+    $("#mic").click( function(){
+        toggleMicrofone();
+    });
     
 });

@@ -142,7 +142,6 @@
     
     <div class="row">
       <div class="col-md-offset-10 col-sm-offset-9 col-xs-offset-7">
-<!--         <a class="btn btn-default" href=${context}/principal>Painel Gerencial</a> -->
       </div>
     </div>
     
@@ -152,40 +151,36 @@
 
     <div class="row row-centered" style="margin-top: 11px;">
     
-      <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12">
-        <span id="nome-musica"></span>
-        <div class="spacer-vertical20"></div>
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+          <a href="#" id="mic">
+            <i class="fa fa-lg fa-microphone-slash player-mic-off" id="icon-mic"></i>
+          </a>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+          <span id="nome-musica"></span>
+          <div class="spacer-vertical20"></div>
+        </div>
       </div>
       
       <div class="col-md-2 col-sm-2 col-xs-12 col-centered" >
-      
-
         <div class="player" id="player1" style="display : none;">
             <audio controls>
-                Audio files
-                <source src="https://cdn.selz.com/plyr/1.0/logistics-96-sample.ogg" type="audio/ogg">
-        
-                Fallback for browsers that don't support the <audio> element
-                <a href="https://cdn.selz.com/plyr/1.0/logistics-96-sample.mp3">Download</a>
+                <source src="" type="audio/ogg">
             </audio>
         </div>
 
         <div class="player" id="player2" style="display : none;">
             <audio controls>
-                Audio files
-                <source src="https://cdn.selz.com/plyr/1.0/logistics-96-sample.ogg" type="audio/ogg">
-        
-                Fallback for browsers that don't support the <audio> element
-                <a href="https://cdn.selz.com/plyr/1.0/logistics-96-sample.mp3">Download</a>
+                <source src="" type="audio/ogg">
             </audio>
         </div>
       
-<!--         <div style="display: none;"> -->
-<!--           <audio id="player1" type="audio/mp3" controls="controls">    -->
-<!--           </audio> -->
-<!--           <audio id="player2" type="audio/mp3" controls="controls">    -->
-<!--           </audio> -->
-<!--         </div> -->
+        <div class="player" id="playerDing" style="display : none;">
+            <audio controls>
+                <source src="${context}/static_sound/ding.mp3" type="audio/ogg">
+            </audio>
+        </div>
         <table style=" margin: 0 auto;">
           <tr>
             <td>
@@ -212,7 +207,7 @@
         <div class="spacer-vertical20"></div>
       </div>
       
-      <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12 pull-right">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 pull-right">
         <i class="fa fa-2x fa-volume-up" style="margin-right: 15px;"></i>
         <input id="slider2" class="campo-slider" data-slider-id='ex2Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/>
         

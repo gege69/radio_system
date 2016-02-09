@@ -18,21 +18,6 @@
     margin-right:-4px;
 }
 
-/* .glyphicon-icons{ */
-/*   padding-left: 0; */
-/*   padding-bottom: 1px; */
-/*   list-style: none; */
-/*   margin: 0 auto; */
-/*   max-width: 1170px; */
-/* } */
-
-/* .glyphicon { */
-/*   font-size: 42px; */
-/*   display: block; */
-/*   text-align: center; */
-/*   margin: 10px auto 20px; */
-/* } */
-
 .icone-main {
   font-size: 42px;
   display: block;
@@ -239,6 +224,7 @@ body {
  
 
 
+
 .footer-player {
     background-image: linear-gradient(#484e55, #3a3f44 60%, #313539); 
     background-repeat: no-repeat;     
@@ -278,3 +264,18 @@ body {
     95% {left: 120%;}
     to {left: 100%;}
 }
+
+
+
+
+.player-mic-on {
+  color : #FF2626;
+  text-shadow: 1px 1px 1px #000000;
+}
+
+.player-mic-off {
+  color : inherit;
+  text-shadow: 1px 1px 1px #000000;
+}
+
+
