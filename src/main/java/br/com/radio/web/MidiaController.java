@@ -343,9 +343,9 @@ public class MidiaController extends AbstractController {
 			
 			// Melhorar para ignorar o case... vai ter que fazer select específico
 			if ( categorias != null && categorias.length > 0 )
-				midiaPage = midiaRepo.findByAmbientesAndNomeContainingAndCategoriasIn( ambiente, "%"+nome+"%", Categoria.listByIds( categorias ), pageable );
+				midiaPage = midiaRepo.findByAmbientesAndNomeContainingAndCategoriasInAndValidoTrue( ambiente, "%"+nome+"%", Categoria.listByIds( categorias ), pageable );
 			else
-				midiaPage = midiaRepo.findByAmbientesAndNomeContaining( ambiente, "%"+nome+"%", pageable );
+				midiaPage = midiaRepo.findByAmbientesAndNomeContainingAndValidoTrue( ambiente, "%"+nome+"%", pageable );
 			
 			List<Midia> midiaList = midiaPage.getContent();
 			

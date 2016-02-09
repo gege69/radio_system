@@ -395,7 +395,7 @@ public class MidiaAPIController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes/{idAmbiente}/midia/{idMidia}", method=RequestMethod.DELETE)
-	public ResponseEntity<String> inativaMidia( @PathVariable Long idAmbiente, @PathVariable Long idMidia, Principal principal, Model model )
+	public ResponseEntity<String> deleteMidia( @PathVariable Long idAmbiente, @PathVariable Long idMidia, Principal principal, Model model )
 	{
 		String jsonResult = "";
 
@@ -410,7 +410,7 @@ public class MidiaAPIController extends AbstractController {
 		{
 			try
 			{
-				midiaService.excluiMidiaSePossivel( idMidia, ambiente );
+				midiaService.deleteMidiaSePossivel( idMidia, ambiente );
 				jsonResult = writeOkResponse();
 			}
 			catch ( Exception e )

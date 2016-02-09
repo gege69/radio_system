@@ -19,8 +19,25 @@
           <h3>
             <div class="row">
               <div class="col-lg-12">
-                Programação Musical<br/>
-                ( Gêneros )
+
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    Programação musical
+                  </div>
+                  
+                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <div class="pull-right">
+                      <a class="btn btn-default" href="#">Aplicar mudanças agora</a>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    ( Gêneros )
+                  </div>
+                </div>
+
               </div>
             </div>
             <br/>

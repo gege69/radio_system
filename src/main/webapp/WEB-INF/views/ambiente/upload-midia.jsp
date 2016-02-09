@@ -113,12 +113,13 @@
                           <tr>
 <!--                               <th data-field="idMidia">ID</th> -->
                               <th data-field="nome">Nome</th>
-                              <th data-field="dataUpload">Data Upload</th>
+                              <th data-field="descricao">Descrição</th>
+                              <th data-field="dataUpload">Upload</th>
                               <th data-field="vinheta" data-formatter="catFormatter" data-align="center">Vinheta</th>
                               <th data-field="inst" data-formatter="catFormatter" data-align="center">Institucional</th>
                               <th data-field="comercial" data-formatter="catFormatter" data-align="center">Comercial</th>
                               <th data-field="programete" data-formatter="catFormatter" data-align="center">Programete</th>
-                              <th data-field="chamada-inst" data-formatter="catFormatter" data-align="center">Cham. Instantânea</th>
+                              <th data-field="chamada_inst" data-formatter="catFormatter" data-align="center">Cham. Inst</th>
                               <th data-field="idMidia" data-formatter="deleteFormatter" data-align="center">Deletar</th>
                           </tr>
                         </thead>

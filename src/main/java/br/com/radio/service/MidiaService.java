@@ -502,20 +502,12 @@ public class MidiaService {
 		Midia midia = null;
 		try
 		{
-			String basePath = "";
-			
-			Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
-			basePath = parametro.getValor();
+			String path = getDefaultPath( hash, contentType );
 
 			midia = midiaRepo.findByFilehash( hash );
 			
-			if ( midia == null )
+			if ( midia == null || ( midia != null && midia.getValido() == false ) )
 			{
-				String path = basePath + "md_" + hash;
-
-				if ( "audio/ogg".equals( contentType ) )
-					path = path + ".ogg";
-				
 				arquivo = new File( path );
 				
 				// Talvez não precise mover o arquivo... se o filesize estiver preenchido é um sinal disso
@@ -561,6 +553,24 @@ public class MidiaService {
 		}
 		
 		return midia;
+	}
+
+
+
+
+
+	private String getDefaultPath( String hash, String contentType )
+	{
+		String basePath = "";
+		
+		Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
+		basePath = parametro.getValor();
+
+		String path = basePath + "md_" + hash;
+
+		if ( "audio/ogg".equals( contentType ) )
+			path = path + ".ogg";
+		return path;
 	}
 
 
@@ -703,11 +713,11 @@ public class MidiaService {
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		if ( idCategoria != null && idCategoria > 0 )
-			midiaPage = midiaRepo.findByAmbientesAndCategorias( pageable, ambiente, new Categoria( idCategoria, "" ) );
+			midiaPage = midiaRepo.findByAmbientesAndCategoriasAndValidoTrue( pageable, ambiente, new Categoria( idCategoria, "" ) );
 		else if ( StringUtils.isNotBlank( codigoCategoria ) )
-			midiaPage = midiaRepo.findByAmbientesAndCategorias_codigo( pageable, ambiente, codigoCategoria );
+			midiaPage = midiaRepo.findByAmbientesAndCategorias_codigoAndValidoTrue( pageable, ambiente, codigoCategoria );
 		else
-			midiaPage = midiaRepo.findByAmbientes( pageable, ambiente );
+			midiaPage = midiaRepo.findByAmbientesAndValidoTrue( pageable, ambiente );
 		
 		List<Midia> midiaList = midiaPage.getContent();
 		
@@ -725,17 +735,16 @@ public class MidiaService {
 	
 	public List<Midia> getMidiasAtivasPorAmbienteCategoria( Ambiente ambiente, Categoria categoria )
 	{
-		List<Midia> result = midiaRepo.findByAmbientesAndCategorias( ambiente, categoria );
+		List<Midia> result = midiaRepo.findByAmbientesAndCategoriasAndValidoTrue( ambiente, categoria );
 		
 		return result;
 	}
 	
 
 	@Transactional
-	public boolean excluiMidiaSePossivel( Long idMidia, Ambiente ambiente )
+	public boolean deleteMidiaSePossivel( Long idMidia, Ambiente ambiente )
 	{
 		boolean result = false;
-
 		
 		Midia midia = midiaRepo.findOne( idMidia );
 		
@@ -744,24 +753,22 @@ public class MidiaService {
 		
 		List<MidiaAmbiente> associacoesAmbientes = midiaAmbienteRepo.findByMidia( midia );
 
-		Optional<MidiaAmbiente> associacaoOptional = associacoesAmbientes.stream().filter( ma -> ma.getAmbiente().equals( ambiente ) ).findFirst();
-
-		if ( !associacaoOptional.isPresent() )
-			throw new RuntimeException( "Midia não está associada à esse ambiente" );
-			
-		MidiaAmbiente associacao = associacaoOptional.get();
-		
-		midiaAmbienteRepo.delete( associacao );
-		midiaAmbienteRepo.flush();
+		for ( MidiaAmbiente ma : associacoesAmbientes )
+		{
+			midiaAmbienteRepo.delete( ma );
+			midiaAmbienteRepo.flush();
+		}
 		
 		midia = midiaRepo.findOne( idMidia );
+
+		String filePath = midia.getFilepath();
+
+		midia.setValido( false );
 		
-		List<MidiaAmbiente> outrasAssociacoes = associacoesAmbientes.stream().filter( ma -> !ma.getAmbiente().equals( ambiente ) ).collect( Collectors.toList() );
+		midiaRepo.save( midia );
 		
-		if ( outrasAssociacoes == null || outrasAssociacoes.size() <= 0 )
-		{
-			midiaRepo.delete( midia );
-		}
+		// aqui tenho que tentar destruir o arquivo fisico no disco
+		FileUtils.deleteQuietly( new File( filePath ) );
 		
 		return result;
 	}
