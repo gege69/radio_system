@@ -126,6 +126,21 @@
                       </table>
                     </div>                        
                   </div>
+                  
+                  
+                  
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                      <div class="">
+                        <a class="btn btn-default" href="#" id="aplicar-programacao" >
+                          <i class="fa fa-refresh"></i>
+                          Aplicar ${nomeCategoria}(s) na programação agora
+                        </a>
+                      </div>            
+                    </div>
+                  </div>
+                  
+                  
                 </div>
               </div>
             </div>

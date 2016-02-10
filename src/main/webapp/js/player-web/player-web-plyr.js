@@ -341,19 +341,19 @@ $(document).ready(function() {
         ticks_snap_bounds: 3
     });
     
-    $('#botao-stop').click( function(){
-        stop();
-    });
+//    $('#botao-stop').click( function(){
+//        stop();
+//    });
     
     $('#botao-play').click( function(){
         desligaMicrofone();
         play();
     });
     
-    $('#botao-next').click( function(){
-        desligaMicrofone();
-        next();
-    });
+//    $('#botao-next').click( function(){
+//        desligaMicrofone();
+//        next();
+//    });
     
     $(".campo-slider").on("slide", function(slideEvt) {
         alteraVolume(slideEvt.value);

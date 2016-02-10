@@ -282,7 +282,9 @@ public class MidiaAPIController extends AbstractController {
 	
 	
 	@RequestMapping( value = "/api/ambientes/{idAmbiente}/transmissoes/new", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String geraTransmissao( @PathVariable Long idAmbiente, Principal principal, HttpServletRequest request )
+	public @ResponseBody String geraTransmissao( @PathVariable Long idAmbiente, 
+    		@RequestParam(name="relatorio", required=false) String relatorio,
+			Principal principal, HttpServletRequest request )
 	{
 		// esse aqui também tem que proteger ou arrancar..
 		
@@ -293,27 +295,39 @@ public class MidiaAPIController extends AbstractController {
 		if ( ambiente != null )
 			progMusicalService.geraTransmissao( ambiente );
 		
-		List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscPosicaoplayAsc( ambiente, true ); 
+		
+		String result = null;
 
-		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-		
-		transmissoes.forEach( t -> {
+		if ( StringUtils.isNotBlank( relatorio ) && "S".equals(relatorio))
+		{
 			
-			Midia m = t.getMidia();
-		
-			JsonObject obj = Json.createObjectBuilder()
-				.add( "nome", m.getNome() )
-				.add( "ordem", t.getPosicaoplay() )
-				.add( "tipo", t.getCategoria().getDescricao() ).build();
+			List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscPosicaoplayAsc( ambiente, true ); 
+
+			JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 			
-			jsonArrayBuilder.add( obj );
-		});
+			transmissoes.forEach( t -> {
+				
+				Midia m = t.getMidia();
+			
+				JsonObject obj = Json.createObjectBuilder()
+					.add( "nome", m.getNome() )
+					.add( "ordem", t.getPosicaoplay() )
+					.add( "tipo", t.getCategoria().getDescricao() ).build();
+				
+				jsonArrayBuilder.add( obj );
+			});
+			
+			JsonObject jsonObject = Json.createObjectBuilder()
+					.add("transmissao", jsonArrayBuilder)
+					.build();
+			
+			result = jsonObject.toString();
+		}
+		else
+			result = writeOkResponse();
 		
-		JsonObject jsonObject = Json.createObjectBuilder()
-				.add("transmissao", jsonArrayBuilder)
-				.build();
 		
-		return jsonObject.toString();
+		return result;
 	}
 	
 	
@@ -378,6 +392,9 @@ public class MidiaAPIController extends AbstractController {
 			throw new RuntimeException( "Não é possível avançar a transmissão." );
 
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
+		
+		System.out.println( transmissao.getIdTransmissao() );
+		
 		
 		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
 		

@@ -98,6 +98,27 @@ var deletaMidia = function( idMidia )
 }
 
 
+
+var aplicarProgramacao = function(){
+    
+    
+    $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: buildUrl( "/api/ambientes/{idAmbiente}/transmissoes/new", { idAmbiente : idAmbiente } ),
+        dataType: 'json'
+    }).done( function(json){
+       
+        if ( json.ok = 1 )
+        {
+            preencheAlertGeral( "alertArea", "Nova programação musical gerada incluindo as mídias atuais.", "success");
+            jump('');
+        }
+        
+    } );
+}
+
+
 $(function(){
     
     jQuery.fn.extend({
@@ -141,5 +162,9 @@ $(function(){
         });
     });
     
+    
+    $("#aplicar-programacao").click( function() {
+        aplicarProgramacao();
+    });
 });
 

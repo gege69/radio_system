@@ -454,7 +454,7 @@ public class ProgramacaoMusicalService {
 
 	
 	
-	private Transmissao getProximaTransmissaoAtualPeloIdAtual( Ambiente ambiente, Transmissao atual )
+	private Transmissao getProximaTransmissaoPeloIdAtual( Ambiente ambiente, Transmissao atual )
 	{
 		Transmissao result = null;
 		
@@ -508,10 +508,8 @@ public class ProgramacaoMusicalService {
 	{
 		Transmissao result = getTransmissaoAtual( ambiente ); 
 		
-//		dfasdfasdfasdf
-
-//		if ( result != null && result.getIdTransmissao() != null )
-//			transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
+		if ( result != null && result.getIdTransmissao() != null )
+			transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
 		
 		return result;
 	}
@@ -522,7 +520,7 @@ public class ProgramacaoMusicalService {
 	{
 		Transmissao atual = getTransmissaoAtual( ambiente ); 
 		
-		Transmissao result = getProximaTransmissaoAtualPeloIdAtual( ambiente, atual );
+		Transmissao result = getProximaTransmissaoPeloIdAtual( ambiente, atual );
 
 		Long idTransmissao = null;
 		
@@ -531,8 +529,8 @@ public class ProgramacaoMusicalService {
 		else
 			idTransmissao = result.getIdTransmissao();
 
-//		if ( idTransmissao != null )
-//			transmissaoRepo.setLinkInativoAnteriores( ambiente, idTransmissao );
+		if ( idTransmissao != null )
+			transmissaoRepo.setLinkInativoAnteriores( ambiente, idTransmissao );
 		
 		//TODO: gerar nova midia incremental aqui
 		

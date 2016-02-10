@@ -183,11 +183,11 @@
         </div>
         <table style=" margin: 0 auto;">
           <tr>
-            <td>
-              <a class="btn btn-default" href="#" id="botao-stop" role="button">
-                <i class="fa fa-stop"></i>
-              </a>
-            </td>
+<!--             <td> -->
+<!--               <a class="btn btn-default" href="#" id="botao-stop" role="button"> -->
+<!--                 <i class="fa fa-stop"></i> -->
+<!--               </a> -->
+<!--             </td> -->
             
             <td>
               <a class="btn btn-default" href="#" id="botao-play" role="button">
@@ -195,13 +195,13 @@
               </a>
             </td>
             
-            <c:if test="${configuracao != null && configuracao.avancarRetornar}">
-              <td>
-                <a class="btn btn-default" href="#" id="botao-next" role="button">
-                  <i class="fa fa-forward"></i>
-                </a>
-              </td>
-            </c:if>
+<%--             <c:if test="${configuracao != null && configuracao.avancarRetornar}"> --%>
+<!--               <td> -->
+<!--                 <a class="btn btn-default" href="#" id="botao-next" role="button"> -->
+<!--                   <i class="fa fa-forward"></i> -->
+<!--                 </a> -->
+<!--               </td> -->
+<%--             </c:if> --%>
           </tr>
         </table>
         <div class="spacer-vertical20"></div>
