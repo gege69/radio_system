@@ -13,11 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,6 +25,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
@@ -39,6 +37,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.config.MensagensProfile;
 import br.com.radio.dto.MusicTags;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
@@ -67,6 +66,8 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 
 @Component
 public class MidiaService {
+	
+	private static final Logger logger = Logger.getLogger(MidiaService.class);
 
 	@Autowired
 	private MidiaRepository midiaRepo;
@@ -135,13 +136,15 @@ public class MidiaService {
 	
 	
 	
-	
+	@Transactional
 	public void getNewMusicFromFileSystem()
 	{
 		try
 		{
-//			File diretorio = new File("/home/pazin/musicas/Exceto Sertanejas/AC-DC/");
-			File diretorio = new File("/home/pazin/ogg/");
+			Parametro parametro = parametroRepo.findByCodigo( "NEW_MIDIA_PATH" );
+			String newPath = parametro.getValor();
+
+			File diretorio = new File(newPath);
 			
 			Map<String,String> mapasMimeType = new HashMap<String,String>();
 			mapasMimeType.put( "ogg", "audio/ogg" );
@@ -178,11 +181,10 @@ public class MidiaService {
 				
 				String pasta = StringUtils.substring( f.getParent(), f.getParent().lastIndexOf( "/" ) + 1 );
 				
-				System.out.println( pasta );
-				
 				iteracoes++;
 				
 				System.out.println(f.getName() + " | " + f.length());
+				logger.info(f.getName() + " | " + f.length());
 
 				String hash = "";
 				
@@ -202,6 +204,7 @@ public class MidiaService {
 				catch ( Exception e )
 				{
 					e.printStackTrace();
+					logger.error( "erro", e );
 				}
 				
 
@@ -265,6 +268,7 @@ public class MidiaService {
 		catch ( Exception e )
 		{
 			e.printStackTrace();
+			logger.error( "erro", e );
 		}
 		
 	}
@@ -279,10 +283,13 @@ public class MidiaService {
 			Map<String,String> mapasMimeType = new HashMap<String,String>();
 			mapasMimeType.put( "ogg", "audio/ogg" );
 			mapasMimeType.put( "mp3", "audio/mpeg" );
+			mapasMimeType.put( "", "audio/mpeg" );
 			
 			Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
 			String basePath = parametro.getValor();
 			
+			logger.info( basePath );
+
 			File diretorio = new File( basePath );
 			
 			Collection<File> arquivos = FileUtils.listFiles( diretorio, null, true );
@@ -306,15 +313,17 @@ public class MidiaService {
 			
 			for ( File f : arquivos )
 			{
+				
+				
 				boolean troca = false;
 				
 				String pasta = StringUtils.substring( f.getParent(), f.getParent().lastIndexOf( "/" ) + 1 );
 				
-				System.out.println( pasta );
-				
+				logger.info( pasta );
+
 				iteracoes++;
 				
-				System.out.println(f.getName() + " | " + f.length());
+				logger.info(f.getName() + " | " + f.length());
 
 				String hash = "";
 				
@@ -334,6 +343,8 @@ public class MidiaService {
 				catch ( Exception e )
 				{
 					e.printStackTrace();
+					
+					logger.error( "error", e );
 				}
 				
 				Long size = f.length();
@@ -390,6 +401,7 @@ public class MidiaService {
 		}
 		catch ( Exception e )
 		{
+			logger.error( "erro", e );
 			e.printStackTrace();
 		}
 	}

@@ -119,7 +119,8 @@ values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente
 insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
 values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'SERVER_REQUEST_PATH', '', 'A definir', null );
 
-
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'NEW_MIDIA_PATH', '/home/pazin/musicas/Exceto Sertanejas/AC-DC/', 'Pasta em disco onde estão as músicas novas que precisam ser importadas', null );
 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 1,  'Gêneros' ,       				'/ambientes/%d/generos/view' ,             			'fa-music'); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 2,  'Vinhetas' ,      				'/ambientes/%d/view-upload-midia/vinheta/' ,     	'fa-file-audio-o'); 
