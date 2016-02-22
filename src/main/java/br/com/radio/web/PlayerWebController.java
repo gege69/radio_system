@@ -69,7 +69,7 @@ public class PlayerWebController extends AbstractController {
 	
 
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/view" , method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/view" , method = RequestMethod.GET )
 	public String playerSimulador( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -93,7 +93,7 @@ public class PlayerWebController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/chamadaveiculos/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/chamadaveiculos/view", method = RequestMethod.GET )
 	public String chamadaVeiculoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -112,7 +112,7 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/chamadafuncionarios/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/chamadafuncionarios/view", method = RequestMethod.GET )
 	public String chamadaFuncionariosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -131,7 +131,7 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/chamadainst/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/chamadainst/view", method = RequestMethod.GET )
 	public String chamadaInstantaneaModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -151,7 +151,7 @@ public class PlayerWebController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/horoscopo/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/horoscopo/view", method = RequestMethod.GET )
 	public String horoscopoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -170,7 +170,7 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/configcomerciais/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/configcomerciais/view", method = RequestMethod.GET )
 	public String configComerciaisModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -189,7 +189,7 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/configinst/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/configinst/view", method = RequestMethod.GET )
 	public String configInstitucionaisModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -207,7 +207,7 @@ public class PlayerWebController extends AbstractController {
 			return "HTTPerror/404";
 	}
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/configprogrametes/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/configprogrametes/view", method = RequestMethod.GET )
 	public String configProgramentesModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -226,7 +226,7 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/generos/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/generos/view", method = RequestMethod.GET )
 	public String generosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -245,7 +245,7 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/blocos/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/blocos/view", method = RequestMethod.GET )
 	public String blocosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -264,7 +264,7 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/nobreak/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/nobreak/view", method = RequestMethod.GET )
 	public String nobreakModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -284,7 +284,7 @@ public class PlayerWebController extends AbstractController {
 	
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/downloads/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/downloads/view", method = RequestMethod.GET )
 	public String downloadsModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -303,7 +303,7 @@ public class PlayerWebController extends AbstractController {
 	}
 
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/relatorios/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/relatorios/view", method = RequestMethod.GET )
 	public String relatoriosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -323,8 +323,27 @@ public class PlayerWebController extends AbstractController {
 
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/simulacoes/atendimento/view", method = RequestMethod.GET )
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/atendimento/view", method = RequestMethod.GET )
 	public String atendimentoModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
+	{
+		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
+		
+		Ambiente ambiente = usuAmb.getAmbiente();
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+		
+			return "player-web/modal-conversas";
+		}
+		else
+			return "HTTPerror/404";
+	}
+	
+	
+	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/conversas/view", method = RequestMethod.GET )
+	public String conversasModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
@@ -340,5 +359,4 @@ public class PlayerWebController extends AbstractController {
 		else
 			return "HTTPerror/404";
 	}
-
 }

@@ -190,7 +190,7 @@ var next = function(){
 
 var abreModal = function( tela ){ 
     
-    var url = buildUrl( "/player/ambientes/{idAmbiente}/simulacoes/{tela}/view", { 
+    var url = buildUrl( "/player/ambientes/{idAmbiente}/player/{tela}/view", { 
         idAmbiente: idAmbiente,
         tela : tela
      });

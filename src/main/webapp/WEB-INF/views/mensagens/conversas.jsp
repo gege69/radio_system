@@ -1,30 +1,73 @@
-<jsp:include page="/WEB-INF/views/main.jsp" />    
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="context" value="${pageContext.request.contextPath}" />
-<meta name="_csrf" th:content="${_csrf.token}"/>
 
-  <div class="container">
-  
-    <div class="jumbotron">
-      <h2>Logotipo aqui!</h2>
-    </div>
+<link href="${pageContext.request.contextPath}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/css/bootstrap-datepicker3.css" rel="stylesheet">
 
-    <div class="row">
-    
-      <div class="row" id="alertArea"> 
-      </div>
-      
-    
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h3>Mensagens</h3>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" async></script>
+
+<script src="${pageContext.request.contextPath}/js/required/bootstrap-table/bootstrap-table.js" async></script>
+<script src="${pageContext.request.contextPath}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" async></script>
+
+<script src="${pageContext.request.contextPath}/js/required/bootstrap-datepicker.min.js" defer></script>
+<script src="${pageContext.request.contextPath}/js/required/bootstrap-datepicker.pt-BR.min.js" defer></script>
+
+
+<script src="${pageContext.request.contextPath}/js/required/jsrender.min.js" defer></script>
+
+
+<script id="viewTmplMensagem" type="text/x-jsrender">
+<div class="col-lg-12 col-md-12">
+  <div class="well well-sm {{:htmlclass}} col-lg-10 col-md-10 col-sm-10 col-xs-10">
+    <p>{{:conteudoHtml}}</p>
+    <div class="nome-tempo {{:htmlclass}}">{{:usuario}} - {{:dataEnvio}}</div>
+  </div>
+</div>
+</script>  
+
+<script src="${pageContext.request.contextPath}/js/gerenciador/conversas.js" async></script>
+
+
+<style type="text/css">
+
+.table-conversas tr{
+  cursor: pointer;
+}
+
+.table-participantes tr{
+  cursor: pointer;
+}
+
+.conversa {
+  height: 300px;
+  overflow: auto;
+}
+
+.self {
+  float : right;
+}
+
+.other {
+  float : left;
+}
+
+
+.nome-tempo {
+  font-size : 11px;
+  color: rgba(0,0,0,.54);
+}
+
+</style>
+
+
+
+          
 
           <input type="hidden" id="idUsuario" value="${idUsuario}"> 
           
 
           <div class="row">   
                    
-            <div class="col-lg-6 col-md-6">
+            <div class="col-lg-6 col-md-6 col-sm-4">
 
               <div class="row">
                 <div class="col-lg-12">
@@ -39,7 +82,7 @@
                  id="table-conversas"
                  class="table-conversas"
                  data-toggle="table"
-                 data-url="${context}/conversas"
+                 data-url="${pageContext.request.contextPath}/api/conversas"
                  data-side-pagination="server"
                  data-pagination="true"
                  data-page-size=7
@@ -49,18 +92,18 @@
                  data-query-params="queryParamsConversas" >
                   <thead>
                     <tr>
-                        <th data-field="idConversa">Id</th>
-                        <th data-field="dataCriacao">Data Conversa</th>
+<!--                         <th data-field="idConversa">Id</th> -->
+                        <th data-field="dataCriacao">Data</th>
                         <th data-field="participantes">Ambiente(s)</th>
-                        <th data-field="dataVigenciaInicio">Vigência Início</th>
-                        <th data-field="dataVigenciaFim">Vigência Fim</th>
+<!--                         <th data-field="dataVigenciaInicio">Vigência Início</th> -->
+<!--                         <th data-field="dataVigenciaFim">Vigência Fim</th> -->
                     </tr>
                   </thead>
                 </table>
               </div>
             </div>
           
-            <div id="selecao-participantes" class="col-lg-6 col-md-6" style="display: none;" >
+            <div id="selecao-participantes" class="col-lg-6 col-md-6 col-sm-8" style="display: none;" >
               
               <div class="panel panel-default">
                 <div class="panel-body">
@@ -71,7 +114,7 @@
                      id="table-participantes"
                      class="table-participantes"
                      data-toggle="table"
-                     data-url="${context}/conversas/usuarios?all=true"
+                     data-url="${pageContext.request.contextPath}/api/conversas/usuarios"
                      data-side-pagination="server"
                      data-pagination="false"
                      data-locale = "pt_BR"
@@ -136,7 +179,7 @@
               </div>
             </div>
           
-            <div id="painel-mensagens" class="col-lg-6 col-md-6">
+            <div id="painel-mensagens" class="col-lg-6 col-md-6 col-sm-8">
 
               <div class="panel panel-default">
                 <div class="panel-body">
@@ -149,9 +192,9 @@
                       <div id="conversa" class="conversa col-lg-12 col-md-12">
                       </div>
                     </div>
-                  
-                    <div class="row">
-                      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-9">
+                    
+                    <div class="row spacer-vertical10">
+                      <div class="col-lg-9 col-md-8 col-sm-8 col-xs-9">
                         <div class="form-group">
                           <textarea class="form-control" rows="3" id="conteudo" name="conteudo"></textarea>
                         </div>
@@ -171,98 +214,14 @@
             
           </div>
           
-        </div>
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-        <div class="">
-        </div>            
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-        <div class="pull-right">
-          <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
-        </div>
-      </div>
-    </div>
+       
       
-  </div> <!-- /container -->
+      
+      
+      
+      
+      
+      
 
 
 
-<link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
-<link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-
-<script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
-<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
-
-<script src="${context}/js/required/bootstrap-datepicker.min.js"></script>
-<script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script>
-
-
-<script src="${context}/js/required/jsrender.min.js"></script>
-
-
-<script id="viewTmplMensagem" type="text/x-jsrender">
-<div class="col-lg-12 col-md-12">
-  <div class="message {{:htmlclass}} col-lg-10 col-md-10 col-sm-10 col-xs-10">
-    <p>{{:conteudoHtml}}</p>
-    <div class="nome-tempo {{:htmlclass}}">{{:usuario}} - {{:dataEnvio}}</div>
-  </div>
-</div>
-</script>  
-
-<script src="${context}/js/gerenciador/conversas.js"></script>
-
-
-<style type="text/css">
-
-.table-conversas tr{
-  cursor: pointer;
-}
-
-.table-participantes tr{
-  cursor: pointer;
-}
-
-.conversa {
-  height: 300px;
-  overflow: auto;
-}
-
-.message {
-  margin: 5px 5px 5px 5px;
-  padding: 5px 5px 5px 5px;
-
-/*   background: #e5e5e5; */
-  background: #DDDDDD;
-  
-  border-radius: 2px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-
-}
-
-.self {
-  float : right;
-}
-
-.other {
-  float : left;
-}
-
-
-.nome-tempo {
-  font-size : 11px;
-  color: rgba(0,0,0,.54);
-}
-
-</style>
-
-
-
-<jsp:include page="/WEB-INF/views/bottom.jsp" />

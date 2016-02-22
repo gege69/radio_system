@@ -34,7 +34,7 @@ var carregaMensagensByGrid = function( e, row, el )
 
 var carregaMensagens = function( record )
 {
-    var url = buildUrl( "/conversas/{idConversa}/mensagens", { 
+    var url = buildUrl( "/api/conversas/{idConversa}/mensagens", { 
         idConversa: record.idConversa 
     });
 
@@ -117,7 +117,7 @@ var salvar = function(){
         usuariosArray.push( { idUsuario : linha.idUsuario } );    
     });
     
-    var url = buildUrl( "/conversas" );
+    var url = buildUrl( "/api/conversas" );
 
     var conversa = $('#form-inicio-conversa').serializeJSON();
     conversa.usuarios = usuariosArray;
@@ -167,7 +167,7 @@ var enviarMensagem = function(){
     
     mensagem.conversa = { idConversa : mensagem.idConversa };   // para o jackson ler direto no VO
 
-    var url = buildUrl( "/conversas/{idConversa}/mensagens", { 
+    var url = buildUrl( "/api/conversas/{idConversa}/mensagens", { 
         idConversa: $("#idConversa").val()
     });
     

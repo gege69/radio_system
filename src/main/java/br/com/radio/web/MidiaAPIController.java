@@ -354,6 +354,9 @@ public class MidiaAPIController extends AbstractController {
 
 		
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivo( ambiente );
+
+		if ( transmissao == null )
+			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
 		
 		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
 		
@@ -361,8 +364,7 @@ public class MidiaAPIController extends AbstractController {
 
 		transmissao.setLink( link );
 		
-		if ( transmissao == null )
-			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
+		
 		
 		return transmissao;
 	}
