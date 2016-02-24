@@ -26,16 +26,18 @@ var carregaMensagensByGrid = function( e, row, el )
     if ( row == null )
         return;
     
-    carregaMensagens( row );
-    
+    $("#idConversa").val( row.idConversa );
+
+    carregaMensagens( row.idConversa );
+        
     jump( "painel-mensagens" );
 }
 
 
-var carregaMensagens = function( record )
+var carregaMensagens = function( idConversa )
 {
     var url = buildUrl( "/api/conversas/{idConversa}/mensagens", { 
-        idConversa: record.idConversa 
+        idConversa: idConversa 
     });
 
     $.ajax({
@@ -46,10 +48,6 @@ var carregaMensagens = function( record )
     }).done( function(json) {
         
         makeListTmpl( json );
-        
-        $("#idConversa").val( record.idConversa );
-        $("#dataVigenciaInicio").val( record.dataVigenciaInicio );
-        $("#dataVigenciaFim").val( record.dataVigenciaFim );
         
         $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
         
@@ -84,7 +82,7 @@ var addSingleTmpl = function(json){
 
 
 
-var salvar = function(){
+var iniciarConversa = function(){
     
     var selecao = $tableparticipantes.bootstrapTable('getSelections');
     
@@ -136,15 +134,14 @@ var salvar = function(){
         
     }).done( function(json){ 
 
+        debugger;
         if (json.idConversa != null){
             
             $("#idConversa").val( json.idConversa );
             
             $table.bootstrapTable('refresh');
             
-            carregaMensagens( json )
-            
-            mostraMensagens();
+            carregaMensagens( json.idConversa );
         }
         else{
             preencheErros( json.errors );
@@ -185,10 +182,23 @@ var enviarMensagem = function(){
             
             $('#conteudo').val('');
             
-            addSingleTmpl( json );
-            $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
-            
-            jump( "painel-mensagens" );
+            if ( json.novaConversa )
+            { 
+                $("#idConversa").val( json.conversa.idConversa );
+                
+                $table.bootstrapTable('refresh');
+                
+                carregaMensagens( json.conversa.idConversa );
+                
+                mostraMensagens();
+            }
+            else
+            {
+                addSingleTmpl( json );
+                $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
+                
+                jump( "painel-mensagens" );
+            }
         }
         else{
             preencheErros( json.errors );
@@ -221,8 +231,6 @@ var mostraSelecaoParticipantes = function(){
     
     $('#selecao-participantes').show();
     $('#painel-mensagens').hide();
-    
-    
 };
 
 var mostraMensagens = function(){
@@ -234,7 +242,6 @@ var mostraMensagens = function(){
     
     $('#selecao-participantes').hide();
     $('#painel-mensagens').show();
-    
 };
 
 
@@ -246,6 +253,19 @@ var marcaLinha = function( e, row, el )
         $tableparticipantes.bootstrapTable('check', index); 
 }
 
+
+var atualizaConversaAtual = function(){
+    
+    var painelMensagens = $('#painel-mensagens');
+    
+    if ( painelMensagens )
+    {
+        var mensagensSendoMostradas = painelMensagens.is(':visible');
+        
+        if ( mensagensSendoMostradas )
+            carregaMensagens( $("#idConversa").val() );
+    }
+}
 
 $(function(){
     
@@ -276,14 +296,13 @@ $(function(){
     });
     
     $('#btnIniciar').click( function(){ 
-        salvar();       
+        iniciarConversa();       
     });
 
     $('#btnEnviarMensagem').on('click', function(){
         enviarMensagem();        
     });
     
-    
-    
+    window.setInterval(atualizaConversaAtual, 10000); 
     
 });

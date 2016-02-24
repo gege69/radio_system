@@ -29,6 +29,7 @@ import br.com.radio.model.Usuario;
 import br.com.radio.repository.ConversaRepository;
 import br.com.radio.repository.MensagemRepository;
 import br.com.radio.repository.UsuarioRepository;
+import br.com.radio.service.ConversaService;
 import br.com.radio.service.UsuarioService;
 
 @Controller
@@ -46,6 +47,9 @@ public class MensagemController extends AbstractController {
 	
 	@Autowired
 	private UsuarioRepository usuarioRepo;
+	
+	@Autowired
+	private ConversaService conversaService;
 
 
 	@RequestMapping(value="/conversas/view", method=RequestMethod.GET)
@@ -75,16 +79,16 @@ public class MensagemController extends AbstractController {
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", "idConversa" );
 		
-		Page<Conversa> conversaPage = conversaRepo.findByClienteAndAtivo( pageable, usuario.getCliente(), true );
+		Page<Conversa> conversaPage = conversaService.getListaConversasPorUsuario( usuario, pageable );
 		
-		List<Conversa> conversas = conversaPage.getContent();
-		
-		conversas.forEach( c -> c.buildView() );
-		
-		JSONBootstrapGridWrapper<Conversa> jsonList = new JSONBootstrapGridWrapper<Conversa>(conversas, conversaPage.getTotalElements() );
+		JSONBootstrapGridWrapper<Conversa> jsonList = new JSONBootstrapGridWrapper<Conversa>( conversaPage.getContent(), conversaPage.getTotalElements() );
 
 		return jsonList;
 	}
+
+
+
+	
 	
 	
 	@RequestMapping( value = { "/conversas", "/api/conversas" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -100,21 +104,8 @@ public class MensagemController extends AbstractController {
 		{
 			try
 			{
-				Usuario usuario = usuarioService.getUserByPrincipal( principal );
-				
-				if ( usuario == null || usuario.getCliente() == null )
-					throw new RuntimeException( "Impossível determinar o Cliente do usuário" );
-				
-				if ( conversa != null )
-				{
-					conversa.setCliente( usuario.getCliente() );
-					conversa.setAtivo( true );
-					conversa.setDataCriacao( new Date() );
-					conversaRepo.save( conversa );	
-				}
-				
-				conversa.buildView();
-				
+				conversaService.saveConversa( conversa, principal );
+
 				jsonResult = writeObjectAsString( conversa );
 			}
 			catch ( Exception e )
@@ -209,17 +200,7 @@ public class MensagemController extends AbstractController {
 		{
 			try
 			{
-				Usuario usuarioLogado = usuarioService.getUserByPrincipal( principal );
-				
-				if ( usuarioLogado == null || usuarioLogado.getCliente() == null )
-					throw new RuntimeException( "Impossível determinar o Cliente do usuário" );
-				
-				mensagem.setDataEnvio( new Date() );
-				mensagem.setUsuario( usuarioLogado );
-				
-				mensagemRepo.save( mensagem );
-				
-				mensagem.buildView( usuarioLogado );
+				mensagem = conversaService.saveMensagem( mensagem, principal );
 				
 				jsonResult = writeObjectAsString( mensagem );
 			}

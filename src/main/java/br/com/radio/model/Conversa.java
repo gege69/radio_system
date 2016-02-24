@@ -255,6 +255,16 @@ public class Conversa implements Serializable {
 	{
 		conversaView.put( "participantes", this.resumoParticipantes() );
 	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Conversa [idConversa=%s, cliente=%s, usuarios=%s, dataVigenciaInicio=%s, dataVigenciaFim=%s, emailContato=%s, mensagens=%s, dataCriacao=%s, ativo=%s, conversaView=%s]",
+				idConversa, cliente, usuarios, dataVigenciaInicio, dataVigenciaFim, emailContato, mensagens, dataCriacao, ativo, conversaView );
+	}
+	
+	
+	
 	
 	
 }
