@@ -27,7 +27,7 @@
                   
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                     <div class="pull-right">
-                      <a class="btn btn-default" href="#">Aplicar mudanças agora</a>
+                      <a class="btn btn-default" id="btnGeraTransmissao" href="#">Aplicar mudanças agora</a>
                     </div>
                   </div>
                 </div>
@@ -359,7 +359,28 @@
     };
     
     
-    
+    var geraTransmissaoAgora = function(){
+        
+        var url = buildUrl( "/api/ambientes/{idAmbiente}/transmissoes/new", { 
+            idAmbiente: $("#idAmbiente").val()
+        });
+        
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: url,
+            dataType: 'json'
+        }).done( function(json){
+
+            if ( json.ok == 1 )
+                preencheAlertGeral( "alertArea", "Alterações na Programação Musical foram realizadas com sucesso.", "success" );
+            else
+                preencheAlertGeral( "alertArea", "Não foi possível alterar a programação musical", "danger" );
+            
+        } );
+    }
+ 
+ 
     var listaGeneros = function(){
         
         $.ajax({
@@ -493,6 +514,11 @@
         $('#btnPopup').click( function() {
            $('#myModal').modal('show'); 
         });
+        
+        $('#btnGeraTransmissao').click(function(){
+            geraTransmissaoAgora();
+        });
+        
     });
 
 </script>

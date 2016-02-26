@@ -54,6 +54,7 @@
                           <label for="qtdMusicas" class="control-label col-sm-4 col-md-3">Músicas em sequência:</label>
                           <div class="col-sm-6 col-md-8">
                             <select class="form-control" id="qtdMusicas" name="qtdMusicas">
+                              <option value="0" >Nenhuma Música</option>
                               <option value="1" >1</option>
                               <option value="2" >2</option>
                               <option value="3" >3</option>

@@ -164,7 +164,7 @@ public class ProgramacaoMusicalService {
 	
 	
 	
-	@Async
+//	@Async
 	@Transactional
 	public void verificaECriaProgramacaoDefault( Ambiente ambiente )
 	{
@@ -418,7 +418,7 @@ public class ProgramacaoMusicalService {
 		
 		Set<Midia> musicasJaTocadas = transmissoesTocadas.stream().map( Transmissao::getMidia ).collect( Collectors.toCollection( HashSet::new ) );
 		
-		System.out.println( "Já Tocadas : " + musicasJaTocadas.size() );
+//		System.out.println( "Já Tocadas : " + musicasJaTocadas.size() );
 
 		List<Programacao> programacaoDia = programacaoRepo.findByAmbienteAndDiaSemanaAndAtivoTrue( ambiente, diaSemana );
 		
@@ -546,28 +546,33 @@ public class ProgramacaoMusicalService {
 		int ignoradas = transmissaoRepo.setStatusIgnorada( ambiente ); // o que não tocou não será mais tocado... vou gerar uma nova playlist
 		int inativos = transmissaoRepo.setLinkInativo( ambiente );  // inativando os registros 
  
-		Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = selecaoMusicas( ambiente );
+		Bloco bloco = blocoRepo.findByAmbiente( ambiente ); 
 		
-		musicasPorGenero.forEach( ( generosSet, dto ) -> {
+		if ( bloco.getQtdMusicas() > 0 )
+		{
+			Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = selecaoMusicas( ambiente );
 			
-			printaInformacoes( generosSet, dto );
+			musicasPorGenero.forEach( ( generosSet, dto ) -> {
+				
+//				printaInformacoes( generosSet, dto );
 
-			// algoritmo do spotify
-			applySpotifyShuffle( dto );
+				// algoritmo do spotify
+				applySpotifyShuffle( dto );
 
-			validaClusters( dto );
+				validaClusters( dto );
 
-//			applyMergeBlocosEnhanced( ambiente, dto );
-			aplicaMergeBlocos( ambiente, dto );
+				applyMergeBlocos( ambiente, dto );
 
-			// imprimindo
-			dto.getMidias().forEach( m -> {
-				System.out.println( m.toString() );
+				// imprimindo
+//				dto.getMidias().forEach( m -> {
+//					System.out.println( m.toString() );
+//				});
+
+				// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
+				consomeMidias( ambiente, dto );
 			});
-
-			// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
-			consomeMidias( ambiente, dto );
-		});
+		}
+		
 	}
 
 	
@@ -613,11 +618,11 @@ public class ProgramacaoMusicalService {
 			if ( i+2 < midias.size() )
 				nextnext = midias.get( i+2 );
 			
-			if ( next != null && StringUtils.equals( atual.getArtist(), next.getArtist() ) )
-				System.out.println( String.format( "Artista %s está próximo em ids ( %d , %d ) ", atual.getArtist(), atual.getIdMidia(), next.getIdMidia()) );
-			
-			if ( nextnext != null && StringUtils.equals( atual.getArtist(), nextnext.getArtist() ) )
-				System.out.println( String.format( "Artista %s está próximo (2) em ids ( %d , %d ) ", atual.getArtist(), atual.getIdMidia(), nextnext.getIdMidia()) );
+//			if ( next != null && StringUtils.equals( atual.getArtist(), next.getArtist() ) )
+//				System.out.println( String.format( "Artista %s está próximo em ids ( %d , %d ) ", atual.getArtist(), atual.getIdMidia(), next.getIdMidia()) );
+//			
+//			if ( nextnext != null && StringUtils.equals( atual.getArtist(), nextnext.getArtist() ) )
+//				System.out.println( String.format( "Artista %s está próximo (2) em ids ( %d , %d ) ", atual.getArtist(), atual.getIdMidia(), nextnext.getIdMidia()) );
 				
 		}
 	}
@@ -729,7 +734,7 @@ public class ProgramacaoMusicalService {
 	
 	
 	
-	private void aplicaMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
+	private void applyMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
 		ArrayDeque<Midia> musicasEmbaralhadas = new ArrayDeque<Midia>( dto.getMidias() );
 
@@ -989,12 +994,12 @@ public class ProgramacaoMusicalService {
 			em.flush();
 			em.clear();
 			
-			System.out.println( String.format( "Programação das %d as %d produzida com %d músicas", prog.getHoraInicio(), prog.getHoraFim(), qtdTransmissoes ) );
+//			System.out.println( String.format( "Programação das %d as %d produzida com %d músicas", prog.getHoraInicio(), prog.getHoraFim(), qtdTransmissoes ) );
 		}
 
 		transmissaoRepo.setLinkFor( url );
 		
-		System.out.println("finish");
+		System.out.println("finish gerar transmissão");
 	}
 
 

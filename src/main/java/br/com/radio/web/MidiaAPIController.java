@@ -1,6 +1,7 @@
 package br.com.radio.web;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.Arrays;
@@ -77,12 +78,14 @@ public class MidiaAPIController extends AbstractController {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleError(HttpServletRequest req, Exception exception) {
 		
-		
 		// TODO: lembrar de tirar esse stacktrace
 		exception.printStackTrace();
+		
+		if ( exception.getCause() != null && exception.getCause().getClass().equals( IOException.class ) )
+			System.out.println("yeah!");
 			
 		logger.error("Request: " + req.getRequestURL() + " raised " + exception);
-		
+
 		String jsonResult = writeSingleErrorAsJSONErroMessage( "erro", exception.getMessage() );
 		
 		return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );

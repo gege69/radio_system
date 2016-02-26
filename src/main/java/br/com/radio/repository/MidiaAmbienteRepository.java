@@ -15,11 +15,13 @@ public interface MidiaAmbienteRepository extends JpaRepository<MidiaAmbiente, Lo
 	Long countByAmbienteAndMidia( Ambiente ambiente, Midia midia );
 	
 	@Modifying(clearAutomatically=true)
-	@Query(	value= 	"INSERT INTO midia_ambiente "+ 
-					" SELECT nextval('midia_ambiente_id_midiaamb_seq'), clock_timestamp(), ?1, m.id_midia FROM midia m "+
-					" INNER JOIN midia_categoria mc ON mc.id_midia = m.id_midia "+
-					" INNER JOIN categoria cat ON cat.id_categoria = mc.id_categoria "+
-					" WHERE cat.codigo = 'musica' ", nativeQuery = true)
+	@Query(	value=  " INSERT INTO midia_ambiente  "+
+					" SELECT nextval('midia_ambiente_id_midiaamb_seq'), clock_timestamp(), ?1, m.id_midia FROM midia m  "+
+					"  INNER JOIN midia_categoria mc ON mc.id_midia = m.id_midia  "+
+					"  INNER JOIN categoria cat ON cat.id_categoria = mc.id_categoria  "+
+					"  LEFT JOIN midia_ambiente ma ON ma.id_midia = m.id_midia AND ma.id_ambiente = ?1 "+
+					"  WHERE cat.codigo = 'musica'  "+
+					"  AND ma.id_midiaamb IS NULL ", nativeQuery = true)
 	int insertMusicasAmbiente( Long idAmbiente );
 	
 	
