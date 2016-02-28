@@ -19,6 +19,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
@@ -97,6 +99,10 @@ public class Ambiente implements Serializable {
 
 	@Column( name = "estado", length = 200 )
 	private String estado;
+	
+	@Length( max = 8, message = "O campo de CEP só pode ter no máximo 8 caracteres.")
+	@Column( name = "cep", length = 8)
+	private String cep;
 	
 	@NotNull( message = "O nome de login é de preenchimento obrigatório" )
 	@Column( name = "login", nullable = false, length = 40, unique=true )
@@ -586,6 +592,16 @@ public class Ambiente implements Serializable {
 	public void setAtivo( Boolean ativo )
 	{
 		this.ativo = ativo;
+	}
+
+	public String getCep()
+	{
+		return cep;
+	}
+
+	public void setCep( String cep )
+	{
+		this.cep = cep;
 	}
 
 	

@@ -61,6 +61,13 @@
                 </div>
                 
                 <div class="form-group">
+                  <label for="login" class="control-label col-sm-2 col-md-4">CEP:</label>
+                  <div class="col-sm-10 col-md-8">
+                    <input type="text" class="form-control" id="cep_amb" name="cep" maxlength="8">
+                  </div>
+                </div
+                
+                <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Endereço:</label>
                   <div class="col-sm-10 col-md-8">
                     <input type="text" class="form-control" id="logradouro_amb" name="logradouro">
@@ -293,8 +300,6 @@
     };
 
     $(function(){
-
-        debugger;
         
         getFusos();
 

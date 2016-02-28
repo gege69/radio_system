@@ -17,6 +17,16 @@
 
         <form:form modelAttribute="user" method="POST">
           <div class="form-group">
+            <label for="login">Empresa</label>
+            <form:input class="form-control" path="nmEmpresa" value="" placeholder="Nome"/>
+            <form:errors path="nmEmpresa" element="div" class="alert alert-danger"/>
+          </div>
+          <div class="form-group">
+            <label for="login">CNPJ/CPF</label>
+            <form:input class="form-control" path="cdCNPJCPF" value="" placeholder="Nome"/>
+            <form:errors path="cdCNPJCPF" element="div" class="alert alert-danger"/>
+          </div>
+          <div class="form-group">
             <label for="login">Nome</label>
             <form:input class="form-control" path="nmUsuario" value="" placeholder="Nome"/>
             <form:errors path="nmUsuario" element="div" class="alert alert-danger"/>

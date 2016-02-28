@@ -104,15 +104,13 @@ public class UsuarioService {
 		Cliente cliente = new Cliente();
 		
 		cliente.setAtivo( true );
-		cliente.setCnpj( "46511666000105" );
-		cliente.setRazaosocial( "teste" );
-		cliente.setCodigo( "teste" );
-		cliente.setDominio( "teste" );
+		cliente.setCnpj( dto.getCdCNPJCPF() );
+		cliente.setRazaosocial( dto.getNmEmpresa() );
+		cliente.setCodigo( StringUtils.remove( StringUtils.lowerCase( dto.getNmEmpresa() ), " " ) );
+		cliente.setDominio( null );
 		cliente.setDataCriacao( new Date() );
-		cliente.setNomefantasia( "teste" );
 		
 		clienteRepo.save( cliente );
-		
 
 		usuario.setCliente( cliente );
 		
@@ -120,7 +118,7 @@ public class UsuarioService {
 		
 		UsuarioPerfil usuPerfil = new UsuarioPerfil();
 		
-		usuPerfil.setPerfil( perfilRepo.findByNome( "DESENVOLVEDOR" ) );
+		usuPerfil.setPerfil( perfilRepo.findByNome( "GERENTE" ) );
 		usuPerfil.setUsuario( usuario );
 		
 		usuarioPerfilRepo.save( usuPerfil );

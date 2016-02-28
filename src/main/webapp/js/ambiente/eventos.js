@@ -210,7 +210,7 @@ var removerHorario = function( element )
 }
 
 
-var editGrid = function( e, row, el )
+var editEvento = function( e, row, el )
 {
     $('#ajaxload').show();
     
@@ -317,7 +317,7 @@ $(function(){
 
     
     $('#table-eventos').on('click-row.bs.table', function( e, row, el ){
-        editGrid( e, row, el );
+        editEvento( e, row, el );
     });
 
     $('#btnLimpar').on('click', function(){

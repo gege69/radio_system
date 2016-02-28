@@ -27,54 +27,22 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/cadastro">
+                      <i class="fa fa-3x icone-main fa-cloud-upload"></i>
+                      <span class="label-botao-main">Cadastro Cliente</span>
+                    </a>
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload">
                       <i class="fa fa-3x icone-main fa-cloud-upload"></i>
                       <span class="label-botao-main">Upload Mídia</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/boleto">
-                      <i class="fa fa-3x icone-main fa-barcode"></i>
-                      <span class="label-botao-main">Boleto</span>
-                    </a>
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/monitoracao">
                       <i class="fa fa-3x icone-main fa-eye"></i>
-                      <span class="label-botao-main">Monitorar Usuário</span>
+                      <span class="label-botao-main">Monitorar Cliente</span>
                     </a>
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/desconto">
-                      <i class="fa fa-3x icone-main fa-money"></i>
-                      <span class="label-botao-main">Aplicar desconto</span>
-                    </a>
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/gerenciar-usuario">
-                      <i class="fa fa-3x icone-main fa-users"></i>
-                      <span class="label-botao-main">Gerenciar Usuários</span>
-                    </a>
-                  </div>
-                </div>              
-              </div>
-              
-              <div class="row row-centered">
-                <div class="container">
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/gerenciar-gastos">
-                      <i class="fa fa-3x icone-main fa-bar-chart-o"></i>
-                      <span class="label-botao-main">Gerenciar Gastos</span>
-                    </a>
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                      

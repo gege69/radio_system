@@ -8,4 +8,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 	Cliente findByCodigo( String codigo );
 	
+	Long countByAtivo( Boolean ativo );
+	
+	
 }

@@ -12,6 +12,14 @@ public class UserDTO implements IPasswordMatch {
 	
 	@NotNull
     @NotEmpty
+    private String nmEmpresa;
+
+	@NotNull
+    @NotEmpty
+    private String cdCNPJCPF;
+
+	@NotNull
+    @NotEmpty
     private String nmUsuario;
      
     @NotNull
@@ -76,6 +84,26 @@ public class UserDTO implements IPasswordMatch {
 	public void setCdEmail( String cdEmail )
 	{
 		this.cdEmail = cdEmail;
+	}
+
+	public String getNmEmpresa()
+	{
+		return nmEmpresa;
+	}
+
+	public void setNmEmpresa( String nmEmpresa )
+	{
+		this.nmEmpresa = nmEmpresa;
+	}
+
+	public String getCdCNPJCPF()
+	{
+		return cdCNPJCPF;
+	}
+
+	public void setCdCNPJCPF( String cdCNPJCPF )
+	{
+		this.cdCNPJCPF = cdCNPJCPF;
 	}
 
 	

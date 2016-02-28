@@ -38,8 +38,11 @@ insert into permissao ( id_permissao, codigo, descricao, id_permissaopai ) value
 
 
 
-INSERT INTO CLIENTE ( id_cliente ,cnpj ,codigo ,razaosocial ,nomefantasia ,dominio ,datacriacao ,dataalteracao ,ativo )
-VALUES ( nextval('cliente_id_cliente_seq'), '28372714000140', 'Eterion', 'Eterion', 'Eterion', 'www.eterion.com.br', now(), null, true );
+INSERT INTO CLIENTE 
+( id_cliente, ativo, nomefantasia, razaosocial, cnpj, codigo, dominio, dataalteracao, datacriacao, email, cep, logradouro, numero, complemento, bairro, cidade, estado )
+VALUES 
+( nextval('cliente_id_cliente_seq'), true, 'Eterion', 'Eterion', '28372714000140', 'Eterion', 'eterion.com.br', null, now(), 'pazinfernando@gmail.com', '03081010', 'Rua Margarida de Lima', '25', 'APTO 61', 'Tatuapé', 'São Paulo', 'SP' );
+
 
 
 

@@ -2,12 +2,19 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -15,6 +22,7 @@ import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
@@ -57,13 +65,55 @@ public class Cliente implements Serializable {
 	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;
 	
-	@NotNull
+	@Column( name="email", columnDefinition = "TEXT")
+	private String email;
+	
+	@Column( name="logradouro", columnDefinition = "TEXT")
+	private String logradouro;
+	
+	@Column( name="cidade", columnDefinition = "TEXT")
+	private String cidade;
+	
+	@Column( name="bairro", columnDefinition = "TEXT")
+	private String bairro;
+	
+	@Column( name="estado", length = 2)
+	private String estado;
+	
+	@Column( name="numero", length = 20)
+	private String numero;
+	
+	@Column( name="cep", length=8 )
+	private String cep;
+
+	@Column( name="complemento", columnDefinition = "TEXT")
+	private String complemento;
+	
+	@ManyToMany(cascade= CascadeType.ALL, fetch=FetchType.LAZY)
+	   @JoinTable(name="cliente_telefone", joinColumns = { 
+	        @JoinColumn(name="id_cliente", nullable=false, updatable=false) }, inverseJoinColumns = { 
+	        @JoinColumn(name="id_telefone", nullable=false, updatable=false) })
+    private List<Telefone> telefones;
+	
+	@JsonIgnore
+	@OneToMany( fetch = FetchType.LAZY )
+	@JoinColumn(name="id_cliente")
+	private List<Ambiente> ambientes;
+	
+	@JsonIgnore
+	@OneToMany( fetch = FetchType.LAZY )
+	@JoinColumn(name="id_cliente")
+	private List<Titulo> titulos;
+	
+	// Lista com as condiçoes comerciais
+	
 	@Column( name = "ativo" )
 	private Boolean ativo;
 		
 	public Cliente()
 	{
 		super();
+		this.ativo = false;
 		this.dataCriacao = new Date();
 	}
 
@@ -190,6 +240,118 @@ public class Cliente implements Serializable {
 		return true;
 	}
 
+	public String getLogradouro()
+	{
+		return logradouro;
+	}
+
+	public void setLogradouro( String logradouro )
+	{
+		this.logradouro = logradouro;
+	}
+
+	public String getCidade()
+	{
+		return cidade;
+	}
+
+	public void setCidade( String cidade )
+	{
+		this.cidade = cidade;
+	}
+
+	public String getBairro()
+	{
+		return bairro;
+	}
+
+	public void setBairro( String bairro )
+	{
+		this.bairro = bairro;
+	}
+
+	public String getEstado()
+	{
+		return estado;
+	}
+
+	public void setEstado( String estado )
+	{
+		this.estado = estado;
+	}
+
+	public String getCep()
+	{
+		return cep;
+	}
+
+	public void setCep( String cep )
+	{
+		this.cep = cep;
+	}
+
+	public List<Telefone> getTelefones()
+	{
+		return telefones;
+	}
+
+	public void setTelefones( List<Telefone> telefones )
+	{
+		this.telefones = telefones;
+	}
+
+	public String getEmail()
+	{
+		return email;
+	}
+
+	public void setEmail( String email )
+	{
+		this.email = email;
+	}
+
+	public List<Ambiente> getAmbientes()
+	{
+		return ambientes;
+	}
+
+	public void setAmbientes( List<Ambiente> ambientes )
+	{
+		this.ambientes = ambientes;
+	}
+
+	public List<Titulo> getTitulos()
+	{
+		return titulos;
+	}
+
+	public void setTitulos( List<Titulo> titulos )
+	{
+		this.titulos = titulos;
+	}
+
+	public String getNumero()
+	{
+		return numero;
+	}
+
+	public void setNumero( String numero )
+	{
+		this.numero = numero;
+	}
+
+	public String getComplemento()
+	{
+		return complemento;
+	}
+
+	public void setComplemento( String complemento )
+	{
+		this.complemento = complemento;
+	}
+
 		
+	
+
 	
 }

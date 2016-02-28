@@ -157,9 +157,9 @@ var preencheErros = function( errors )
     }
     else
     {
-        $.each(json.errors, function(pos){
+        $.each(errors, function(pos){
             
-            var obj = json.errors[pos];
+            var obj = errors[pos];
             
             preencheErroField( obj.field, obj.message );
             
