@@ -81,6 +81,8 @@ var salvar = function(){
         }).done( function(json){ 
 
             if ( json.idCliente && json.idCliente > 0){
+                
+                $("#idCliente").val( json.idCliente );
                 preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
                 jump(''); // topo da pagina
             }
@@ -100,19 +102,32 @@ var makeListTmpl = function(json){
     
     $('#containertelefones').append(content);
     
-    $(".phone").mask(maskBehavior, options);
+    $(".phone").mask(maskBehaviorTel, optionsTel);
     $(".ddd").mask('000');        
 };
 
+var removerTelefone = function( element )
+{
+    console.log(element);
+    
+    var $div = element.parents('.linha-telefone');
+    
+    $div.remove();
+    
+    $('.removertelefone').off('click');
+    $('.removertelefone').on('click', function(event){
+        removerTelefone( $(this) );
+    });
+}
 
 var addTelefone = function() {
     
     event.preventDefault();
     makeListTmpl({rows:[{id: "", ddd: "", numero: ""}]});
 
-    $('.removerLink').off('click');
-    $('.removerLink').on('click', function(event){
-        removerHorario( $(this) );
+    $('.removertelefone').off('click');
+    $('.removertelefone').on('click', function(event){
+        removerTelefone( $(this) );
      });
 };
 
@@ -135,5 +150,10 @@ $(function(){
     
     $("#linkaddtelefone").click( function() {
         addTelefone(); 
+    });
+    
+    $('.removertelefone').off('click');
+    $('.removertelefone').on('click', function(event){
+        removerTelefone( $(this) );
     });
 });

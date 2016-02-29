@@ -40,6 +40,7 @@ public class Genero implements Serializable {
 	@Column( name = "genero", nullable = false, columnDefinition = "TEXT" )
 	private String nome;
 
+	@NotNull( message = "A descrição do Gênero é de preenchimento obrigatório" )
 	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )
 	private String descricao;
 	
@@ -124,6 +125,12 @@ public class Genero implements Serializable {
 	public String toString()
 	{
 		return String.format( "Genero [idGenero=%s, nome=%s]", idGenero, nome );
+	}
+
+	public Genero()
+	{
+		super();
+		this.dataCriacao = new Date();
 	}
 	
 	

@@ -101,6 +101,10 @@ public class UsuarioService {
 		usuario.setAtivo( true );
 		usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
 		
+		
+		// verificar se o Cliente já não existe.... se o cliente já existir não pode se auto-cadastrar tem que ser pelo admin
+		
+		
 		Cliente cliente = new Cliente();
 		
 		cliente.setAtivo( true );

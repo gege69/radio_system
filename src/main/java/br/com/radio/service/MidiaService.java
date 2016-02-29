@@ -40,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.radio.config.MensagensProfile;
 import br.com.radio.dto.MusicTags;
 import br.com.radio.json.JSONBootstrapGridWrapper;
+import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
@@ -48,6 +49,7 @@ import br.com.radio.model.Midia;
 import br.com.radio.model.MidiaAmbiente;
 import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.Parametro;
+import br.com.radio.repository.AlfanumericoMidiaRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
@@ -90,6 +92,8 @@ public class MidiaService {
 	@Autowired
 	private AmbienteRepository ambienteRepo;
 	
+	@Autowired
+	private AlfanumericoMidiaRepository alfaMidiaRepo;
 	
 	@Autowired
 	private GeneroRepository generoRepo;
@@ -445,6 +449,50 @@ public class MidiaService {
 
 	
 	
+	@Transactional
+	public Midia saveUploadAlfaNumericoChamadaVeiculo( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, String alfanumerico, Long[] arrayGeneros ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
+		
+		if ( categoria == null )
+			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
+		
+		alfanumerico = StringUtils.trim( alfanumerico );
+		
+		if ( StringUtils.isBlank( alfanumerico ) )
+			throw new RuntimeException( "A Letra (ou número) correspondente ao áudio é obrigatório ( Ex: 'A' ou '9' )" );
+		
+		if ( StringUtils.length( alfanumerico ) > 0 )
+			throw new RuntimeException( "Não é possível inserir mais de um caracter correspondente ao áudio.");
+		
+		
+		byte[] bytes = multiPartFile.getBytes();
+		
+		String hash = geraHashDoArquivo( bytes );
+		
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), alfanumerico );
+		
+		associaMidiaParaTodosAmbientes( midia );
+		
+		AlfanumericoMidia alfa = alfaMidiaRepo.findByAlfanumerico( alfanumerico );
+
+		if ( alfa != null )
+		{
+			Midia outraMidia = alfa.getMidia();
+			
+			deleteMidiaSePossivel( outraMidia.getIdMidia() );
+			
+			alfa.setMidia( midia );
+			alfa.setAlfanumerico( alfanumerico );
+		}
+		else
+			alfa = new AlfanumericoMidia( alfanumerico, midia );
+		
+		alfaMidiaRepo.save( alfa );
+			
+		return midia;
+	}	
+	
 
 	private void associaGenerosParaMusica( Midia midia, Long[] arrayGeneros )
 	{
@@ -633,6 +681,19 @@ public class MidiaService {
 		}
 	}
 
+	private void associaMidiaParaTodosAmbientes( Midia midia )
+	{
+		List<Ambiente> ambientes = ambienteRepo.findByAtivo( true );
+		
+		for ( Ambiente ambiente : ambientes )
+		{
+			Long qtd = midiaAmbienteRepo.countByAmbienteAndMidia( ambiente, midia );
+
+			if ( qtd == null || qtd == 0 )
+				midiaAmbienteRepo.saveAndFlush( new MidiaAmbiente( ambiente, midia, new Date() ) );
+		}
+	}
+
 	private String geraHashDoArquivo( byte[] bytes ) throws IOException
 	{
 		LongHashFunction l = LongHashFunction.xx_r39();
@@ -754,7 +815,7 @@ public class MidiaService {
 	
 
 	@Transactional
-	public boolean deleteMidiaSePossivel( Long idMidia, Ambiente ambiente )
+	public boolean deleteMidiaSePossivel( Long idMidia )
 	{
 		boolean result = false;
 		

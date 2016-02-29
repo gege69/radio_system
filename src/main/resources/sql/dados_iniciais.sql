@@ -12,6 +12,14 @@ INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VA
 INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Chamada Instantânea', 'Chamada Instantânea', 'chamada_inst', true );
 INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Nome da chamada de Funcionário', 'Chamada Funcionário (Nome)', 'chamada_func_nome', false );
 INSERT INTO CATEGORIA ( ID_CATEGORIA, DESCRICAO, NOME, CODIGO, SIMPLEUPLOAD ) VALUES ( nextval('categoria_id_categoria_seq'), 'Frase da chamada de Funcionário', 'Chamada Funcionário (Frase)', 'chamada_func_frase', false );
+	
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_frase_ini', 'Frase Inicial Chamada Veículo', 'Frase Inicial Chamada Veículo', false );
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_marca', 'Marca Chamada Veículo', 'Marca Chamada Veículo', false );
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_modelo', 'Modelo Chamada Veículo', 'Modelo Chamada Veículo', false );
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_cor', 'Cor Chamada Veículo', 'Cor Chamada Veículo', false );
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_placa', 'Placa Chadada Veículo', 'Placa Chadada Veículo', false );
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_frase_fim', 'Frase Final Chamada Veículo', 'Frase Final Chamada Veículo', false );
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'horoscopo', 'Horóscopo', 'Horóscopo', false );
 
 
 

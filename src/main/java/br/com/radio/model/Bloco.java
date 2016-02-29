@@ -75,6 +75,9 @@ public class Bloco implements Serializable {
 	@Column( name = "indexProgrametes")
 	private Integer indexProgrametes;    // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um PROGRAMETE ( Ex : 6 -> Após 6 músicas inserir um Programete )
 	
+	@Column( name = "indexHoroscopo")
+	private Integer indexHoroscopo;     // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um HOROSCOPO
+
 	@Column( name = "indexHoraCerta")
 	private Integer indexHoraCerta;     // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um HORACERTA, porém esse campo deve ser preenchido com múltiplos de 3 ( Ex : 9 -> Após 9 músicas inserir um Programete )
 
@@ -195,12 +198,24 @@ public class Bloco implements Serializable {
 		this.posicaoComercial = posicaoComercial;
 	}
 
+	public Integer getIndexHoroscopo()
+	{
+		return indexHoroscopo;
+	}
+
+	public void setIndexHoroscopo( Integer indexHoroscopo )
+	{
+		this.indexHoroscopo = indexHoroscopo;
+	}
+
 	@Override
 	public String toString()
 	{
-		return String.format(
-				"Bloco [idBloco=%s, ambiente=%s, posicaoVinheta=%s, qtdMusicas=%s, posicaoComercial=%s, qtdComerciais=%s, indexInstitucionais=%s, indexProgrametes=%s, indexHoraCerta=%s]", idBloco,
-				ambiente, posicaoVinheta, qtdMusicas, posicaoComercial, qtdComerciais, indexInstitucionais, indexProgrametes, indexHoraCerta );
+		return String
+				.format(
+						"Bloco [idBloco=%s, ambiente=%s, posicaoVinheta=%s, qtdMusicas=%s, posicaoComercial=%s, qtdComerciais=%s, indexInstitucionais=%s, indexProgrametes=%s, indexHoroscopo=%s, indexHoraCerta=%s]",
+						idBloco, ambiente, posicaoVinheta, qtdMusicas, posicaoComercial, qtdComerciais, indexInstitucionais, indexProgrametes, indexHoroscopo, indexHoraCerta );
 	}
+
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,24 +22,19 @@ public class AdministradorService {
 	@Autowired
 	private TelefoneRepository telefoneRepo;
 
-	
 	@Transactional
 	public Cliente saveCliente( Cliente clienteVO )
 	{
 		if ( clienteVO.getIdCliente() != null && clienteVO.getIdCliente() > 0 )
-		{
-			Cliente cliente = clienteRepo.findOne( clienteVO.getIdCliente() );
-			
-			clienteVO.setAmbientes( cliente.getAmbientes() );
-			clienteVO.setTitulos( cliente.getTitulos() );
-		}
+			telefoneRepo.deleteByCliente( clienteVO );
 		
 		if ( clienteVO.getAtivo() == null )
 			clienteVO.setAtivo( false );
+
+		if ( StringUtils.isNotBlank( clienteVO.getCnpj() ) )
+			clienteVO.setCnpj( clienteVO.getCnpj().replaceAll("\\D+","") );
 		
 		clienteRepo.save( clienteVO );
-		
-		telefoneRepo.deleteByCliente( clienteVO );
 		
 		List<Telefone> telefones = clienteVO.getTelefones();
 		

@@ -432,7 +432,7 @@ public class MidiaAPIController extends AbstractController {
 		{
 			try
 			{
-				midiaService.deleteMidiaSePossivel( idMidia, ambiente );
+				midiaService.deleteMidiaSePossivel( idMidia );
 				jsonResult = writeOkResponse();
 			}
 			catch ( Exception e )

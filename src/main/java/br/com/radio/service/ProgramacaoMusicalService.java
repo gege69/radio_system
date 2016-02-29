@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.digester.SetPropertiesRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
@@ -749,17 +750,20 @@ public class ProgramacaoMusicalService {
 		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
 		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
 		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
+		Categoria horoscopo = categoriaRepo.findByCodigo( Categoria.HOROSCOPO );
 		
 		BlocosManipulacaoDTO blocoVinhetas = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, vinheta ), vinheta );
 		BlocosManipulacaoDTO blocoComerciais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, comercial ), comercial );
 		BlocosManipulacaoDTO blocoInstitucionais = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, institucional ), institucional );
 		BlocosManipulacaoDTO blocoProgrametes = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, programete ), programete );
+		BlocosManipulacaoDTO blocoHoroscopo = new BlocosManipulacaoDTO( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, horoscopo ), horoscopo );
 		
 		int qtdMusicasSequencia = bloco.getQtdMusicas();
 		int qtdComerciaisSequencia = bloco.getQtdComerciais();
 		
 		int stepInstitucionais = bloco.getIndexInstitucionais();
 		int stepProgrametes = bloco.getIndexProgrametes();
+		int stepHoroscopo = bloco.getIndexHoroscopo();
 		
 		LinkedList<Midia> novaListaMidias = new LinkedList<Midia>();
 		
@@ -813,6 +817,11 @@ public class ProgramacaoMusicalService {
 					adicionaComercialMerge( posicaoVinheta, rnd, blocoVinhetas, blocoComerciais, qtdComerciaisSequencia, novaListaMidias );
 			}
 				
+			if ( stepHoroscopo > 0 && countMusicasInseridas % stepHoroscopo == 0 )  // Depois de n músicas
+			{
+				// HOROSCOPO
+				addIfNotNull( novaListaMidias, blocoHoroscopo.getNextRandom( rnd ) );
+			}
 		}
 		
 		dto.setMidias( novaListaMidias );

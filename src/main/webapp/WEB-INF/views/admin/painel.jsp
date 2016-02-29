@@ -23,13 +23,13 @@
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/admin/listagem-cadastro">
                       <i class="fa fa-3x icone-main fa-list-ol"></i>
-                      <span class="label-botao-main">Listagem Cadastro</span>
+                      <span class="label-botao-main">Listagem Clientes</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/cadastro">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/clientes/view">
                       <i class="fa fa-3x icone-main fa-cloud-upload"></i>
-                      <span class="label-botao-main">Cadastro Cliente</span>
+                      <span class="label-botao-main">Cadastro Clientes</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
@@ -45,7 +45,10 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                     
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/generos/view">
+                      <i class="fa fa-3x icone-main fa-music"></i>
+                      <span class="label-botao-main">Gêneros Musicais</span>
+                    </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                      

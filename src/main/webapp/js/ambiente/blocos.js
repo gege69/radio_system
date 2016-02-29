@@ -77,8 +77,12 @@ var configuraMultiplosMusica = function()
     $('#indexProgrametes').empty();
     $('#indexProgrametes').append($("<option/>", { value: 0, text: 'Não incluir programetes' }));
     
+    $('#indexHoroscopo').empty();
+    $('#indexHoroscopo').append($("<option/>", { value: 0, text: 'Não incluir horóscopo' }));
+    
     constroiCombo( $('#indexInstitucionais') );
     constroiCombo( $('#indexProgrametes') );
+    constroiCombo( $('#indexHoroscopo') );
 }
 
 

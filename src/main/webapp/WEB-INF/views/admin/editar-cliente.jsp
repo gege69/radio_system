@@ -68,15 +68,6 @@
                   </div>
                 </div>
                 
-<!--                 <div class="form-group"> -->
-<!--                   <label class="control-label col-sm-2 col-md-2" for="chave">Telefones</label> -->
-<!--                   <div class="col-sm-3 col-md-2 col-lg-2"> -->
-<!--                     <div class="pull-right" style="height: 20px;"> -->
-<!--                       <a href="#" id="linkaddtelefone"><i class="fa fa-lg fa-plus-circle"></i> Adicionar Telefone</a> -->
-<!--                     </div> -->
-<!--                   </div> -->
-<!--                 </div>                   -->
-                
 <!--                 Fazer aqui o lance igual o eventos -->
                 <div id="containertelefones">
 
@@ -200,6 +191,7 @@
                   <li role="presentation" class="active"><a href="#">Resumo Financeiro</a></li>
                   <li role="presentation"><a href="#">Condições Comerciais</a></li>
                   <li role="presentation"><a href="#">Pagamentos</a></li>
+                  <li role="presentation"><a href="#">Usuários</a></li>
                 </ul>
               </div>
             </div>
@@ -210,7 +202,7 @@
             <div class="row">
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="">
-                  <a class="btn btn-default" href="${context}/admin/cadastro" >
+                  <a class="btn btn-default" href="${context}/admin/clientes/view" >
                     <i class="fa fa-arrow-left"></i>
                     Voltar para Cadastro de Clientes</a>
                 </div>            
@@ -253,14 +245,14 @@
     </div>
     <div class="col-sm-3 col-md-2 col-lg-2">
       <div class="pull-right" style="height: 20px;">
-        <a href="javascript:;" style="color : #B23F3F;" class="removerLink"><i class="fa fa-lg fa-minus-circle"></i> Remover</a>
+        <a href="javascript:;" style="color : #B23F3F;" class="removertelefone"><i class="fa fa-lg fa-minus-circle"></i> Remover</a>
       </div>
     </div>
   </div>
 </div>
 </script>
 
-<script type="text/javascript" src="${context}/js/admin/editar-cliente.js" async></script>
+<script type="text/javascript" src="${context}/js/admin/editar-cliente.js" async charset="UTF-8"></script>
 
 
 <style type="text/css">

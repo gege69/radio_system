@@ -154,7 +154,7 @@ public class AmbienteController extends AbstractController {
 		
 		model.addAttribute( "qtdAmbientes", count );
 		
-		return "ambiente/administrar";
+		return "ambiente/listar-ambientes";
 	}
 	
 	

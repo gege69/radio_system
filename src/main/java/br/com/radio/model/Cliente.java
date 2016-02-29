@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,8 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -89,20 +86,15 @@ public class Cliente implements Serializable {
 	@Column( name="complemento", columnDefinition = "TEXT")
 	private String complemento;
 	
-	@ManyToMany(cascade= CascadeType.ALL, fetch=FetchType.LAZY)
-	   @JoinTable(name="cliente_telefone", joinColumns = { 
-	        @JoinColumn(name="id_cliente", nullable=false, updatable=false) }, inverseJoinColumns = { 
-	        @JoinColumn(name="id_telefone", nullable=false, updatable=false) })
+	@OneToMany( fetch = FetchType.EAGER, mappedBy="cliente" )
     private List<Telefone> telefones;
 	
 	@JsonIgnore
-	@OneToMany( fetch = FetchType.LAZY )
-	@JoinColumn(name="id_cliente")
+	@OneToMany( fetch = FetchType.LAZY, mappedBy="cliente" )
 	private List<Ambiente> ambientes;
 	
 	@JsonIgnore
-	@OneToMany( fetch = FetchType.LAZY )
-	@JoinColumn(name="id_cliente")
+	@OneToMany( fetch = FetchType.LAZY, mappedBy="cliente" )
 	private List<Titulo> titulos;
 	
 	// Lista com as condiçoes comerciais

@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,7 +33,7 @@ public class Telefone implements Serializable {
 	private Long idTelefone;
 	
 	@JsonIgnore
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="id_cliente")
 	private Cliente cliente;
 	
@@ -51,16 +51,6 @@ public class Telefone implements Serializable {
 	public void setIdTelefone( Long idTelefone )
 	{
 		this.idTelefone = idTelefone;
-	}
-
-	public Cliente getCliente()
-	{
-		return cliente;
-	}
-
-	public void setCliente( Cliente cliente )
-	{
-		this.cliente = cliente;
 	}
 
 	public String getDdd()
@@ -81,12 +71,6 @@ public class Telefone implements Serializable {
 	public void setNumero( String numero )
 	{
 		this.numero = numero;
-	}
-
-	@Override
-	public String toString()
-	{
-		return String.format( "Telefone [idTelefone=%s, cliente=%s, ddd=%s, numero=%s]", idTelefone, cliente, ddd, numero );
 	}
 
 	@Override
@@ -116,6 +100,22 @@ public class Telefone implements Serializable {
 		else if ( !idTelefone.equals( other.idTelefone ) )
 			return false;
 		return true;
+	}
+
+	public Cliente getCliente()
+	{
+		return cliente;
+	}
+
+	public void setCliente( Cliente cliente )
+	{
+		this.cliente = cliente;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "Telefone [idTelefone=%s, cliente=%s, ddd=%s, numero=%s]", idTelefone, cliente, ddd, numero );
 	} 
 
 	

@@ -12,8 +12,8 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Administrar Clientes<br/>
-            <small>Você possui ${qtdClientes} cliente(es) cadastrado(s)</small>
+          <h3>Administrar Gêneros Musicais<br/>
+            <small>Você possui ${qtdGeneros} gênero(os) cadastrado(s)</small>
           </h3>
           
           <div class="spacer-vertical20"></div>
@@ -22,24 +22,22 @@
             <div class="col-lg-12 col-md-12">
             
               <table  
-                 id="tableclientes"
+                 id="table-generos"
                  data-toggle="table"
-                 data-url="${context}/admin/clientes"
+                 data-url="${context}/admin/generos"
                  data-height="400"
                  data-side-pagination="server"
                  data-pagination="true"
                  data-page-size=6
                  data-locale = "pt_BR"
+                 data-page-list = "[6,12,25]"
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="razaosocial">Razão Social</th>
-                      <th data-field="nomefantasia">Nome</th>
-                      <th data-field="dominio">Domínio</th>
-                      <th data-field="cnpj">CNPJ</th>
-                      <th data-field="email">Email</th>
-                      <th data-field="telefone">Telefone</th>
-                      <th data-field="qtd_tit">Qtd. Títulos em Aberto</th>
+                      <th data-field="idGenero">ID</th>
+                      <th data-field="nome">Nome</th>
+                      <th data-field="descricao">Descrição</th>
+                      <th data-field="idGenero" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
                   </tr>
                 </thead>
               </table>
@@ -51,7 +49,7 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                <a class="btn btn-primary" href="${context}/admin/cliente/new">Adicionar Novo Cliente</a>
+                <a class="btn btn-primary" href="${context}/admin/generos/new">Adicionar Novo Gênero</a>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
@@ -78,25 +76,29 @@
 
     function queryParams(params) {
 
-        params.pageNumber = $('#table-admin').bootstrapTable('getOptions').pageNumber;
+        params.pageNumber = $('#table-generos').bootstrapTable('getOptions').pageNumber;
         
         return params;
     };
     
-    var editarClienteSelecionado = function( e, row, el )
+    function removerFormatter(value, row) {
+        return '<a class="btn btn-link remover-genero-class" id="btnRemoverGenero" idGenero="'+ row.idGenero +'" href="#"> <i class="fa fa-lg fa-trash-o"></i></a>';
+    }
+
+    var editarGeneroSelecionado = function( e, row, el )
     {
         if ( row == null ) 
             return;
         
-        if ( row.idCliente == null || row.idCliente == 0 )
+        if ( row.idGenero == null || row.idGenero == 0 )
         {
-            preencheAlertGeral("alertArea", "Cliente não foi selecionado corretamente.", "danger");
+            preencheAlertGeral("alertArea", "Gênero não foi selecionado corretamente.", "danger");
             return false;
         }
         else
         {
-            var url = buildUrl( "/admin/clientes/{idCliente}/view", { 
-                idCliente: row.idCliente 
+            var url = buildUrl( "/admin/generos/{idGenero}/view", { 
+                idGenero: row.idGenero 
             });
             
             window.location = url;
@@ -112,16 +114,30 @@
             xhr.setRequestHeader(header, token);
         });
         
-        $('#tableclientes').on('click-row.bs.table', function( e, row, el ){
-            editarClienteSelecionado( e, row, el );
+        $('#table-generos').on('click-row.bs.table', function( e, row, el ){
+            editarGeneroSelecionado( e, row, el );
         });
+        
+        $('#table-generos').on('page-change.bs.table', function( e, number, size ){
+
+            $('.remover-genero-class').off( 'click' );
+
+            $('.remover-genero-class').click( function(){
+                
+                var idGenero = $(this).attr('idGenero');
+                
+                console.log(idGenero);
+            });
+        });
+        
+        
     });
 
 </script>
 
 <style type="text/css">
 
-#tableclientes tr{
+#table-generos tr{
   cursor: pointer;
 }
 

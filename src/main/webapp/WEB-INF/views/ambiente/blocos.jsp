@@ -163,6 +163,15 @@
                           </div>
                         </div>
 
+                        <div class="form-group">
+                          <label for="indexHoroscopo" class="control-label col-sm-4 col-md-3">Index Horóscopo:</label>
+                          <div class="col-sm-6 col-md-8">
+                            <select class="form-control" id="indexHoroscopo" name="indexHoroscopo">
+                              <option value="0" >Não incluir horóscopo</option>
+                            </select>
+                          </div>
+                        </div>
+
                         <div class="spacer-vertical20"></div>
   
                         <div class="row">
