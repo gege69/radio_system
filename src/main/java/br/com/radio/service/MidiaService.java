@@ -447,6 +447,27 @@ public class MidiaService {
 		return midia;
 	}	
 
+
+	@Transactional
+	public Midia saveUploadChamadaVeiculo( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
+		
+		if ( categoria == null )
+			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
+		
+		byte[] bytes = multiPartFile.getBytes();
+		
+		String hash = geraHashDoArquivo( bytes );
+		
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
+		
+		associaMidiaParaTodosAmbientes( midia );
+		
+		return midia;
+	}	
+
+
 	
 	
 	@Transactional

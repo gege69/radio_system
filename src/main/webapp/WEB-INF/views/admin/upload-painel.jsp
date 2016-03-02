@@ -11,7 +11,7 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-heading">
-          Administração
+          Upload de Mídias
         </div>
         
         <div class="panel-body">
@@ -21,34 +21,31 @@
               <div class="row row-centered">
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/admin/listagem-cadastro">
-                      <i class="fa fa-3x icone-main fa-list-ol"></i>
-                      <span class="label-botao-main">Listagem Clientes</span>
+                    <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/admin/upload-chamadas-veiculos/view">
+                      <i class="fa fa-3x icone-main fa-car"></i>
+                      <span class="label-botao-main">Chamada de Veículos</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/clientes/view">
-                      <i class="fa fa-3x icone-main fa-cloud-upload"></i>
-                      <span class="label-botao-main">Cadastro Clientes</span>
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-letras/view">
+                      <i class="fa fa-3x icone-main fa-font"></i>
+                      <span class="label-botao-main">Letras e Números</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-painel/view">
-                      <i class="fa fa-3x icone-main fa-cloud-upload"></i>
-                      <span class="label-botao-main">Upload Mídia</span>
-                    </a>
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/monitoracao">
-                      <i class="fa fa-3x icone-main fa-eye"></i>
-                      <span class="label-botao-main">Monitorar Cliente</span>
-                    </a>
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/generos/view">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-musica/view">
                       <i class="fa fa-3x icone-main fa-music"></i>
-                      <span class="label-botao-main">Gêneros Musicais</span>
+                      <span class="label-botao-main">Música</span>
                     </a>
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-horoscopo/view">
+                      <i class="fa fa-3x icone-main fa-star"></i>
+                      <span class="label-botao-main">Horóscopo</span>
+                    </a>
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                      

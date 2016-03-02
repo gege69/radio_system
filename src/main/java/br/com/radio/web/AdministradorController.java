@@ -1,5 +1,7 @@
 package br.com.radio.web;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.Principal;
 
 import javax.validation.Valid;
@@ -17,16 +19,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
+import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Genero;
+import br.com.radio.model.Midia;
 import br.com.radio.model.Usuario;
+import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.GeneroRepository;
+import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.service.AdministradorService;
+import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
 
 
@@ -48,6 +59,14 @@ public class AdministradorController extends AbstractController {
 	@Autowired
 	private GeneroRepository generoRepo;
 	
+	@Autowired
+	private MidiaRepository midiaRepo;
+
+	@Autowired
+	private MidiaService midiaService;
+
+	@Autowired
+	private CategoriaRepository categoriaRepo;
 	
 	@RequestMapping(value="/admin/painel", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
@@ -284,5 +303,141 @@ public class AdministradorController extends AbstractController {
 
 		return "admin/editar-genero";
 	}	
+	
+	
+	
+	@RequestMapping(value="/admin/upload-painel/view", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String uploadPainel( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		return "admin/upload-painel";
+	}
+	
+	
+	
+	
+	@RequestMapping(value="/admin/upload-chamadas-veiculos/view", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String uploadChamadasVeiculos( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		return "admin/upload-chamadas-veiculos";
+	}
+	
+	
+	@RequestMapping(value="/admin/upload-letras/view", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String uploadLetras( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		return "admin/upload-letras";
+	}
+	
+	
+	@RequestMapping(value="/admin/upload-musica/view", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String uploadMusica( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		return "admin/upload-musica";
+	}
+	
+	
+	@RequestMapping(value="/admin/upload-horoscopo/view", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String uploadHoroscopo( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		return "admin/upload-horoscopo";
+	}
+	
+
+
+	@RequestMapping( value = { "/admin/midias", "/api/admin/midias" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
+																	@RequestParam(value="codigo", required = false) String codigo,  
+																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
+																	@RequestParam(value="limit", required = false) Integer limit, 
+																	@RequestParam(value="order", required = false) String order )
+	{
+		Pageable pageable = getPageable( pageNumber, limit, order, "nome" ); 
+		
+		Categoria categoria = categoriaRepo.findByCodigo( codigo );
+		
+		if ( categoria == null )
+			throw new RuntimeException("Categoria não encontrada");
+		
+		Page<Midia> page = midiaRepo.findByCategoriasAndValidoTrue( pageable, categoria );
+		
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
+
+		return jsonList;
+	}
+	
+	
+	@RequestMapping( value = { "/admin/upload-chamadas-veiculos", "/api/admin/upload-chamadas-veiculos" }, method = { RequestMethod.POST },  produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String saveUploadChamadasVeiculos( @RequestParam("file") MultipartFile file, @RequestParam("codigo") String codigo, Principal principal )
+	{
+		String jsonResult = null;
+		
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			throw new RuntimeException("Usuário não encontrado");
+		
+		try
+		{
+			midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), null );
+		}
+		catch ( FileNotFoundException e )
+		{
+			e.printStackTrace();
+			throw new RuntimeException( e.getMessage() );
+		}
+		catch ( UnsupportedTagException e )
+		{
+			e.printStackTrace();
+			throw new RuntimeException( e.getMessage() );
+		}
+		catch ( InvalidDataException e )
+		{
+			e.printStackTrace();
+			throw new RuntimeException( e.getMessage() );
+		}
+		catch ( IOException e )
+		{
+			e.printStackTrace();
+			throw new RuntimeException( e.getMessage() );
+		}
+
+		jsonResult = writeOkResponse();
+			
+
+		return jsonResult;
+	}	
+	
+	
 }
 
