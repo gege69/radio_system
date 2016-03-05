@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -460,7 +461,22 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
+		Midia midia = midiaRepo.findByFilehash( hash );
+		
+		if ( midia != null )
+		{ 
+			List<Categoria> outras = midia.getCategorias().stream().filter( cat -> !cat.equals( categoria ) ).collect( Collectors.toList() );
+
+			if ( outras != null && outras.size() > 0 )
+			{
+				StringBuilder sb = new StringBuilder();
+				outras.forEach( c -> sb.append( c.getDescricao() ) );
+
+				throw new RuntimeException( "Essa chamada já existe em outra categoria ( " + outras.toString() + " )." );
+			}
+		}
+
+		midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
 		
 		associaMidiaParaTodosAmbientes( midia );
 		
@@ -638,6 +654,32 @@ public class MidiaService {
 
 
 
+	public Midia alteraNomeMidia( Long idMidia, String nome )
+	{
+		if ( StringUtils.isBlank( nome ) )
+			throw new RuntimeException("Nome não pode ser branco");
+		
+		Midia midia = midiaRepo.findOne( idMidia );
+		
+		if ( midia == null )
+			throw new RuntimeException( "Mídia não encontrada");
+		
+		boolean isChamadaVeiculo = midia.getCategorias().stream().anyMatch( cat -> "veic".equals( StringUtils.left( cat.getCodigo(), 4 ) ) );
+		
+		if ( isChamadaVeiculo )
+		{
+			Long qtd = midiaRepo.countByNome( nome );
+			
+			if ( qtd != null && qtd > 0 )
+				throw new RuntimeException( "Já existe uma chamada de veículo com esse nome. Por favor escolha outro.");
+		}
+		
+		midia.setNome( nome );
+		
+		midiaRepo.save( midia );
+
+		return midia;
+	}
 
 
 	private String getDefaultPath( String hash, String contentType )

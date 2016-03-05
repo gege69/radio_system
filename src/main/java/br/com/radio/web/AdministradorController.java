@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.UnsupportedTagException;
-
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Categoria;
@@ -39,6 +38,9 @@ import br.com.radio.repository.PerfilRepository;
 import br.com.radio.service.AdministradorService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
+
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 
 
 @Controller
@@ -396,6 +398,8 @@ public class AdministradorController extends AbstractController {
 	}
 	
 	
+	
+	
 	@RequestMapping( value = { "/admin/upload-chamadas-veiculos", "/api/admin/upload-chamadas-veiculos" }, method = { RequestMethod.POST },  produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody String saveUploadChamadasVeiculos( @RequestParam("file") MultipartFile file, @RequestParam("codigo") String codigo, Principal principal )
@@ -409,7 +413,11 @@ public class AdministradorController extends AbstractController {
 		
 		try
 		{
-			midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), null );
+			Midia midia = midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), null );
+			
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			JsonObjectBuilder builder2 = Json.createObjectBuilder();
+			jsonResult = builder.add("files", builder2.add( "name", midia.getNome() ) ).build().toString();
 		}
 		catch ( FileNotFoundException e )
 		{
@@ -432,11 +440,34 @@ public class AdministradorController extends AbstractController {
 			throw new RuntimeException( e.getMessage() );
 		}
 
-		jsonResult = writeOkResponse();
-			
-
 		return jsonResult;
 	}	
+	
+	@RequestMapping( value = { "/admin/chamada-veiculos", "/api/admin/chamada-veiculos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String saveNomeUploadChamadaVeiculo( @RequestBody Midia midiaVO, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+	
+		try
+		{
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+				throw new RuntimeException("Usuário não encontrado");
+			
+			midiaService.alteraNomeMidia( midiaVO.getIdMidia(), midiaVO.getNome() );
+			
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+
+		return jsonResult;
+	}
 	
 	
 }

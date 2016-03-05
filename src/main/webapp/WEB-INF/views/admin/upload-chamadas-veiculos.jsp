@@ -10,6 +10,11 @@
     </div>
 
     <div class="row">
+    
+      <div class="row" id="alertArea">
+      </div>
+    
+    
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Upload de Chamadas de Veículos<br/>
@@ -44,16 +49,17 @@
 
                   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
 
+                  <span class="btn btn-success btn-file">
+                      Escolha os arquivos<input type="file" id="fileupload" name="file" multiple>
+                  </span>
 
-                  <div id="drop-area-div" class="uploader">
-                    <div>Arraste arquivos de <span id="categoria-span">Frase Inicial</span> aqui</div>
-                    <div class="or">-ou-</div>
-                    <div class="browser">
-                      <label>
-                      <span id="botao-arquivo">Clique no botão para adicionar arquivos de 'Frase Inicial'</span>
-                      <input type="file" name="files[]" multiple="multiple" title="Clique para adicionar">
-                      </label>
+                  <div class="spacer-vertical10"></div>
+
+                  <div id="resultados">
+                    <div id="progress" class="progress">
+                        <div class="progress-bar progress-bar-success"></div>
                     </div>
+                    <div id="files" class="files"></div>            
                   </div>
 
                 </div>
@@ -104,12 +110,64 @@
       
   </div> <!-- /container -->
 
+
+
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="titulo-modal">Alterar nome da Chamada de Veículo</h4>
+      </div>
+      <div class="modal-body">
+        <form action="#" class="form-horizontal" id="altera-nome-midia-form" method="POST">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+          <input type="hidden" id="idMidia" name="idMidia" value="0">
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+
+              <div class="form-group">
+                <label for="login" class="control-label col-sm-2 col-md-2">Tipo</label>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                  <p class="form-control-static" id="tipo"></p>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-sm-2 col-md-2">Nome</label>
+                <div class="col-lg-8 col-md-10">
+                  <input type="text" class="form-control" id="nomeMidia" name="nome">
+                </div>
+              </div>
+
+            </div> 
+          </div>
+          
+        </form>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvar">Alterar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
+
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
+<script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
 
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 
-<script src="${context}/js/required/dmuploader.js"></script>
+<script src="${context}/js/required/jquery-ui.min.js"></script>
+<script src="${context}/js/required/jquery.iframe-transport.js"></script>
+<script src="${context}/js/required/jquery.fileupload.js"></script>
 
 
 <script type="text/javascript">
@@ -125,16 +183,61 @@
     };
 
     function editarFormatter(value, row) {
-        return '<a class="btn btn-link editar-class" id="btnEditarChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
+        return '<a class="btn btn-link editar-class" id="btnEditarChamada" idMidia="'+ row.idMidia +'" nomeMidia="'+ row.nome +'" href="#"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
     }
     
     function removerFormatter(value, row) {
-        return '<a class="btn btn-link remover-class" id="btnRemoverChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-times"></i></a>';
+        return '<a class="btn btn-link remover-class" id="btnRemoverChamada" idMidia="'+ row.idMidia +'" nomeMidia="'+ row.nome +'" href="#"> <i class="fa fa-lg fa-times"></i></a>';
     }
 
     function playFormatter(value, row) {
         return '<a class="btn btn-link play-class" id="btnPlayChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-play-circle"></i></a>';
     }
+    
+
+
+    var openPopup = function( element )
+    {
+        var idMidia = element.attr("idMidia");
+        var nomeMidia = element.attr("nomeMidia");
+        
+        $('#idMidia').val( idMidia );
+        $('#nomeMidia').val( nomeMidia );
+        
+        var texto = $("#categoria-combo :selected").text();
+        
+        $('#tipo').html( texto );
+        
+        $('#myModal').modal('show');
+        $('#nomeMidia').focus();
+    }
+
+
+    
+    var salvar = function()
+    {
+        var url = buildUrl( "/admin/chamada-veiculos");
+        
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: url,
+            dataType: 'json',
+            data:  JSON.stringify( $('#altera-nome-midia-form').serializeJSON() )
+            
+        }).done( function(json){ 
+
+            if (json.ok == 1){
+                preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
+                $("#table-chamadas-veiculos").bootstrapTable('refresh');
+                $('#myModal').modal('toggle');
+            }
+            else{
+                preencheErros( json.errors );
+            }
+        });
+    } 
+    
     
     var editarGeneroSelecionado = function( e, row, el )
     {
@@ -160,50 +263,47 @@
     var buscaValor = function()
     {
         var result = $("#categoria-combo").val();
-        console.log(result);
         return result;
     }
     
    
-    
-    
-    
-    // LEMBRAR DE MINIFICAR A BOSTA DO UPLOADER
-    var configuraUploader = function(){
-
-        var url = buildUrl( "/api/admin/upload-chamadas-veiculos" );
-
-        $('#drop-area-div').dmUploader({
-          url: url,
-          dataType: 'json',
-          extraData: { 
-              _csrf: $("#csrf").val(), 
-              codigo : buscaValor 
-          },
-          onComplete: function(){
-             $("#table-chamadas-veiculos").bootstrapTable('refresh');
-          },
-          onUploadProgress: function(id, percent){
-            var percentStr = percent + '%';
-//             $.danidemo.updateFileProgress(id, percentStr);
-          },
-          onUploadError: function(id, message){
-              
-              console.log( "Tudo errado !!");
-//             $.danidemo.updateFileStatus(id, 'error', message);
-
-//             $.danidemo.addLog('#demo-debug', 'error', 'Failed to Upload file #' + id + ': ' + message);
-          },
-          onFileTypeError: function(file){
-//             $.danidemo.addLog('#demo-debug', 'error', 'File \'' + file.name + '\' cannot be added: must be an image');
-          },
-          onFallbackMode: function(message){
-//             $.danidemo.addLog('#demo-debug', 'info', 'Browser not supported(do something else here!): ' + message);
-          }
-        });
+    var configuraUploader = function() 
+    {
+        $('#fileupload').fileupload({
+            dataType: 'json',
+            formData: { 
+                _csrf: $("#csrf").val() 
+            },
+            done: function (e, data) {
+                $.each(data.result.files, function (index, file) {
+                    $('<p/>').text(file.name).appendTo( $("#resultados") );
+                });
+                
+                $("#table-chamadas-veiculos").bootstrapTable('refresh');
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress .progress-bar').css(
+                    'width',
+                    progress + '%'
+                );
+            } 
+        }); 
         
-    };
-    
+        var _url = buildUrl( "/api/admin/upload-chamadas-veiculos" );
+
+        $('#fileupload').fileupload(
+           'option',
+           {
+              url : _url,
+              formData: { 
+                _csrf: $("#csrf").val(), 
+                codigo : buscaValor() 
+              }
+           }
+        );
+    }
+   
 
     $(function(){
         
@@ -218,13 +318,48 @@
            var texto = $("#categoria-combo :selected").text();
            $("#categoria-span").html( texto );
            $("#botao-arquivo").html( "Clique para adicionar arquivos de '" + texto +"'" );
-           console.log( $(this).val() );
-           configuraUploader( $(this).val() );
-        });
 
+           $('#progress .progress-bar').css(
+                   'width',
+                   0 + '%'
+               );
+
+           var codigo = buscaValor();
+
+           $('#fileupload').fileupload(
+              'option',
+              {
+                 formData: { 
+                   _csrf: $("#csrf").val(), 
+                   codigo : codigo 
+                 }
+              }
+           );
+        });
         
         configuraUploader();
+        
+        $("#table-chamadas-veiculos").on( 'load-success.bs.table', function( e, data ) {
+            $(".editar-class").click( function(){
+                openPopup($(this));
+            });
+        });
+        
+        $("#table-chamadas-veiculos").on( 'page-change.bs.table', function ( e, number, size ){
+            $(".editar-class").click( function(){
+                openPopup($(this));
+            });
+            
+        });
+        
+        $("#btnSalvar").click( function(){
+            salvar();
+        });
        
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#nomeMidia').focus();
+        })
+
     });
 
 </script>
@@ -233,75 +368,6 @@
 
 #table-generos tr{
   cursor: pointer;
-}
-
-.uploader
-{
-  border: 2px dotted #A5A5C7;
-  width: 100%;
-  color: #92AAB0;
-  text-align: center;
-  vertical-align: middle;
-  padding: 30px 0px;
-  margin-bottom: 10px;
-  font-size: 200%; 
-
-  cursor: default;
-
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.uploader div.or {
-  font-size: 50%;
-  font-weight: bold;
-  color: #C0C0C0;
-  padding: 10px;
-}
-
-.uploader div.browser label {
-  background-color: #5a7bc2;
-  padding: 5px 15px;
-  color: white;
-  padding: 6px 0px;
-  font-size: 40%;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-  display: block;
-  width: 300px;
-  margin: 20px auto 0px auto;
-
-  box-shadow: 2px 2px 2px #888888;
-}
-
-.uploader div.browser span {
-  cursor: pointer;
-}
-
-
-.uploader div.browser input {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0;
-  border: solid transparent;
-  border-width: 0 0 100px 200px;
-  opacity: .0;
-  filter: alpha(opacity= 0);
-  -o-transform: translate(250px,-50px) scale(1);
-  -moz-transform: translate(-300px,0) scale(4);
-  direction: ltr;
-  cursor: pointer;
-}
-
-.uploader div.browser label:hover {
-  background-color: #427fed;
 }
 
 </style>
