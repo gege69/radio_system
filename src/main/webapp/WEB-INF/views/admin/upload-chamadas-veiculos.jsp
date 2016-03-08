@@ -92,6 +92,15 @@
             </div>
           </div>
           
+          <div class="spacer-vertical10"></div>
+
+          <div class="player" id="player1" >
+              <audio controls>
+                  <source src="" type="audio/ogg">
+              </audio>
+          </div>
+          
+          
           <div class="spacer-vertical40"></div>
           
           <div class="row">
@@ -157,6 +166,35 @@
 
 
 
+<div class="modal fade" id="myDialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="titulo-modal">Remover Chamada de Veículo</h4>
+      </div>
+      <div class="modal-body">
+        <form action="#" class="form-horizontal" id="remove-midia-form" method="POST">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+          <input type="hidden" id="idMidiaDialog" name="idMidia" value="0">
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              Deseja realmente remover essa Chamada de Veículo?
+            </div> 
+          </div>
+          
+        </form>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" id="btnNaoDialog" data-dismiss="modal">Não</button>
+        <button type="button" class="btn btn-primary" id="btnConfirmarDelete">Sim</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
@@ -169,6 +207,8 @@
 <script src="${context}/js/required/jquery.iframe-transport.js"></script>
 <script src="${context}/js/required/jquery.fileupload.js"></script>
 
+<link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
+<script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
 
 <script type="text/javascript">
 
@@ -194,8 +234,91 @@
         return '<a class="btn btn-link play-class" id="btnPlayChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-play-circle"></i></a>';
     }
     
+    var player = null;
+    
+    var playChamada = function( element )
+    {
+        debugger;
+        player.pause();
+        
+        var idMidia = element.attr("idMidia");
+        
+        var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia: idMidia });
+        
+//         var source = { src: url, type : "audio/mp3" };
+        
+        player.source( url );
+        player.play();
+    }
 
+//     var playlist = [];
 
+//     var playSequence = function( array ){
+        
+//         if ( array == null || array.length <= 0 )
+//             return;
+        
+//         playlist = array.slice();
+        
+//         schedulePlay();
+//     }
+
+//     var schedulePlay = function()
+//     {
+//         if ( playlist == null || playlist.length <= 0 )
+//             return;
+
+//         var musicaAtual = playlist.splice(0, 1);        
+
+//         if ( musicaAtual == null || musicaAtual == undefined )
+//             return;
+        
+//         var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia: musicaAtual });
+        
+//         player.source( url );
+//         player.play();
+//     }
+    
+
+    var openDialog = function( element )
+    {
+        var idMidia = element.attr("idMidia");
+        
+        $('#idMidiaDialog').val( idMidia );
+        
+        $('#myDialog').modal('show');
+    }
+
+    
+    var deletar = function()
+    {
+        var idMidia = $("#idMidiaDialog").val();
+        
+        if ( idMidia == null || idMidia == 0 )
+            preencheAlertGeral( "alertArea", "Mídia não encontrada" );
+
+        var url = buildUrl( "/admin/chamada-veiculos/{idMidia}", { idMidia : idMidia } );
+        
+        $.ajax({
+            type: 'DELETE',
+            contentType: 'application/json',
+            url: url,
+            dataType: 'json'
+        }).done( function(json){ 
+
+            if (json.ok == 1){
+                preencheAlertGeral( "alertArea", "Registro removido com sucesso", "success" );
+                $("#table-chamadas-veiculos").bootstrapTable('refresh');
+                $('#myDialog').modal('toggle');
+            }
+            else{
+                $('#myDialog').modal('toggle');
+                preencheErros( json.errors );
+            }
+        });
+    } 
+    
+    
     var openPopup = function( element )
     {
         var idMidia = element.attr("idMidia");
@@ -233,6 +356,7 @@
                 $('#myModal').modal('toggle');
             }
             else{
+                $('#myModal').modal('toggle');
                 preencheErros( json.errors );
             }
         });
@@ -312,6 +436,17 @@
         $(document).ajaxSend(function(e, xhr, options) {
             xhr.setRequestHeader(header, token);
         });
+
+// PRECISO EVOLUIR O PLYR PARA A VERSÃO 1.5 NÃO ESTAVA TOCANDO....
+
+// NÃO ESTAVA NEM CHEGANDO NO SPRING, TALVEZ ELE NO ESTEJA FAZENDO GET.
+
+        plyr.setup( { options : ["current-time", "duration", "mute"]});
+
+        player = $('#player1')[0].plyr;
+
+//         player = plyr.setup( { controls : ["restart", "rewind", "play", "current-time", "duration", "mute" ], fullscreen : { enabled : false } } )[0];
+        
  
         $("#categoria-combo").change( function() {
            $("#table-chamadas-veiculos").bootstrapTable('refresh');
@@ -343,6 +478,14 @@
             $(".editar-class").click( function(){
                 openPopup($(this));
             });
+
+            $(".remover-class").click( function(){
+                openDialog($(this));
+            });
+            
+            $(".play-class").click( function(){
+                playChamada($(this));
+            });
         });
         
         $("#table-chamadas-veiculos").on( 'page-change.bs.table', function ( e, number, size ){
@@ -350,16 +493,30 @@
                 openPopup($(this));
             });
             
+            $(".remover-class").click( function(){
+                openDialog($(this));
+            });
+
+            $(".play-class").click( function(){
+                playChamada($(this));
+            });
         });
         
         $("#btnSalvar").click( function(){
             salvar();
+        });
+
+        $("#btnConfirmarDelete").click( function(){
+            deletar();
         });
        
         $('#myModal').on('shown.bs.modal', function () {
             $('#nomeMidia').focus();
         })
 
+        $('#myDialog').on('shown.bs.modal', function () {
+            $('#btnNaoDialog').focus();
+        })
     });
 
 </script>

@@ -602,8 +602,18 @@ public class MidiaService {
 			String path = getDefaultPath( hash, contentType );
 
 			midia = midiaRepo.findByFilehash( hash );
+		
+			boolean preencher = false;
+
+			if (  midia == null || ( midia != null && midia.getValido() == false ) )
+			{
+				preencher = true;
+				
+				if ( midia == null )
+					midia = new Midia();
+			}
 			
-			if ( midia == null || ( midia != null && midia.getValido() == false ) )
+			if ( preencher )
 			{
 				arquivo = new File( path );
 				
@@ -612,8 +622,6 @@ public class MidiaService {
 					size = IOUtils.copy( is, new FileOutputStream( arquivo ) );
 				else
 					size = fileSize;
-				
-				midia = new Midia();
 				
 				midia.setDataUpload( new Date() );
 				midia.setNome( originalName );

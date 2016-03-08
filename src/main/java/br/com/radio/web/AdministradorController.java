@@ -1,5 +1,6 @@
 package br.com.radio.web;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
@@ -9,10 +10,15 @@ import javax.json.JsonObjectBuilder;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
+import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Genero;
@@ -470,5 +477,56 @@ public class AdministradorController extends AbstractController {
 	}
 	
 	
+	@RequestMapping(value= { "/admin/chamada-veiculos/{idMidia}", "/api/admin/chamada-veiculos/{idMidia}" }, method=RequestMethod.DELETE)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public ResponseEntity<String> deleteChamadaVeiculo( @PathVariable Long idMidia, Principal principal, Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+		try
+		{
+			midiaService.deleteMidiaSePossivel( idMidia );
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+		}
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+
+    }	
+
+
+	@RequestMapping(value = { "/admin/midia/{idMidia}", "/api/admin/midia/{idMidia}" }, method = RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody ResponseEntity<FileSystemResource> downloadMidia(@PathVariable Long idMidia, Principal principal) {
+		
+		Midia midia = midiaRepo.findOne( idMidia );
+		
+		if ( midia == null )
+			return ResponseEntity.unprocessableEntity().body( null );
+		
+		File arquivo = new File( midia.getFilepath() );
+		
+		FileSystemResource fsr = new FileSystemResource( arquivo );
+
+		String name = Integer.valueOf( midia.getNome().hashCode() ).toString();
+		
+		return ResponseEntity.ok()
+				.header( "Content-Disposition", "attachment; filename=\""+ name +"\"" )
+				.contentLength( midia.getFilesize() )
+				.contentType( MediaType.parseMediaType( midia.getMimetype() ) )
+				.body( fsr );
+	}
+
 }
 
