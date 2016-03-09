@@ -363,27 +363,6 @@
     } 
     
     
-    var editarGeneroSelecionado = function( e, row, el )
-    {
-        if ( row == null ) 
-            return;
-        
-        if ( row.idGenero == null || row.idGenero == 0 )
-        {
-            preencheAlertGeral("alertArea", "Gênero não foi selecionado corretamente.", "danger");
-            return false;
-        }
-        else
-        {
-            var url = buildUrl( "/admin/generos/{idGenero}/view", { 
-                idGenero: row.idGenero 
-            });
-            
-            window.location = url;
-        }
-    };
-    
-    
     var buscaValor = function()
     {
         var result = $("#categoria-combo").val();

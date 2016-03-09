@@ -33,6 +33,15 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/tocar-chamadas-veiculos/view">
+                      <span class="fa-stack fa-2x" style=" margin: 3px auto 12px;">
+                        <i class="fa fa-play fa-stack-2x"></i>
+                        <i class="fa fa-car fa-stack-1x fa-inverse"></i>
+                      </span>
+                      <span class="label-botao-main">Tocar<br/>Chamadas Veículos</span>
+                    </a>
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-musica/view">
                       <i class="fa fa-3x icone-main fa-music"></i>
                       <span class="label-botao-main">Música</span>
@@ -46,9 +55,6 @@
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
 
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                     
                   </div>
                 </div>              
               </div>

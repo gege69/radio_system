@@ -35,6 +35,8 @@ public class Categoria implements Serializable {
 	public static final String CHAMADA_FUNC_NOME = 	"chamada_func_nome";
 	public static final String CHAMADA_FUNC_FRASE = "chamada_func_frase";
 	
+	public static final String VEIC_PLACA = 		"veic_placa";
+
 	public static final String HOROSCOPO = 			"horoscopo";
 	
 	@Id

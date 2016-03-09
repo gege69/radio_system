@@ -38,7 +38,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.radio.config.MensagensProfile;
 import br.com.radio.dto.MusicTags;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.AlfanumericoMidia;
@@ -449,6 +448,7 @@ public class MidiaService {
 	}	
 
 
+
 	@Transactional
 	public Midia saveUploadChamadaVeiculo( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
@@ -457,6 +457,21 @@ public class MidiaService {
 		if ( categoria == null )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
+		Midia result = null;
+		
+		if ( categoria.getCodigo().equals( Categoria.VEIC_PLACA ) )
+			result = saveUploadChamadaVeiculoAlfaNumerico( multiPartFile, categoria, cliente, descricao );
+		else
+			result = saveUploadChamadaVeiculoOutros( multiPartFile, categoria, cliente, descricao );
+		
+		return result;
+	}
+	
+
+
+	@Transactional
+	public Midia saveUploadChamadaVeiculoOutros( MultipartFile multiPartFile, Categoria categoria, Cliente cliente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
 		byte[] bytes = multiPartFile.getBytes();
 		
 		String hash = geraHashDoArquivo( bytes );
@@ -487,21 +502,18 @@ public class MidiaService {
 	
 	
 	@Transactional
-	public Midia saveUploadAlfaNumericoChamadaVeiculo( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, String alfanumerico, Long[] arrayGeneros ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUploadChamadaVeiculoAlfaNumerico( MultipartFile multiPartFile, Categoria categoria, Cliente cliente, String alfanumerico ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
-		
-		if ( categoria == null )
-			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
-		
 		alfanumerico = StringUtils.trim( alfanumerico );
 		
 		if ( StringUtils.isBlank( alfanumerico ) )
 			throw new RuntimeException( "A Letra (ou número) correspondente ao áudio é obrigatório ( Ex: 'A' ou '9' )" );
 		
-		if ( StringUtils.length( alfanumerico ) > 0 )
+		if ( StringUtils.length( alfanumerico ) > 2 )
 			throw new RuntimeException( "Não é possível inserir mais de um caracter correspondente ao áudio.");
 		
+		if ( !StringUtils.isAlphanumeric( alfanumerico ) )
+			throw new RuntimeException( "O caractére preenchido é inválido.");
 		
 		byte[] bytes = multiPartFile.getBytes();
 		
@@ -517,6 +529,7 @@ public class MidiaService {
 		{
 			Midia outraMidia = alfa.getMidia();
 			
+			// por enquanto ele deleta a midia....
 			deleteMidiaSePossivel( outraMidia.getIdMidia() );
 			
 			alfa.setMidia( midia );
@@ -662,27 +675,30 @@ public class MidiaService {
 
 
 
-	public Midia alteraNomeMidia( Long idMidia, String nome )
+	public Midia alteraNomeMidia( Midia midiaVO )
 	{
-		if ( StringUtils.isBlank( nome ) )
-			throw new RuntimeException("Nome não pode ser branco");
-		
-		Midia midia = midiaRepo.findOne( idMidia );
+		Midia midia = midiaRepo.findOne( midiaVO.getIdMidia() );
 		
 		if ( midia == null )
 			throw new RuntimeException( "Mídia não encontrada");
+
+		if ( StringUtils.isBlank( midiaVO.getNome() ) )
+			throw new RuntimeException("Nome não pode ser branco");
 		
 		boolean isChamadaVeiculo = midia.getCategorias().stream().anyMatch( cat -> "veic".equals( StringUtils.left( cat.getCodigo(), 4 ) ) );
 		
 		if ( isChamadaVeiculo )
 		{
-			Long qtd = midiaRepo.countByNome( nome );
+			Long qtd = midiaRepo.countByNome( midiaVO.getNome() );
 			
-			if ( qtd != null && qtd > 0 )
+			if ( qtd != null && qtd > 1 )
 				throw new RuntimeException( "Já existe uma chamada de veículo com esse nome. Por favor escolha outro.");
 		}
 		
-		midia.setNome( nome );
+		midia.setNome( midiaVO.getNome() );
+		
+		if ( StringUtils.isNotBlank( midiaVO.getDescricao() ) )
+			midia.setDescricao( midiaVO.getDescricao() );
 		
 		midiaRepo.save( midia );
 

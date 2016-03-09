@@ -352,7 +352,7 @@ public class AdministradorController extends AbstractController {
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
-		return "admin/upload-letras";
+		return "admin/upload-chamadas-veiculos-alfanum";
 	}
 	
 	
@@ -409,7 +409,10 @@ public class AdministradorController extends AbstractController {
 	
 	@RequestMapping( value = { "/admin/upload-chamadas-veiculos", "/api/admin/upload-chamadas-veiculos" }, method = { RequestMethod.POST },  produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveUploadChamadasVeiculos( @RequestParam("file") MultipartFile file, @RequestParam("codigo") String codigo, Principal principal )
+	public @ResponseBody String saveUploadChamadasVeiculos( @RequestParam("file") MultipartFile file, 
+															@RequestParam("codigo") String codigo, 
+															@RequestParam(value="alfanumerico", required=false) String alfaNumerico,
+															Principal principal )
 	{
 		String jsonResult = null;
 		
@@ -420,7 +423,7 @@ public class AdministradorController extends AbstractController {
 		
 		try
 		{
-			Midia midia = midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), null );
+			Midia midia = midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), alfaNumerico );
 			
 			JsonObjectBuilder builder = Json.createObjectBuilder();
 			JsonObjectBuilder builder2 = Json.createObjectBuilder();
@@ -463,7 +466,7 @@ public class AdministradorController extends AbstractController {
 			if ( usuario == null || usuario.getCliente().getIdCliente() == null )
 				throw new RuntimeException("Usuário não encontrado");
 			
-			midiaService.alteraNomeMidia( midiaVO.getIdMidia(), midiaVO.getNome() );
+			midiaService.alteraNomeMidia( midiaVO );
 			
 			jsonResult = writeOkResponse();
 		}
