@@ -45,6 +45,8 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	
 	
 	// Admin
+	Page<Midia> findByCategoriasInAndValidoTrue( Pageable pageable, List<Categoria> categorias );
+
 	Page<Midia> findByCategoriasAndValidoTrue( Pageable pageable, Categoria categoria );
 	
 	Long countByNome( String nome );

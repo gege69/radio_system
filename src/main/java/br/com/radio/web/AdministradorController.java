@@ -4,11 +4,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
@@ -31,7 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
-import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Genero;
@@ -392,12 +395,20 @@ public class AdministradorController extends AbstractController {
 	{
 		Pageable pageable = getPageable( pageNumber, limit, order, "nome" ); 
 		
-		Categoria categoria = categoriaRepo.findByCodigo( codigo );
+		List<Categoria> categorias = new ArrayList<Categoria>();
+
+		if ( StringUtils.isNotBlank( codigo ) )
+			categorias.add( categoriaRepo.findByCodigo( codigo ) );
+		else
+		{
+			String[] cats = new String[] { Categoria.VEIC_PLACA_LETRA, Categoria.VEIC_PLACA_NUMERO };
+			categorias = categoriaRepo.findByCodigoIn( Arrays.asList( cats ) );
+		}
 		
-		if ( categoria == null )
+		if ( categorias == null )
 			throw new RuntimeException("Categoria não encontrada");
 		
-		Page<Midia> page = midiaRepo.findByCategoriasAndValidoTrue( pageable, categoria );
+		Page<Midia> page = midiaRepo.findByCategoriasInAndValidoTrue( pageable, categorias );
 		
 		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
 
@@ -531,5 +542,21 @@ public class AdministradorController extends AbstractController {
 				.body( fsr );
 	}
 
+	
+	
+	@RequestMapping(value={ "/admin/tocat-chamadas-veiculos/view" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String tocarChamadasVeiculos( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+
+		return "admin/editar-cliente";
+	}
+	
+	
+	
 }
 

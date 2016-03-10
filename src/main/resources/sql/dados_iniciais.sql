@@ -17,7 +17,8 @@ INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_fras
 INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_marca', 'Marca Chamada Veículo', 'Marca Chamada Veículo', false );
 INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_modelo', 'Modelo Chamada Veículo', 'Modelo Chamada Veículo', false );
 INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_cor', 'Cor Chamada Veículo', 'Cor Chamada Veículo', false );
-INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_placa', 'Placa Chadada Veículo', 'Placa Chadada Veículo', false );
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_placa_letra', 'Placa Chamada Veículo Letras', 'Placa Chadada Veículo Letras', false );
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_placa_numero', 'Placa Chamada Veículo Números', 'Placa Chadada Veículo Números', false );
 INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_frase_fim', 'Frase Final Chamada Veículo', 'Frase Final Chamada Veículo', false );
 INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'horoscopo', 'Horóscopo', 'Horóscopo', false );
 

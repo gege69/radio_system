@@ -17,7 +17,7 @@
     
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Upload de Chamadas de Veículos - Letras e Números<br/>
+          <h3>Tocar Chamadas de Veículos<br/>
           </h3>
           
           <div class="spacer-vertical20"></div>
@@ -25,87 +25,24 @@
           <div class="row">
             <div class="col-lg-12 col-md-12">
             
-              <div class="row">
+              <form action="#" id="form-upload-alfanum">
+
                 <div class="form-group">
-                  <label for="login" class="control-label col-lg-3 col-sm-4 col-md-4">Filtro do Componente da Chamada:</label>
-                  <div class="col-lg-6 col-md-5 col-sm-8">
-                    <select class="form-control" id="categoria-combo" name="categoria">
-                      <option value="" selected="selected">Todos</option>
-                      <option value="veic_placa_letra">Letras</option>
-                      <option value="veic_placa_numero">Números</option>
+                  <label for="nome" class="control-label col-sm-2 col-md-2">Letra ou Número:</label>
+                  <div class="col-sm-2 col-md-2 col-lg-1 col-xs-3">
+                    <input type="text" class="form-control" id="alfanumerico" name="alfanumerico" maxlength="2">
+                  </div>
+                </div>           
+
+                <div class="form-group">
+                  <label for="login" class="control-label col-sm-2 col-md-2">Estado</label>
+                  <div class="col-lg-4 col-md-4 col-sm-6">
+                    <select class="form-control" id="estado" name="estado">
                     </select>
                   </div>
                 </div> 
-              </div>
-
-              <div class="spacer-vertical20"></div>
-              
-              
-              <div class="col-lg-9 col-md-9">
-                <div class="panel panel-default">
-                  <div class="panel-body">
-                  
-                    <form action="#" id="form-upload-alfanum">
-                      <div class="row">
-                        <div class="form-group">
-                          <label for="nome" class="control-label col-sm-4 col-md-4 col-xs-4">Letra ou Número:</label>
-                          <div class="col-sm-2 col-md-2 col-lg-2 col-xs-3">
-                            <input type="text" class="form-control" id="alfanumerico" name="alfanumerico" maxlength="2">
-                          </div>
-                        </div>           
-                      </div>
-
-                      <div class="row">
-                        <div class="col-lg-12 ">
-                          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
-                          <input type="hidden" name="codigo" value="veic_placa_letra" id="codigo" />  <!--  isso é apenas um default... o business vai determinar -->
-
-                          <span class="btn btn-success btn-file">
-                              Escolha o arquivo<input type="file" id="fileupload" name="file" >
-                          </span>
-
-                          <div class="spacer-vertical10"></div>
-
-                          <div id="resultados">
-                            <div id="progress" class="progress">
-                                <div class="progress-bar progress-bar-success"></div>
-                            </div>
-                            <div id="files" class="files"></div>            
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-
-                  </div>
-                </div>
-              </div>
+              </form>
             
-
-              <div class="spacer-vertical20"></div>
-              
-              <table  
-                 id="table-chamadas-veiculos"
-                 data-toggle="table"
-                 data-url="${context}/admin/midias"
-                 data-height="400"
-                 data-side-pagination="server"
-                 data-pagination="true"
-                 data-page-size=6
-                 data-locale = "pt_BR"
-                 data-page-list="[6,12,25]"
-                 data-unique-id="idMidia"
-                 data-query-params="queryParams" >
-                <thead>
-                  <tr>
-                      <th data-field="nome" class="col-lg-5 col-md-4">Nome</th>
-                      <th data-field="descricao" class="col-lg-2 col-md-3">Letra ou Número</th>
-                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Trocar Nome</th>
-                      <th data-field="idMidia" data-formatter="editarAlfaFormatter" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Trocar Letra ou Número</th>
-                      <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
-                      <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
-                  </tr>
-                </thead>
-              </table>
             
             </div>
           </div>
@@ -270,7 +207,7 @@
     function queryParams(params) {
 
         params.pageNumber = $('#table-chamadas-veiculos').bootstrapTable('getOptions').pageNumber;
-        params.codigo = $("#categoria-combo").val();
+        params.codigo = $("#codigo").val();
         return params;
     };
 
@@ -516,15 +453,6 @@
 
 //         player = plyr.setup( { controls : ["restart", "rewind", "play", "current-time", "duration", "mute" ], fullscreen : { enabled : false } } )[0];
         
-        $("#categoria-combo").change( function() {
-
-           $("#table-chamadas-veiculos").bootstrapTable('refresh');
-
-           $('#progress .progress-bar').css(
-                   'width',
-                   0 + '%'
-               );
-        });
         
         configuraUploader();
         

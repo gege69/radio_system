@@ -449,17 +449,20 @@ public class MidiaService {
 
 
 
-	@Transactional
 	public Midia saveUploadChamadaVeiculo( MultipartFile multiPartFile, String codigoCategoria, Cliente cliente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		Categoria categoria = categoriaRepo.findByCodigo( codigoCategoria );
+		Categoria categoria = null;
+
+		if ( StringUtils.isNotBlank( codigoCategoria ) )
+			categoria = categoriaRepo.findByCodigo( codigoCategoria );
 		
-		if ( categoria == null )
+		// Caso a descricao esteja preenchido pode ser o upload de Alfanumérico.... pode passar pela validação
+		if ( categoria == null && StringUtils.isBlank( descricao ) )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
 		Midia result = null;
 		
-		if ( categoria.getCodigo().equals( Categoria.VEIC_PLACA ) )
+		if ( categoria == null || categoria.getCodigo().equals( Categoria.VEIC_PLACA_LETRA ) || categoria.getCodigo().equals( Categoria.VEIC_PLACA_NUMERO )  )
 			result = saveUploadChamadaVeiculoAlfaNumerico( multiPartFile, categoria, cliente, descricao );
 		else
 			result = saveUploadChamadaVeiculoOutros( multiPartFile, categoria, cliente, descricao );
@@ -507,13 +510,28 @@ public class MidiaService {
 		alfanumerico = StringUtils.trim( alfanumerico );
 		
 		if ( StringUtils.isBlank( alfanumerico ) )
-			throw new RuntimeException( "A Letra (ou número) correspondente ao áudio é obrigatório ( Ex: 'A' ou '9' )" );
-		
-		if ( StringUtils.length( alfanumerico ) > 2 )
-			throw new RuntimeException( "Não é possível inserir mais de um caracter correspondente ao áudio.");
+			throw new RuntimeException( "A Letra (ou número) correspondente ao áudio é obrigatório ( Ex: 'A' ou '19' )" );
 		
 		if ( !StringUtils.isAlphanumeric( alfanumerico ) )
 			throw new RuntimeException( "O caractére preenchido é inválido.");
+		
+		
+		boolean numerico = StringUtils.isNumeric( alfanumerico );
+		
+		if ( numerico && StringUtils.length( alfanumerico ) != 2 )
+			throw new RuntimeException( "Os números da placa precisam ser gravados em pares de dois dígitos ( Ex: 19, 25, 37, etc )");
+		
+		if ( !numerico && StringUtils.length( alfanumerico ) > 1 )
+			throw new RuntimeException( "As letras que formam a placa precisam ser gravadas separadamente ( Ex: A, B, F, etc )");
+		
+		
+		if ( numerico )
+			categoria = categoriaRepo.findByCodigo( Categoria.VEIC_PLACA_NUMERO );
+		else
+		{
+			categoria = categoriaRepo.findByCodigo( Categoria.VEIC_PLACA_LETRA );
+			alfanumerico = StringUtils.upperCase( alfanumerico );
+		}
 		
 		byte[] bytes = multiPartFile.getBytes();
 		
@@ -521,6 +539,8 @@ public class MidiaService {
 		
 		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), alfanumerico );
 		
+		// pode ter um bug aqui... uma midia "deletada" em uma categoria pode ser reativada em outra... e ficar com as duas categorias.  :TODO
+
 		associaMidiaParaTodosAmbientes( midia );
 		
 		AlfanumericoMidia alfa = alfaMidiaRepo.findByAlfanumerico( alfanumerico );
@@ -529,8 +549,11 @@ public class MidiaService {
 		{
 			Midia outraMidia = alfa.getMidia();
 			
-			// por enquanto ele deleta a midia....
-			deleteMidiaSePossivel( outraMidia.getIdMidia() );
+			if ( !outraMidia.equals( midia ) )
+			{
+				// por enquanto ele deleta a midia....
+				deleteMidiaSePossivel( outraMidia.getIdMidia() );
+			}
 			
 			alfa.setMidia( midia );
 			alfa.setAlfanumerico( alfanumerico );

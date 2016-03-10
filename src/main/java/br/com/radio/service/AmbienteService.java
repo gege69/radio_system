@@ -227,6 +227,7 @@ public class AmbienteService {
 		bloco.setPosicaoComercial( PosicaoComercial.DEPOIS_MUSICAS );
 		bloco.setQtdMusicas( 3 );
 		bloco.setQtdComerciais( 2 );
+		bloco.setIndexHoroscopo( 0 );
 
 		blocoRepository.saveAndFlush( bloco );
 	}
