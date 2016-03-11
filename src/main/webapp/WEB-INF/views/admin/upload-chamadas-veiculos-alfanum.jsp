@@ -20,10 +20,55 @@
           <h3>Upload de Chamadas de Veículos - Letras e Números<br/>
           </h3>
           
-          <div class="spacer-vertical20"></div>
+<!--           <div class="spacer-vertical20"></div> -->
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
+
+              <div class="row"> 
+
+                <div class="col-lg-9 col-md-9">
+                  <div class="panel panel-default">
+                    <div class="panel-body">
+                    
+                      <form action="#" id="form-upload-alfanum">
+                        <div class="row">
+                          <div class="form-group">
+                            <label for="nome" class="control-label col-sm-4 col-md-4 col-xs-4">Letra ou Número:</label>
+                            <div class="col-sm-2 col-md-2 col-lg-2 col-xs-3">
+                              <input type="text" class="form-control" id="alfanumerico" name="alfanumerico" maxlength="2">
+                            </div>
+                          </div>           
+                        </div>
+
+                        <div class="row">
+                          <div class="col-lg-12 ">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
+                            <input type="hidden" name="codigo" value="veic_placa_letra" id="codigo" />  <!--  isso é apenas um default... o business vai determinar -->
+
+                            <span class="btn btn-success btn-file">
+                                Escolha o arquivo<input type="file" id="fileupload" name="file" >
+                            </span>
+
+                            <div class="spacer-vertical10"></div>
+
+                            <div id="resultados">
+                              <div id="progress" class="progress">
+                                  <div class="progress-bar progress-bar-success"></div>
+                              </div>
+                              <div id="files" class="files"></div>            
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="spacer-vertical20"></div>
             
               <div class="row">
                 <div class="form-group">
@@ -37,49 +82,6 @@
                   </div>
                 </div> 
               </div>
-
-              <div class="spacer-vertical20"></div>
-              
-              
-              <div class="col-lg-9 col-md-9">
-                <div class="panel panel-default">
-                  <div class="panel-body">
-                  
-                    <form action="#" id="form-upload-alfanum">
-                      <div class="row">
-                        <div class="form-group">
-                          <label for="nome" class="control-label col-sm-4 col-md-4 col-xs-4">Letra ou Número:</label>
-                          <div class="col-sm-2 col-md-2 col-lg-2 col-xs-3">
-                            <input type="text" class="form-control" id="alfanumerico" name="alfanumerico" maxlength="2">
-                          </div>
-                        </div>           
-                      </div>
-
-                      <div class="row">
-                        <div class="col-lg-12 ">
-                          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
-                          <input type="hidden" name="codigo" value="veic_placa_letra" id="codigo" />  <!--  isso é apenas um default... o business vai determinar -->
-
-                          <span class="btn btn-success btn-file">
-                              Escolha o arquivo<input type="file" id="fileupload" name="file" >
-                          </span>
-
-                          <div class="spacer-vertical10"></div>
-
-                          <div id="resultados">
-                            <div id="progress" class="progress">
-                                <div class="progress-bar progress-bar-success"></div>
-                            </div>
-                            <div id="files" class="files"></div>            
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-
-                  </div>
-                </div>
-              </div>
-            
 
               <div class="spacer-vertical20"></div>
               
@@ -97,10 +99,9 @@
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="nome" class="col-lg-5 col-md-4">Nome</th>
+                      <th data-field="nome" class="col-lg-7 col-md-6">Nome do Arquivo</th>
                       <th data-field="descricao" class="col-lg-2 col-md-3">Letra ou Número</th>
-                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Trocar Nome</th>
-                      <th data-field="idMidia" data-formatter="editarAlfaFormatter" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Trocar Letra ou Número</th>
+                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Trocar Dados</th>
                       <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
                       <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
                   </tr>
@@ -138,51 +139,6 @@
   </div> <!-- /container -->
 
 
-<div class="modal fade" id="myModalAlfa">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Alterar a Letra ou Número da Chamada de Veículo</h4>
-      </div>
-      <div class="modal-body">
-        <form action="#" class="form-horizontal" id="altera-alfa-midia-form" method="POST">
-          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-          <input type="hidden" id="idMidiaAlfa" name="idMidia" value="0">
-          <input type="hidden" id="nomeMidiaAlfa" name="nome" value="">
-          
-          <div class="row">
-            <div class="col-lg-12 col-md-12">
-
-              <div class="form-group">
-                <label for="login" class="control-label col-sm-2 col-md-2">Nome</label>
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                  <p class="form-control-static" id="nomeMidiaAlfaStatic"></p>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label for="login" class="control-label col-sm-2 col-md-2">Letra ou Número</label>
-                <div class="col-lg-8 col-md-10">
-                  <input type="text" class="form-control" id="alfanumericoAlfa" name="descricao" maxlength="2">
-                </div>
-              </div>
-
-            </div> 
-          </div>
-          
-        </form>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary" id="btnAlfa">Alterar</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
 <div class="modal fade" id="myModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -204,7 +160,14 @@
                   <input type="text" class="form-control" id="nomeMidia" name="nome">
                 </div>
               </div>
-
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-sm-2 col-md-2">Letra ou Número</label>
+                <div class="col-lg-8 col-md-10">
+                  <input type="text" class="form-control" id="descricao" name="descricao" maxlength="2">
+                </div>
+              </div>
+              
             </div> 
           </div>
           
@@ -275,13 +238,9 @@
     };
 
     function editarFormatter(value, row) {
-        return '<a class="btn btn-link editar-class" id="btnEditarChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
+        return '<a class="btn btn-link editar-class" id="btnEditarChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-font"></i><i class="fa fa-lg fa-pencil"></i></a>';
     }
     
-    function editarAlfaFormatter(value, row) {
-        return '<a class="btn btn-link editar-alfa-class" id="btnEditarAlfaChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-font"></i><i class="fa fa-lg fa-pencil"></i></a>';
-    }
-
     function removerFormatter(value, row) {
         return '<a class="btn btn-link remover-class" id="btnRemoverChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-times"></i></a>';
     }
@@ -345,23 +304,6 @@
         });
     } 
     
-    
-    
-    var openPopupAlfa = function( element )
-    {
-        var idMidia = element.attr("idMidia");
-
-        var row = $('#table-chamadas-veiculos').bootstrapTable('getRowByUniqueId', idMidia);
-        
-        $('#idMidiaAlfa').val( idMidia );
-        $('#nomeMidiaAlfa').val( row.nome );
-        $('#nomeMidiaAlfaStatic').html( row.nome );
-        $('#alfanumericoAlfa').val( row.descricao );
-
-        $('#myModalAlfa').modal('show');
-
-        $('#alfanumericoAlfa').focus();
-    }
 
     
     
@@ -373,6 +315,7 @@
         
         $('#idMidia').val( idMidia );
         $('#nomeMidia').val( row.nome );
+        $('#descricao').val( row.descricao );
         
         var texto = $("#categoria-combo :selected").text();
         
@@ -408,32 +351,6 @@
         });
     } 
     
-    
-    
-    var salvarAlfa = function()
-    {
-        var url = buildUrl( "/admin/chamada-veiculos");
-        
-        $.ajax({
-            type: 'POST',
-            contentType: 'application/json',
-            url: url,
-            dataType: 'json',
-            data:  JSON.stringify( $('#altera-alfa-midia-form').serializeJSON() )
-            
-        }).done( function(json){ 
-
-            if (json.ok == 1){
-                preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                $("#table-chamadas-veiculos").bootstrapTable('refresh');
-                $('#myModalAlfa').modal('toggle');
-            }
-            else{
-                $('#myModalAlfa').modal('toggle');
-                preencheErros( json.errors );
-            }
-        });
-    } 
     
     
     var configuraUploader = function() 
@@ -540,10 +457,6 @@
             $(".play-class").click( function(){
                 playChamada($(this));
             });
-            
-            $(".editar-alfa-class").click( function(){
-                openPopupAlfa($(this));
-            });
         });
         
         $("#table-chamadas-veiculos").on( 'page-change.bs.table', function ( e, number, size ){
@@ -558,20 +471,12 @@
             $(".play-class").click( function(){
                 playChamada($(this));
             });
-
-            $(".editar-alfa-class").click( function(){
-                openPopupAlfa($(this));
-            });
         });
         
         $("#btnSalvar").click( function(){
             salvar();
         });
 
-        $("#btnAlfa").click( function(){
-            salvarAlfa();
-        });
-        
         $("#btnConfirmarDelete").click( function(){
             deletar();
         });

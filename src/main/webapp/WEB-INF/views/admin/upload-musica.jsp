@@ -17,8 +17,7 @@
     
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Upload de Chamadas de Veículos<br/>
-<%--             <small>Você possui ${qtdGeneros} gênero(os) cadastrado(s)</small> --%>
+          <h3>Upload de Músicas<br/>
           </h3>
           
           <div class="spacer-vertical20"></div>

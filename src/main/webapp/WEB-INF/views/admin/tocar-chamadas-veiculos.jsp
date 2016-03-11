@@ -25,22 +25,74 @@
           <div class="row">
             <div class="col-lg-12 col-md-12">
             
-              <form action="#" id="form-upload-alfanum">
+              <form action="#" id="formtocar" class="form-horizontal">
 
                 <div class="form-group">
-                  <label for="nome" class="control-label col-sm-2 col-md-2">Letra ou Número:</label>
-                  <div class="col-sm-2 col-md-2 col-lg-1 col-xs-3">
-                    <input type="text" class="form-control" id="alfanumerico" name="alfanumerico" maxlength="2">
-                  </div>
-                </div>           
-
-                <div class="form-group">
-                  <label for="login" class="control-label col-sm-2 col-md-2">Estado</label>
+                  <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Frase Inicial</label>
                   <div class="col-lg-4 col-md-4 col-sm-6">
-                    <select class="form-control" id="estado" name="estado">
+                    <select class="form-control" id="comboFraseInicial" name="veic_frase_ini">
                     </select>
                   </div>
                 </div> 
+                
+                <div class="form-group">
+                  <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Marca</label>
+                  <div class="col-lg-4 col-md-4 col-sm-6">
+                    <select class="form-control" id="comboMarca" name="veic_marca">
+                    </select>
+                  </div>
+                </div> 
+                
+                <div class="form-group">
+                  <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Modelo</label>
+                  <div class="col-lg-4 col-md-4 col-sm-6">
+                    <select class="form-control" id="comboModelo" name="veic_modelo">
+                    </select>
+                  </div>
+                </div> 
+                
+                <div class="form-group">
+                  <label for="login" class="control-label col-sm-2 col-md-2">Cor</label>
+                  <div class="col-lg-4 col-md-4 col-sm-6">
+                    <select class="form-control" id="comboCor" name="veic_cor">
+                    </select>
+                  </div>
+                </div> 
+                
+                
+                <div class="form-group">
+                  <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Placa</label>
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                    <select class="form-control" id="comboPlacaLetra1" name="veic_placa_letra">
+                    </select>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                    <select class="form-control" id="comboPlacaLetra2" name="veic_placa_letra">
+                    </select>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                    <select class="form-control" id="comboPlacaLetra3" name="veic_placa_letra">
+                    </select>
+                  </div>
+                  
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                    <select class="form-control" id="comboPlacaNumero1" name="veic_placa_numero">
+                    </select>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                    <select class="form-control" id="comboPlacaNumero2" name="veic_placa_numero">
+                    </select>
+                  </div>
+                </div> 
+                
+                <div class="form-group">
+                  <label for="login" class="control-label col-sm-2 col-md-2">Frase Final</label>
+                  <div class="col-lg-4 col-md-4 col-sm-6">
+                    <select class="form-control" id="comboFraseFinal" name="veic_frase_fim">
+                    </select>
+                  </div>
+                </div>
+                
               </form>
             
             
@@ -48,6 +100,19 @@
           </div>
           
           <div class="spacer-vertical10"></div>
+
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="pull-right">
+                <button type="button" class="btn btn-primary" id="btnTocar">
+                  <i class="fa fa-lg fa-play"></i>
+                  Tocar Chamada Completa
+                </button>
+              </div>            
+            </div>
+          </div>
+          
+          <div class="spacer-vertical40"></div>
 
           <div class="player" id="player1" >
               <audio controls>
@@ -75,364 +140,122 @@
   </div> <!-- /container -->
 
 
-<div class="modal fade" id="myModalAlfa">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Alterar a Letra ou Número da Chamada de Veículo</h4>
-      </div>
-      <div class="modal-body">
-        <form action="#" class="form-horizontal" id="altera-alfa-midia-form" method="POST">
-          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-          <input type="hidden" id="idMidiaAlfa" name="idMidia" value="0">
-          <input type="hidden" id="nomeMidiaAlfa" name="nome" value="">
-          
-          <div class="row">
-            <div class="col-lg-12 col-md-12">
-
-              <div class="form-group">
-                <label for="login" class="control-label col-sm-2 col-md-2">Nome</label>
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                  <p class="form-control-static" id="nomeMidiaAlfaStatic"></p>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label for="login" class="control-label col-sm-2 col-md-2">Letra ou Número</label>
-                <div class="col-lg-8 col-md-10">
-                  <input type="text" class="form-control" id="alfanumericoAlfa" name="descricao" maxlength="2">
-                </div>
-              </div>
-
-            </div> 
-          </div>
-          
-        </form>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary" id="btnAlfa">Alterar</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<div class="modal fade" id="myModal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Alterar nome da Chamada de Veículo</h4>
-      </div>
-      <div class="modal-body">
-        <form action="#" class="form-horizontal" id="altera-nome-midia-form" method="POST">
-          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-          <input type="hidden" id="idMidia" name="idMidia" value="0">
-          
-          <div class="row">
-            <div class="col-lg-12 col-md-12">
-              
-              <div class="form-group">
-                <label for="login" class="control-label col-sm-2 col-md-2">Nome</label>
-                <div class="col-lg-8 col-md-10">
-                  <input type="text" class="form-control" id="nomeMidia" name="nome">
-                </div>
-              </div>
-
-            </div> 
-          </div>
-          
-        </form>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary" id="btnSalvar">Alterar</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-
-<div class="modal fade" id="myDialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Remover Chamada de Veículo</h4>
-      </div>
-      <div class="modal-body">
-        <form action="#" class="form-horizontal" id="remove-midia-form" method="POST">
-          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-          <input type="hidden" id="idMidiaDialog" name="idMidia" value="0">
-          
-          <div class="row">
-            <div class="col-lg-12 col-md-12">
-              Deseja realmente remover essa Chamada de Veículo?
-            </div> 
-          </div>
-          
-        </form>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" id="btnNaoDialog" data-dismiss="modal">Não</button>
-        <button type="button" class="btn btn-primary" id="btnConfirmarDelete">Sim</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
-
-<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
-<link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
-
-<script src="${context}/js/required/jquery-ui.min.js"></script>
-<script src="${context}/js/required/jquery.iframe-transport.js"></script>
-<script src="${context}/js/required/jquery.fileupload.js"></script>
 
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
 
 <script type="text/javascript">
 
-    var pagina = 0, limit = 6;
 
-    function queryParams(params) {
-
-        params.pageNumber = $('#table-chamadas-veiculos').bootstrapTable('getOptions').pageNumber;
-        params.codigo = $("#codigo").val();
-        return params;
-    };
-
-    function editarFormatter(value, row) {
-        return '<a class="btn btn-link editar-class" id="btnEditarChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
-    }
-    
-    function editarAlfaFormatter(value, row) {
-        return '<a class="btn btn-link editar-alfa-class" id="btnEditarAlfaChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-font"></i><i class="fa fa-lg fa-pencil"></i></a>';
-    }
-
-    function removerFormatter(value, row) {
-        return '<a class="btn btn-link remover-class" id="btnRemoverChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-times"></i></a>';
-    }
-
-    function playFormatter(value, row) {
-        return '<a class="btn btn-link play-class" id="btnPlayChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-play-circle"></i></a>';
-    }
-    
     var player = null;
     
-    var playChamada = function( element )
-    {
+    var playlist = [];
+
+    var playSequence = function( array ){
+        
+        if ( array == null || array.length <= 0 )
+            return;
+        
         player.pause();
         
-        var idMidia = element.attr("idMidia");
+        playlist = array.slice();
         
-        var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia: idMidia });
+        schedulePlay();
+    }
+
+    var schedulePlay = function()
+    {
+        if ( playlist == null || playlist.length <= 0 )
+            return;
+
+        player.pause();
+
+        var musicaAtual = playlist.splice(0, 1);        
+
+        if ( musicaAtual == null || musicaAtual == undefined )
+            return;
         
-//         var source = { src: url, type : "audio/mp3" };
+        var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia: musicaAtual });
         
         player.source( url );
         player.play();
     }
-
-
-    var openDialog = function( element )
-    {
-        var idMidia = element.attr("idMidia");
-        
-        $('#idMidiaDialog').val( idMidia );
-        
-        $('#myDialog').modal('show');
-    }
-
+       
     
-    var deletar = function()
+    var carregarCombo = function( element )
     {
-        var idMidia = $("#idMidiaDialog").val();
-        
-        if ( idMidia == null || idMidia == 0 )
-            preencheAlertGeral( "alertArea", "Mídia não encontrada" );
+        var url = buildUrl( "/admin/midias?codigo={codigo}", {
+            codigo : element.attr('name')
+        });
 
-        var url = buildUrl( "/admin/chamada-veiculos/{idMidia}", { idMidia : idMidia } );
+        element.empty();
         
         $.ajax({
-            type: 'DELETE',
+            type: 'GET',
             contentType: 'application/json',
             url: url,
             dataType: 'json'
-        }).done( function(json){ 
-
-            if (json.ok == 1){
-                preencheAlertGeral( "alertArea", "Registro removido com sucesso", "success" );
-                $("#table-chamadas-veiculos").bootstrapTable('refresh');
-                $('#myDialog').modal('toggle');
-            }
-            else{
-                $('#myDialog').modal('toggle');
-                preencheErros( json.errors );
-            }
-        });
-    } 
-    
-    
-    
-    var openPopupAlfa = function( element )
-    {
-        var idMidia = element.attr("idMidia");
-
-        var row = $('#table-chamadas-veiculos').bootstrapTable('getRowByUniqueId', idMidia);
-        
-        $('#idMidiaAlfa').val( idMidia );
-        $('#nomeMidiaAlfa').val( row.nome );
-        $('#nomeMidiaAlfaStatic').html( row.nome );
-        $('#alfanumericoAlfa').val( row.descricao );
-
-        $('#myModalAlfa').modal('show');
-
-        $('#alfanumericoAlfa').focus();
-    }
-
-    
-    
-    var openPopup = function( element )
-    {
-        var idMidia = element.attr("idMidia");
-        
-        var row = $('#table-chamadas-veiculos').bootstrapTable('getRowByUniqueId', idMidia);
-        
-        $('#idMidia').val( idMidia );
-        $('#nomeMidia').val( row.nome );
-        
-        var texto = $("#categoria-combo :selected").text();
-        
-        $('#tipo').html( texto );
-        
-        $('#myModal').modal('show');
-        $('#nomeMidia').focus();
-    }
-
-
-    var salvar = function()
-    {
-        var url = buildUrl( "/admin/chamada-veiculos");
-        
-        $.ajax({
-            type: 'POST',
-            contentType: 'application/json',
-            url: url,
-            dataType: 'json',
-            data:  JSON.stringify( $('#altera-nome-midia-form').serializeJSON() )
+        }).done( function(json) {
             
-        }).done( function(json){ 
-
-            if (json.ok == 1){
-                preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                $("#table-chamadas-veiculos").bootstrapTable('refresh');
-                $('#myModal').modal('toggle');
-            }
-            else{
-                $('#myModal').modal('toggle');
-                preencheErros( json.errors );
-            }
+            $.each( json.rows , function (i, midia){
+                element.append($('<option>', { 
+                    value: midia.idMidia,
+                    text : midia.descricao  
+                }));
+            });
         });
-    } 
+    };
     
     
     
-    var salvarAlfa = function()
-    {
-        var url = buildUrl( "/admin/chamada-veiculos");
+    var validaForm = function(){
         
-        $.ajax({
-            type: 'POST',
-            contentType: 'application/json',
-            url: url,
-            dataType: 'json',
-            data:  JSON.stringify( $('#altera-alfa-midia-form').serializeJSON() )
+        var isOk = true;
+        
+        removeErros( $('#formtocar') );
+        
+        var arrayCampos = [
+                            {field: "comboFraseInicial",      desc : ""},
+                            {field: "comboMarca",           desc : ""},
+                            {field: "comboModelo",          desc : ""},
+                            {field: "comboCor",             desc : ""},
+                            {field: "comboPlacaLetra1",      desc : ""},
+                            {field: "comboPlacaLetra2",      desc : ""},
+                            {field: "comboPlacaLetra3",      desc : ""},
+                            {field: "comboPlacaNumero1",      desc : ""},
+                            {field: "comboPlacaNumero2",     desc : "" },
+                            {field: "comboFraseFinal",      desc : ""}
+                          ];
+        
+        isOk = validaCampos( arrayCampos );
+        
+        return isOk;
+    };
+    
+    var validarETocar = function(){
+        
+        if ( validaForm() )
+        {
+            console.log("ok");
+
+            var arr = [];
             
-        }).done( function(json){ 
+            arr[0] = $("#comboFraseInicial").val();
+            arr[1] = $("#comboMarca").val();
+            arr[2] = $("#comboModelo").val();
+            arr[3] = $("#comboCor").val();
+            arr[4] = $("#comboPlacaLetra1").val();
+            arr[5] = $("#comboPlacaLetra2").val();
+            arr[6] = $("#comboPlacaLetra3").val();
+            arr[7] = $("#comboPlacaNumero1").val();
+            arr[8] = $("#comboPlacaNumero2").val();
+            arr[9] = $("#comboFraseFinal").val();
+            
+            playSequence( arr );
+        }
+    };
 
-            if (json.ok == 1){
-                preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                $("#table-chamadas-veiculos").bootstrapTable('refresh');
-                $('#myModalAlfa').modal('toggle');
-            }
-            else{
-                $('#myModalAlfa').modal('toggle');
-                preencheErros( json.errors );
-            }
-        });
-    } 
-    
-    
-    var configuraUploader = function() 
-    {
-        $('#fileupload').fileupload({
-            dataType: 'json',
-            formData: { 
-                _csrf: $("#csrf").val() 
-            },
-            done: function (e, data) {
-                $.each(data.result.files, function (index, file) {
-                    $('<p/>').text(file.name).appendTo( $("#resultados") );
-                });
-                
-                $("#table-chamadas-veiculos").bootstrapTable('refresh');
-            },
-            progressall: function (e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('#progress .progress-bar').css(
-                    'width',
-                    progress + '%'
-                );
-            } 
-        }); 
-        
-        var _url = buildUrl( "/api/admin/upload-chamadas-veiculos" );
-
-        $('#fileupload').fileupload(
-           'option',
-           {
-              url : _url,
-              formData: { 
-                _csrf: $("#csrf").val(), 
-                codigo : $("#codigo").val()
-              }
-           }
-        );
-
-        $('#fileupload').fileupload({
-            add: function (e, data) {
-                
-                removeErros( $("#form-upload-alfanum") );
-                
-                var alfa = $("#alfanumerico").val();
-                if ( alfa == null || alfa == "" || alfa.length > 2 )
-                {
-                    preencheAlertGeral("alertArea", "Preencha a Letra ou Número correspondente para realizar o upload.", "danger");
-                    preencheErroField("alfanumerico", "Necessário");
-                    return false;
-                }
-                
-                data.formData = { 
-                    _csrf: $("#csrf").val(), 
-                    codigo : $("#codigo").val(),
-                    alfanumerico : $("#alfanumerico").val()
-                };
-                data.submit();
-            } 
-        });
-
-
-    }
    
 
     $(function(){
@@ -453,64 +276,29 @@
 
 //         player = plyr.setup( { controls : ["restart", "rewind", "play", "current-time", "duration", "mute" ], fullscreen : { enabled : false } } )[0];
         
-        
-        configuraUploader();
-        
-        $("#table-chamadas-veiculos").on( 'load-success.bs.table', function( e, data ) {
-            $(".editar-class").click( function(){
-                openPopup($(this));
-            });
-
-            $(".remover-class").click( function(){
-                openDialog($(this));
-            });
-            
-            $(".play-class").click( function(){
-                playChamada($(this));
-            });
-            
-            $(".editar-alfa-class").click( function(){
-                openPopupAlfa($(this));
-            });
-        });
-        
-        $("#table-chamadas-veiculos").on( 'page-change.bs.table', function ( e, number, size ){
-            $(".editar-class").click( function(){
-                openPopup($(this));
-            });
-            
-            $(".remover-class").click( function(){
-                openDialog($(this));
-            });
-
-            $(".play-class").click( function(){
-                playChamada($(this));
-            });
-
-            $(".editar-alfa-class").click( function(){
-                openPopupAlfa($(this));
-            });
-        });
-        
-        $("#btnSalvar").click( function(){
-            salvar();
+        player.media.addEventListener("ended", function() { 
+            schedulePlay();
         });
 
         $("#btnAlfa").click( function(){
             salvarAlfa();
         });
         
-        $("#btnConfirmarDelete").click( function(){
-            deletar();
+        carregarCombo( $("#comboFraseInicial") );
+        carregarCombo( $("#comboMarca") );
+        carregarCombo( $("#comboModelo") );
+        carregarCombo( $("#comboCor") );
+        carregarCombo( $("#comboPlacaLetra1") );
+        carregarCombo( $("#comboPlacaLetra2") );
+        carregarCombo( $("#comboPlacaLetra3") );
+        carregarCombo( $("#comboPlacaNumero1") );
+        carregarCombo( $("#comboPlacaNumero2") );
+        carregarCombo( $("#comboFraseFinal") );
+        
+        $("#btnTocar").click( function(){
+            validarETocar();
         });
-       
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#nomeMidia').focus();
-        })
-
-        $('#myDialog').on('shown.bs.modal', function () {
-            $('#btnNaoDialog').focus();
-        })
+        
     });
 
 </script>

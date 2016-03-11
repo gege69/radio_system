@@ -393,16 +393,20 @@ public class AdministradorController extends AbstractController {
 																	@RequestParam(value="limit", required = false) Integer limit, 
 																	@RequestParam(value="order", required = false) String order )
 	{
-		Pageable pageable = getPageable( pageNumber, limit, order, "nome" ); 
+		Pageable pageable = null;
 		
 		List<Categoria> categorias = new ArrayList<Categoria>();
 
 		if ( StringUtils.isNotBlank( codigo ) )
+		{
 			categorias.add( categoriaRepo.findByCodigo( codigo ) );
+			pageable = getPageable( pageNumber, limit, order, "nome" ); 
+		}
 		else
 		{
 			String[] cats = new String[] { Categoria.VEIC_PLACA_LETRA, Categoria.VEIC_PLACA_NUMERO };
 			categorias = categoriaRepo.findByCodigoIn( Arrays.asList( cats ) );
+			pageable = getPageable( pageNumber, limit, "asc", "descricao" ); 
 		}
 		
 		if ( categorias == null )
@@ -422,7 +426,7 @@ public class AdministradorController extends AbstractController {
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody String saveUploadChamadasVeiculos( @RequestParam("file") MultipartFile file, 
 															@RequestParam("codigo") String codigo, 
-															@RequestParam(value="alfanumerico", required=false) String alfaNumerico,
+															@RequestParam(value="descricao", required=false) String descricao,
 															Principal principal )
 	{
 		String jsonResult = null;
@@ -434,7 +438,7 @@ public class AdministradorController extends AbstractController {
 		
 		try
 		{
-			Midia midia = midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), alfaNumerico );
+			Midia midia = midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), descricao );
 			
 			JsonObjectBuilder builder = Json.createObjectBuilder();
 			JsonObjectBuilder builder2 = Json.createObjectBuilder();
@@ -544,7 +548,7 @@ public class AdministradorController extends AbstractController {
 
 	
 	
-	@RequestMapping(value={ "/admin/tocat-chamadas-veiculos/view" }, method=RequestMethod.GET)
+	@RequestMapping(value={ "/admin/tocar-chamadas-veiculos/view" }, method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String tocarChamadasVeiculos( ModelMap model, Principal principal )
 	{
@@ -553,7 +557,7 @@ public class AdministradorController extends AbstractController {
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 
-		return "admin/editar-cliente";
+		return "admin/tocar-chamadas-veiculos";
 	}
 	
 	

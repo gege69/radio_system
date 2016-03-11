@@ -494,6 +494,9 @@ public class MidiaService {
 			}
 		}
 
+		if ( StringUtils.isBlank( descricao ) )
+			descricao = multiPartFile.getOriginalFilename();
+
 		midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
 		
 		associaMidiaParaTodosAmbientes( midia );
