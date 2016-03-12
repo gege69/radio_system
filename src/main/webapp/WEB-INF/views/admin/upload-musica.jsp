@@ -26,21 +26,49 @@
             <div class="col-lg-12 col-md-12">
               
               <div class="row">
-                <div class="col-lg-6 col-md-7">
+                <div class="col-lg-12 col-md-12">
 
-                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
+                  <div class="panel panel-default">
+                    <div class="panel-body">
+                      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
 
-                  <span class="btn btn-success btn-file">
-                      Escolha os arquivos<input type="file" id="fileupload" name="file" multiple>
-                  </span>
+                      <input type="file" id="fileupload" name="file" multiple style="display : none;">
 
-                  <div class="spacer-vertical10"></div>
+                      <span class="btn btn-success btn-file">
+                          Escolha os arquivos<input type="file" id="outrofileupload" name="file2" multiple>
+                      </span>
+                      
+                      <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                          <p class="form-control-static" id="static-arquivos"></p>
+                        </div>
+                      </div>
 
-                  <div id="resultados">
-                    <div id="progress" class="progress">
-                        <div class="progress-bar progress-bar-success"></div>
+                      <div class="spacer-vertical10"></div>
+
+                      <div class="container col-md-12" id="view-container">
+                      </div>
+
+                      <div class="spacer-vertical10"></div>
+
+                      <div id="resultados">
+                        <div id="progress" class="progress">
+                            <div class="progress-bar progress-bar-success"></div>
+                        </div>
+                        <div id="files" class="files"></div>            
+                      </div>
+                      
+                      <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                          <div class="pull-right">
+                            <a class="btn btn-success" id="btnIniciar" href="#"> <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a>    
+                          </div>          
+                        </div>
+                      </div>            
+                      
                     </div>
-                    <div id="files" class="files"></div>            
                   </div>
 
                 </div>
@@ -189,8 +217,20 @@
 <script src="${context}/js/required/jquery.iframe-transport.js"></script>
 <script src="${context}/js/required/jquery.fileupload.js"></script>
 
+<script src="${context}/js/required/jsrender.min.js"></script>
+
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
+
+<script id="viewTmpl" type="text/x-jsrender">
+    
+      <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <label>
+          <input type="checkbox" class="checkbox-genero" id="genero-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
+        </label>
+      </div>
+      
+</script>  
 
 <script type="text/javascript">
 
@@ -315,14 +355,31 @@
    
     var configuraUploader = function() 
     {
+        
+        var _url = buildUrl( "/api/upload-musica" );
+        
         $('#fileupload').fileupload({
             dataType: 'json',
+            url : _url,
             formData: { 
                 _csrf: $("#csrf").val() 
             },
             add: function (e, data) {
                 
+                var array_values = [];
+                $('.checkbox-genero').each( function() {
+                    if( $(this).is(':checked') ) {
+                        array_values.push( parseInt( $(this).val() ) );
+                    }
+                });
                 
+                data.formData = { 
+                                  _csrf: $("#csrf").val(), 
+                                  codigo : "musica" ,
+                                  "generos[]" : array_values
+                                };
+                
+                data.submit();
             },
             done: function (e, data) {
                 $.each(data.result.files, function (index, file) {
@@ -340,21 +397,49 @@
             } 
         }); 
         
-        var _url = buildUrl( "/api/admin/upload-chamadas-veiculos" );
-
-        $('#fileupload').fileupload(
-           'option',
-           {
-              url : _url,
-              formData: { 
-                _csrf: $("#csrf").val(), 
-                codigo : "musica" 
-              }
-           }
-        );
     }
    
+    var iniciarUpload = function()
+    {
+        var filesList = $('#outrofileupload')[0].files;
+        $('#fileupload').fileupload('add', { files : filesList } );
+        
+    }
 
+    var mostrarArquivos = function()
+    {
+        var filesList = $('#outrofileupload')[0].files; 
+       
+        if ( filesList && filesList.length > 0 )
+          $("#static-arquivos").html( filesList.length + " arquivo(s) selecionado(s)" );
+        
+    }
+
+    
+    var listaGeneros = function( doJump ){
+        
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: '${context}/generos',    // busca a lista de gêneros geral ( não restringe pelo ambiente )
+            dataType: 'json'
+        }).done( function(json){
+            makeListTmpl(json);
+        } );
+    }
+    
+    var makeListTmpl = function(json){
+        
+        var tmpl = $.templates('#viewTmpl');
+        
+        $('#view-container').empty();
+        
+        var content = tmpl.render(json.rows);
+        
+        $('#view-container').append(content);
+    };
+    
+    
     $(function(){
         
         var token = $("input[name='_csrf']").val();
@@ -408,11 +493,21 @@
        
         $('#myModal').on('shown.bs.modal', function () {
             $('#nomeMidia').focus();
-        })
+        });
 
         $('#myDialog').on('shown.bs.modal', function () {
             $('#btnNaoDialog').focus();
-        })
+        });
+        
+        listaGeneros(false);
+        
+        $("#btnIniciar").click( function(){
+            iniciarUpload();  
+        });
+
+        $("#outrofileupload").blur(function(){
+            mostrarArquivos();
+        });
     });
 
 </script>
