@@ -236,8 +236,8 @@ public class MidiaService {
 					troca = true;
 				}
 
-				if ( troca )
-				{
+//				if ( troca )
+//				{
 					midiaGeneros.clear();
 					
 					max = rand.nextInt(2) + 1;
@@ -254,15 +254,15 @@ public class MidiaService {
 						
 						midiaGeneros.add( mg );
 					}
-				}
-				else
-				{
-					for ( MidiaGenero mg : midiaGeneros )
-					{
-						mg.setIdMediagen( null );
-						mg.setMidia( midia );
-					}
-				}
+//				}
+//				else
+//				{
+//					for ( MidiaGenero mg : midiaGeneros )
+//					{
+//						mg.setIdMediagen( null );
+//						mg.setMidia( midia );
+//					}
+//				}
 
 				
 				midiaGeneroRepo.save( midiaGeneros );
