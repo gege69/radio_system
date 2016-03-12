@@ -19,6 +19,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -153,6 +154,7 @@ public class MidiaAPIController extends AbstractController {
 
 	
 	@RequestMapping(value="/api/upload-musica", method=RequestMethod.POST)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public ResponseEntity<String> uploadMusica(
     		@RequestParam("file") MultipartFile file, 
     		@RequestParam(name="descricao", required=false) String descricao,

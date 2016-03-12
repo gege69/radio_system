@@ -17,7 +17,7 @@
     
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Upload de Músicas<br/>
+          <h3>Upload de Chamadas de Horóscopo<br/>
           </h3>
           
           <div class="spacer-vertical20"></div>
@@ -50,7 +50,7 @@
               <div class="spacer-vertical20"></div>
               
               <table  
-                 id="table-musicas"
+                 id="table-horoscopo"
                  data-toggle="table"
                  data-url="${context}/admin/midias"
                  data-height="400"
@@ -198,8 +198,8 @@
 
     function queryParams(params) {
 
-        params.pageNumber = $('#table-musicas').bootstrapTable('getOptions').pageNumber;
-        params.codigo = "musica";
+        params.pageNumber = $('#table-horoscopo').bootstrapTable('getOptions').pageNumber;
+        params.codigo = "horoscopo";
         
         return params;
     };
@@ -274,7 +274,7 @@
     {
         var idMidia = element.attr("idMidia");
         
-        var row = $('#table-musicas').bootstrapTable('getRowByUniqueId', idMidia);
+        var row = $('#table-horoscopo').bootstrapTable('getRowByUniqueId', idMidia);
 
         $('#idMidia').val( idMidia );
         $('#nomeMidia').val( row.nome );
@@ -302,7 +302,7 @@
 
             if (json.ok == 1){
                 preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                $("#table-musicas").bootstrapTable('refresh');
+                $("#table-horoscopo").bootstrapTable('refresh');
                 $('#myModal').modal('toggle');
             }
             else{
@@ -329,7 +329,7 @@
                     $('<p/>').text(file.name).appendTo( $("#resultados") );
                 });
                 
-                $("#table-musicas").bootstrapTable('refresh');
+                $("#table-horoscopo").bootstrapTable('refresh');
             },
             progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -370,7 +370,7 @@
         
         configuraUploader();
         
-        $("#table-musicas").on( 'load-success.bs.table', function( e, data ) {
+        $("#table-horoscopo").on( 'load-success.bs.table', function( e, data ) {
             $(".editar-class").click( function(){
                 openPopup($(this));
             });
@@ -384,7 +384,7 @@
             });
         });
         
-        $("#table-musicas").on( 'page-change.bs.table', function ( e, number, size ){
+        $("#table-horoscopo").on( 'page-change.bs.table', function ( e, number, size ){
             $(".editar-class").click( function(){
                 openPopup($(this));
             });
@@ -419,7 +419,7 @@
 
 <style type="text/css">
 
-#table-musicas tr{
+#table-horoscopo tr{
   cursor: pointer;
 }
 

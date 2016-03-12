@@ -468,9 +468,14 @@ public class AdministradorController extends AbstractController {
 		return jsonResult;
 	}	
 	
-	@RequestMapping( value = { "/admin/chamada-veiculos", "/api/admin/chamada-veiculos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	
+	
+	@RequestMapping( value = { "/admin/chamada-veiculos", 
+							   "/api/admin/chamada-veiculos",
+							   "/admin/midia",
+							   "/api/admin/midia" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveNomeUploadChamadaVeiculo( @RequestBody Midia midiaVO, BindingResult result, Principal principal )
+	public @ResponseBody String saveNomeMidia( @RequestBody Midia midiaVO, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
 	
@@ -559,6 +564,7 @@ public class AdministradorController extends AbstractController {
 
 		return "admin/tocar-chamadas-veiculos";
 	}
+	
 	
 	
 	
