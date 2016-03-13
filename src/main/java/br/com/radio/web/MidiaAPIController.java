@@ -2,14 +2,13 @@ package br.com.radio.web;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -153,7 +152,8 @@ public class MidiaAPIController extends AbstractController {
     }	
 
 	
-	@RequestMapping(value="/api/upload-musica", method=RequestMethod.POST)
+	@RequestMapping(value= { "/api/upload-musica", 
+							 "/admin/upload-musica" }, method=RequestMethod.POST)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public ResponseEntity<String> uploadMusica(
     		@RequestParam("file") MultipartFile file, 
@@ -173,9 +173,12 @@ public class MidiaAPIController extends AbstractController {
 		{
 			try
 			{
-				midiaService.saveUploadMusica( file, "musica", usuario.getCliente(), descricao, generos );
+				Midia midia = midiaService.saveUploadMusica( file, "musica", usuario.getCliente(), descricao, generos );
 						
-				jsonResult = writeOkResponse();
+				JsonObjectBuilder builder = Json.createObjectBuilder();
+				JsonObjectBuilder builder2 = Json.createObjectBuilder();
+				jsonResult = builder.add("files", builder2.add( "name", midia.getNome() ) ).build().toString();
+//				jsonResult = writeOkResponse();
 			}
 			catch ( Exception e )
 			{

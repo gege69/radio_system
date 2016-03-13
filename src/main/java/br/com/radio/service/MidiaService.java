@@ -49,6 +49,7 @@ import br.com.radio.model.Midia;
 import br.com.radio.model.MidiaAmbiente;
 import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.Parametro;
+import br.com.radio.model.SignoMidia;
 import br.com.radio.repository.AlfanumericoMidiaRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
@@ -59,6 +60,7 @@ import br.com.radio.repository.MidiaCategoriaRepository;
 import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
+import br.com.radio.repository.SignoMidiaRepository;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -103,6 +105,10 @@ public class MidiaService {
 	
 	@PersistenceContext
 	protected EntityManager em;
+	
+	@Autowired
+	private SignoMidiaRepository signoMidiaRepo;
+	
 	
 	
 	@Transactional
@@ -569,6 +575,51 @@ public class MidiaService {
 		return midia;
 	}	
 	
+
+	@Transactional
+	public Midia saveUploadHoroscopo( MultipartFile multiPartFile, Categoria categoria, Cliente cliente, String descricao, String[] signos ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		
+		if ( signos == null || signos.length == 0 )
+			throw new RuntimeException("É necessário determinar algum signo");
+		
+		if ( categoria == null )
+			categoria = categoriaRepo.findByCodigo( Categoria.HOROSCOPO );
+		
+		byte[] bytes = multiPartFile.getBytes();
+		
+		String hash = geraHashDoArquivo( bytes );
+		
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
+		
+		associaMidiaParaTodosAmbientes( midia );
+
+//		List<SignoMidia> signo = signoMidiaRepo.findBySignoIn( signos );
+		
+//		AlfanumericoMidia alfa = alfaMidiaRepo.findByAlfanumerico( alfanumerico );
+//
+//		if ( alfa != null )
+//		{
+//			Midia outraMidia = alfa.getMidia();
+//			
+//			if ( !outraMidia.equals( midia ) )
+//			{
+//				// por enquanto ele deleta a midia....
+//				deleteMidiaSePossivel( outraMidia.getIdMidia() );
+//			}
+//			
+//			alfa.setMidia( midia );
+//			alfa.setAlfanumerico( alfanumerico );
+//		}
+//		else
+//			alfa = new AlfanumericoMidia( alfanumerico, midia );
+//		
+//		alfaMidiaRepo.save( alfa );
+			
+		return midia;
+	}	
+
+
 
 	private void associaGenerosParaMusica( Midia midia, Long[] arrayGeneros )
 	{

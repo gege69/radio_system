@@ -49,7 +49,7 @@
 
                   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
 
-                  <span class="btn btn-success btn-file">
+                  <span class="btn btn-primary btn-file">
                       Escolha os arquivos<input type="file" id="fileupload" name="file" multiple>
                   </span>
 
@@ -84,7 +84,7 @@
                   <tr>
                       <th data-field="nome" class="col-lg-7 col-md-6">Nome do Arquivo</th>
                       <th data-field="descricao" class="col-lg-2 col-md-3">Descrição</th>
-                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Trocar Dados</th>
+                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Editar</th>
                       <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
                       <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
                   </tr>
@@ -96,7 +96,7 @@
           
           <div class="spacer-vertical10"></div>
 
-          <div class="player" id="player1" >
+          <div class="player" id="player1" style="display:none;" >
               <audio controls>
                   <source src="" type="audio/ogg">
               </audio>
@@ -107,6 +107,9 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                <a class="btn btn-default" href="${context}/admin/upload-painel/view">
+                <i class="fa fa-arrow-left"></i>
+                Voltar para Upload de Mídias</a>    
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
@@ -250,7 +253,7 @@
         
         var idMidia = element.attr("idMidia");
         
-        var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia: idMidia });
+        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
         
 //         var source = { src: url, type : "audio/mp3" };
         
@@ -374,7 +377,7 @@
             } 
         }); 
         
-        var _url = buildUrl( "/api/admin/upload-chamadas-veiculos" );
+        var _url = buildUrl( "/admin/upload-chamadas-veiculos" );
 
         $('#fileupload').fileupload(
            'option',
@@ -477,6 +480,10 @@
         $('#myDialog').on('shown.bs.modal', function () {
             $('#btnNaoDialog').focus();
         })
+        
+        $("#outrofileupload").blur(function(){
+            mostrarArquivos();
+        });
     });
 
 </script>

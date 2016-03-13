@@ -34,19 +34,14 @@
 
                       <input type="file" id="fileupload" name="file" multiple style="display : none;">
 
-                      <span class="btn btn-success btn-file">
-                          Escolha os arquivos<input type="file" id="outrofileupload" name="file2" multiple>
-                      </span>
-                      
-                      <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                          <p class="form-control-static" id="static-arquivos"></p>
-                        </div>
+                      <div class="col-lg-2 col-md-3 col-sm-4">
+                        <span class="btn btn-primary btn-file">
+                            Escolha os arquivos<input type="file" id="outrofileupload" name="file2" multiple>
+                        </span>
                       </div>
-
-                      <div class="spacer-vertical10"></div>
-
-                      <div class="container col-md-12" id="view-container">
+                      
+                      <div class="col-lg-offset-2 col-md-offset-3 col-sm-offset-4">          
+                        <p class="form-control-static" id="static-arquivos"></p>
                       </div>
 
                       <div class="spacer-vertical10"></div>
@@ -57,7 +52,14 @@
                         </div>
                         <div id="files" class="files"></div>            
                       </div>
-                      
+
+                      <div class="spacer-vertical10"></div>
+
+                      <div class="container col-md-12" id="view-container">
+                      </div>
+
+                      <div class="spacer-vertical10"></div>
+
                       <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
                         </div>
@@ -91,9 +93,10 @@
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="nome" class="col-lg-7 col-md-6">Nome do Arquivo</th>
+                      <th data-field="nome" class="col-lg-5 col-md-4">Nome do Arquivo</th>
                       <th data-field="descricao" class="col-lg-2 col-md-3">Descrição</th>
-                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Trocar Dados</th>
+                      <th data-field="artist" class="col-lg-2 col-md-2">Artista</th>
+                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Editar</th>
                       <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
                       <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
                   </tr>
@@ -105,7 +108,7 @@
           
           <div class="spacer-vertical10"></div>
 
-          <div class="player" id="player1" >
+          <div class="player" id="player1" style="display:none;" >
               <audio controls>
                   <source src="" type="audio/ogg">
               </audio>
@@ -116,6 +119,9 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                <a class="btn btn-default" href="${context}/admin/upload-painel/view">
+                <i class="fa fa-arrow-left"></i>
+                Voltar para Upload de Mídias</a>    
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
@@ -264,7 +270,7 @@
         
         var idMidia = element.attr("idMidia");
         
-        var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia: idMidia });
+        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
         
         player.source( url );
         player.play();
@@ -355,8 +361,7 @@
    
     var configuraUploader = function() 
     {
-        
-        var _url = buildUrl( "/api/upload-musica" );
+        var _url = buildUrl( "/admin/upload-musica" );
         
         $('#fileupload').fileupload({
             dataType: 'json',
@@ -382,10 +387,12 @@
                 data.submit();
             },
             done: function (e, data) {
-                $.each(data.result.files, function (index, file) {
-                    $('<p/>').text(file.name).appendTo( $("#resultados") );
-                });
+//                 $.each(data.result.files, function (index, file) {
+//                     $('<p/>').text(file.name).appendTo( $("#resultados") );
+//                 });
                 
+            },
+            stop : function(e, data) {
                 $("#table-musicas").bootstrapTable('refresh');
             },
             progressall: function (e, data) {
@@ -394,6 +401,7 @@
                     'width',
                     progress + '%'
                 );
+                
             } 
         }); 
         
@@ -452,6 +460,10 @@
 
         player = $('#player1')[0].plyr;
 
+        $('#progress .progress-bar').css(
+            'width',
+            0 + '%'
+        );
         
         configuraUploader();
         
@@ -508,6 +520,14 @@
         $("#outrofileupload").blur(function(){
             mostrarArquivos();
         });
+        
+        $("#outrofileupload").change(function(){
+            $('#progress .progress-bar').css(
+                'width',
+                0 + '%'
+            );
+        }); 
+        
     });
 
 </script>

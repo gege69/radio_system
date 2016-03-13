@@ -1,5 +1,8 @@
 package br.com.radio.enumeration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum SignoZodiaco {
 	
 	ARIES( "Áries" ),
@@ -26,5 +29,16 @@ public enum SignoZodiaco {
 	{
 		return descricao;
 	}
+	
+	public static List<SignoZodiaco> getListByNames( String[] signos )
+	{
+		List<SignoZodiaco> result = new ArrayList<>();
 
+		for ( String s : signos )
+		{
+//			SignoZodiaco sig = 
+		}
+		
+		return result;
+	}
 }

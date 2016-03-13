@@ -31,24 +31,25 @@
                   <div class="panel panel-default">
                     <div class="panel-body">
                     
-                      <form action="#" id="form-upload-alfanum">
-                        <div class="row">
-                          <div class="form-group">
-                            <label for="nome" class="control-label col-sm-4 col-md-4 col-xs-4">Letra ou Número:</label>
-                            <div class="col-sm-2 col-md-2 col-lg-2 col-xs-3">
-                              <input type="text" class="form-control" id="alfanumerico" name="alfanumerico" maxlength="2">
-                            </div>
-                          </div>           
-                        </div>
+                      <form action="#" id="form-upload-alfanum" class="form">
 
                         <div class="row">
                           <div class="col-lg-12 ">
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
                             <input type="hidden" name="codigo" value="veic_placa_letra" id="codigo" />  <!--  isso é apenas um default... o business vai determinar -->
 
-                            <span class="btn btn-success btn-file">
-                                Escolha o arquivo<input type="file" id="fileupload" name="file" >
-                            </span>
+                            <input type="file" id="fileupload" name="file" multiple style="display : none;">
+
+
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                              <span class="btn btn-primary btn-file">
+                                  Escolha o arquivo<input type="file" id="outrofileupload" name="file2" >
+                              </span>
+                            </div>
+                            
+                            <div class="col-lg-offset-3 col-md-offset-4 col-sm-offset-6">          
+                              <p class="form-control-static" id="static-arquivos"></p>
+                            </div>
 
                             <div class="spacer-vertical10"></div>
 
@@ -58,8 +59,27 @@
                               </div>
                               <div id="files" class="files"></div>            
                             </div>
+                            
+                            <div class="form-group">
+                              <label for="nome" class="control-label col-sm-4 col-md-4 col-xs-4">Letra ou Número:</label>
+                              <div class="col-sm-2 col-md-2 col-lg-2 col-xs-3">
+                                <input type="text" class="form-control" id="alfanumerico" name="alfanumerico" maxlength="2">
+                              </div>
+                            </div>           
+                            
                           </div>
                         </div>
+                        
+                        <div class="row">
+                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                          </div>
+                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="pull-right">
+                              <a class="btn btn-success" id="btnIniciar" href="#"> <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a>    
+                            </div>          
+                          </div>
+                        </div>            
+
                       </form>
 
                     </div>
@@ -101,7 +121,7 @@
                   <tr>
                       <th data-field="nome" class="col-lg-7 col-md-6">Nome do Arquivo</th>
                       <th data-field="descricao" class="col-lg-2 col-md-3">Letra ou Número</th>
-                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Trocar Dados</th>
+                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Editar</th>
                       <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
                       <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
                   </tr>
@@ -113,7 +133,7 @@
           
           <div class="spacer-vertical10"></div>
 
-          <div class="player" id="player1" >
+          <div class="player" id="player1" style="display:none;" >
               <audio controls>
                   <source src="" type="audio/ogg">
               </audio>
@@ -124,6 +144,9 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                <a class="btn btn-default" href="${context}/admin/upload-painel/view">
+                <i class="fa fa-arrow-left"></i>
+                Voltar para Upload de Mídias</a>    
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
@@ -257,7 +280,7 @@
         
         var idMidia = element.attr("idMidia");
         
-        var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia: idMidia });
+        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
         
 //         var source = { src: url, type : "audio/mp3" };
         
@@ -355,10 +378,33 @@
     
     var configuraUploader = function() 
     {
+        var _url = buildUrl( "/admin/upload-chamadas-veiculos" );
+        
         $('#fileupload').fileupload({
             dataType: 'json',
+            url : _url,
             formData: { 
                 _csrf: $("#csrf").val() 
+            },
+            add: function (e, data) {
+                
+                removeErros( $("#form-upload-alfanum") );
+                
+                var alfa = $("#alfanumerico").val();
+                if ( alfa == null || alfa == "" || alfa.length > 2 )
+                {
+                    preencheAlertGeral("alertArea", "Preencha a Letra ou Número correspondente para realizar o upload.", "danger");
+                    preencheErroField("alfanumerico", "Necessário");
+                    return false;
+                }
+                
+                data.formData = { 
+                    _csrf: $("#csrf").val(), 
+                    codigo : $("#codigo").val(),
+                    descricao : $("#alfanumerico").val()
+                };
+                
+                data.submit();
             },
             done: function (e, data) {
                 $.each(data.result.files, function (index, file) {
@@ -375,46 +421,26 @@
                 );
             } 
         }); 
-        
-        var _url = buildUrl( "/api/admin/upload-chamadas-veiculos" );
-
-        $('#fileupload').fileupload(
-           'option',
-           {
-              url : _url,
-              formData: { 
-                _csrf: $("#csrf").val(), 
-                codigo : $("#codigo").val()
-              }
-           }
-        );
-
-        $('#fileupload').fileupload({
-            add: function (e, data) {
-                
-                removeErros( $("#form-upload-alfanum") );
-                
-                var alfa = $("#alfanumerico").val();
-                if ( alfa == null || alfa == "" || alfa.length > 2 )
-                {
-                    preencheAlertGeral("alertArea", "Preencha a Letra ou Número correspondente para realizar o upload.", "danger");
-                    preencheErroField("alfanumerico", "Necessário");
-                    return false;
-                }
-                
-                data.formData = { 
-                    _csrf: $("#csrf").val(), 
-                    codigo : $("#codigo").val(),
-                    alfanumerico : $("#alfanumerico").val()
-                };
-                data.submit();
-            } 
-        });
-
 
     }
    
 
+    var iniciarUpload = function()
+    {
+        var filesList = $('#outrofileupload')[0].files;
+        $('#fileupload').fileupload('add', { files : filesList } );
+        
+    }
+    
+    var mostrarArquivos = function()
+    {
+        var filesList = $('#outrofileupload')[0].files; 
+       
+        if ( filesList && filesList.length > 0 )
+          $("#static-arquivos").html( filesList.length + " arquivo(s) selecionado(s)" );
+        
+    }
+    
     $(function(){
         
         var token = $("input[name='_csrf']").val();
@@ -488,6 +514,23 @@
         $('#myDialog').on('shown.bs.modal', function () {
             $('#btnNaoDialog').focus();
         })
+        
+        $("#btnIniciar").click( function(){
+            iniciarUpload();  
+        });
+        
+        $("#outrofileupload").blur(function(){
+            mostrarArquivos();
+        });
+
+        $("#outrofileupload").change(function(){
+            $('#progress .progress-bar').css(
+                'width',
+                0 + '%'
+            );
+
+            $("#alfanumerico").val('');
+        });
     });
 
 </script>

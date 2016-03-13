@@ -114,7 +114,7 @@
           
           <div class="spacer-vertical40"></div>
 
-          <div class="player" id="player1" >
+          <div class="player" id="player1" style="display : none;" >
               <audio controls>
                   <source src="" type="audio/ogg">
               </audio>
@@ -125,6 +125,9 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                <a class="btn btn-default" href="${context}/admin/upload-painel/view">
+                <i class="fa fa-arrow-left"></i>
+                Voltar para Upload de Mídias</a>    
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
