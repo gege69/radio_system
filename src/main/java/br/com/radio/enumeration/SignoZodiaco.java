@@ -36,7 +36,10 @@ public enum SignoZodiaco {
 
 		for ( String s : signos )
 		{
-//			SignoZodiaco sig = 
+			SignoZodiaco sig = SignoZodiaco.valueOf( s );
+			
+			if ( sig != null )
+				result.add( sig );
 		}
 		
 		return result;

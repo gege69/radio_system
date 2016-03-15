@@ -74,9 +74,6 @@ public class Midia implements Serializable {
 	@Transient
 	private Categoria categoriaSelecionada;
 
-	@Transient
-	private Map<String,Boolean> categoriasView = new HashMap<String,Boolean>();
-
 	@JsonIgnore
 	@ManyToMany(fetch=FetchType.LAZY)
 	   @JoinTable(name="midia_ambiente", joinColumns = { 
@@ -160,6 +157,10 @@ public class Midia implements Serializable {
 	@JsonIgnore
 	@Transient
 	private Double posicaoShuffle;
+	
+	@Transient
+	private Map<String, String> midiaView = new HashMap<String,String>();
+	
 	
 	
 	public Long getIdMidia()
@@ -352,18 +353,6 @@ public class Midia implements Serializable {
 		this.filesize = filesize;
 	}
 
-	@JsonAnyGetter
-	public Map<String, Boolean> getCategoriasView()
-	{
-		return categoriasView;
-	}
-
-	@JsonAnySetter
-	public void setCategoriasView( Map<String, Boolean> categoriasView )
-	{
-		this.categoriasView = categoriasView;
-	}
-
 	public Midia()
 	{
 		super();
@@ -468,6 +457,16 @@ public class Midia implements Serializable {
 		this.ativo = ativo;
 	}
 
-	
+	@JsonAnyGetter
+	public Map<String, String> getMidiaView()
+	{
+		return midiaView;
+	}
+
+	@JsonAnySetter
+	public void setMidiaView( Map<String, String> midiaView )
+	{
+		this.midiaView = midiaView;
+	}
 	
 }

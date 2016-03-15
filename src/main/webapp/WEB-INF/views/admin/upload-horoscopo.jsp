@@ -26,21 +26,70 @@
             <div class="col-lg-12 col-md-12">
               
               <div class="row">
-                <div class="col-lg-6 col-md-7">
+                <div class="col-lg-12 col-md-12">
 
-                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
+                  <div class="panel panel-default">
+                    <div class="panel-body">
+                      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
 
-                  <span class="btn btn-primary btn-file">
-                      Escolha os arquivos<input type="file" id="fileupload" name="file" multiple>
-                  </span>
+                      <input type="file" id="fileupload" name="file" multiple style="display : none;">
 
-                  <div class="spacer-vertical10"></div>
+                      <div class="col-lg-2 col-md-3 col-sm-4">
+                        <span class="btn btn-primary btn-file">
+                            Escolha o arquivo<input type="file" id="outrofileupload" name="file2">
+                        </span>
+                      </div>
+                      
+                      <div class="col-lg-offset-2 col-md-offset-3 col-sm-offset-4">          
+                        <p class="form-control-static" id="static-arquivos"></p>
+                      </div>
 
-                  <div id="resultados">
-                    <div id="progress" class="progress">
-                        <div class="progress-bar progress-bar-success"></div>
+                      <div class="spacer-vertical10"></div>
+
+                      <div id="resultados">
+                        <div id="progress" class="progress">
+                            <div class="progress-bar progress-bar-success"></div>
+                        </div>
+                        <div id="files" class="files"></div>            
+                      </div>
+
+                      <div class="spacer-vertical10"></div>
+
+                      <div class="row">
+                        <div class="form-group">
+                          <label for="login" class="control-label col-lg-1 col-sm-2 col-md-1 col-xs-3">Signo:</label>
+                          <div class="col-lg-4 col-md-4 col-sm-5 col-xs-9">
+                            <select class="form-control" id="signo-combo" name="signo">
+                              <option value="ARIES">Áries</option>
+                              <option value="TOURO">Touro</option>
+                              <option value="GEMEOS">Gêmeos</option>
+                              <option value="CANCER">Câncer</option>
+                              <option value="LEAO">Leão</option>
+                              <option value="VIRGEM">Virgem</option>
+                              <option value="LIBRA">Libra</option>
+                              <option value="ESCORPIAO">Escorpião</option>
+                              <option value="SAGITARIO">Sagitário</option>
+                              <option value="CAPRICORNIO">Capricórnio</option>
+                              <option value="AQUARIO">Aquário</option>
+                              <option value="PEIXES">Peixes</option>
+                            </select>
+                          </div>
+                        </div> 
+                      </div>
+
+                      <div class="spacer-vertical10"></div>
+
+                      <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                          <div class="pull-right">
+                            <a class="btn btn-success" id="btnIniciar" href="#"> <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a>    
+                          </div>          
+                        </div>
+                      </div>            
+                      
                     </div>
-                    <div id="files" class="files"></div>            
                   </div>
 
                 </div>
@@ -52,7 +101,7 @@
               <table  
                  id="table-horoscopo"
                  data-toggle="table"
-                 data-url="${context}/admin/midias"
+                 data-url="${context}/admin/midias/horoscopo"
                  data-height="400"
                  data-side-pagination="server"
                  data-pagination="true"
@@ -63,8 +112,9 @@
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="nome" class="col-lg-7 col-md-6">Nome do Arquivo</th>
-                      <th data-field="signo" class="col-lg-2 col-md-3">Signo</th>
+                      <th data-field="nome" class="col-lg-5 col-md-4">Nome do Arquivo</th>
+                      <th data-field="descricao" class="col-lg-2 col-md-3">Descrição</th>
+                      <th data-field="signo" class="col-lg-2 col-md-2">Signo</th>
                       <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Editar</th>
                       <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
                       <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
@@ -112,7 +162,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Alterar nome da Música</h4>
+        <h4 class="modal-title" id="titulo-modal">Alterar dados da Mídia de Horóscopo</h4>
       </div>
       <div class="modal-body">
         <form action="#" class="form-horizontal" id="altera-nome-midia-form" method="POST">
@@ -135,6 +185,27 @@
                   <input type="text" class="form-control" id="descricaoMidia" name="descricao">
                 </div>
               </div>
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-sm-2 col-md-2">Signo</label>
+                <div class="col-lg-8 col-md-10">
+                  <select class="form-control" id="signo-combo-modal" name="signo">
+                    <option value="ARIES">Áries</option>
+                    <option value="TOURO">Touro</option>
+                    <option value="GEMEOS">Gêmeos</option>
+                    <option value="CANCER">Câncer</option>
+                    <option value="LEAO">Leão</option>
+                    <option value="VIRGEM">Virgem</option>
+                    <option value="LIBRA">Libra</option>
+                    <option value="ESCORPIAO">Escorpião</option>
+                    <option value="SAGITARIO">Sagitário</option>
+                    <option value="CAPRICORNIO">Capricórnio</option>
+                    <option value="AQUARIO">Aquário</option>
+                    <option value="PEIXES">Peixes</option>
+                  </select>
+                </div>
+              </div> 
+              
             </div> 
           </div>
           
@@ -292,14 +363,23 @@
     // mudar o nome da midia
     var salvar = function()
     {
-        var url = buildUrl( "/admin/midia");
+        var url = buildUrl( "/admin/midia/horoscopo");
         
+        var dados = $('#altera-nome-midia-form').serializeJSON();
+       
+        var midiaSignoDTO = { midia : { 
+                                        idMidia : dados.idMidia,
+                                        nome : dados.nome,
+                                        descricao : dados.descricao
+                                      }, 
+                              signo : dados.signo 
+                            };
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
             url: url,
             dataType: 'json',
-            data:  JSON.stringify( $('#altera-nome-midia-form').serializeJSON() )
+            data:  JSON.stringify( midiaSignoDTO )
             
         }).done( function(json){ 
 
@@ -318,20 +398,30 @@
    
     var configuraUploader = function() 
     {
+        var _url = buildUrl( "/admin/upload-horoscopo" );
+        
         $('#fileupload').fileupload({
             dataType: 'json',
+            url : _url,
             formData: { 
                 _csrf: $("#csrf").val() 
             },
             add: function (e, data) {
                 
+                data.formData = { 
+                                  _csrf: $("#csrf").val(), 
+                                  signo : $("#signo-combo").val()
+                                };
                 
+                data.submit();
             },
             done: function (e, data) {
-                $.each(data.result.files, function (index, file) {
-                    $('<p/>').text(file.name).appendTo( $("#resultados") );
-                });
+//                 $.each(data.result.files, function (index, file) {
+//                     $('<p/>').text(file.name).appendTo( $("#resultados") );
+//                 });
                 
+            },
+            stop : function(e, data) {
                 $("#table-horoscopo").bootstrapTable('refresh');
             },
             progressall: function (e, data) {
@@ -340,23 +430,30 @@
                     'width',
                     progress + '%'
                 );
+                
             } 
         }); 
         
-        var _url = buildUrl( "/admin/upload-chamadas-veiculos" );
-
-        $('#fileupload').fileupload(
-           'option',
-           {
-              url : _url,
-              formData: { 
-                _csrf: $("#csrf").val(), 
-                codigo : "musica" 
-              }
-           }
-        );
     }
+
+
+  
    
+    var iniciarUpload = function()
+    {
+        var filesList = $('#outrofileupload')[0].files;
+        $('#fileupload').fileupload('add', { files : filesList } );
+        
+    }
+    
+    var mostrarArquivos = function()
+    {
+        var filesList = $('#outrofileupload')[0].files; 
+       
+        if ( filesList && filesList.length > 0 )
+          $("#static-arquivos").html( filesList.length + " arquivo(s) selecionado(s)" );
+        
+    }
 
     $(function(){
         
@@ -411,11 +508,26 @@
        
         $('#myModal').on('shown.bs.modal', function () {
             $('#nomeMidia').focus();
-        })
+        });
 
         $('#myDialog').on('shown.bs.modal', function () {
             $('#btnNaoDialog').focus();
-        })
+        });
+        
+        $("#btnIniciar").click( function(){
+            iniciarUpload();  
+        });
+        
+        $("#outrofileupload").blur(function(){
+            mostrarArquivos();
+        });
+        
+        $("#outrofileupload").change(function(){
+            $('#progress .progress-bar').css(
+                'width',
+                0 + '%'
+            );
+        }); 
     });
 
 </script>

@@ -8,7 +8,7 @@ var $table = $('#table');
 
 function catFormatter(value, row) {
     
-    var icon = value == true ? 'fa-check' : 'fa-circle-thin';
+    var icon = value === "true" ? 'fa-check' : 'fa-circle-thin';
 
     return '<i class="fa '+ icon + '"></i>';
 }

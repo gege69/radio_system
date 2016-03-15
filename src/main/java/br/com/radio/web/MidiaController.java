@@ -351,7 +351,7 @@ public class MidiaController extends AbstractController {
 			
 			midiaList.stream().forEach( m -> {
 				m.getCategorias().forEach( cat -> {
-					m.getCategoriasView().put( cat.getCodigo(), true );
+					m.getMidiaView().put( cat.getCodigo(), "true" );
 				});
 			});
 			

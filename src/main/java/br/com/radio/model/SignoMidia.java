@@ -106,6 +106,19 @@ public class SignoMidia implements Serializable {
 	{
 		return String.format( "SignoMidia [idSignomidia=%s, signo=%s, midia=%s]", idSignomidia, signo, midia );
 	}
+
+	public SignoMidia()
+	{
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public SignoMidia( SignoZodiaco signo, Midia midia )
+	{
+		super();
+		this.signo = signo;
+		this.midia = midia;
+	}
 	
 	
 	

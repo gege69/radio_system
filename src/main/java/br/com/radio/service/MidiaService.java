@@ -39,6 +39,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.MusicTags;
+import br.com.radio.enumeration.SignoZodiaco;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
@@ -577,14 +578,12 @@ public class MidiaService {
 	
 
 	@Transactional
-	public Midia saveUploadHoroscopo( MultipartFile multiPartFile, Categoria categoria, Cliente cliente, String descricao, String[] signos ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUploadHoroscopo( MultipartFile multiPartFile, Cliente cliente, String descricao, String signo ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		
-		if ( signos == null || signos.length == 0 )
+		if ( StringUtils.isBlank( signo ) )
 			throw new RuntimeException("É necessário determinar algum signo");
 		
-		if ( categoria == null )
-			categoria = categoriaRepo.findByCodigo( Categoria.HOROSCOPO );
+		Categoria categoria = categoriaRepo.findByCodigo( Categoria.HOROSCOPO );
 		
 		byte[] bytes = multiPartFile.getBytes();
 		
@@ -593,28 +592,21 @@ public class MidiaService {
 		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
 		
 		associaMidiaParaTodosAmbientes( midia );
-
-//		List<SignoMidia> signo = signoMidiaRepo.findBySignoIn( signos );
 		
-//		AlfanumericoMidia alfa = alfaMidiaRepo.findByAlfanumerico( alfanumerico );
-//
-//		if ( alfa != null )
-//		{
-//			Midia outraMidia = alfa.getMidia();
-//			
-//			if ( !outraMidia.equals( midia ) )
-//			{
-//				// por enquanto ele deleta a midia....
-//				deleteMidiaSePossivel( outraMidia.getIdMidia() );
-//			}
-//			
-//			alfa.setMidia( midia );
-//			alfa.setAlfanumerico( alfanumerico );
-//		}
-//		else
-//			alfa = new AlfanumericoMidia( alfanumerico, midia );
-//		
-//		alfaMidiaRepo.save( alfa );
+		SignoZodiaco signoZodiaco = SignoZodiaco.valueOf( signo );
+		
+		SignoMidia signoMidia = signoMidiaRepo.findByMidia( midia );
+		
+		if ( signoMidia != null )
+		{
+			if ( !signoMidia.getSigno().equals( signoZodiaco ) )
+				throw new RuntimeException( "Essa mídia já está associada à outro signo." );   // por enquanto vai ter que deletar a mídia e subir de novo
+		}
+		else
+		{
+			signoMidia = new SignoMidia( signoZodiaco, midia );
+			signoMidiaRepo.save( signoMidia );
+		}
 			
 		return midia;
 	}	
@@ -781,6 +773,49 @@ public class MidiaService {
 
 		return midia;
 	}
+
+
+	public Midia alteraDadosHoroscopo( Midia midiaVO, String signo )
+	{
+		Midia midia = midiaRepo.findOne( midiaVO.getIdMidia() );
+		
+		if ( midia == null )
+			throw new RuntimeException( "Mídia não encontrada");
+
+		if ( StringUtils.isBlank( midiaVO.getNome() ) )
+			throw new RuntimeException("Nome não pode ser branco");
+		
+		if ( midia.getCategorias() == null )
+			throw new RuntimeException("Categoria não definida");
+		
+		if ( midia.getCategorias().size() > 1 )
+			throw new RuntimeException("Existe mais de uma categoria definida para essa Mídia");
+		
+		Categoria categoria = midia.getCategorias().get( 0 );
+		
+		midia.setNome( midiaVO.getNome() );
+		
+		if ( StringUtils.isNotBlank( midiaVO.getDescricao() ) )
+			midia.setDescricao( midiaVO.getDescricao() );
+		
+		midiaRepo.save( midia );
+		
+		SignoMidia signoMidia = signoMidiaRepo.findByMidia( midia );
+		
+		SignoZodiaco signoZodiaco = SignoZodiaco.valueOf( signo );
+		
+		if ( !signoMidia.getSigno().equals( signoZodiaco ) )
+		{
+			signoMidiaRepo.delete( signoMidia );
+			
+			SignoMidia novoSignoMidia = new SignoMidia( signoZodiaco, midia );
+			
+			signoMidiaRepo.save( novoSignoMidia );
+		}
+		
+		return midia;
+	}
+	
 
 
 	private String getDefaultPath( String hash, String contentType )
@@ -960,7 +995,7 @@ public class MidiaService {
 		
 		midiaList.stream().forEach( m -> {
 			m.getCategorias().forEach( cat -> {
-				m.getCategoriasView().put( cat.getCodigo(), true );
+				m.getMidiaView().put( cat.getCodigo(), "true" );
 			});
 		});
 		
@@ -1009,10 +1044,7 @@ public class MidiaService {
 		
 		return result;
 	}
-	
-	
-	
-	
+
 	
 	
 }
