@@ -103,7 +103,6 @@ var validarETocar = function(){
 
 $(function(){
 
-    debugger;
 
     $("#botaoConfirma").click( function(){
         validarETocar();
