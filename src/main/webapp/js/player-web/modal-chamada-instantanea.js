@@ -1,7 +1,7 @@
 var listaChamadas = function(){
     
     var url = buildUrl( "/api/ambientes/{idAmbiente}/midias-por-categoria?codigo=chamada_inst", { 
-        idAmbiente: idAmbiente
+        idAmbiente: $("#idAmbiente").val()
     });
     
     $.ajax({
@@ -24,7 +24,7 @@ var listaChamadas = function(){
     } );
 }
 
-var confirma = function()
+var tocaChamadaInst = function()
 {
     var primeiro = $('#chamada_inst').val();
     
@@ -32,16 +32,18 @@ var confirma = function()
     array[0] = primeiro;
     
     playSequence( array );
-    $('#myModal').modal('hide');
+    $('#myModalChamadaInst').modal('hide');
 }
 
 
 $(function(){
     
-    listaChamadas();
+    $("#myModalChamadaInst").on('shown.bs.modal', function(){
+        listaChamadas();
+    });          
     
-    $("#botaoConfirma").click( function(){
-        confirma();
+    $("#btntocachamadainst").click( function(){
+        tocaChamadaInst();
     });          
     
 });

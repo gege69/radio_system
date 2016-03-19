@@ -1,12 +1,14 @@
 
 
-var salvar = function(){
-
-    var url = buildUrl( "/api/ambientes/{idAmbiente}/blocos", { 
-        idAmbiente: idAmbiente
+var salvarBlocos = function(){
+    
+    var url = buildUrl( "/ambientes/{idAmbiente}/blocos", {
+        idAmbiente : $('#idAmbiente').val()
     });
+
     
     $.ajax({
+        
         type: 'POST',
         contentType: 'application/json',
         url: url,
@@ -25,10 +27,10 @@ var salvar = function(){
     });
 };
 
-var getDados = function()
+var getDadosBlocos = function()
 {
-    var url = buildUrl( "/api/ambientes/{idAmbiente}/blocos", { 
-        idAmbiente: idAmbiente
+    var url = buildUrl( "/ambientes/{idAmbiente}/blocos", {
+        idAmbiente : $('#idAmbiente').val()
     });
     
     $.ajax({
@@ -39,21 +41,59 @@ var getDados = function()
     }).done( function(json) {
         
         removeErros( $('#ambiente-bloco-form') );
-         $('#ambiente-bloco-form').populate(json);
+
+        $('#ambiente-bloco-form').populate(json);
+         
+        configuraMultiplosMusica();
+        
+        $('#ambiente-bloco-form').populate(json);
+         
         jump('ambiente-bloco-form');
     });
 }
 
-$(function(){
 
-    var token = $("input[name='_csrf']").val();
-    var header = "X-CSRF-TOKEN";
-    $(document).ajaxSend(function(e, xhr, options) {
-        xhr.setRequestHeader(header, token);
-    });
+var constroiCombo = function( combo )
+{
+    var qtd = $('#qtdMusicas').val(); 
+
+    for ( i = 1; i <= 20; i++ )
+    {
+        var val = qtd * i;
+         
+        combo.append($("<option/>", {
+            value: val,
+            text: "Depois de "+ val+ " músicas"
+        }));
+    }    
+
+}
+
+var configuraMultiplosMusica = function()
+{
+    $('#indexInstitucionais').empty();
+    $('#indexInstitucionais').append($("<option/>", { value: 0, text: 'Não incluir institucionais' }));
     
-    $('#btnSalvarBloco').on('click', salvar);
+    $('#indexProgrametes').empty();
+    $('#indexProgrametes').append($("<option/>", { value: 0, text: 'Não incluir programetes' }));
     
-    getDados();
+    $('#indexHoroscopo').empty();
+    $('#indexHoroscopo').append($("<option/>", { value: 0, text: 'Não incluir horóscopo' }));
+    
+    constroiCombo( $('#indexInstitucionais') );
+    constroiCombo( $('#indexProgrametes') );
+    constroiCombo( $('#indexHoroscopo') );
+}
+
+
+$(function(){
+    
+    $('#btnSalvarBloco').on('click', salvarBlocos);
+    
+    $('#qtdMusicas').change( function() { configuraMultiplosMusica(); } );
+    
+    $('#myModalBlocos').on('shown.bs.modal', function() {
+        getDadosBlocos();
+    }) 
 });
 

@@ -10,46 +10,87 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-lg-12 col-md-12">
+        
+          <form action="#" id="formtocar" class="form-horizontal">
+
             <div class="form-group">
-              <label for="file">Tipo:</label>
-              <select class="form-control" id="tipo" name="tipo">
-                <option value="1" >Carro</option>
-                <option value="2" >Moto</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-lg-12 col-md-12">
+              <label for="login" class="control-label col-lg-2">Frase Inicial</label>
+              <div class="col-lg-10">
+                <select class="form-control" id="comboFraseInicial" name="veic_frase_ini">
+                </select>
+              </div>
+            </div> 
+            
             <div class="form-group">
-              <label for="file">Marca:</label>
-              <select class="form-control" id="marca" name="marca">
-                <option value="1" >Volkswagen</option>
-                <option value="2" >Fiat</option>
-                <option value="3" >Chevrolet</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+              <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Marca</label>
+              <div class="col-lg-4 col-md-4 col-sm-6">
+                <select class="form-control" id="comboMarca" name="veic_marca">
+                </select>
+              </div>
+            </div> 
+            
             <div class="form-group">
-              <label for="file">Cor:</label>
-              <select class="form-control" id="cor" name="cor">
-                <option value="1" >Prata</option>
-                <option value="2" >Preto</option>
-                <option value="3" >Vermelho</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+              <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Modelo</label>
+              <div class="col-lg-4 col-md-4 col-sm-6">
+                <select class="form-control" id="comboModelo" name="veic_modelo">
+                </select>
+              </div>
+            </div> 
+            
             <div class="form-group">
-              <label for="file">Placa:</label>
-              <input  class="form-control" type="text" id="placa" name="placa"> 
+              <label for="login" class="control-label col-sm-2 col-md-2">Cor</label>
+              <div class="col-lg-4 col-md-4 col-sm-6">
+                <select class="form-control" id="comboCor" name="veic_cor">
+                </select>
+              </div>
+            </div> 
+            
+            
+            <div class="form-group">
+              <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Placa</label>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <select class="form-control" id="comboPlacaLetra1" name="veic_placa_letra">
+                </select>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <select class="form-control" id="comboPlacaLetra2" name="veic_placa_letra">
+                </select>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <select class="form-control" id="comboPlacaLetra3" name="veic_placa_letra">
+                </select>
+              </div>
+              
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <select class="form-control" id="comboPlacaNumero1" name="veic_placa_numero">
+                </select>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <select class="form-control" id="comboPlacaNumero2" name="veic_placa_numero">
+                </select>
+              </div>
+            </div> 
+            
+            <div class="form-group">
+              <label for="login" class="control-label col-sm-2 col-md-2">Frase Final</label>
+              <div class="col-lg-4 col-md-4 col-sm-6">
+                <select class="form-control" id="comboFraseFinal" name="veic_frase_fim">
+                </select>
+              </div>
             </div>
-          </div>
+            
+          </form>
+
+
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">Ok</button>
+        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="botaoConfirma">Ok</button>
       </div>
     </div>
   </div>
 </div>
+
+
+<script src="${context}/js/player-web/modal-chamada-veiculos.js" charset="UTF-8"></script>

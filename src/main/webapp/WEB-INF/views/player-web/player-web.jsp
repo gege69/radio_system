@@ -183,11 +183,11 @@
         </div>
         <table style=" margin: 0 auto;">
           <tr>
-<!--             <td> -->
-<!--               <a class="btn btn-default" href="#" id="botao-stop" role="button"> -->
-<!--                 <i class="fa fa-stop"></i> -->
-<!--               </a> -->
-<!--             </td> -->
+            <td>
+              <a class="btn btn-default" href="#" id="botao-stop" role="button">
+                <i class="fa fa-stop"></i>
+              </a>
+            </td>
             
             <td>
               <a class="btn btn-default" href="#" id="botao-play" role="button">
@@ -221,6 +221,233 @@
 </div>
   
 
+<div id="myModalBlocos" class="modal fade" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>Blocos</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <form action="#" 
+                  id="ambiente-bloco-form" 
+                  class="form-horizontal"
+                  method="POST">
+                  
+              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+              <input type="hidden" id="idBloco" name="idBloco" value="${idBloco}">
+              
+              <div class="form-group">
+                <label for="posicaoVinheta" class="control-label col-sm-4 col-md-3">Posicao Vinheta:</label>
+                <div class="col-sm-6 col-md-8">
+                  <select class="form-control" id="posicaoVinheta" name="posicaoVinheta">
+                    <option value="ANTES_CADA_MUSICA">Antes de cada música</option>
+                    <option value="ANTES_BLOCO_COMERCIAL">Antes do bloco Comercial</option>
+                    <option value="DEPOIS_BLOCO_COMERCIAL">Depois do bloco Comercial</option>
+                    <option value="NAO_INCLUIR">Não incluir vinhetas</option> 
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="qtdMusicas" class="control-label col-sm-4 col-md-3">Músicas em sequência:</label>
+                <div class="col-sm-6 col-md-8">
+                  <select class="form-control" id="qtdMusicas" name="qtdMusicas">
+                    <option value="0" >Nenhuma Música</option>
+                    <option value="1" >1</option>
+                    <option value="2" >2</option>
+                    <option value="3" >3</option>
+                    <option value="4" >4</option>
+                    <option value="5" >5</option>
+                    <option value="6" >6</option>
+                    <option value="7" >7</option>
+                    <option value="8" >8</option>
+                    <option value="9" >9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                  </select>
+                </div>
+              </div>
+              
+
+              <div class="form-group">
+                <label for="posicaoComercial" class="control-label col-sm-4 col-md-3">Posicao Comercial:</label>
+                <div class="col-sm-6 col-md-8">
+                  <select class="form-control" id="posicaoComercial" name="posicaoComercial">
+                    <option value="DEPOIS_MUSICAS">Depois das Músicas</option>
+                    <option value="ANTES_INSTITUCIONAL">Antes do Institucional</option>
+                    <option value="DEPOIS_INSTITUCIONAL">Depois do Institucional</option>
+                    <option value="ANTES_PROGRAMETE">Antes do Programete</option>
+                    <option value="DEPOIS_PROGRAMETE">Depois do Programete</option>
+                    <option value="NAO_INCLUIR">Não incluir comerciais</option>
+                  </select>
+                </div>
+              </div>
+              
+              
+              <div class="form-group">
+                <label for="qtdComerciais" class="control-label col-sm-4 col-md-3">Comerciais em sequência:</label>
+                <div class="col-sm-6 col-md-8">
+                  <select class="form-control" id="qtdComerciais" name="qtdComerciais">
+                    <option value="1" >1</option>
+                    <option value="2" >2</option>
+                    <option value="3" >3</option>
+                    <option value="4" >4</option>
+                    <option value="5" >5</option>
+                    <option value="6" >6</option>
+                    <option value="7" >7</option>
+                    <option value="8" >8</option>
+                    <option value="9" >9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                  </select>
+                </div>
+              </div>
+              
+              
+              
+              <div class="form-group">
+                <label for="indexInstitucionais" class="control-label col-sm-4 col-md-3">Index Institucionais:</label>
+                <div class="col-sm-6 col-md-8">
+                  <select class="form-control" id="indexInstitucionais" name="indexInstitucionais">
+                    <option value="0" >Não incluir institucionais</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="indexProgrametes" class="control-label col-sm-4 col-md-3">Index Programetes:</label>
+                <div class="col-sm-6 col-md-8">
+                  <select class="form-control" id="indexProgrametes" name="indexProgrametes">
+                    <option value="0" >Não incluir programetes</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="indexHoroscopo" class="control-label col-sm-4 col-md-3">Index Horóscopo:</label>
+                <div class="col-sm-6 col-md-8">
+                  <select class="form-control" id="indexHoroscopo" name="indexHoroscopo">
+                    <option value="0" >Não incluir horóscopo</option>
+                  </select>
+                </div>
+              </div>
+
+            </form>
+          </div>
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnSalvarBloco" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<div id="myModalChamadaFuncionarios" class="modal fade" tabindex="-1" role="dialog" style="display : none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>Chamada de Funcionários</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        
+          <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+              <label for="file">Funcionário:</label>
+              <select class="form-control" id="funcionario" name="funcionario">
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+              <label for="file">Frase/Chamada:</label>
+              <select class="form-control" id="frase" name="frase">
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnTocaChamadaFuncionarios">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  
+<div id="myModalChamadaInst" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>Chamadas Instantâneas</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        
+          <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+              <label for="file">Chamadas Instantâneas:</label>
+              <select class="form-control" id="chamada_inst" name="chamada_inst">
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnTocaChamadaInst">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
   
 <jsp:include page="/WEB-INF/views/scripts.jsp" />
 
@@ -234,5 +461,13 @@
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
 <script src="${context}/js/player-web/player-web-plyr.js" charset="UTF-8"></script>
+
+<script src="${context}/js/required/jquery.serializejson.js" defer></script>
+<script src="${context}/js/required/jquery.populate.js"></script>
   
+<script src="${context}/js/player-web/modal-blocos.js" charset="UTF-8" defer></script>
+<script src="${context}/js/player-web/modal-chamada-funcionarios.js" charset="UTF-8" defer></script>
+<script src="${context}/js/player-web/modal-chamada-instantanea.js" charset="UTF-8" defer></script>
+
+
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

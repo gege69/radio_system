@@ -112,24 +112,6 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/chamadafuncionarios/view", method = RequestMethod.GET )
-	public String chamadaFuncionariosModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
-	{
-		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
-		
-		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-chamada-funcionarios";
-		}
-		else
-			return "HTTPerror/404";
-	}
-	
 	
 	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/chamadainst/view", method = RequestMethod.GET )
 	public String chamadaInstantaneaModal( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )

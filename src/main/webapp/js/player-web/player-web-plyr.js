@@ -187,20 +187,11 @@ var next = function(){
 
 
 
-
 var abreModal = function( tela ){ 
-    
-    var url = buildUrl( "/player/ambientes/{idAmbiente}/player/{tela}/view", { 
-        idAmbiente: idAmbiente,
-        tela : tela
-     });
-
-    $('.my-modal-cont').load( url, function(result){
-        $('#myModal').modal({
-            show:true, 
-            backdrop: 'static',              
-            keyboard: false
-        });
+    $("#" + tela).modal({
+        show:true, 
+        backdrop: 'static',              
+        keyboard: false
     });
 };
 
@@ -341,9 +332,9 @@ $(document).ready(function() {
         ticks_snap_bounds: 3
     });
     
-//    $('#botao-stop').click( function(){
-//        stop();
-//    });
+    $('#botao-stop').click( function(){
+        stop();
+    });
     
     $('#botao-play').click( function(){
         desligaMicrofone();
@@ -364,7 +355,7 @@ $(document).ready(function() {
     });
 
     registraModal('#btn-chamada-veiculo', "chamadaveiculos");
-    registraModal('#btn-chamada-funcionarios', "chamadafuncionarios");
+    registraModal('#btn-chamada-funcionarios', "myModalChamadaFuncionarios");
     registraModal('#btn-chamada-inst', "chamadainst");
     registraModal('#btn-horoscopo', "horoscopo");
     registraModal('#btn-config-comerciais', "configcomerciais");
@@ -372,7 +363,7 @@ $(document).ready(function() {
     registraModal('#btn-config-programetes', "configprogrametes");
     
     registraModal('#btn-generos', "generos");
-    registraModal('#btn-blocos', "blocos");
+    registraModal('#btn-blocos', "myModalBlocos");
     registraModal('#btn-nobreak', "nobreak");
     registraModal('#btn-downloads', "downloads");
     registraModal('#btn-relatorios', "relatorios");

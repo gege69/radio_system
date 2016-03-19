@@ -2,9 +2,8 @@
 var listaFuncionarios = function(){
     
     var url = buildUrl( "/api/ambientes/{idAmbiente}/midias-por-categoria?codigo=chamada_func_nome", { 
-        idAmbiente: idAmbiente
+        idAmbiente: $('#idAmbiente').val()
     });
-
     
     $.ajax({
         type: 'GET',
@@ -29,7 +28,7 @@ var listaFuncionarios = function(){
 var listaFrase = function(){
     
     var url = buildUrl( "/api/ambientes/{idAmbiente}/midias-por-categoria?codigo=chamada_func_frase", { 
-        idAmbiente: idAmbiente
+        idAmbiente: $('#idAmbiente').val() 
     });
     
     $.ajax({
@@ -74,18 +73,20 @@ var confirma = function()
     array[1] = segundo;
     
     playSequence( array );
-    $('#myModal').modal('hide');
+    $('#myModalChamadaFuncionarios').modal('hide');
 }
 
 
 $(function(){
 
-    listaFuncionarios();
-    listaFrase();
-    
-    $("#botaoConfirma").click( function(){
+    $("#btnTocaChamadaFuncionarios").click( function(){
         confirma();
     });          
+    
+    $("#myModalChamadaFuncionarios").on('shown.bs.modal', function(){
+        listaFuncionarios();
+        listaFrase();
+    });
     
 });
 
