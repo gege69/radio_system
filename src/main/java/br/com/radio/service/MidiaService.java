@@ -852,7 +852,7 @@ public class MidiaService {
 
 	public Integer associaTodasMidiasParaAmbiente( Ambiente ambiente )
 	{
-		int linhas = midiaAmbienteRepo.insertMusicasAmbiente( ambiente.getIdAmbiente() );
+		int linhas = midiaAmbienteRepo.insertMidiasDefaultAmbiente( ambiente.getIdAmbiente() );
 		
 		return linhas;
 	}

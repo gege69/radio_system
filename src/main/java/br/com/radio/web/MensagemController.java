@@ -61,7 +61,7 @@ public class MensagemController extends AbstractController {
 		if ( usuario != null )
 			model.addAttribute( "idUsuario", usuario.getIdUsuario() );
 		
-		return "mensagens/conversas-outer";
+		return "mensagens/conversas";
 	}
 	
 	
@@ -77,7 +77,7 @@ public class MensagemController extends AbstractController {
 		if ( usuario == null || usuario.getCliente() == null )
 			return null;
 		
-		Pageable pageable = getPageable( pageNumber, limit, "asc", "idConversa" );
+		Pageable pageable = getPageable( pageNumber, limit, "desc", "dataAtualizacao" );
 		
 		Page<Conversa> conversaPage = conversaService.getListaConversasPorUsuario( usuario, pageable );
 		

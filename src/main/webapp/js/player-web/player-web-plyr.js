@@ -354,20 +354,16 @@ $(document).ready(function() {
         alteraVolume(slideEvt.value);
     });
 
-    registraModal('#btn-chamada-veiculo', "chamadaveiculos");
+    registraModal('#btn-chamada-veiculo', "myModalChamadaVeiculos");
     registraModal('#btn-chamada-funcionarios', "myModalChamadaFuncionarios");
-    registraModal('#btn-chamada-inst', "chamadainst");
+    registraModal('#btn-chamada-inst', "myModalChamadaInst");
     registraModal('#btn-horoscopo', "horoscopo");
-    registraModal('#btn-config-comerciais', "configcomerciais");
-    registraModal('#btn-config-inst', "configinst");
-    registraModal('#btn-config-programetes', "configprogrametes");
     
-    registraModal('#btn-generos', "generos");
+    registraModal('#btn-generos', "myModalGeneros");
     registraModal('#btn-blocos', "myModalBlocos");
-    registraModal('#btn-nobreak', "nobreak");
     registraModal('#btn-downloads', "downloads");
     registraModal('#btn-relatorios', "relatorios");
-    registraModal('#btn-atendimento', "atendimento");
+    registraModal('#btn-atendimento', "myModalConversas");
     
     getConfiguracoes();
     

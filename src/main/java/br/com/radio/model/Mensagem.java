@@ -166,9 +166,12 @@ public class Mensagem implements Serializable {
 
 	public void buildView( Usuario usuarioLogado )
 	{
-		mensagemView.put( "usuario", getUsuario().getNome() );
+		if ( getUsuario() == null )
+			mensagemView.put( "usuario", "Sistema" );
+		else
+			mensagemView.put( "usuario", getUsuario().getNome() );
 		
-		if ( getUsuario().getIdUsuario().equals( usuarioLogado.getIdUsuario() ) )
+		if ( getUsuario() != null && getUsuario().getIdUsuario().equals( usuarioLogado.getIdUsuario() ) )
 			mensagemView.put( "htmlclass", "self" );
 		else
 			mensagemView.put( "htmlclass", "other" );

@@ -1,12 +1,12 @@
 
 
-var $table = $('#table-conversas');
+var $tableconversas = $('#table-conversas');
 
 var $tableparticipantes = $('#table-participantes');
 
 function queryParamsConversas(params) {
 
-    params.pageNumber = $table.bootstrapTable('getOptions').pageNumber;
+    params.pageNumber = $tableconversas.bootstrapTable('getOptions').pageNumber;
     
     return params;
 }
@@ -36,6 +36,9 @@ var carregaMensagensByGrid = function( e, row, el )
 
 var carregaMensagens = function( idConversa )
 {
+    if ( idConversa == null || idConversa === "" )
+        return;
+    
     var url = buildUrl( "/api/conversas/{idConversa}/mensagens", { 
         idConversa: idConversa 
     });
@@ -47,7 +50,7 @@ var carregaMensagens = function( idConversa )
         dataType: 'json'
     }).done( function(json) {
         
-        makeListTmpl( json );
+        makeListTmplConversa( json );
         
         $("#conversa").scrollTop($("#conversa")[0].scrollHeight);
         
@@ -57,7 +60,7 @@ var carregaMensagens = function( idConversa )
 
 
 
-var makeListTmpl = function(json){
+var makeListTmplConversa = function(json){
     
     $('#conversa').empty();
     
@@ -134,12 +137,11 @@ var iniciarConversa = function(){
         
     }).done( function(json){ 
 
-        debugger;
         if (json.idConversa != null){
             
             $("#idConversa").val( json.idConversa );
             
-            $table.bootstrapTable('refresh');
+            $tableconversas.bootstrapTable('refresh');
             
             carregaMensagens( json.idConversa );
         }
@@ -186,7 +188,7 @@ var enviarMensagem = function(){
             { 
                 $("#idConversa").val( json.conversa.idConversa );
                 
-                $table.bootstrapTable('refresh');
+                $tableconversas.bootstrapTable('refresh');
                 
                 carregaMensagens( json.conversa.idConversa );
                 
@@ -238,7 +240,6 @@ var mostraMensagens = function(){
     habilitaNovaMensagem();
     
     $tableparticipantes.bootstrapTable('uncheckAll');
-    $tableparticipantes.bootstrapTable('refresh');
     
     $('#selecao-participantes').hide();
     $('#painel-mensagens').show();
@@ -268,12 +269,6 @@ var atualizaConversaAtual = function(){
 }
 
 $(function(){
-    
-    var token = $("input[name='_csrf']").val();
-    var header = "X-CSRF-TOKEN";
-    $(document).ajaxSend(function(e, xhr, options) {
-        xhr.setRequestHeader(header, token);
-    });
    
     $('.input-group.date').datepicker({
         format: "dd/mm/yyyy",

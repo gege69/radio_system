@@ -57,17 +57,5 @@
 <script type="text/javascript" src="${context}/js/admin/editar-cliente.js" async charset="UTF-8"></script>
 
 
-<style type="text/css">
-
-#linkaddtelefone{
-    color: #326432;
-    margin: 2px;
-    display: block;
-    margin-top: 7px;
-    white-space: nowrap;
-}
-
-</style>
-
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

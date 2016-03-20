@@ -1,35 +1,10 @@
 
 
-var confirma = function()
-{
-    var primeiro = $('#funcionario').val();
-    var segundo = $('#frase').val();
-    
-    if ( primeiro == null || primeiro == undefined )
-    {
-        preencheErroField( "funcionario", "Preencha o campo" );
-        return;
-    }
-    
-    if ( segundo == null || segundo == undefined )
-    {
-        preencheErroField( "frase", "Preencha o campo" );
-        return;
-    }
-    
-    var array = [];
-    array[0] = primeiro;
-    array[1] = segundo;
-    
-    playSequence( array );
-    $('#myModal').modal('hide');
-}
-
-
 
 var carregarCombo = function( element )
 {
-    var url = buildUrl( "/admin/midias?codigo={codigo}", {
+    var url = buildUrl( "/api/ambientes/{idAmbiente}/midias-por-categoria?codigo={codigo}", {
+        idAmbiente : $("#idAmbiente").val(),
         codigo : element.attr('name')
     });
 
@@ -96,7 +71,7 @@ var validarETocar = function(){
         
         playSequence( arr );
         $( '.modal' ).modal( 'hide' ).data( 'bs.modal', null );
-        $('#myModal').modal('hide');
+        $('#myModalChamadaVeiculos').modal('hide');
     }
 };
 
@@ -104,7 +79,7 @@ var validarETocar = function(){
 $(function(){
 
 
-    $("#botaoConfirma").click( function(){
+    $("#btnTocarChamadaVeiculos").click( function(){
         validarETocar();
     });          
 

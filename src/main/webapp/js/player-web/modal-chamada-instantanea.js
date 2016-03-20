@@ -42,7 +42,7 @@ $(function(){
         listaChamadas();
     });          
     
-    $("#btntocachamadainst").click( function(){
+    $("#btnTocaChamadaInst").click( function(){
         tocaChamadaInst();
     });          
     

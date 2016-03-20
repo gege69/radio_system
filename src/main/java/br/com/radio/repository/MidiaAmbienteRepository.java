@@ -20,9 +20,9 @@ public interface MidiaAmbienteRepository extends JpaRepository<MidiaAmbiente, Lo
 					"  INNER JOIN midia_categoria mc ON mc.id_midia = m.id_midia  "+
 					"  INNER JOIN categoria cat ON cat.id_categoria = mc.id_categoria  "+
 					"  LEFT JOIN midia_ambiente ma ON ma.id_midia = m.id_midia AND ma.id_ambiente = ?1 "+
-					"  WHERE cat.codigo = 'musica'  "+
+					"  WHERE cat.codigo in ('musica', 'veic_frase_ini', 'veic_marca', 'veic_modelo', 'veic_cor', 'veic_frase_fim', 'horoscopo', 'veic_placa_numero', 'veic_placa_letra')  "+
 					"  AND ma.id_midiaamb IS NULL ", nativeQuery = true)
-	int insertMusicasAmbiente( Long idAmbiente );
+	int insertMidiasDefaultAmbiente( Long idAmbiente );
 	
 	
 	List<MidiaAmbiente> findByMidia( Midia midia );

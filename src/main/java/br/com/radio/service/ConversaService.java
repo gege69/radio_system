@@ -3,7 +3,9 @@ package br.com.radio.service;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -19,6 +21,7 @@ import br.com.radio.model.Mensagem;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.ConversaRepository;
 import br.com.radio.repository.MensagemRepository;
+import br.com.radio.util.UtilsDates;
 
 
 @Service
@@ -50,8 +53,12 @@ public class ConversaService {
 	}
 	
 	
-	
 	public Conversa saveConversa( Conversa conversa, Principal principal )
+	{
+		return saveConversa( conversa, null, principal );
+	}
+	
+	public Conversa saveConversa( Conversa conversa, Conversa conversaOrigem, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -60,9 +67,18 @@ public class ConversaService {
 		
 		if ( conversa != null )
 		{
+			if ( !conversa.getUsuarios().stream().anyMatch( u -> u.equals( usuario ) ) ) 
+				conversa.getUsuarios().add( usuario );
+			
+			Date hoje = new Date();
+			
 			conversa.setCliente( usuario.getCliente() );
 			conversa.setAtivo( true );
-			conversa.setDataCriacao( new Date() );
+			conversa.setDataCriacao( hoje );
+			conversa.setDataAtualizacao( hoje );
+			
+			conversa.setConversaOrigem( conversaOrigem );
+
 			conversaRepo.save( conversa );	
 		}
 		
@@ -97,6 +113,8 @@ public class ConversaService {
 			throw new RuntimeException( "Impossível determinar o Cliente do usuário" );
 		
 		Conversa conversaOriginal = conversaRepo.findOne( mensagem.getConversa().getIdConversa() );
+		
+		Date hoje = new Date();
 
 		// Se estamos em um Player tenho que verificar para não mandar resposta para outros players....
 		if ( usuarioLogado.getUsuarioTipo().equals( UsuarioTipo.PLAYER ) &&
@@ -104,20 +122,34 @@ public class ConversaService {
 		{
 			Conversa novaConversa = new Conversa();
 			
-			List<Usuario> usuariosNovaConversa = conversaOriginal.getUsuarios().stream().filter( u -> u.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR ) ).collect( Collectors.toList() );
+			Set<Usuario> usuariosConversaOriginal = new HashSet<Usuario>( conversaOriginal.getUsuarios() );
+
+			List<Usuario> usuariosNovaConversa = usuariosConversaOriginal.stream().filter( u -> u.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR ) ).collect( Collectors.toList() );
 
 			usuariosNovaConversa.add( usuarioLogado );
 			novaConversa.setUsuarios( usuariosNovaConversa );
 			
-			novaConversa = saveConversa( novaConversa, principal );
+			novaConversa = saveConversa( novaConversa, conversaOriginal, principal );
+			
+			
+			// :TODO talvez duplicar as mensagens do broadcast inicial.... ao invés disso
+			Mensagem mensagemExplicacao = new Mensagem();
+			mensagemExplicacao.setConteudo( String.format( "Essa conversação foi criada automaticamente como resposta ao Broadcast com data em : %s ", UtilsDates.format( conversaOriginal.getDataCriacao(), "dd/MM/yyyy HH:mm" )  ) );
+			mensagemExplicacao.setConversa( novaConversa );
+			mensagemExplicacao.setDataEnvio( hoje );
+			mensagemRepo.save( mensagemExplicacao );
 			
 			mensagem.setConversa( novaConversa );
 			mensagem.getMensagemView().put( "novaConversa", "true" );
 		}
+		else
+		{
+			conversaOriginal.setDataAtualizacao( hoje );
+			conversaRepo.save( conversaOriginal );
+		}
 		
-		mensagem.setDataEnvio( new Date() );
+		mensagem.setDataEnvio( hoje );
 		mensagem.setUsuario( usuarioLogado );
-		
 		mensagemRepo.save( mensagem );
 		
 		mensagem.buildView( usuarioLogado );

@@ -2,11 +2,11 @@
 var listaGeneros = function( doJump ){
     
     var urlGeneros = buildUrl( "/api/generos", { 
-        idAmbiente: idAmbiente
+        idAmbiente: $("#idAmbiente").val()
     });
     
     var urlGenerosAmbiente = buildUrl( "/api/ambientes/{idAmbiente}/generos", { 
-        idAmbiente: idAmbiente
+        idAmbiente: $("#idAmbiente").val()
     });
     
     $.ajax({
@@ -16,7 +16,6 @@ var listaGeneros = function( doJump ){
         dataType: 'json'
     }).done( function(json){
         makeListTmpl(json);
-        
         
         $.ajax({
             type: 'GET',
@@ -57,7 +56,7 @@ var salvarGeneros = function()
     var dados = JSON.stringify( idList );
     
     var urlGenerosAmbiente = buildUrl( "/api/ambientes/{idAmbiente}/generos", { 
-        idAmbiente: idAmbiente
+        idAmbiente: $("#idAmbiente").val()
     });
     
     $.ajax({
@@ -71,7 +70,7 @@ var salvarGeneros = function()
 
             geraNovaProgramacaoMusical();
 
-            $('#myModal').modal('hide');
+            $('#myModalGeneros').modal('hide');
         }
         else{
             preencheErros( json.errors );
@@ -84,7 +83,7 @@ var salvarGeneros = function()
 var geraNovaProgramacaoMusical = function(){
     
     var urlTransmissao = buildUrl( "/api/ambientes/{idAmbiente}/transmissoes/new", { 
-        idAmbiente: idAmbiente
+        idAmbiente: $("#idAmbiente").val()
     });
     
     $.ajax({
@@ -109,13 +108,9 @@ var makeListTmpl = function(json){
 
 $(function(){
 
-    var token = $("input[name='_csrf']").val();
-    var header = "X-CSRF-TOKEN";
-    $(document).ajaxSend(function(e, xhr, options) {
-        xhr.setRequestHeader(header, token);
+    $("myModalGeneros").on('shown.bs.modal', function(){
+        listaGeneros(false);
     });
-    
-    listaGeneros(false);
     
     $('#btnSalvarGeneros').on('click', function(){
         salvarGeneros();

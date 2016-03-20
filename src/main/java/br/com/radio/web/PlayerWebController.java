@@ -336,9 +336,10 @@ public class PlayerWebController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
-			return "player-web/modal-atendimento";
+			return "mensagens/template-conversas";
 		}
 		else
 			return "HTTPerror/404";
 	}
+	
 }

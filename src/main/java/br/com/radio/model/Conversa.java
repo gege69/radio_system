@@ -89,8 +89,19 @@ public class Conversa implements Serializable {
 	@Column( name = "datacriacao" )
 	private Date dataCriacao;
 	
+	@JsonDeserialize(using=JSONDateDeserializer.class)
+	@JsonSerialize(using=JSONDateSerializer.class)
+	@Temporal( TemporalType.TIMESTAMP )
+	@Column( name = "dataatualizacao" )
+	private Date dataAtualizacao;
+	
 	@Column(name="ativo")  // caso precise esconder a mensagem e manter o log
 	private Boolean ativo;
+	
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_conversaorigem")
+	private Conversa conversaOrigem;   // para casos onde a conversa foi gerada por uma resposta de broadcast isso será útil...
 	
 	@Transient
 	private Map<String,String> conversaView = new HashMap<String,String>();
@@ -264,7 +275,24 @@ public class Conversa implements Serializable {
 	}
 	
 	
-	
-	
+	public Conversa getConversaOrigem()
+	{
+		return conversaOrigem;
+	}
+
+	public void setConversaOrigem( Conversa conversaOrigem )
+	{
+		this.conversaOrigem = conversaOrigem;
+	}
+
+	public Date getDataAtualizacao()
+	{
+		return dataAtualizacao;
+	}
+
+	public void setDataAtualizacao( Date dataAtualizacao )
+	{
+		this.dataAtualizacao = dataAtualizacao;
+	}
 	
 }

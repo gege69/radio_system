@@ -4,7 +4,6 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-
 <html lang="en" style="height: 100%">
   <head>
   
@@ -61,17 +60,6 @@
                 <li><a href="#"  id="btn-horoscopo">Horóscopo</a></li>
               </c:if>
               
-              <c:if test="${configuracao != null && configuracao.controleComerciais}">
-                <li><a href="#"  id="btn-config-comerciais">Comerciais</a></li>
-              </c:if>
-              
-              <c:if test="${configuracao != null && configuracao.controleInstitucionais}">
-                <li><a href="#"  id="btn-config-inst">Institucionais</a></li>
-              </c:if>
-              
-              <c:if test="${configuracao != null && configuracao.controleProgrametes}">
-                <li><a href="#"  id="btn-config-programetes">Programetes</a></li>
-              </c:if>
             </ul>
           </li>
           
@@ -543,6 +531,72 @@
 </div>
 
 
+<div id="myModalGeneros" class="modal fade" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      
+        <div class="row" id="alertArea">
+        </div>
+      
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>Gêneros</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12 col-md-12">
+            <form action="#" id="ambiente-generos-form" method="POST">
+              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+              <input type="hidden" id="idAmbiente" value="${idAmbiente}">
+              <div class="form-inline">
+                <div class="container col-lg-12 col-md-12" id="view-container">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnSalvarGeneros" >Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="viewTmpl" type="text/x-jsrender">
+    
+      <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <label>
+          <input type="checkbox" class="checkbox-genero" id="genero-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
+        </label>
+      </div>
+      
+</script>  
+
+
+<div id="myModalConversas" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>Mensagens</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="panel panel-default">
+            <div class="panel-body" id="container-conversas"> 
+              <jsp:include page="/WEB-INF/views/mensagens/template-conversas.jsp" />
+            </div>
+          </div>  
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
   
 <jsp:include page="/WEB-INF/views/scripts.jsp" />
 
@@ -557,12 +611,24 @@
 
 <script src="${context}/js/player-web/player-web-plyr.js" charset="UTF-8"></script>
 
-<script src="${context}/js/required/jquery.serializejson.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js" defer></script>
 <script src="${context}/js/required/jquery.populate.js"></script>
   
 <script src="${context}/js/player-web/modal-blocos.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-funcionarios.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-instantanea.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-veiculos.js" charset="UTF-8" defer></script>
+<script src="${context}/js/player-web/modal-generos.js" charset="UTF-8" defer></script>
+
+<!-- basicamente necessários para o "Conversas" -->
+<link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+<link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
+<script src="${context}/js/required/bootstrap-table/bootstrap-table.js" async></script>
+<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" async></script>
+<script src="${context}/js/required/bootstrap-datepicker.min.js"></script>
+<script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script>
+<script src="${context}/js/required/jsrender.min.js" defer></script>
+<script src="${context}/js/gerenciador/conversas.js"></script>
+<!-- basicamente necessários para o "Conversas" -->
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />
