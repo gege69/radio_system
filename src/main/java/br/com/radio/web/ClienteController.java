@@ -57,49 +57,16 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 
 
 @Controller
-public class AdministradorController extends AbstractController {
+public class ClienteController extends AbstractController {
 	
-	@Autowired
-	private PerfilRepository perfilRepo;
-
 	@Autowired
 	private UsuarioService usuarioService;
 	
 	@Autowired
 	private ClienteRepository clienteRepo;
 	
-	@Autowired
-	private AdministradorService adminService;
 	
-	@Autowired
-	private GeneroRepository generoRepo;
-	
-	@Autowired
-	private MidiaRepository midiaRepo;
-
-	@Autowired
-	private MidiaService midiaService;
-
-	@Autowired
-	private CategoriaRepository categoriaRepo;
-	
-	@Autowired
-	private SignoMidiaRepository signoMidiaRepo;
-	
-	@RequestMapping(value="/admin/painel", method=RequestMethod.GET)
-	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String principal( ModelMap model, Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-		
-		return "admin/painel";
-	}
-
-
-	@RequestMapping(value="/admin/clientes/view", method=RequestMethod.GET)
+	@RequestMapping(value="/clientes/view", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String cadastro( ModelMap model, Principal principal )
 	{
@@ -118,7 +85,7 @@ public class AdministradorController extends AbstractController {
 	
 
 	@RequestMapping(value={ "/admin/clientes/new" }, method=RequestMethod.GET)
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String novoCliente( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -131,7 +98,7 @@ public class AdministradorController extends AbstractController {
 
 
 	@RequestMapping(value={ "/admin/clientes/{idCliente}/view" }, method=RequestMethod.GET)
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String editarCliente( @PathVariable Long idCliente, ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -169,11 +136,9 @@ public class AdministradorController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/admin/clientes/{idCliente}", "/api/admin/clientes/{idCliente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody Cliente getCliente( @PathVariable Long idCliente, Principal principal )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody Cliente getCliente( @PathVariable Long idCliente )
 	{
-		//:TODO pensar em uma maneira de verificar se não for o pefil de administrador só pode pegar os dados de si próprio 
-		
 		Cliente cliente = clienteRepo.findOne( idCliente );
 
 		return cliente;
@@ -182,7 +147,7 @@ public class AdministradorController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/admin/clientes", "/api/admin/clientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody String saveCliente( @RequestBody @Valid Cliente cliente, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
