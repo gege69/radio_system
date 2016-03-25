@@ -24,7 +24,7 @@
               <table  
                  id="tableclientes"
                  data-toggle="table"
-                 data-url="${context}/admin/clientes"
+                 data-url="${context}/clientes"
                  data-height="400"
                  data-side-pagination="server"
                  data-pagination="true"
@@ -51,7 +51,7 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                <a class="btn btn-primary" href="${context}/admin/clientes/new">Adicionar Novo Cliente</a>
+                <a class="btn btn-primary" href="${context}/clientes/new">Adicionar Novo Cliente</a>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
@@ -103,7 +103,7 @@
         }
         else
         {
-            var url = buildUrl( "/admin/clientes/{idCliente}/view", { 
+            var url = buildUrl( "/clientes/{idCliente}/view", { 
                 idCliente: row.idCliente 
             });
             

@@ -27,7 +27,7 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/clientes/view">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/clientes/searches">
                       <i class="fa fa-3x icone-main fa-institution"></i>
                       <span class="label-botao-main">Cadastro Clientes</span>
                     </a>

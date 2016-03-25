@@ -84,8 +84,6 @@ public class AmbienteController extends AbstractController {
 	private EventoRepository eventoRepo;
 	@Autowired
 	private EventoHorarioRepository eventoHorarioRepo;
-	@Autowired
-	private ClienteRepository clienteRepo;
 	// DAOs ==================
 	
 	
@@ -96,8 +94,6 @@ public class AmbienteController extends AbstractController {
 	private UsuarioService usuarioService;
 	@Autowired
 	private ProgramacaoMusicalService programacaoMusicalService;
-	@Autowired
-	private AdministradorService adminService;
 	// Services ==============
 
 	
@@ -888,116 +884,6 @@ public class AmbienteController extends AbstractController {
 		
 		return jsonList;
 	}
-	
-	
-	
-	
-	@RequestMapping(value={ "/ambientes/{idAmbiente}/clientes/new" }, method=RequestMethod.GET)
-	public String novoCliente( @PathVariable Long idAmbiente, ModelMap model, Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-		
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "urlambiente", ambiente.getUrlambiente() );
-		
-			return "ambiente/editar-cliente";
-		}
-		else
-			return "HTTPerror/404";
-	}
-
-
-	@RequestMapping(value={ "/ambientes/{idAmbiente}/clientes/{idCliente}/view" }, method=RequestMethod.GET)
-	public String editarCliente( @PathVariable Long idAmbiente, @PathVariable Long idCliente, ModelMap model, Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-		
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "urlambiente", ambiente.getUrlambiente() );
-		
-			Cliente cliente = clienteRepo.findOne( idCliente );
-			
-			model.addAttribute( "idCliente", cliente.getIdCliente() );
-
-			return "ambiente/editar-cliente";
-		}
-		else
-			return "HTTPerror/404";
-	}
-	
-	
-	
-	@RequestMapping( value = { "/ambientes/{idAmbiente}/clientes/{idCliente}", "/api/ambientes/{idAmbiente}/clientes/{idCliente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody Cliente getCliente( @PathVariable Long idAmbiente, @PathVariable Long idCliente )
-	{
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-
-		if ( ambiente != null )
-		{
-			Cliente cliente = clienteRepo.findOne( idCliente );
-
-			return cliente;
-		}
-		else
-			return null;
-		
-	}
-	
-	
-	
-	@RequestMapping( value = { "/ambientes/{idAmbiente}/clientes", "/api/ambientes/{idAmbiente}/clientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveCliente( @PathVariable Long idAmbiente, @RequestBody @Valid Cliente cliente, BindingResult result, Principal principal )
-	{
-		String jsonResult = null;
-		
-		if ( result.hasErrors() ){
-			
-			jsonResult = writeErrorsAsJSONErroMessage(result);	
-		}
-		else
-		{
-			try
-			{
-				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-				
-				if ( ambiente == null )
-					throw new RuntimeException("Ambiente não encontrado");
-
-				Usuario usuario = usuarioService.getUserByPrincipal( principal );
-				
-				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
-					throw new RuntimeException("Usuário não encontrado");
-				
-				cliente  = adminService.saveCliente( cliente );
-				
-				jsonResult = writeObjectAsString( cliente );
-			}
-			catch ( Exception e )
-			{
-				e.printStackTrace();
-				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-			}
-		}
-
-		return jsonResult;
-	}
-	
 	
 	
 }

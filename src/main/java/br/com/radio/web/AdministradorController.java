@@ -37,13 +37,11 @@ import br.com.radio.dto.MidiaSignoDTO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Categoria;
-import br.com.radio.model.Cliente;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.SignoMidia;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.CategoriaRepository;
-import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.PerfilRepository;
@@ -64,9 +62,6 @@ public class AdministradorController extends AbstractController {
 
 	@Autowired
 	private UsuarioService usuarioService;
-	
-	@Autowired
-	private ClienteRepository clienteRepo;
 	
 	@Autowired
 	private AdministradorService adminService;
@@ -99,122 +94,6 @@ public class AdministradorController extends AbstractController {
 	}
 
 
-	@RequestMapping(value="/admin/clientes/view", method=RequestMethod.GET)
-	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String cadastro( ModelMap model, Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-		
-		Long quantidade = clienteRepo.count();
-		
-		model.addAttribute( "qtdClientes", quantidade.intValue() );
-		
-		return "admin/cadastro-clientes";
-	}
-	
-	
-
-	@RequestMapping(value={ "/admin/clientes/new" }, method=RequestMethod.GET)
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String novoCliente( ModelMap model, Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-
-		return "admin/editar-cliente";
-	}
-
-
-	@RequestMapping(value={ "/admin/clientes/{idCliente}/view" }, method=RequestMethod.GET)
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String editarCliente( @PathVariable Long idCliente, ModelMap model, Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-		
-		Cliente cliente = clienteRepo.findOne( idCliente );
-		
-		model.addAttribute( "idCliente", cliente.getIdCliente() );
-
-		return "admin/editar-cliente";
-	}
-	
-	
-	@RequestMapping( value = { "/admin/clientes", "/api/admin/clientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody JSONBootstrapGridWrapper<Cliente> listClientes( @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
-																 @RequestParam(value="limit", required=false) Integer limit,
-																 Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
-			return null;
-		
-		Pageable pageable = getPageable( pageNumber, limit, "asc", "razaosocial" );
-		
-		Page<Cliente> clientePage = clienteRepo.findAll( pageable );
-		
-		JSONBootstrapGridWrapper<Cliente> jsonList = new JSONBootstrapGridWrapper<Cliente>( clientePage.getContent(), clientePage.getTotalElements() );
-
-		return jsonList;
-	}
-	
-	
-	@RequestMapping( value = { "/admin/clientes/{idCliente}", "/api/admin/clientes/{idCliente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody Cliente getCliente( @PathVariable Long idCliente, Principal principal )
-	{
-		//:TODO pensar em uma maneira de verificar se não for o pefil de administrador só pode pegar os dados de si próprio 
-		
-		Cliente cliente = clienteRepo.findOne( idCliente );
-
-		return cliente;
-	}
-	
-	
-	
-	@RequestMapping( value = { "/admin/clientes", "/api/admin/clientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveCliente( @RequestBody @Valid Cliente cliente, BindingResult result, Principal principal )
-	{
-		String jsonResult = null;
-		
-		if ( result.hasErrors() ){
-			
-			jsonResult = writeErrorsAsJSONErroMessage(result);	
-		}
-		else
-		{
-			try
-			{
-				Usuario usuario = usuarioService.getUserByPrincipal( principal );
-				
-				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
-					throw new RuntimeException("Usuário não encontrado");
-				
-				cliente  = adminService.saveCliente( cliente );
-				
-				jsonResult = writeObjectAsString( cliente );
-			}
-			catch ( Exception e )
-			{
-				e.printStackTrace();
-				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-			}
-		}
-
-		return jsonResult;
-	}
-	
-
 
 	@RequestMapping(value="/admin/generos/view", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
@@ -233,7 +112,6 @@ public class AdministradorController extends AbstractController {
 	}
 	
 
-	
 	
 	@RequestMapping( value = { 	"/admin/generos", "/api/admin/generos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )

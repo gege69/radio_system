@@ -71,10 +71,9 @@ public class GerenciadorController extends AbstractController {
 	private CategoriaRepository categoriaRepo;
 	@Autowired
 	private PerfilRepository perfilRepo;
-
 	@Autowired
 	private UsuarioService usuarioService;
-
+	
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
@@ -364,5 +363,5 @@ public class GerenciadorController extends AbstractController {
 		return jsonResult;
 	}
 	
-	
+		
 }

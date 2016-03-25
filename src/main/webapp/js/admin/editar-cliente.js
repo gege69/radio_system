@@ -9,7 +9,7 @@ var optionsTel = {onKeyPress: function(val, e, field, options) {
 
 var getDados = function()
 {
-    var url = buildUrl( "/admin/clientes/{idCliente}", {
+    var url = buildUrl( "/clientes/{idCliente}", {
         idCliente : $("#idCliente").val(),
     }); 
     
@@ -68,7 +68,7 @@ var salvar = function(){
         
         var dados = JSON.stringify( $('#clienteform').serializeJSON() );
         
-        var url = buildUrl( "/admin/clientes" ); 
+        var url = buildUrl( "/clientes" ); 
 
         $.ajax({
             
@@ -104,32 +104,31 @@ var makeListTmpl = function(json){
     
     $(".phone").mask(maskBehaviorTel, optionsTel);
     $(".ddd").mask('000');        
+    
+    refreshLinkRemoverTelefone();
 };
 
 var removerTelefone = function( element )
 {
-    console.log(element);
-    
     var $div = element.parents('.linha-telefone');
     
     $div.remove();
     
-    $('.removertelefone').off('click');
-    $('.removertelefone').on('click', function(event){
-        removerTelefone( $(this) );
-    });
+    refreshLinkRemoverTelefone();
 }
 
 var addTelefone = function() {
     
     event.preventDefault();
     makeListTmpl({rows:[{id: "", ddd: "", numero: ""}]});
+};
 
+var refreshLinkRemoverTelefone = function() {
     $('.removertelefone').off('click');
     $('.removertelefone').on('click', function(event){
         removerTelefone( $(this) );
      });
-};
+}
 
 
 $(function(){
@@ -152,8 +151,5 @@ $(function(){
         addTelefone(); 
     });
     
-    $('.removertelefone').off('click');
-    $('.removertelefone').on('click', function(event){
-        removerTelefone( $(this) );
-    });
+    refreshLinkRemoverTelefone();
 });
