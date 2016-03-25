@@ -16,7 +16,7 @@
                 <div class="form-group">
                     <label for="login" class="control-label col-sm-2 col-md-2">Nome Fantasia</label>
                     <div class="col-sm-8 col-md-6">
-                      <input type="email" class="form-control" id="nomefantasia" name="nomefantasia">
+                      <input type="text" class="form-control" id="nomefantasia" name="nomefantasia">
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="checkbox">
@@ -184,7 +184,7 @@
 <div class="linha-telefone">
 
   <div class="form-group">
-    <input type="hidden" name="telefones[{{:id}}][idTelefone]">
+    <input type="hidden" name="telefones[{{:id}}][idTelefone]" value="{{:id}}">
     <label for="login" class="control-label col-sm-2 col-md-2 col-xs-12">Telefone</label>
     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2 ">
       <input type="text" class="form-control ddd" id="ddd0" name="telefones[{{:id}}][ddd]" maxlength="3" value="{{:ddd}}">

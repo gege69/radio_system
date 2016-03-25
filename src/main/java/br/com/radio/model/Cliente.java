@@ -10,12 +10,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import br.com.radio.json.JSONDateSerializer;
 
@@ -87,6 +89,7 @@ public class Cliente implements Serializable {
 	private String complemento;
 	
 	@OneToMany( fetch = FetchType.EAGER, mappedBy="cliente" )
+	@NotFound(action=NotFoundAction.IGNORE)
     private List<Telefone> telefones;
 	
 	@JsonIgnore

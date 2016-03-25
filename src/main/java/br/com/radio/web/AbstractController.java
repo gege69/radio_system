@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -177,6 +179,18 @@ public abstract class AbstractController {
 		String jsonResult = obj.toString();
 		
 		return jsonResult;
+	}
+	
+	
+
+	@SuppressWarnings( "unchecked" )
+	protected boolean hasAuthority(String authName)
+	{
+		List<SimpleGrantedAuthority> authoritiesList = (List<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+		
+		boolean result = authoritiesList.stream().anyMatch( a -> a != null && a.getAuthority().equals( authName ) );
+		
+		return result;
 	}
 	
 	

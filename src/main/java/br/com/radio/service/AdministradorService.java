@@ -25,24 +25,26 @@ public class AdministradorService {
 	@Transactional
 	public Cliente saveCliente( Cliente clienteVO )
 	{
-		if ( clienteVO.getIdCliente() != null && clienteVO.getIdCliente() > 0 )
-			telefoneRepo.deleteByCliente( clienteVO );
-		
 		if ( clienteVO.getAtivo() == null )
 			clienteVO.setAtivo( false );
 
 		if ( StringUtils.isNotBlank( clienteVO.getCnpj() ) )
 			clienteVO.setCnpj( clienteVO.getCnpj().replaceAll("\\D+","") );
+
+		List<Telefone> telefones = clienteVO.getTelefones();
 		
 		clienteRepo.save( clienteVO );
 		
-		List<Telefone> telefones = clienteVO.getTelefones();
+		if ( clienteVO.getIdCliente() != null && clienteVO.getIdCliente() > 0 )
+			telefoneRepo.deleteByCliente( clienteVO );
 		
 		for ( Telefone tel : telefones )
 		{
-			tel.setCliente( clienteVO );
-			
-			telefoneRepo.save( tel );
+			if ( tel != null ){
+				tel.setCliente( clienteVO );
+				
+				telefoneRepo.save( tel );
+			}
 		}
 
 		return clienteVO;

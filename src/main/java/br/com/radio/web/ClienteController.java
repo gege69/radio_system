@@ -1,6 +1,8 @@
 package br.com.radio.web;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -39,7 +42,8 @@ public class ClienteController extends AbstractController {
 	private AdministradorService adminService;
 	
 	
-	@RequestMapping(value="/clientes/searches", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String cadastro( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -55,9 +59,9 @@ public class ClienteController extends AbstractController {
 	}
 	
 	
-
-	@RequestMapping(value={ "/clientes/new" }, method=RequestMethod.GET)
-	public String novoCliente( ModelMap model, Principal principal )
+	@RequestMapping(value={ "/admin/clientes/new" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String novoClienteAdmin( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -67,6 +71,37 @@ public class ClienteController extends AbstractController {
 		return "admin/editar-cliente";
 	}
 
+	@RequestMapping(value={ "/clientes/new" }, method=RequestMethod.GET)
+	public String novoCliente( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+
+		return "ambiente/editar-cliente";
+	}
+
+
+	@RequestMapping(value={ "/admin/clientes/{idCliente}/view" }, method=RequestMethod.GET)
+	public String editarClienteAdmin( @PathVariable Long idCliente, ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		if ( !isAutorizado( usuario, idCliente ) )
+			return "HTTPerror/404";
+		else
+		{
+			Cliente cliente = clienteRepo.findOne( idCliente );
+			
+			model.addAttribute( "idCliente", cliente.getIdCliente() );
+
+			return "admin/editar-cliente";
+		}
+	}
 
 	@RequestMapping(value={ "/clientes/{idCliente}/view" }, method=RequestMethod.GET)
 	public String editarCliente( @PathVariable Long idCliente, ModelMap model, Principal principal )
@@ -76,13 +111,30 @@ public class ClienteController extends AbstractController {
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
-		// colocar validação para só poder ver clientes diferentes do seu caso tenha permissão
-		
-		Cliente cliente = clienteRepo.findOne( idCliente );
-		
-		model.addAttribute( "idCliente", cliente.getIdCliente() );
+		if ( !isAutorizado( usuario, idCliente ) )
+			return "HTTPerror/404";
+		else
+		{
+			Cliente cliente = clienteRepo.findOne( idCliente );
+			
+			model.addAttribute( "idCliente", cliente.getIdCliente() );
 
-		return "admin/editar-cliente";
+			return "ambiente/editar-cliente";
+		}
+	}
+	
+	
+	@RequestMapping(value={ "/clientes/view" }, method=RequestMethod.GET)
+	public String editarClienteLogado( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		model.addAttribute( "idCliente", usuario.getCliente().getIdCliente() );
+
+		return "ambiente/editar-cliente";
 	}
 	
 	
@@ -107,15 +159,29 @@ public class ClienteController extends AbstractController {
 
 		return jsonList;
 	}
+
+
+	private boolean isAutorizado( Usuario usuario, Long idClienteRequest )
+	{
+		boolean podeEditarOutrosClientes = hasAuthority( "ADM_SISTEMA" );
+		boolean clienteDiferente = !idClienteRequest.equals( usuario.getCliente().getIdCliente() );
+
+		return !( clienteDiferente && !podeEditarOutrosClientes );
+	}
 	
 	
 	@RequestMapping( value = { "/clientes/{idCliente}", "/api/clientes/{idCliente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody Cliente getCliente( @PathVariable Long idCliente, Principal principal )
+	public @ResponseBody Cliente getCliente( @PathVariable Long idCliente, Principal principal  )
 	{
-		//:TODO pensar em uma maneira de verificar se não for o pefil de administrador só pode pegar os dados de si próprio 
-		Cliente cliente = clienteRepo.findOne( idCliente );
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 
-		return cliente;
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+
+		if ( isAutorizado( usuario, idCliente ) )
+			return clienteRepo.findOne( idCliente );
+		else
+			return null;
 	}
 	
 	
@@ -125,8 +191,6 @@ public class ClienteController extends AbstractController {
 	{
 		String jsonResult = null;
 		
-		//:TODO pensar em uma maneira de verificar se não for o pefil de administrador só pode pegar os dados de si próprio 
-
 		if ( result.hasErrors() ){
 			
 			jsonResult = writeErrorsAsJSONErroMessage(result);	
@@ -139,6 +203,9 @@ public class ClienteController extends AbstractController {
 				
 				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
 					throw new RuntimeException("Usuário não encontrado");
+				
+				if ( cliente.getIdCliente() != null && cliente.getIdCliente() > 0 && !isAutorizado( usuario, cliente.getIdCliente() ) )
+					throw new RuntimeException("Não é possível alterar o Cliente");
 				
 				cliente  = adminService.saveCliente( cliente );
 				
