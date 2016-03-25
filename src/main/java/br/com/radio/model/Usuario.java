@@ -30,6 +30,8 @@ import br.com.radio.json.JSONDateSerializer;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
@@ -60,7 +62,7 @@ public class Usuario implements Serializable {
 	@Column( name = "login", nullable = false, length = 40, unique = true )
 	private String login;
 	
-	@JsonIgnore
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@NotNull( message = "A senha é de preenchimento obrigatório" )
 	@Column( name = "password", nullable = false, length = 200 )
 	private String password;

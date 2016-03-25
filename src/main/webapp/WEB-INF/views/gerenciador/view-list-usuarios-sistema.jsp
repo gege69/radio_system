@@ -48,7 +48,7 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                <a class="btn btn-primary" href="${context}/view-usuario">Adicionar Novo Usuário</a>
+                <a class="btn btn-primary" href="${context}/usuarios/view">Adicionar Novo Usuário</a>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">
