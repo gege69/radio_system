@@ -270,16 +270,6 @@ public class MidiaAPIController extends AbstractController {
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
 		List<Transmissao> transmissoes = transmissaoRepo.findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscPosicaoplayAsc( ambiente, true );
-
-		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
-		
-		transmissoes.forEach( t -> {
-			
-			String link = baseURL + t.getLink();
-			
-			t.setLink( link ); 
-		});
-		
 		
 		JSONListWrapper<Transmissao> jsonList = new JSONListWrapper<Transmissao>( transmissoes , transmissoes.size() );
 
@@ -298,11 +288,8 @@ public class MidiaAPIController extends AbstractController {
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
-//		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
-		
 		if ( ambiente != null )
 			progMusicalService.geraTransmissao( ambiente );
-		
 		
 		String result = null;
 
@@ -340,7 +327,6 @@ public class MidiaAPIController extends AbstractController {
 	
 	
 	
-	
 
 	
 	/**
@@ -365,14 +351,6 @@ public class MidiaAPIController extends AbstractController {
 
 		if ( transmissao == null )
 			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
-		
-		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
-		
-		String link = baseURL + transmissao.getLink();
-
-		transmissao.setLink( link );
-		
-		
 		
 		return transmissao;
 	}
@@ -402,15 +380,6 @@ public class MidiaAPIController extends AbstractController {
 			throw new RuntimeException( "Não é possível avançar a transmissão." );
 
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
-		
-		System.out.println( transmissao.getIdTransmissao() );
-		
-		
-		String baseURL = StringUtils.replace( request.getRequestURL().toString(), request.getServletPath(), "" );
-		
-		String link = baseURL + transmissao.getLink();
-
-		transmissao.setLink( link );
 		
 		if ( transmissao == null )
 			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );

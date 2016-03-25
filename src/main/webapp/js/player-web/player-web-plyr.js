@@ -139,8 +139,10 @@ var play = function(){
             console.log(content.link);
             
             determinaVolume( content );
+
+            var urlMidia = buildUrl( content.link );
             
-            player.source( content.link );
+            player.source(urlMidia);
             player.play();
         }
 
@@ -177,7 +179,9 @@ var next = function(){
             
             determinaVolume( content );
 
-            player.source( content.link );
+            var urlMidia = buildUrl( content.link );
+
+            player.source( urlMidia );
             player.play();
         }
 
