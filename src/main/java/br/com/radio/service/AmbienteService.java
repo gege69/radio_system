@@ -78,13 +78,8 @@ public class AmbienteService {
 	@Transactional
 	public Ambiente saveAmbiente( Ambiente ambiente )
 	{
-		// colocar aqui validações de endereço antes de salvar...
 		if ( ambiente.getCliente() == null )
-		{
-			Cliente cliente = clienteRepo.findByCodigo( "Eterion" );
-			ambiente.setCliente( cliente );
-
-		}
+			throw new RuntimeException("Cliente não encontrado.");
 
 		validaLogin( ambiente );
 		
@@ -155,26 +150,6 @@ public class AmbienteService {
 	}
 
 
-	private void preencheValoresDefault( Ambiente ambiente )
-	{
-		if ( ambiente.getHoraIniExpediente() == null )
-			ambiente.setHoraIniExpediente( 0 );
-		
-		if ( ambiente.getMinutoIniExpediente() == null )
-			ambiente.setMinutoIniExpediente( 0 );
-
-		if ( ambiente.getHoraFimExpediente() == null )
-			ambiente.setHoraFimExpediente( 23 );
-		
-		if ( ambiente.getMinutoFimExpediente() == null )
-			ambiente.setMinutoFimExpediente( 59 );
-		
-		byte[] logo = Base64.getDecoder().decode( Constantes.logoRadio );
-		
-		ambiente.setLogomarca( logo );
-		ambiente.setLogomimetype( "image/png" );
-	}
-	
 	private void criaConfiguracoesDefault( Ambiente ambiente )
 	{
 		AmbienteConfiguracao config = new AmbienteConfiguracao();

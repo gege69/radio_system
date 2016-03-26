@@ -18,6 +18,7 @@ import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
+import br.com.radio.util.UtilsStr;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
@@ -31,16 +32,11 @@ public class Application {
 				
 	public static void main(String[] aaaa)
 	{
-		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
-		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
+//		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
+//		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 		
-		MidiaService MidiaService = ctx.getBean( MidiaService.class );
-		
-		
-		MidiaService.syncMusicFileSystem();
-		
-		
-		
+//		MidiaService MidiaService = ctx.getBean( MidiaService.class 		MidiaService.syncMusicFileSystem();
+//
 //		criarVariosAmbientes( ctx );
 		
 //		criaProgramacaoVariosAmbientes( ctx );

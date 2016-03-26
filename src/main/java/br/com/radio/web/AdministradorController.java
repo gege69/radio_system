@@ -46,7 +46,7 @@ import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.SignoMidiaRepository;
-import br.com.radio.service.AdministradorService;
+import br.com.radio.service.ClienteService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
 
@@ -64,7 +64,7 @@ public class AdministradorController extends AbstractController {
 	private UsuarioService usuarioService;
 	
 	@Autowired
-	private AdministradorService adminService;
+	private ClienteService adminService;
 	
 	@Autowired
 	private GeneroRepository generoRepo;

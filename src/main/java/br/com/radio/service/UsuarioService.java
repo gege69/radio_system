@@ -27,6 +27,7 @@ import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.UsuarioPerfilRepository;
 import br.com.radio.repository.UsuarioRepository;
+import br.com.radio.util.UtilsStr;
 
 @Service
 public class UsuarioService {
@@ -41,8 +42,11 @@ public class UsuarioService {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private ClienteRepository clienteRepo;
+	private ClienteService clienteService;
 	
+	@Autowired
+	private ClienteRepository clienteRepo;
+
 	@Autowired
 	private PerfilRepository perfilRepo;
 	
@@ -101,21 +105,17 @@ public class UsuarioService {
 		usuario.setAtivo( true );
 		usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
 		
-		
-		// verificar se o Cliente já não existe.... se o cliente já existir não pode se auto-cadastrar tem que ser pelo admin
-		
-		
 		Cliente cliente = new Cliente();
 		
 		cliente.setAtivo( true );
 		cliente.setCnpj( dto.getCdCNPJCPF() );
 		cliente.setRazaosocial( dto.getNmEmpresa() );
-		cliente.setCodigo( StringUtils.remove( StringUtils.lowerCase( dto.getNmEmpresa() ), " " ) );
+		cliente.setCodigo( StringUtils.remove( UtilsStr.unaccent( StringUtils.lowerCase( dto.getNmEmpresa() ) ), " " ) );
 		cliente.setDominio( null );
 		cliente.setDataCriacao( new Date() );
 		
-		clienteRepo.save( cliente );
-
+		clienteService.saveCliente( cliente );
+		
 		usuario.setCliente( cliente );
 		
 		usuarioRepo.saveAndFlush( usuario );

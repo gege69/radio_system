@@ -58,7 +58,7 @@ import br.com.radio.repository.EventoHorarioRepository;
 import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.ProgramacaoRepository;
-import br.com.radio.service.AdministradorService;
+import br.com.radio.service.ClienteService;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.service.UsuarioService;

@@ -1,8 +1,6 @@
 package br.com.radio.web;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -25,7 +22,7 @@ import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.ClienteRepository;
-import br.com.radio.service.AdministradorService;
+import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
 
 
@@ -39,7 +36,7 @@ public class ClienteController extends AbstractController {
 	private ClienteRepository clienteRepo;
 	
 	@Autowired
-	private AdministradorService adminService;
+	private ClienteService adminService;
 	
 	
 	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)

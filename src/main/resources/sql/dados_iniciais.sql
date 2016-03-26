@@ -100,6 +100,38 @@ INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'
 
 
 
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'INCLUIR_AMB' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'ADMINISTRAR_AMB' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'ALTERAR_SENHA' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'MENSAGENS' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'MONITORAMENTO' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'CHAMADA_FUNCIO' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'UPLOAD_AMBIENTE' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'FERRAMENTAS' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'SOFTWARES' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'USUARIOS' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'MOBILE' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'GERENTE' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'PLAYER' ) );
+
+
+
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'INCLUIR_AMB' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'ADMINISTRAR_AMB' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'ALTERAR_SENHA' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'MENSAGENS' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'MONITORAMENTO' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'CHAMADA_FUNCIO' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'UPLOAD_AMBIENTE' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'FERRAMENTAS' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'SOFTWARES' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'USUARIOS' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'MOBILE' ) );
+INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'), now(), ( select id_perfil from perfil where nome = 'SUPERVISOR' ),( SELECT ID_PERMISSAO FROM PERMISSAO WHERE codigo = 'PLAYER' ) );
+
+
+
+
+
 INSERT INTO USUARIO_PERFIL VALUES ( nextval('usuario_perfil_id_usuperf_seq'), (select id_perfil from perfil where nome = 'DESENVOLVEDOR'), (SELECT id_usuario FROM USUARIO WHERE login = 'fpazin') );
 INSERT INTO USUARIO_PERFIL VALUES ( nextval('usuario_perfil_id_usuperf_seq'), (select id_perfil from perfil where nome = 'DESENVOLVEDOR'), (SELECT id_usuario FROM USUARIO WHERE login = 'gaugusto') );
 
@@ -168,5 +200,19 @@ insert into funcionalidade ( ordem, nome, url, icone ) values ( 16, 'Restriçõe
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 17, 'Logomarca' ,       			'/ambientes/%d/logomarcas/view' ,         	'fa-trademark'); 
 insert into funcionalidade ( ordem, nome, url, icone, extrahtml ) values ( 18, 'Simular' ,       				'/player/ambientes/%d/player/view' ,         	'fa-play' , ' target="_blank" '); 
 insert into funcionalidade ( ordem, nome, url, icone ) values ( 19, 'SendVoice' ,       			'/ambientes/%d/sendvoices/view' ,         	'fa-microphone'); 
+
+
+
+
+insert into tipo_taxa ( descricao, por_ambiente )  values ( 'Serviço', false );
+insert into tipo_taxa ( descricao, por_ambiente )  values ( 'Armazenamento', false );
+insert into tipo_taxa ( descricao, por_ambiente )  values ( 'Taxa Genérica', false );
+insert into tipo_taxa ( descricao, por_ambiente )  values ( 'Atraso por Ambiente', true );
+
+
+insert into condicao_comercial ( dataalteracao, operacaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'VALOR', 30, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Serviço' ) );
+insert into condicao_comercial ( dataalteracao, operacaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'VALOR', 2, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Armazenamento' ) );
+insert into condicao_comercial ( dataalteracao, operacaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'PORCENTAGEM', 2.3, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Atraso por Ambiente' ) );
+
 
 

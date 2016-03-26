@@ -10,5 +10,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 	
 	Long countByAtivo( Boolean ativo );
 	
+	Cliente findByCnpj( String cnpj );
 	
 }

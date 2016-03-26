@@ -98,7 +98,10 @@ public class UserDTO implements IPasswordMatch {
 
 	public String getCdCNPJCPF()
 	{
-		return cdCNPJCPF;
+		if ( cdCNPJCPF != null )
+			return cdCNPJCPF.replaceAll("\\D+","");
+		else
+			return null;
 	}
 
 	public void setCdCNPJCPF( String cdCNPJCPF )

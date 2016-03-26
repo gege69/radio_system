@@ -1,5 +1,7 @@
 package br.com.radio.util;
 
+import java.text.Normalizer;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -125,6 +127,27 @@ public class UtilsStr {
 		
 		return s.replace( "\n", "<br/>" );
 	}
+	
+	
+	
+	public static String unaccent(String src) {
+		return Normalizer
+				.normalize(src, Normalizer.Form.NFD)
+				.replaceAll("[^\\p{ASCII}]", "");
+		
+//	 s = s.replaceAll("[^a-zA-Z0-9]", "");	
+		
+	}
+	
+	
+	public static String onlyDigits(String s){
+		if ( s != null )
+			return s.replaceAll("\\D+","");
+		else
+			return null;
+	}
+	
+	
 	
 	
 }

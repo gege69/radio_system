@@ -53,7 +53,7 @@
 <script src="${pageContext.request.contextPath}/js/required/jsrender.min.js" defer></script>
 
 
-<script src="${pageContext.request.contextPath}/js/gerenciador/conversas.js"></script>
+<script src="${pageContext.request.contextPath}/js/gerenciador/conversas.js" charset="UTF-8"></script>
 
 
 
