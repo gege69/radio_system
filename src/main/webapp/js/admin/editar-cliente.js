@@ -46,6 +46,25 @@ var getDados = function()
 }
 
 
+var getResumo = function()
+{
+    var url = buildUrl( "/clientes/{idCliente}/resumo", {
+        idCliente : $("#idCliente").val(),
+    }); 
+    
+    $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json'
+    }).done( function(json) {
+        $('#formResumo').populate(json);
+    });
+
+}
+
+
+
 var validaForm = function(){
     
     var isOk = true;
@@ -168,8 +187,10 @@ $(function(){
     $(".phone").mask(maskBehaviorTel, optionsTel);
     $(".ddd").mask('000');        
     $(".cnpj").mask('00.000.000/0000-00'); 
-
+    $(".inteiro").mask('000');        
+    
     getDados();
+    getResumo();
     
     $("#linkaddtelefone").click( function() {
         addTelefone(); 

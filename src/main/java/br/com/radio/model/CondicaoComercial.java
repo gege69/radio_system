@@ -70,11 +70,16 @@ public class CondicaoComercial implements Serializable {
 	
 	// Porcentagem ou Valor 
 	@Enumerated(EnumType.STRING)
-	@Column( name = "operacaotaxa" , columnDefinition= " TEXT default 'GERENCIADOR' ")
-	private DefinicaoTaxa operacaoTaxa;	
+	@Column( name = "definicaotaxa" , columnDefinition= " TEXT default 'VALOR' ")
+	private DefinicaoTaxa definicaoTaxa;	
 	
 	@Column(name="valor", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valor;
+	
+	@JsonIgnore
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn( name="id_ambiente")
+	private Ambiente ambiente;
 	
 	@Transient
 	private Map<String, String> ccView = new HashMap<String,String>();
@@ -119,14 +124,14 @@ public class CondicaoComercial implements Serializable {
 		this.dataAlteracao = dataAlteracao;
 	}
 
-	public DefinicaoTaxa getOperacaoTaxa()
+	public DefinicaoTaxa getDefinicaoTaxa()
 	{
-		return operacaoTaxa;
+		return definicaoTaxa;
 	}
 
-	public void setOperacaoTaxa( DefinicaoTaxa operacaoTaxa )
+	public void setDefinicaoTaxa( DefinicaoTaxa definicaoTaxa )
 	{
-		this.operacaoTaxa = operacaoTaxa;
+		this.definicaoTaxa = definicaoTaxa;
 	}
 
 	public BigDecimal getValor()
@@ -142,8 +147,8 @@ public class CondicaoComercial implements Serializable {
 	@Override
 	public String toString()
 	{
-		return String.format( "CondicaoComercial [idCondcom=%s, cliente=%s, tipoTaxa=%s, dataAlteracao=%s, operacaoTaxa=%s, valor=%s]", idCondcom, cliente, tipoTaxa, dataAlteracao, operacaoTaxa,
-				valor );
+		return String.format( "CondicaoComercial [idCondcom=%s, cliente=%s, tipoTaxa=%s, dataAlteracao=%s, definicaoTaxa=%s, valor=%s, ambiente=%s, ccView=%s]", idCondcom, cliente, tipoTaxa,
+				dataAlteracao, definicaoTaxa, valor, ambiente, ccView );
 	}
 
 	@Override
@@ -186,5 +191,17 @@ public class CondicaoComercial implements Serializable {
 	{
 		this.ccView = ccView;
 	}
+
+	public Ambiente getAmbiente()
+	{
+		return ambiente;
+	}
+
+	public void setAmbiente( Ambiente ambiente )
+	{
+		this.ambiente = ambiente;
+	}
+
+
 	
 }

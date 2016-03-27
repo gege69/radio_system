@@ -4,10 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import br.com.radio.enumeration.OperacaoFinanceiraTaxa;
 
 
 
@@ -34,9 +38,10 @@ public class TipoTaxa implements Serializable {
 	@Column(name="por_ambiente", nullable = false )
 	private Boolean por_ambiente;
 	
-	// Determina se é negativo ou positivo
-	@Column(name="operacao", nullable = false)
-	private String operacao;
+	// Determina se é cobrança ou desconto
+	@Enumerated(EnumType.STRING)
+	@Column( name = "operacao" , columnDefinition= " TEXT default 'COBRANCA' ", nullable = false)
+	private OperacaoFinanceiraTaxa operacao;
 
 	
 	public Long getIdTipotaxa()
@@ -103,5 +108,16 @@ public class TipoTaxa implements Serializable {
 	{
 		return String.format( "TipoTaxa [idTipotaxa=%s, descricao=%s, por_ambiente=%s]", idTipotaxa, descricao, por_ambiente );
 	}
+
+	public OperacaoFinanceiraTaxa getOperacao()
+	{
+		return operacao;
+	}
+
+	public void setOperacao( OperacaoFinanceiraTaxa operacao )
+	{
+		this.operacao = operacao;
+	}
+	
 	
 }

@@ -184,7 +184,7 @@
             
               <div class="tab-content">
                 <div id="divCondicoesComerciais" class="tab-pane fade in active">
-                  <div class="col-lg-10 col-md-10 text-center">
+                  <div class="col-lg-10 col-md-10">
                     <table  
                        id="tableCondicoesComerciais"
                        data-toggle="table"
@@ -203,11 +203,39 @@
                         </tr>
                       </thead>
                     </table>
+                  </div>
                   
+                  <div class="col-lg-2 col-md-2">
+                    <div class="">
+                      <a class="btn btn-default" href="#" >
+                        <i class="fa fa-plus"></i>
+                        Inserir Condição</a>
+                    </div>            
                   </div>
                 </div>
                 <div id="divResumoFinanceiro" class="tab-pane fade in active">
-                  teste
+                
+                  <div class="col-lg-12 col-md-12">
+                    <form action="#" id="formResumo" class="form-inline">
+
+                      <div class="form-group">
+                        <label for="cep">Total Ambientes: </label>
+                        <input type="text" class="form-control inteiro" id="totalAmbientes" name="totalAmbientes" readonly="readonly">
+                      </div>
+                      
+                      <div class="form-group">
+                        <label for="login">Ambientes Ativos: </label>
+                        <input type="text" class="form-control inteiro" id="ambientesAtivos" name="ambientesAtivos" readonly="readonly">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="login">Ambientes Inativos: </label>
+                        <input type="text" class="form-control inteiro" id="ambientesInativos" name="ambientesInativos" readonly="readonly">
+                      </div> 
+                    </form>
+                  </div>
+
+                
                 </div>
                 <div id="divPagamentos" class="tab-pane fade in active">
                   teste pagamentos

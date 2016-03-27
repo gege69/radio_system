@@ -208,11 +208,17 @@ insert into tipo_taxa ( descricao, por_ambiente )  values ( 'Serviço', false );
 insert into tipo_taxa ( descricao, por_ambiente )  values ( 'Armazenamento', false );
 insert into tipo_taxa ( descricao, por_ambiente )  values ( 'Taxa Genérica', false );
 insert into tipo_taxa ( descricao, por_ambiente )  values ( 'Atraso por Ambiente', true );
+insert into tipo_taxa ( descricao, operacao, por_ambiente )  values ( 'Desconto Genérico', 'DESCONTO' ,true );
 
 
-insert into condicao_comercial ( dataalteracao, operacaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'VALOR', 30, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Serviço' ) );
-insert into condicao_comercial ( dataalteracao, operacaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'VALOR', 2, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Armazenamento' ) );
-insert into condicao_comercial ( dataalteracao, operacaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'PORCENTAGEM', 2.3, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Atraso por Ambiente' ) );
+insert into condicao_comercial ( dataalteracao, definicaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'VALOR', 30, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Serviço' ) );
+insert into condicao_comercial ( dataalteracao, definicaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'VALOR', 2, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Armazenamento' ) );
+insert into condicao_comercial ( dataalteracao, definicaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'PORCENTAGEM', 2.3, null, ( select id_tipotaxa from tipo_taxa where descricao = 'Atraso por Ambiente' ) );
 
+
+
+insert into condicao_comercial ( dataalteracao, definicaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'VALOR', 30, ( select id_cliente from cliente where codigo = 'Eterion' ), ( select id_tipotaxa from tipo_taxa where descricao = 'Serviço' ) );
+insert into condicao_comercial ( dataalteracao, definicaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'VALOR', 2, ( select id_cliente from cliente where codigo = 'Eterion' ), ( select id_tipotaxa from tipo_taxa where descricao = 'Armazenamento' ) );
+insert into condicao_comercial ( dataalteracao, definicaotaxa, valor, id_cliente, id_tipotaxa ) values ( now(), 'PORCENTAGEM', 2.3, ( select id_cliente from cliente where codigo = 'Eterion' ), ( select id_tipotaxa from tipo_taxa where descricao = 'Atraso por Ambiente' ) );
 
 

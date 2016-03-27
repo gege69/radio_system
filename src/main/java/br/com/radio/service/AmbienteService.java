@@ -19,7 +19,6 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
-import br.com.radio.model.Cliente;
 import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Genero;
@@ -34,6 +33,7 @@ import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.util.Constantes;
 import br.com.radio.util.UtilsStr;
+
 
 @Service
 public class AmbienteService {
@@ -210,10 +210,12 @@ public class AmbienteService {
 	
 	private void associaGeneroDefault( Ambiente ambiente )
 	{
-//		Genero generoDefault = generoRepo.findOne( 1L );
+		List<Genero> generos = generoRepo.findAll();
 		
-				
-		
+		generos.forEach( gen -> {
+			AmbienteGenero ambienteGenero = new AmbienteGenero( ambiente, gen );
+			ambienteGeneroRepo.save( ambienteGenero );
+		});
 	}
 	
 	

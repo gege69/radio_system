@@ -488,18 +488,18 @@ public class MidiaService {
 		
 		Midia midia = midiaRepo.findByFilehash( hash );
 		
-		if ( midia != null )
-		{ 
-			List<Categoria> outras = midia.getCategorias().stream().filter( cat -> !cat.equals( categoria ) ).collect( Collectors.toList() );
-
-			if ( outras != null && outras.size() > 0 )
-			{
-				StringBuilder sb = new StringBuilder();
-				outras.forEach( c -> sb.append( c.getDescricao() ) );
-
-				throw new RuntimeException( "Essa chamada já existe em outra categoria ( " + outras.toString() + " )." );
-			}
-		}
+//		if ( midia != null )
+//		{ 
+//			List<Categoria> outras = midia.getCategorias().stream().filter( cat -> !cat.equals( categoria ) ).collect( Collectors.toList() );
+//
+//			if ( outras != null && outras.size() > 0 )
+//			{
+//				StringBuilder sb = new StringBuilder();
+//				outras.forEach( c -> sb.append( c.getDescricao() ) );
+//
+//				throw new RuntimeException( "Essa chamada já existe em outra categoria ( " + outras.toString() + " )." );
+//			}
+//		}
 
 		if ( StringUtils.isBlank( descricao ) )
 			descricao = multiPartFile.getOriginalFilename();
