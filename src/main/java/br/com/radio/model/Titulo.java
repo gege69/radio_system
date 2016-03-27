@@ -67,13 +67,13 @@ public class Titulo implements Serializable {
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "datapagamento", nullable = false )
+	@Column( name = "datapagamento")
 	private Date dataPagamento;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "datacancelamento", nullable = false )
+	@Column( name = "datacancelamento")
 	private Date dataCancelamento;
 	
 	@Column(name="numeronotafiscal")
@@ -100,10 +100,10 @@ public class Titulo implements Serializable {
 	@Column(name="valor_pago", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorPago;
 	
-	@Column(name="linhadigitavel")
+	@Column(name="linhadigitavel", columnDefinition = "TEXT")
 	private String linhadigitavel;
 	
-	@Column(name="historico")
+	@Column(name="historico", columnDefinition = "TEXT")
 	private String historico;
 
 	public Long getIdTitulo()

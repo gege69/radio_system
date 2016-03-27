@@ -3,8 +3,6 @@ package br.com.radio.web;
 import java.security.Principal;
 import java.util.List;
 
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +23,11 @@ import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
+import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
+import br.com.radio.repository.TituloRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
 
@@ -46,6 +46,9 @@ public class ClienteController extends AbstractController {
 	
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private TituloRepository tituloRepo;
 	
 	
 	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
@@ -279,6 +282,29 @@ public class ClienteController extends AbstractController {
 		else
 			return null;
 	}
+	
+	
+	
+	@RequestMapping( value = { "/clientes/{idCliente}/titulos", "/api/clientes/{idCliente}/titulos" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<Titulo> listTitulos( 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+		
+		Pageable pageable = getPageable( pageNumber, limit, "desc", "dataVencimento" );
+		
+		Page<Titulo> titulosPage = tituloRepo.findAll( pageable );
+		
+		JSONBootstrapGridWrapper<Titulo> jsonList = new JSONBootstrapGridWrapper<Titulo>( titulosPage.getContent(), titulosPage.getTotalElements() );
+
+		return jsonList;
+	}
+	
 	
 }
 

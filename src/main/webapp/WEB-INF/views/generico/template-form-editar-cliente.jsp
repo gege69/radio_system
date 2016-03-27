@@ -194,7 +194,7 @@
                        data-pagination="true"
                        data-page-size=3
                        data-locale = "pt_BR"
-                       data-query-params="queryParamsCondicoesComerciais" >
+                       data-query-params="queryParamsCondicoesComerciais">
                       <thead>
                         <tr>
                             <th data-field="tipoTaxa.descricao">Descrição Taxa</th>
@@ -238,7 +238,39 @@
                 
                 </div>
                 <div id="divPagamentos" class="tab-pane fade in active">
-                  teste pagamentos
+                  <div class="col-lg-10 col-md-10">
+                    <table  
+                       id="tablePagamentosTitulos"
+                       data-toggle="table"
+                       data-url="${context}/clientes/${idCliente}/pagamentos"
+                       data-height="200"
+                       data-side-pagination="server"
+                       data-pagination="true"
+                       data-page-size=3
+                       data-locale="pt_BR"
+                       data-query-params="queryParamsPag">
+                      <thead>
+                        <tr>
+                            <th data-field="idTitulo">Título</th>
+                            <th data-field="dataEmissao">Emissão</th>
+                            <th data-field="dataVencimento">Vencimento</th>
+                            <th data-field="dataPagamento">Pagamento</th>
+                            <th data-field="dataCancelamento">Cancelamento</th>
+                            <th data-field="valor_total">Valor</th>
+                            <th data-field="valor_descontos">Descontos</th>
+                            <th data-field="valor_pago">Vl. Pago</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </div>
+                  
+                  <div class="col-lg-2 col-md-2">
+                    <div class="">
+                      <a class="btn btn-default" href="#" >
+                        <i class="fa fa-plus"></i>
+                        Inserir Título</a>
+                    </div>            
+                  </div>                
                 </div>
                 <div id="divUsuarios" class="tab-pane fade in active">
                   teste usuarios

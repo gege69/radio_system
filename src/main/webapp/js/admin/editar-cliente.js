@@ -1,11 +1,50 @@
 var maskBehaviorTel = function (val) {
     return val.replace(/\D/g, '').length === 11 ? '00000-0000' : '0000-00009';
-  };
+};
   
 var optionsTel = {onKeyPress: function(val, e, field, options) {
           field.mask(maskBehaviorTel.apply({}, arguments), options);
       }
-  };
+};
+
+
+//Tabela de Condições Comerciais
+var $tableCC = $('#tableCondicoesComerciais');
+
+function queryParamsCondicoesComerciais(params) {
+
+ params.pageNumber = $tableCC.bootstrapTable('getOptions').pageNumber;
+ 
+ return params;
+};
+
+
+function valorFormatter(index, row) {
+ 
+     var stringSimbolo = "";
+     
+     if ( row.operacaoTaxa == "PORCENTAGEM")
+         stringSimbolo = " %";
+     else
+         stringSimbolo = " R$";
+     
+     return row.valor + stringSimbolo;
+};
+
+
+//Tabela de Titulos( pagamentos )
+var $tablePag = $('#tablePagamentosTitulos');
+
+debugger;
+
+var queryParamsPag = function(params) {
+
+     params.pageNumber = $tablePag.bootstrapTable('getOptions').pageNumber;
+     
+     return params;
+};
+
+debugger;
 
 var getDados = function()
 {
@@ -43,7 +82,7 @@ var getDados = function()
         
         jump('ncmForm');
     });
-}
+};
 
 
 var getResumo = function()
@@ -61,7 +100,7 @@ var getResumo = function()
         $('#formResumo').populate(json);
     });
 
-}
+};
 
 
 
@@ -134,7 +173,7 @@ var removerTelefone = function( element )
     $div.remove();
     
     refreshLinkRemoverTelefone();
-}
+};
 
 var addTelefone = function() {
     
@@ -147,31 +186,9 @@ var refreshLinkRemoverTelefone = function() {
     $('.removertelefone').on('click', function(event){
         removerTelefone( $(this) );
      });
-}
+};
 
 
-// Tabela de Condições Comerciais
-var $tableCC = $('#tableCondicoesComerciais');
-
-function queryParamsCondicoesComerciais(params) {
-
-    params.pageNumber = $tableCC.bootstrapTable('getOptions').pageNumber;
-    
-    return params;
-}
-
-
-function valorFormatter(index, row) {
-    
-    var stringSimbolo = "";
-    
-    if ( row.operacaoTaxa == "PORCENTAGEM")
-        stringSimbolo = " %";
-    else
-        stringSimbolo = " R$";
-    
-    return row.valor + stringSimbolo;
-}
 
 
 $(function(){
