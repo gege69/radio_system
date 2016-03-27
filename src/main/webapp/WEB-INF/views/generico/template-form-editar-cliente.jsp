@@ -1,3 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="context" value="${pageContext.request.contextPath}" />
+
           <form class="form-horizontal" id="clienteform" action="#" method="POST">
           
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -156,26 +159,67 @@
                 </div>            
               </div>
             </div>
+
+          </form>
             
-            <div class="spacer-vertical10"></div>
+
+
+          <div class="row" >
+            <div class="col-lg-12">
             
-            <div class="row">
-              <div class="col-lg-12 col-md-12">
-                <ul class="nav nav-tabs">
-                  <li role="presentation" class="active"><a href="#">Resumo Financeiro</a></li>
-                  <li role="presentation"><a href="#">Condições Comerciais</a></li>
-                  <li role="presentation"><a href="#">Pagamentos</a></li>
-                  <li role="presentation"><a href="#">Usuários</a></li>
-                </ul>
+              <div class="spacer-vertical10"></div>
+              
+              <div class="row">
+                <div class="col-lg-12 col-md-12">
+                  <ul class="nav nav-tabs" id="abas">
+                    <li><a data-toggle="tab" href="#divResumoFinanceiro">Resumo Financeiro</a></li>
+                    <li><a data-toggle="tab" href="#divCondicoesComerciais">Condições Comerciais</a></li>
+                    <li><a data-toggle="tab" href="#divPagamentos">Pagamentos</a></li>
+                    <li><a data-toggle="tab" href="#divUsuarios">Usuários</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="spacer-vertical10"></div>
+            
+              <div class="tab-content">
+                <div id="divCondicoesComerciais" class="tab-pane fade in active">
+                  <div class="col-lg-10 col-md-10 text-center">
+                    <table  
+                       id="tableCondicoesComerciais"
+                       data-toggle="table"
+                       data-url="${context}/clientes/${idCliente}/condicoescomerciais"
+                       data-height="200"
+                       data-side-pagination="server"
+                       data-pagination="true"
+                       data-page-size=3
+                       data-locale = "pt_BR"
+                       data-query-params="queryParamsCondicoesComerciais" >
+                      <thead>
+                        <tr>
+                            <th data-field="tipoTaxa.descricao">Descrição Taxa</th>
+                            <th data-field="valor" data-formatter="valorFormatter">Valor</th>
+                            <th data-field="dataAlteracao">Data Alteração</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  
+                  </div>
+                </div>
+                <div id="divResumoFinanceiro" class="tab-pane fade in active">
+                  teste
+                </div>
+                <div id="divPagamentos" class="tab-pane fade in active">
+                  teste pagamentos
+                </div>
+                <div id="divUsuarios" class="tab-pane fade in active">
+                  teste usuarios
+                </div>
               </div>
             </div>
+          </div>
             
-            
-            <div class="spacer-vertical40"></div>
-            
-          </form>
-
-
+          <hr>
 
 
 

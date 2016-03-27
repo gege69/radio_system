@@ -131,6 +131,30 @@ var refreshLinkRemoverTelefone = function() {
 }
 
 
+// Tabela de Condições Comerciais
+var $tableCC = $('#tableCondicoesComerciais');
+
+function queryParamsCondicoesComerciais(params) {
+
+    params.pageNumber = $tableCC.bootstrapTable('getOptions').pageNumber;
+    
+    return params;
+}
+
+
+function valorFormatter(index, row) {
+    
+    var stringSimbolo = "";
+    
+    if ( row.operacaoTaxa == "PORCENTAGEM")
+        stringSimbolo = " %";
+    else
+        stringSimbolo = " R$";
+    
+    return row.valor + stringSimbolo;
+}
+
+
 $(function(){
 
     var token = $("input[name='_csrf']").val();
@@ -152,4 +176,7 @@ $(function(){
     });
     
     refreshLinkRemoverTelefone();
+    
+    $("#abas li:eq(1) a").tab('show'); 
+    
 });

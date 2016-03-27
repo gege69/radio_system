@@ -33,6 +33,10 @@ public class TipoTaxa implements Serializable {
 	
 	@Column(name="por_ambiente", nullable = false )
 	private Boolean por_ambiente;
+	
+	// Determina se é negativo ou positivo
+	@Column(name="operacao", nullable = false)
+	private String operacao;
 
 	
 	public Long getIdTipotaxa()

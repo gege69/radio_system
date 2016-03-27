@@ -9,9 +9,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
+import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.Telefone;
+import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
 import br.com.radio.repository.TelefoneRepository;
@@ -27,7 +30,9 @@ public class ClienteService {
 
 	@Autowired
 	private CondicaoComercialRepository ccRepo;
-
+	
+	@Autowired 
+	private AmbienteRepository ambienteRepo;
 
 
 	@Transactional
@@ -66,7 +71,11 @@ public class ClienteService {
 				{
 					CondicaoComercial ccNova = new CondicaoComercial();
 					BeanUtils.copyProperties( ccDefault, ccNova );
+
+					ccNova.setIdCondcom( null );
 					ccNova.setCliente( clienteVO );
+					
+					ccRepo.save( ccNova );
 				}
 			}
 		}
@@ -87,6 +96,23 @@ public class ClienteService {
 		}
 
 		return clienteVO;
+	}
+	
+	
+	public ClienteResumoFinanceiroDTO getResumoFinanceiro( Cliente cliente )
+	{
+		List<Ambiente> ambientes = ambienteRepo.findByCliente( cliente );
+		
+		Long ativos = ambientes.stream().filter( a -> a.getAtivo() ).count();
+		Long inativos = ambientes.stream().filter( a -> !a.getAtivo() ).count();
+		
+		ClienteResumoFinanceiroDTO dto = new ClienteResumoFinanceiroDTO();
+		
+		dto.setAmbientesAtivos( ativos.intValue() );
+		dto.setAmbientesInativos( inativos.intValue() );
+		dto.setTotalAmbientes( ambientes.size() );
+		
+		return dto;
 	}
 	
 

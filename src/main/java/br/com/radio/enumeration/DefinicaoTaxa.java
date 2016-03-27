@@ -1,6 +1,6 @@
 package br.com.radio.enumeration;
 
-public enum OperacaoTaxa {
+public enum DefinicaoTaxa {
 
 	VALOR,
 	PORCENTAGEM;

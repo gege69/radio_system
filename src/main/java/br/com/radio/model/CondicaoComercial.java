@@ -3,6 +3,8 @@ package br.com.radio.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,11 +19,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
-import br.com.radio.enumeration.OperacaoTaxa;
+import br.com.radio.enumeration.DefinicaoTaxa;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -66,10 +71,13 @@ public class CondicaoComercial implements Serializable {
 	// Porcentagem ou Valor 
 	@Enumerated(EnumType.STRING)
 	@Column( name = "operacaotaxa" , columnDefinition= " TEXT default 'GERENCIADOR' ")
-	private OperacaoTaxa operacaoTaxa;	
+	private DefinicaoTaxa operacaoTaxa;	
 	
 	@Column(name="valor", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valor;
+	
+	@Transient
+	private Map<String, String> ccView = new HashMap<String,String>();
 
 	public Long getIdCondcom()
 	{
@@ -111,12 +119,12 @@ public class CondicaoComercial implements Serializable {
 		this.dataAlteracao = dataAlteracao;
 	}
 
-	public OperacaoTaxa getOperacaoTaxa()
+	public DefinicaoTaxa getOperacaoTaxa()
 	{
 		return operacaoTaxa;
 	}
 
-	public void setOperacaoTaxa( OperacaoTaxa operacaoTaxa )
+	public void setOperacaoTaxa( DefinicaoTaxa operacaoTaxa )
 	{
 		this.operacaoTaxa = operacaoTaxa;
 	}
@@ -166,6 +174,17 @@ public class CondicaoComercial implements Serializable {
 			return false;
 		return true;
 	}
-	
+
+	@JsonAnyGetter
+	public Map<String, String> getCcView()
+	{
+		return ccView;
+	}
+
+	@JsonAnySetter
+	public void setCcView( Map<String, String> ccView )
+	{
+		this.ccView = ccView;
+	}
 	
 }

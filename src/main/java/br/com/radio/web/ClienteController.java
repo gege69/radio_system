@@ -1,7 +1,10 @@
 package br.com.radio.web;
 
 import java.security.Principal;
+import java.util.List;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Cliente;
+import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.ClienteRepository;
+import br.com.radio.repository.CondicaoComercialRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
 
@@ -36,7 +42,10 @@ public class ClienteController extends AbstractController {
 	private ClienteRepository clienteRepo;
 	
 	@Autowired
-	private ClienteService adminService;
+	private CondicaoComercialRepository ccRepo;
+	
+	@Autowired
+	private ClienteService clienteService;
 	
 	
 	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
@@ -204,7 +213,7 @@ public class ClienteController extends AbstractController {
 				if ( cliente.getIdCliente() != null && cliente.getIdCliente() > 0 && !isAutorizado( usuario, cliente.getIdCliente() ) )
 					throw new RuntimeException("Não é possível alterar o Cliente");
 				
-				cliente  = adminService.saveCliente( cliente );
+				cliente  = clienteService.saveCliente( cliente );
 				
 				jsonResult = writeObjectAsString( cliente );
 			}
@@ -217,5 +226,59 @@ public class ClienteController extends AbstractController {
 
 		return jsonResult;
 	}
+	
+	
+	
+	@RequestMapping( value = { "/clientes/{idCliente}/condicoescomerciais", "/api/clientes/{idCliente}/condicoescomerciais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<CondicaoComercial> listCondicoesComerciais( @PathVariable Long idCliente,
+																@RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																@RequestParam(value="limit", required=false) Integer limit,
+																Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+
+		if ( !isAutorizado( usuario, idCliente ) )
+			return null;
+		
+		Cliente cliente = clienteRepo.findOne( idCliente );
+		
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "dataAlteracao" );
+		
+		Page<CondicaoComercial> ccPage = ccRepo.findByCliente( pageable, cliente );
+		
+		List<CondicaoComercial> list = ccPage.getContent();
+		
+		
+		JSONBootstrapGridWrapper<CondicaoComercial> jsonList = new JSONBootstrapGridWrapper<CondicaoComercial>( list, ccPage.getTotalElements() );
+
+		return jsonList;
+	}
+
+	
+	
+
+	@RequestMapping( value = { "/clientes/{idCliente}/resumo", "/api/clientes/{idCliente}/resumo" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody ClienteResumoFinanceiroDTO getResumo( @PathVariable Long idCliente, Principal principal  )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+		
+		Cliente cliente = clienteRepo.findOne( idCliente );
+
+		if ( isAutorizado( usuario, idCliente ) )
+		{
+			ClienteResumoFinanceiroDTO result = clienteService.getResumoFinanceiro( cliente );
+			
+			return result;
+		}
+		else
+			return null;
+	}
+	
 }
 
