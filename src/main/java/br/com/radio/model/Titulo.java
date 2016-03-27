@@ -47,6 +47,7 @@ public class Titulo implements Serializable {
 	@JoinColumn(name="id_cliente")
 	private Cliente cliente;
 	
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="id_usuario")
 	private Usuario usuario;

@@ -63,8 +63,8 @@
 
 <script type="text/javascript" src="${context}/js/admin/editar-cliente.js" async charset="UTF-8"></script>
 
-<script src="${context}/js/required/bootstrap-table/bootstrap-table.js" defer></script>
-<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" defer></script>
+<script src="${context}/js/required/bootstrap-table/bootstrap-table.js" ></script>
+<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" r></script>
 
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

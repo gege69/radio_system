@@ -50,9 +50,11 @@
 <script type="text/javascript" src="${context}/js/required/jsrender.min.js" defer></script>
 <script type="text/javascript" src="${context}/js/required/jquery.mask.min.js" defer></script>
 
+<link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 
 <script type="text/javascript" src="${context}/js/admin/editar-cliente.js" async charset="UTF-8"></script>
 
-
+<script src="${context}/js/required/bootstrap-table/bootstrap-table.js" ></script>
+<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" r></script>
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

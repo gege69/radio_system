@@ -35,16 +35,10 @@ function valorFormatter(index, row) {
 //Tabela de Titulos( pagamentos )
 var $tablePag = $('#tablePagamentosTitulos');
 
-debugger;
-
-var queryParamsPag = function(params) {
-
-     params.pageNumber = $tablePag.bootstrapTable('getOptions').pageNumber;
-     
-     return params;
+function queryParamsPag(params) {
+    params.pageNumber = $('#tablePagamentosTitulos').bootstrapTable('getOptions').pageNumber;
+    return params;
 };
-
-debugger;
 
 var getDados = function()
 {
@@ -189,6 +183,17 @@ var refreshLinkRemoverTelefone = function() {
 };
 
 
+var abreModalCondicaoComercial = function(){ 
+    
+    formReset($("formCondicaoComercial"));
+    
+    $("#myModalCondicaoComercial").modal({
+        show:true, 
+        backdrop: 'static',              
+        keyboard: false
+    });
+};
+
 
 
 $(function(){
@@ -216,5 +221,13 @@ $(function(){
     refreshLinkRemoverTelefone();
     
     $("#abas li:eq(1) a").tab('show'); 
-    
+
+    $("#btnInserirCondicaoComercial").click( function() {
+        abreModalCondicaoComercial();
+    });
+
+    $('#tablePagamentosTitulos').bootstrapTable({
+        queryParams : queryParamsPag
+    });
+
 });

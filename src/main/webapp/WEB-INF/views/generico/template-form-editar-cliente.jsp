@@ -207,14 +207,13 @@
                   
                   <div class="col-lg-2 col-md-2">
                     <div class="">
-                      <a class="btn btn-default" href="#" >
+                      <a class="btn btn-default" href="#" id="btnInserirCondicaoComercial" >
                         <i class="fa fa-plus"></i>
                         Inserir Condição</a>
                     </div>            
                   </div>
                 </div>
                 <div id="divResumoFinanceiro" class="tab-pane fade in active">
-                
                   <div class="col-lg-12 col-md-12">
                     <form action="#" id="formResumo" class="form-inline">
 
@@ -241,8 +240,7 @@
                   <div class="col-lg-10 col-md-10">
                     <table  
                        id="tablePagamentosTitulos"
-                       data-toggle="table"
-                       data-url="${context}/clientes/${idCliente}/pagamentos"
+                       data-url="${context}/clientes/${idCliente}/titulos"
                        data-height="200"
                        data-side-pagination="server"
                        data-pagination="true"
@@ -256,9 +254,9 @@
                             <th data-field="dataVencimento">Vencimento</th>
                             <th data-field="dataPagamento">Pagamento</th>
                             <th data-field="dataCancelamento">Cancelamento</th>
-                            <th data-field="valor_total">Valor</th>
-                            <th data-field="valor_descontos">Descontos</th>
-                            <th data-field="valor_pago">Vl. Pago</th>
+                            <th data-field="valorTotal">Valor</th>
+                            <th data-field="valorDescontos">Descontos</th>
+                            <th data-field="valorPago">Vl. Pago</th>
                         </tr>
                       </thead>
                     </table>
@@ -279,8 +277,8 @@
             </div>
           </div>
             
-          <hr>
 
+          <hr>
 
 
 <script id="viewTmplTelefones" type="text/x-jsrender"  charset="UTF-8">
@@ -317,3 +315,61 @@
 }
 
 </style>
+
+
+<div id="myModalCondicaoComercial" class="modal fade" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>Condição Comercial</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <form action="#" 
+                  id="formCondicaoComercial" 
+                  class="form-horizontal"
+                  method="POST">
+                  
+              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+              <input type="hidden" id="idClienteModal" name="idCliente" value="${idCliente}" >
+              
+              <div class="form-group">
+                <label for="posicaoVinheta" class="control-label col-sm-2 col-md-2">Tipo de Taxa</label>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                  <select class="form-control" id="tipoTaxa.idTipoTaxa" name="tipoTaxa.idTipotaxa">
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="qtdMusicas" class="control-label col-sm-2 col-md-2">Definição</label>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                  <select class="form-control" id="definicaoTaxa" name="definicaoTaxa">
+                    <option value="VALOR" >Valor</option>
+                    <option value="PORCENTAGEM" >Porcentagem</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-sm-2 col-md-2">Valor</label>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                  <input type="text" class="form-control double" id="valor" name="valor">
+                </div>
+              </div>
+
+            </form>
+          </div>
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnSalvarCondicao" data-dismiss="modal">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
