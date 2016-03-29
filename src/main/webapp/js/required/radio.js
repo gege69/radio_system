@@ -99,7 +99,7 @@ var formReset = function( form )
 {
 	removeErros(form);
 	
-	$(form).find(':input').not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
+	$(form).find(':input').not(':button, :submit, :reset, :checkbox, :radio').val('');
 	$(form).find(':checkbox, :radio').prop('checked', false);
 	
 }
@@ -346,7 +346,9 @@ function intersperse(array, something) {
 
 
 
-
+/**
+ * Copiar objetos com facilidade
+ */
 function extend(from, to)
 {
     if (from == null || typeof from != "object") return from;

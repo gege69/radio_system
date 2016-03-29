@@ -20,14 +20,19 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import br.com.radio.enumeration.DefinicaoTaxa;
+import br.com.radio.json.JSONBigDecimalDeserializer;
+import br.com.radio.json.JSONBigDecimalSerializer;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -53,11 +58,12 @@ public class CondicaoComercial implements Serializable {
 	private Long idCondcom;
 	
 	// Pode ser null
-	@JsonIgnore
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn( name="id_cliente")
 	private Cliente cliente;
 	
+	@NotNull(message ="Necessário escolher o Tipo de Taxa")
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn( name="id_tipotaxa", nullable = false)
 	private TipoTaxa tipoTaxa;
@@ -69,10 +75,14 @@ public class CondicaoComercial implements Serializable {
 	private Date dataAlteracao;
 	
 	// Porcentagem ou Valor 
+	@NotNull(message ="É preciso determinar se a condição é um VALOR absoluto ou uma PORCENTAGEM")
 	@Enumerated(EnumType.STRING)
 	@Column( name = "definicaotaxa" , columnDefinition= " TEXT default 'VALOR' ")
 	private DefinicaoTaxa definicaoTaxa;	
 	
+	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
+	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+	@NotNull(message ="O valor da Condição Comercial é obrigatório")
 	@Column(name="valor", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valor;
 	

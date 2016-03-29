@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +24,16 @@ import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
+import br.com.radio.model.TipoTaxa;
 import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
+import br.com.radio.repository.TipoTaxaRepository;
 import br.com.radio.repository.TituloRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
+import br.com.radio.util.UtilsStr;
 
 
 @Controller
@@ -49,6 +53,9 @@ public class ClienteController extends AbstractController {
 	
 	@Autowired
 	private TituloRepository tituloRepo;
+	
+	@Autowired
+	private TipoTaxaRepository tipoTaxaRepo;
 	
 	
 	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
@@ -151,7 +158,9 @@ public class ClienteController extends AbstractController {
 	// Só pode listar outros clientes se for administrador
 	@RequestMapping( value = { "/clientes", "/api/clientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody JSONBootstrapGridWrapper<Cliente> listClientes( @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+	public @ResponseBody JSONBootstrapGridWrapper<Cliente> listClientes( 
+																 @RequestParam(value="search", required=false) String search, 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
 																 Principal principal )
 	{
@@ -162,7 +171,18 @@ public class ClienteController extends AbstractController {
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", "razaosocial" );
 		
-		Page<Cliente> clientePage = clienteRepo.findAll( pageable );
+		Page<Cliente> clientePage = null;
+		
+		if ( StringUtils.isBlank( UtilsStr.notNull( search ) ) )
+			clientePage = clienteRepo.findAll( pageable );
+		else
+		{
+			String razaosocial = "%" + search + "%";
+			String nomefantasia = "%" + search + "%";
+			String cnpj = "%" + search + "%";
+
+			clientePage = clienteRepo.findByRazaosocialContainingOrNomefantasiaContainingOrCnpjContaining( pageable, razaosocial, nomefantasia, cnpj );
+		}
 		
 		JSONBootstrapGridWrapper<Cliente> jsonList = new JSONBootstrapGridWrapper<Cliente>( clientePage.getContent(), clientePage.getTotalElements() );
 
@@ -248,7 +268,7 @@ public class ClienteController extends AbstractController {
 		
 		Cliente cliente = clienteRepo.findOne( idCliente );
 		
-		Pageable pageable = getPageable( pageNumber, limit, "asc", "dataAlteracao" );
+		Pageable pageable = getPageable( pageNumber, limit, "desc", "dataAlteracao" );
 		
 		Page<CondicaoComercial> ccPage = ccRepo.findByCliente( pageable, cliente );
 		
@@ -262,6 +282,58 @@ public class ClienteController extends AbstractController {
 
 	
 	
+	@RequestMapping( value = { "/clientes/{idCliente}/condicoescomerciais", "/api/clientes/{idCliente}/condicoescomerciais" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveCondicaoComercial( @RequestBody @Valid CondicaoComercial condicaoComercialVO, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+					throw new RuntimeException("Usuário não encontrado");
+				
+				clienteService.saveCondicaoComercial( usuario, condicaoComercialVO );
+
+				jsonResult = writeObjectAsString( condicaoComercialVO );
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+	
+
+
+	@RequestMapping( value = { "/clientes/{idCliente}/condicoescomerciais/{idCondcom}", "/api/clientes/{idCliente}/condicoescomerciais/{idCondcom}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody CondicaoComercial getCondicaoComercial( @PathVariable Long idCliente, @PathVariable Long idCondcom, Principal principal  )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+
+		if ( isAutorizado( usuario, idCliente ) ){
+			
+			CondicaoComercial cc = ccRepo.findOne( idCondcom );
+			return cc;
+		}
+		else
+			return null;
+	}
+
+
 
 	@RequestMapping( value = { "/clientes/{idCliente}/resumo", "/api/clientes/{idCliente}/resumo" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody ClienteResumoFinanceiroDTO getResumo( @PathVariable Long idCliente, Principal principal  )
@@ -305,6 +377,27 @@ public class ClienteController extends AbstractController {
 		return jsonList;
 	}
 	
+	
+	
+	@RequestMapping( value = { "/clientes/{idCliente}/tipotaxas", "/api/clientes/{idCliente}/tipotaxas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<TipoTaxa> listTipoTaxas( 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+		
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "descricao" );
+		
+		Page<TipoTaxa> titulosPage = tipoTaxaRepo.findAll( pageable );
+		
+		JSONBootstrapGridWrapper<TipoTaxa> jsonList = new JSONBootstrapGridWrapper<TipoTaxa>( titulosPage.getContent(), titulosPage.getTotalElements() );
+
+		return jsonList;
+	}
 	
 }
 

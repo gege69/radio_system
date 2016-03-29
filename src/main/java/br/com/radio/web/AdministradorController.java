@@ -270,6 +270,19 @@ public class AdministradorController extends AbstractController {
 		return "admin/upload-horoscopo";
 	}
 	
+	
+	
+	@RequestMapping(value="/admin/tipotaxas/view", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String tipoTaxas( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		return "admin/tipo-taxas";
+	}
 
 
 	@RequestMapping( value = { "/admin/midias", "/api/admin/midias" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )

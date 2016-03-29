@@ -1,5 +1,6 @@
 package br.com.radio.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -14,6 +15,7 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.Telefone;
+import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
@@ -113,6 +115,31 @@ public class ClienteService {
 		dto.setTotalAmbientes( ambientes.size() );
 		
 		return dto;
+	}
+	
+	
+	@Transactional
+	public CondicaoComercial saveCondicaoComercial( Usuario usuario, CondicaoComercial ccVO ){
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException( "Não foi possível determinar o Cliente para a Condição Comercial" );
+		
+		if ( ccVO.getIdCondcom() == null || ccVO.getIdCondcom() <= 0 )
+		{
+			Long qtd = ccRepo.countByClienteAndTipoTaxaAndDefinicaoTaxaAndValor( usuario.getCliente(), ccVO.getTipoTaxa(), ccVO.getDefinicaoTaxa(), ccVO.getValor() );
+			
+			if ( qtd > 0 )
+				throw new RuntimeException("Essa condição comercial para esse cliente já existe. Não é possível incluir.");
+		}
+
+		if ( ccVO.getCliente() == null )
+			ccVO.setCliente( usuario.getCliente() );
+
+		ccVO.setDataAlteracao( new Date() );
+		
+		ccRepo.save( ccVO );
+		
+		return ccVO;
 	}
 	
 

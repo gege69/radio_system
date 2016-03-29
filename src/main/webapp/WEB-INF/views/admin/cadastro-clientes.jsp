@@ -30,6 +30,7 @@
                  data-pagination="true"
                  data-page-size=6
                  data-locale = "pt_BR"
+                 data-search="true"
                  data-query-params="queryParams" >
                 <thead>
                   <tr>

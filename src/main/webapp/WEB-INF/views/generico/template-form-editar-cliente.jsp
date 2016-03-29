@@ -187,7 +187,6 @@
                   <div class="col-lg-10 col-md-10">
                     <table  
                        id="tableCondicoesComerciais"
-                       data-toggle="table"
                        data-url="${context}/clientes/${idCliente}/condicoescomerciais"
                        data-height="200"
                        data-side-pagination="server"
@@ -323,6 +322,10 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">x</button>
         <h3>Condição Comercial</h3>
+        
+        <div class="row" id="alertAreaModal">
+        </div>
+        
       </div>
       <div class="modal-body">
         <div class="row">
@@ -333,21 +336,22 @@
                   method="POST">
                   
               <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-              <input type="hidden" id="idClienteModal" name="idCliente" value="${idCliente}" >
+              <input type="hidden" id="idClienteModal" name="cliente[idCliente]" value="${idCliente}" >
+              <input type="hidden" id="idCondconModal" name="idCondcom" value="" >
               
               <div class="form-group">
-                <label for="posicaoVinheta" class="control-label col-sm-2 col-md-2">Tipo de Taxa</label>
-                <div class="col-lg-2 col-md-3 col-sm-4">
-                  <select class="form-control" id="tipoTaxa.idTipoTaxa" name="tipoTaxa.idTipotaxa">
+                <label for="posicaoVinheta" class="control-label col-sm-2 col-md-2 col-lg-2">Tipo de Taxa</label>
+                <div class="col-lg-10 col-md-10 col-sm-10">
+                  <select class="form-control" id="idTipoTaxa" name="tipoTaxa[idTipotaxa]">
                   </select>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="qtdMusicas" class="control-label col-sm-2 col-md-2">Definição</label>
-                <div class="col-lg-2 col-md-3 col-sm-4">
+                <label for="definicaoTaxa" class="control-label col-sm-2 col-md-2">Definição</label>
+                <div class="col-lg-7 col-md-8 col-sm-8">
                   <select class="form-control" id="definicaoTaxa" name="definicaoTaxa">
-                    <option value="VALOR" >Valor</option>
+                    <option value="VALOR" selected="selected" >Valor</option>
                     <option value="PORCENTAGEM" >Porcentagem</option>
                   </select>
                 </div>
@@ -355,8 +359,8 @@
               
               <div class="form-group">
                 <label for="login" class="control-label col-sm-2 col-md-2">Valor</label>
-                <div class="col-lg-2 col-md-3 col-sm-4">
-                  <input type="text" class="form-control double" id="valor" name="valor">
+                <div class="col-lg-7 col-md-8 col-sm-8">
+                  <input type="text" class="form-control money" id="valor" name="valor">
                 </div>
               </div>
 
@@ -367,7 +371,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-        <button class="btn btn-primary" id="btnSalvarCondicao" data-dismiss="modal">Salvar</button>
+        <button class="btn btn-primary" id="btnSalvarCondicao">Salvar</button>
       </div>
     </div>
   </div>

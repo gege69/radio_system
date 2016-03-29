@@ -36,7 +36,7 @@ public class TipoTaxa implements Serializable {
 	private String descricao;
 	
 	@Column(name="por_ambiente", nullable = false )
-	private Boolean por_ambiente;
+	private Boolean porambiente;
 	
 	// Determina se é cobrança ou desconto
 	@Enumerated(EnumType.STRING)
@@ -64,14 +64,14 @@ public class TipoTaxa implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public Boolean getPor_ambiente()
+	public Boolean getPorambiente()
 	{
-		return por_ambiente;
+		return porambiente;
 	}
 
-	public void setPor_ambiente( Boolean por_ambiente )
+	public void setPorambiente( Boolean porambiente )
 	{
-		this.por_ambiente = por_ambiente;
+		this.porambiente = porambiente;
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class TipoTaxa implements Serializable {
 	@Override
 	public String toString()
 	{
-		return String.format( "TipoTaxa [idTipotaxa=%s, descricao=%s, por_ambiente=%s]", idTipotaxa, descricao, por_ambiente );
+		return String.format( "TipoTaxa [idTipotaxa=%s, descricao=%s, por_ambiente=%s]", idTipotaxa, descricao, porambiente );
 	}
 
 	public OperacaoFinanceiraTaxa getOperacao()

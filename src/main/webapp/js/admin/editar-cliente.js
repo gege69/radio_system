@@ -13,22 +13,22 @@ var $tableCC = $('#tableCondicoesComerciais');
 
 function queryParamsCondicoesComerciais(params) {
 
- params.pageNumber = $tableCC.bootstrapTable('getOptions').pageNumber;
- 
- return params;
+    params.pageNumber = $tableCC.bootstrapTable('getOptions').pageNumber;
+     
+    return params;
 };
 
 
 function valorFormatter(index, row) {
  
-     var stringSimbolo = "";
+    var stringSimbolo = "";
      
-     if ( row.operacaoTaxa == "PORCENTAGEM")
-         stringSimbolo = " %";
-     else
-         stringSimbolo = " R$";
-     
-     return row.valor + stringSimbolo;
+    if ( row.definicaoTaxa == "PORCENTAGEM")
+        stringSimbolo = " %";
+    else
+        stringSimbolo = " R$";
+    
+    return row.valor + stringSimbolo;
 };
 
 
@@ -182,10 +182,99 @@ var refreshLinkRemoverTelefone = function() {
      });
 };
 
+var getTipoTaxas = function()
+{
+    var url = buildUrl( "/clientes/{idCliente}/tipotaxas", {
+        idCliente : $("#idCliente").val(),
+    }); 
+    
+    $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json'
+    }).done( function(json) {
+        
+        $("#idTipoTaxa").empty();
+        
+        $.each(json.rows, function (i, tx) {
+            
+            var descricao = '';
+            
+            if ( tx.por_ambiente )
+                descricao = tx.descricao + " (por ambiente)";
+            else
+                descricao = tx.descricao;
+            
+            $('#idTipoTaxa').append($('<option>', { 
+                value: tx.idTipotaxa,
+                text : descricao  
+            }));
+        });
+        
+        jump('ncmForm');
+    });
+};
+
+
+var salvarCondicaoComercial = function(){
+    
+    if ( validaForm() ){
+        
+        var dados = JSON.stringify( $('#formCondicaoComercial').serializeJSON() );
+        
+        var url = buildUrl( "/clientes/{idCliente}/condicoescomerciais", {
+            idCliente : $("#idCliente").val(),
+        }); 
+
+        $.ajax({
+            
+            type: 'POST',
+            contentType: 'application/json',
+            url: url,
+            dataType: 'json',
+            data: dados 
+            
+        }).done( function(json){ 
+
+            if ( json.idCondcom && json.idCondcom > 0){
+                preencheAlertGeral( "alertArea", "Registro de Condição Comercial salvo com sucesso.", "success" );
+                $('#tableCondicoesComerciais').bootstrapTable('refresh');
+                $('#myModalCondicaoComercial').modal('hide');
+            }
+            else{
+                $('#myModalCondicaoComercial').modal('hide');
+                preencheErros( json.errors );
+            }
+        });
+    }
+    
+};
+
+
+var editCondicaoComercial = function( e, row, el )
+{
+    var rowcopy = extend( row );
+
+    var tipoTaxa = rowcopy.tipoTaxa;
+    if ( tipoTaxa != null )
+        $('#idTipoTaxa').val( tipoTaxa.idTipotaxa );
+    
+    formReset( $('#formCondicaoComercial') );
+
+    $("#idClienteModal").val($("#idCliente").val());
+   
+    $('#formCondicaoComercial').populate(rowcopy);
+}
+
 
 var abreModalCondicaoComercial = function(){ 
     
-    formReset($("formCondicaoComercial"));
+    getTipoTaxas();
+  
+    $("#idClienteModal").val($("#idCliente").val());
+
+    $("#definicaoTaxa").val('VALOR');
     
     $("#myModalCondicaoComercial").modal({
         show:true, 
@@ -210,6 +299,7 @@ $(function(){
     $(".ddd").mask('000');        
     $(".cnpj").mask('00.000.000/0000-00'); 
     $(".inteiro").mask('000');        
+    $(".money").mask('000.000,00', {reverse: true});
     
     getDados();
     getResumo();
@@ -223,11 +313,27 @@ $(function(){
     $("#abas li:eq(1) a").tab('show'); 
 
     $("#btnInserirCondicaoComercial").click( function() {
+        formReset($("#formCondicaoComercial"));
+
         abreModalCondicaoComercial();
     });
 
+    $('#tableCondicoesComerciais').on('click-row.bs.table', function( e, row, el ){
+        abreModalCondicaoComercial();
+        editCondicaoComercial( e, row, el );
+    });
+    
     $('#tablePagamentosTitulos').bootstrapTable({
         queryParams : queryParamsPag
     });
+
+    $('#tableCondicoesComerciais').bootstrapTable({
+        queryParams : queryParamsCondicoesComerciais
+    });
+
+    $("#btnSalvarCondicao").click( function() {
+        salvarCondicaoComercial();
+    });
+
 
 });
