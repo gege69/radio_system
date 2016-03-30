@@ -95,6 +95,7 @@ public class Titulo implements Serializable {
 	@Column(name="valor_acresc", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorAcresc;
 	
+	// LIQUIDO + TAXAS + JUROS + ACRESCIMOS - DESCONTOS
 	@Column(name="valor_total", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorTotal;
 	

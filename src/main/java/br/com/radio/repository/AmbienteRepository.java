@@ -14,6 +14,8 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 	Page<Ambiente> findByCliente( Pageable pageable, Cliente cliente );
 	
 	List<Ambiente> findByCliente( Cliente cliente );
+
+	List<Ambiente> findByClienteAndAtivo( Cliente cliente, Boolean ativo );
 	
 	List<Ambiente> findByAtivo( Boolean ativo );
 	

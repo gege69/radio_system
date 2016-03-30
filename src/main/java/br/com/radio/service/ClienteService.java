@@ -1,25 +1,36 @@
 package br.com.radio.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import junit.framework.Assert;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.radio.dto.cliente.ClienteRelatorioDTO;
 import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.Telefone;
+import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
 import br.com.radio.repository.TelefoneRepository;
+import br.com.radio.repository.TituloRepository;
+import br.com.radio.util.UtilsStr;
 
 @Service
 public class ClienteService {
@@ -35,6 +46,12 @@ public class ClienteService {
 	
 	@Autowired 
 	private AmbienteRepository ambienteRepo;
+	
+	@Autowired
+	private UsuarioService usuarioService;
+	
+	@Autowired
+	private TituloRepository tituloRepo;
 
 
 	@Transactional
@@ -142,5 +159,65 @@ public class ClienteService {
 		return ccVO;
 	}
 	
+
+	public Page<ClienteRelatorioDTO> getRelatorioCliente( Pageable pageable, String search ){
+
+		Page<Cliente> paginaCliente = clienteRepo.findAll( pageable );
+		
+		if ( StringUtils.isBlank( UtilsStr.notNull( search ) ) )
+			paginaCliente = clienteRepo.findAll( pageable );
+		else
+		{
+			String razaosocial = "%" + search + "%";
+			String nomefantasia = "%" + search + "%";
+			String cnpj = "%" + search + "%";
+
+			paginaCliente = clienteRepo.findByRazaosocialContainingOrNomefantasiaContainingOrCnpjContaining( pageable, razaosocial, nomefantasia, cnpj );
+		}
+		
+		List<ClienteRelatorioDTO> listaRelatorio = new ArrayList<ClienteRelatorioDTO>();
+		
+		for ( Cliente cliente : paginaCliente.getContent() ){
+			
+			// implementar
+			Usuario usuario = usuarioService.getUsuarioMaisRelevantePorCliente( cliente );
+			
+			List<Titulo> titulosAbertos = tituloRepo.findByClienteAndDataPagamentoIsNullAndValorPago( cliente, BigDecimal.ZERO );
+			
+			// Pode ser que precise de alguma informação dos ambientes... por isso o select qualquer coisa troco por um count
+			List<Ambiente> ambientes = ambienteRepo.findByClienteAndAtivo( cliente, true );
+			
+			Integer totalAmbientes = ambientes.size();
+			
+			BigDecimal totalLiquido = BigDecimal.ZERO;
+			BigDecimal totalDescontos = BigDecimal.ZERO;
+			BigDecimal totalPagar = BigDecimal.ZERO;
+			
+			for ( Titulo tit : titulosAbertos )
+			{
+				totalLiquido = totalLiquido.add( tit.getValorLiquido() ).add( tit.getValorTaxas() ).add( tit.getValorJuros() ).add( tit.getValorAcresc() );
+				totalDescontos = totalDescontos.add( tit.getValorDescontos() );
+				
+				totalPagar = totalPagar.add( tit.getValorTotal() );
+			}
+			
+			BigDecimal verificarConta = totalLiquido.subtract( totalDescontos );
+			
+			if ( verificarConta.compareTo( totalPagar ) != 0 )
+				System.out.println("DEU ALGUMA COISA ERRADA NOS CALCULOS");
+			
+			
+			ClienteRelatorioDTO clienteRelatorioDTO = new ClienteRelatorioDTO( usuario, totalAmbientes, cliente, totalLiquido, totalDescontos, totalPagar );
+			
+			listaRelatorio.add( clienteRelatorioDTO );
+		}
+		
+		PageImpl<ClienteRelatorioDTO> paginaRelatorio = new PageImpl<ClienteRelatorioDTO>( listaRelatorio, pageable, paginaCliente.getTotalElements() );
+		
+		return paginaRelatorio;
+	}
+
+
+
 
 }

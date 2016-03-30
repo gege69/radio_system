@@ -1,5 +1,6 @@
 package br.com.radio.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -14,5 +15,7 @@ public interface TituloRepository extends JpaRepository<Titulo, Long> {
 	List<Titulo> findByCliente( Cliente cliente );
 	
 	Page<Titulo> findByCliente( Pageable pageable, Cliente cliente );
+
+	List<Titulo> findByClienteAndDataPagamentoIsNullAndValorPago( Cliente cliente, BigDecimal valorPago );
 
 }

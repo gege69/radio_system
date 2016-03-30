@@ -21,7 +21,7 @@
               <div class="row row-centered">
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/admin/listagem-cadastro">
+                    <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/admin/relatorio-clientes">
                       <i class="fa fa-3x icone-main fa-list-ol"></i>
                       <span class="label-botao-main">Listagem Clientes</span>
                     </a>

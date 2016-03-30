@@ -189,7 +189,7 @@
 
 <style type="text/css">
 
-#table-generos tr{
+#tableTipoTaxas tr{
   cursor: pointer;
 }
 

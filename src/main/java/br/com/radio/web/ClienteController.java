@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.radio.dto.cliente.ClienteRelatorioDTO;
 import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Cliente;
@@ -150,7 +151,6 @@ public class ClienteController extends AbstractController {
 	
 	
 	
-	// Só pode listar outros clientes se for administrador
 	@RequestMapping( value = { "/clientes", "/api/clientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody JSONBootstrapGridWrapper<Cliente> listClientes( 
@@ -372,7 +372,47 @@ public class ClienteController extends AbstractController {
 		return jsonList;
 	}
 	
+
 	
+	@RequestMapping(value="/admin/relatorio-clientes", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String relatorioClientes( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		Long quantidade = clienteRepo.count();
+		
+		model.addAttribute( "qtdClientes", quantidade.intValue() );
+		
+		return "admin/relatorio-clientes";
+	}
+
+
+
 	
+	@RequestMapping( value = { "/admin/clientes/searches/relatorio", "/api/clientes/searches/relatorio" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody JSONBootstrapGridWrapper<ClienteRelatorioDTO> relatorioClientes( 
+																 @RequestParam(value="search", required=false) String search, 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+		
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "razaosocial" );
+		
+		Page<ClienteRelatorioDTO> clienteRelatorioPage = clienteService.getRelatorioCliente( pageable, search );
+		
+		JSONBootstrapGridWrapper<ClienteRelatorioDTO> jsonList = new JSONBootstrapGridWrapper<ClienteRelatorioDTO>( clienteRelatorioPage.getContent(), clienteRelatorioPage.getTotalElements() );
+
+		return jsonList;
+	}
 }
 

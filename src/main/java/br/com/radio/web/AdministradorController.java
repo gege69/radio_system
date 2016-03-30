@@ -43,6 +43,7 @@ import br.com.radio.model.SignoMidia;
 import br.com.radio.model.TipoTaxa;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.PerfilRepository;
@@ -99,6 +100,7 @@ public class AdministradorController extends AbstractController {
 		
 		return "admin/painel";
 	}
+
 
 
 

@@ -100,6 +100,10 @@ public class Cliente implements Serializable {
 	@OneToMany( fetch = FetchType.LAZY, mappedBy="cliente" )
 	private List<Titulo> titulos;
 	
+	// Essa dia é a data padrão de pagamento do cliente todo mês
+	@Column( name = "diavencimento")
+	private Integer diaVencimento;
+	
 	// Lista com as condiçoes comerciais
 	
 	@Column( name = "ativo" )
@@ -110,6 +114,7 @@ public class Cliente implements Serializable {
 		super();
 		this.ativo = false;
 		this.dataCriacao = new Date();
+		this.diaVencimento = 10;
 	}
 
 	public Long getIdCliente()
@@ -345,8 +350,16 @@ public class Cliente implements Serializable {
 		this.complemento = complemento;
 	}
 
-		
-	
+	public Integer getDiaVencimento()
+	{
+		return diaVencimento;
+	}
+
+	public void setDiaVencimento( Integer diaVencimento )
+	{
+		this.diaVencimento = diaVencimento;
+	}
+
 
 	
 }

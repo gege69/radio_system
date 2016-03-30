@@ -246,6 +246,14 @@ public class UsuarioService {
 		return usuario;
 	}
 
+
+
+	public Usuario getUsuarioMaisRelevantePorCliente( Cliente cliente ){
+		
+		return null;
+	}
+
+
 	
 	public Long countByLogin( String login )
 	{
