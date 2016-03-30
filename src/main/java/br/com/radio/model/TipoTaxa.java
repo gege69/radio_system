@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import br.com.radio.enumeration.OperacaoFinanceiraTaxa;
 
@@ -32,12 +33,14 @@ public class TipoTaxa implements Serializable {
 	@Column( name = "id_tipotaxa", nullable = false )
 	private Long idTipotaxa;
 	
-	@Column(name="descricao", columnDefinition="TEXT")
+	@NotNull(message="A Descrição é de preenchimento obrigatório")
+	@Column(name="descricao", columnDefinition="TEXT", nullable = false)
 	private String descricao;
 	
 	@Column(name="por_ambiente", nullable = false )
 	private Boolean porambiente;
 	
+	@NotNull(message="A Operação Financeira é de preenchimento obrigatório")
 	// Determina se é cobrança ou desconto
 	@Enumerated(EnumType.STRING)
 	@Column( name = "operacao" , columnDefinition= " TEXT default 'COBRANCA' ", nullable = false)
@@ -118,6 +121,13 @@ public class TipoTaxa implements Serializable {
 	{
 		this.operacao = operacao;
 	}
+
+	public TipoTaxa()
+	{
+		super();
+		this.porambiente = false;
+	}
 	
+
 	
 }

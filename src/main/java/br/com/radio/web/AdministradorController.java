@@ -40,15 +40,18 @@ import br.com.radio.model.Categoria;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.SignoMidia;
+import br.com.radio.model.TipoTaxa;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.SignoMidiaRepository;
+import br.com.radio.repository.TipoTaxaRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
+import br.com.radio.util.UtilsStr;
 
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
@@ -80,6 +83,10 @@ public class AdministradorController extends AbstractController {
 	
 	@Autowired
 	private SignoMidiaRepository signoMidiaRepo;
+
+	@Autowired
+	private TipoTaxaRepository tipoTaxaRepo;
+	
 	
 	@RequestMapping(value="/admin/painel", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
@@ -95,7 +102,7 @@ public class AdministradorController extends AbstractController {
 
 
 
-	@RequestMapping(value="/admin/generos/view", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/generos/searches", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String generos( ModelMap model, Principal principal )
 	{
@@ -272,19 +279,99 @@ public class AdministradorController extends AbstractController {
 	
 	
 	
-	@RequestMapping(value="/admin/tipotaxas/view", method=RequestMethod.GET)
+	@RequestMapping(value={ "/admin/tipotaxas/new" }, method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String tipoTaxas( ModelMap model, Principal principal )
+	public String novoTipoTaxa( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+
+		return "admin/editar-tipotaxas";
+	}
+
+
+	@RequestMapping(value="/admin/tipotaxas/searches", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String tipotaxas( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
-		return "admin/tipo-taxas";
+		Long quantidade = tipoTaxaRepo.count();
+		
+		model.addAttribute( "qtdTipotaxas", quantidade.intValue() );
+		
+		return "admin/cadastro-tipotaxas";
+	}
+	
+	
+	@RequestMapping(value={ "/admin/tipotaxas/{idTipotaxa}/view" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String editarTipoTaxa( @PathVariable Long idTipotaxa, ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		TipoTaxa tipoTaxa = tipoTaxaRepo.findOne( idTipotaxa );
+		
+		model.addAttribute( "idTipotaxa", tipoTaxa.getIdTipotaxa() );
+
+		return "admin/editar-tipotaxas";
+	}	
+
+
+	@RequestMapping( value = { "/admin/tipotaxas/{idTipotaxa}", "/api/admin/tipotaxas/{idTipotaxa}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody TipoTaxa getTipoTaxa( @PathVariable Long idTipotaxa )
+	{
+		TipoTaxa tipotaxa = tipoTaxaRepo.findOne( idTipotaxa );
+
+		return tipotaxa;
 	}
 
 
+
+	@RequestMapping( value = { "/admin/tipotaxas", "/api/admin/tipotaxas" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String saveTipoTaxa( @RequestBody @Valid TipoTaxa tipoTaxa, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+					throw new RuntimeException("Usuário não encontrado");
+				
+				tipoTaxaRepo.save( tipoTaxa );
+
+				jsonResult = writeObjectAsString( tipoTaxa );
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+
+
+	
 	@RequestMapping( value = { "/admin/midias", "/api/admin/midias" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
 																	@RequestParam(value="codigo", required = false) String codigo,  
@@ -570,6 +657,32 @@ public class AdministradorController extends AbstractController {
 		return jsonResult;
 	}
 	
+	
+	@RequestMapping( value = { "/admin/tipotaxas", "/api/admin/tipotaxas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<TipoTaxa> listTipoTaxas( 
+																 @RequestParam(value="search", required=false) String search, 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+			
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "descricao" );
+
+		Page<TipoTaxa> tipotaxaPage = null;
+		
+		if ( StringUtils.isBlank( UtilsStr.notNull( search ) ) )
+			tipotaxaPage = tipoTaxaRepo.findAll( pageable );
+		else
+			tipotaxaPage = tipoTaxaRepo.findByDescricaoContaining( pageable,  "%" + search + "%");
+		
+		JSONBootstrapGridWrapper<TipoTaxa> jsonList = new JSONBootstrapGridWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
+
+		return jsonList;
+	}
 	
 }
 

@@ -24,7 +24,7 @@
           
           <div class="spacer-vertical40"></div>
 
-          <form class="form-horizontal" id="generoform" action="#" method="POST">
+          <form class="form-horizontal" id="tipotaxasform" action="#" method="POST">
           
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <input type="hidden" id="idTipotaxa" name="idTipotaxa" value="${idTipotaxa}" >
@@ -34,7 +34,7 @@
               
                 <div class="form-group">
                   <label for="descricao" class="control-label col-sm-2 col-md-2">Descrição</label>
-                  <div class="col-sm-10 col-md-8">
+                  <div class="col-lg-7 col-sm-8 col-md-8">
                     <input type="text" class="form-control" id="descricao" name="descricao">
                   </div>
                 </div>
@@ -42,7 +42,7 @@
                 <div class="form-group">
                   <label for="porambiente" class="control-label col-sm-2 col-md-2">Por ambiente</label>
                   <div class="col-lg-7 col-md-8 col-sm-8">
-                    <div class="checkbox">
+                    <div class="checkbox" style="    margin-left: 21px;">
                       <input type="checkbox" id="porambiente" name="porambiente" value="true">
                     </div>
                   </div>
@@ -50,7 +50,7 @@
 
                 <div class="form-group">
                   <label for="operacao" class="control-label col-sm-2 col-md-2">Operação</label>
-                  <div class="col-lg-7 col-md-8 col-sm-8">
+                  <div class="col-lg-5 col-md-5 col-sm-6">
                     <select class="form-control" id="operacao" name="operacao">
                       <option value="COBRANCA" selected="selected" >Cobrança</option>
                       <option value="DESCONTO" >Desconto</option>
@@ -77,6 +77,11 @@
             
             <div class="row">
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="">
+                  <a class="btn btn-default" href="${context}/admin/tipotaxas/searches" >
+                    <i class="fa fa-arrow-left"></i>
+                    Voltar para Cadastro de Tipos de Taxa</a>
+                </div>    
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="pull-right">
@@ -105,8 +110,8 @@
 
   var getDados = function()
   {
-      var url = buildUrl( "/admin/generos/{idGenero}", {
-          idGenero : $("#idGenero").val(),
+      var url = buildUrl( "/admin/tipotaxas/{idTipotaxa}", {
+          idTipotaxa : $("#idTipotaxa").val(),
       }); 
       
       $.ajax({
@@ -116,9 +121,9 @@
           dataType: 'json'
       }).done( function(json) {
           
-          removeErros( $('#generoform') );
+          removeErros( $('#tipotaxasform') );
           
-          $('#generoform').populate(json);
+          $('#tipotaxasform').populate(json);
 
           jump('ncmForm');
       });
@@ -129,11 +134,11 @@
       
       var isOk = true;
       
-      removeErros( $('#generoform') );
+      removeErros( $('#tipotaxasform') );
       
       var arrayCampos = [
                           {field: "descricao",      desc : "Descrição"},
-                          {field: "nome",     desc : "Nome" } 
+                          {field: "operacao",     desc : "Operação" } 
                         ];
       
       isOk = validaCampos( arrayCampos );
@@ -145,9 +150,9 @@
       
       if ( validaForm() ){
           
-          var dados = JSON.stringify( $('#generoform').serializeJSON() );
+          var dados = JSON.stringify( $('#tipotaxasform').serializeJSON() );
           
-          var url = buildUrl( "/admin/generos" ); 
+          var url = buildUrl( "/admin/tipotaxas" ); 
 
           $.ajax({
               
@@ -159,9 +164,9 @@
               
           }).done( function(json){ 
 
-              if ( json.idGenero && json.idGenero > 0){
+              if ( json.idTipotaxa && json.idTipotaxa > 0){
 
-                  $("#idGenero").val( json.idGenero );
+                  $("#idTipotaxa").val( json.idTipotaxa );
                   preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
                   jump(''); // topo da pagina
               }

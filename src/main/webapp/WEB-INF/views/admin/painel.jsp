@@ -45,16 +45,16 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/generos/view">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/generos/searches">
                       <i class="fa fa-3x icone-main fa-music"></i>
                       <span class="label-botao-main">Gêneros Musicais</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-<%--                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/tipotaxas/view"> --%>
-<!--                       <i class="fa fa-3x icone-main fa-calculator"></i> -->
-<!--                       <span class="label-botao-main">Tipos de Taxa</span> -->
-<!--                     </a> -->
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/tipotaxas/searches">
+                      <i class="fa fa-3x icone-main fa-calculator"></i>
+                      <span class="label-botao-main">Tipos de Taxa</span>
+                    </a>
                   </div>
                 </div>              
               </div>
