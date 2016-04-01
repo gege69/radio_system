@@ -11,7 +11,9 @@
 
     <div class="row">
     
-      <div class="row" id="alertArea">
+      <div class="row">
+        <div class="col-lg-12 col-md-12" id="alertArea">
+        </div>
       </div>
     
     
@@ -55,6 +57,8 @@
 
                       <div class="spacer-vertical10"></div>
 
+                      <h4>Gêneros musicais</h4>
+
                       <div class="container col-md-12" id="view-container">
                       </div>
 
@@ -83,22 +87,24 @@
                  id="table-musicas"
                  data-toggle="table"
                  data-url="${context}/admin/midias"
-                 data-height="400"
+                 data-height="500"
                  data-side-pagination="server"
                  data-pagination="true"
                  data-page-size=6
                  data-locale = "pt_BR"
                  data-unique-id="idMidia"
+                 data-search="true"
                  data-page-list = "[6,12,25]"
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="nome" class="col-lg-5 col-md-4">Nome do Arquivo</th>
-                      <th data-field="descricao" class="col-lg-2 col-md-3">Descrição</th>
-                      <th data-field="artist" class="col-lg-2 col-md-2">Artista</th>
-                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Editar</th>
-                      <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
-                      <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
+                      <th data-field="idMidia" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">ID</th>
+                      <th data-field="nome" class="col-lg-4 col-md-3 col-sm-3 col-xs-3">Nome do Arquivo</th>
+                      <th data-field="generos" class="col-lg-2 col-md-3 col-sm-3 col-xs-3">Gênero(s)</th>
+                      <th data-field="artist" class="col-lg-2 col-md-2 col-sm-2 col-sm-2">Artista</th>
+                      <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Editar</th>
+                      <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Remover</th>
+                      <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Tocar</th>
                   </tr>
                 </thead>
               </table>
@@ -166,6 +172,13 @@
                   <input type="text" class="form-control" id="descricaoMidia" name="descricao">
                 </div>
               </div>
+
+              <div class="form-group">
+                <label for="login" class="control-label col-sm-2 col-md-2">Artista</label>
+                <div class="col-lg-8 col-md-10">
+                  <input type="text" class="form-control" id="artistaMidia" name="artist">
+                </div>
+              </div>
             </div> 
           </div>
           
@@ -195,6 +208,12 @@
           <input type="hidden" id="idMidiaDialog" name="idMidia" value="0">
           
           <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <h4><span id="nomeMusica"></span></h4>
+            </div>
+          
+            <div class="spacer-vertical10"></div>
+
             <div class="col-lg-12 col-md-12">
               Deseja realmente remover essa Música?
             </div> 
@@ -255,7 +274,7 @@
     }
     
     function removerFormatter(value, row) {
-        return '<a class="btn btn-link remover-class" id="btnRemoverChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-times"></i></a>';
+        return '<a class="btn btn-link remover-class" id="btnRemoverChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-trash-o"></i></a>';
     }
 
     function playFormatter(value, row) {
@@ -263,17 +282,27 @@
     }
     
     var player = null;
+
+    var idTocando = null;
     
     var playChamada = function( element )
     {
-        player.pause();
-        
         var idMidia = element.attr("idMidia");
         
-        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+        if ( idMidia == idTocando && !player.media.paused ){
+            player.pause();
+        }
+        else
+        {
+            idTocando = idMidia; 
+            
+            player.pause();
+            var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+            
+            player.source( url );
+            player.play();
+        }
         
-        player.source( url );
-        player.play();
     }
     
 
@@ -281,7 +310,11 @@
     {
         var idMidia = element.attr("idMidia");
         
+        var row = $('#table-musicas').bootstrapTable('getRowByUniqueId', idMidia);
+        
         $('#idMidiaDialog').val( idMidia );
+        
+        $('#nomeMusica').html( idMidia + " - " + row.nome )
         
         $('#myDialog').modal('show');
     }
@@ -325,6 +358,7 @@
         $('#idMidia').val( idMidia );
         $('#nomeMidia').val( row.nome );
         $('#descricaoMidia').val( row.descricao );
+        $('#artistaMidia').val( row.artist );
         
         $('#myModal').modal('show');
         $('#nomeMidia').focus();
@@ -358,6 +392,19 @@
         });
     } 
     
+
+    var getGenerosSelecionados = function()
+    {
+        var array_values = [];
+        $('.checkbox-genero').each( function() {
+            if( $(this).is(':checked') ) {
+                array_values.push( parseInt( $(this).val() ) );
+            }
+        });
+        
+        return array_values;
+    }
+
    
     var configuraUploader = function() 
     {
@@ -371,12 +418,7 @@
             },
             add: function (e, data) {
                 
-                var array_values = [];
-                $('.checkbox-genero').each( function() {
-                    if( $(this).is(':checked') ) {
-                        array_values.push( parseInt( $(this).val() ) );
-                    }
-                });
+                var array_values = getGenerosSelecionados();
                 
                 data.formData = { 
                                   _csrf: $("#csrf").val(), 
@@ -387,10 +429,19 @@
                 data.submit();
             },
             done: function (e, data) {
-//                 $.each(data.result.files, function (index, file) {
-//                     $('<p/>').text(file.name).appendTo( $("#resultados") );
-//                 });
-                
+                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
+            },
+            fail: function (e, data) {
+                var errors = data.jqXHR.responseJSON.errors;
+                preencheErros( errors );
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
             },
             stop : function(e, data) {
                 $("#table-musicas").bootstrapTable('refresh');
@@ -410,8 +461,20 @@
     var iniciarUpload = function()
     {
         var filesList = $('#outrofileupload')[0].files;
-        $('#fileupload').fileupload('add', { files : filesList } );
         
+        if ( filesList == null || filesList.length == 0 ) { 
+            preencheAlertGeral( "alertArea", "Selecione as músicas e algum gênero primeiro.");
+            return;
+        }
+        
+        var array_values = getGenerosSelecionados();
+        
+        if ( array_values == null || array_values.length == 0 ){
+            preencheAlertGeral( "alertArea", "Nenhum gênero selecionado");
+            return;
+        }
+        
+        $('#fileupload').fileupload('add', { files : filesList } );
     }
 
     var mostrarArquivos = function()
@@ -476,7 +539,8 @@
                 openDialog($(this));
             });
             
-            $(".play-class").click( function(){
+            $(".play-class").click( function(e){
+                e.preventDefault();
                 playChamada($(this));
             });
         });
@@ -490,7 +554,8 @@
                 openDialog($(this));
             });
 
-            $(".play-class").click( function(){
+            $(".play-class").click( function(e){
+                e.preventDefault();
                 playChamada($(this));
             });
         });
@@ -531,13 +596,5 @@
     });
 
 </script>
-
-<style type="text/css">
-
-#table-musicas tr{
-  cursor: pointer;
-}
-
-</style>
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

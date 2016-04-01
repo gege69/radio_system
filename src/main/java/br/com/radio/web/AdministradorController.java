@@ -1,8 +1,6 @@
 package br.com.radio.web;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +41,6 @@ import br.com.radio.model.SignoMidia;
 import br.com.radio.model.TipoTaxa;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.CategoriaRepository;
-import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.PerfilRepository;
@@ -53,9 +50,6 @@ import br.com.radio.service.ClienteService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
 import br.com.radio.util.UtilsStr;
-
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.UnsupportedTagException;
 
 
 @Controller
@@ -211,6 +205,37 @@ public class AdministradorController extends AbstractController {
 		return "admin/editar-genero";
 	}	
 	
+
+
+	@RequestMapping(value= { "/admin/generos/{idGenero}", "/api/admin/generos/{idGenero}" }, method=RequestMethod.DELETE)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public ResponseEntity<String> deleteGenero( @PathVariable Long idGenero, Principal principal, Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+		try
+		{
+			midiaService.deleteGenero( idGenero );
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+		}
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+
+    }	
+
+
 	
 	
 	@RequestMapping(value="/admin/upload-painel/view", method=RequestMethod.GET)
@@ -376,6 +401,7 @@ public class AdministradorController extends AbstractController {
 	
 	@RequestMapping( value = { "/admin/midias", "/api/admin/midias" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
+																	@RequestParam(value="search", required = false) String search,  
 																	@RequestParam(value="codigo", required = false) String codigo,  
 																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
 																	@RequestParam(value="limit", required = false) Integer limit, 
@@ -400,9 +426,25 @@ public class AdministradorController extends AbstractController {
 		if ( categorias == null )
 			throw new RuntimeException("Categoria não encontrada");
 		
-		Page<Midia> page = midiaRepo.findByCategoriasInAndValidoTrue( pageable, categorias );
+		Page<Midia> page = null;
 		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
+		if ( StringUtils.isBlank( search ) )
+			page = midiaRepo.findByCategoriasInAndValidoTrue( pageable, categorias );
+		else
+		{
+			String nome = "%" + search + "%";
+			
+			page = midiaRepo.findByNomeContainingAndCategoriasInAndValidoTrue( pageable, nome, categorias );
+		}
+
+		List<Midia> midiasList = page.getContent();
+		
+		midiasList.forEach( midia -> {
+			String generos = midiaService.getResumoGenerosDaMidia( midia );
+			midia.getMidiaView().put( "generos", generos );
+		});
+		
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midiasList, page.getTotalElements() );
 
 		return jsonList;
 	}
@@ -448,7 +490,7 @@ public class AdministradorController extends AbstractController {
 	
 	@RequestMapping( value = { "/admin/upload-chamadas-veiculos", "/api/admin/upload-chamadas-veiculos" }, method = { RequestMethod.POST },  produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveUploadChamadasVeiculos( @RequestParam("file") MultipartFile file, 
+	public ResponseEntity<String> saveUploadChamadasVeiculos( @RequestParam("file") MultipartFile file, 
 															@RequestParam("codigo") String codigo, 
 															@RequestParam(value="descricao", required=false) String descricao,
 															Principal principal )
@@ -460,36 +502,31 @@ public class AdministradorController extends AbstractController {
 		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
 			throw new RuntimeException("Usuário não encontrado");
 		
-		try
+		if ( file != null && !file.isEmpty() )
 		{
-			Midia midia = midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), descricao );
-			
-			JsonObjectBuilder builder = Json.createObjectBuilder();
-			JsonObjectBuilder builder2 = Json.createObjectBuilder();
-			jsonResult = builder.add("files", builder2.add( "name", midia.getNome() ) ).build().toString();
+			try
+			{
+				Midia midia = midiaService.saveUploadChamadaVeiculo( file, codigo, usuario.getCliente(), descricao );
+				
+				JsonObjectBuilder builder = Json.createObjectBuilder();
+				JsonObjectBuilder builder2 = Json.createObjectBuilder();
+				jsonResult = builder.add("files", builder2.add( "name", midia.getNome() ) ).build().toString();
+			}
+			catch ( Exception e )
+			{
+				//e.printStackTrace();
+
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			}
 		}
-		catch ( FileNotFoundException e )
+		else
 		{
-			e.printStackTrace();
-			throw new RuntimeException( e.getMessage() );
-		}
-		catch ( UnsupportedTagException e )
-		{
-			e.printStackTrace();
-			throw new RuntimeException( e.getMessage() );
-		}
-		catch ( InvalidDataException e )
-		{
-			e.printStackTrace();
-			throw new RuntimeException( e.getMessage() );
-		}
-		catch ( IOException e )
-		{
-			e.printStackTrace();
-			throw new RuntimeException( e.getMessage() );
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
+			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
 		}
 
-		return jsonResult;
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
 	}	
 	
 	

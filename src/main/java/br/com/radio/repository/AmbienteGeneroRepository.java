@@ -20,5 +20,7 @@ public interface AmbienteGeneroRepository extends JpaRepository<AmbienteGenero, 
 	List<AmbienteGenero> findByAmbiente( Ambiente ambiente );
 	
 	AmbienteGenero findByAmbienteAndGenero( Ambiente ambiente, Genero genero );
+	
+	List<AmbienteGenero> findByGenero( Genero genero );
 
 }

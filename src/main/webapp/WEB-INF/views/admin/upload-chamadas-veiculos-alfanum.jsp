@@ -407,11 +407,20 @@
                 data.submit();
             },
             done: function (e, data) {
-                $.each(data.result.files, function (index, file) {
-                    $('<p/>').text(file.name).appendTo( $("#resultados") );
-                });
-                
+                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
                 $("#table-chamadas-veiculos").bootstrapTable('refresh');
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
+            },
+            fail: function (e, data) {
+                var errors = data.jqXHR.responseJSON.errors;
+                preencheErros( errors );
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
             },
             progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -428,6 +437,19 @@
     var iniciarUpload = function()
     {
         var filesList = $('#outrofileupload')[0].files;
+
+        if ( filesList == null || filesList.length == 0 ) { 
+            preencheAlertGeral( "alertArea", "Selecione o arquivo e adicione uma letra ou número");
+            return;
+        }
+        
+        var alfanumerico = $("#alfanumerico").val()
+        
+        if ( alfanumerico == null || alfanumerico === "" ){
+            preencheAlertGeral( "alertArea", "Escreva qual a Letra ou Número o arquivo representa.");
+            return;
+        }
+
         $('#fileupload').fileupload('add', { files : filesList } );
         
     }

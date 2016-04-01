@@ -247,20 +247,29 @@
     
     var player = null;
     
+
+    var idTocando = null;
+    
     var playChamada = function( element )
     {
-        player.pause();
-        
         var idMidia = element.attr("idMidia");
         
-        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+        if ( idMidia == idTocando && !player.media.paused ){
+            player.pause();
+        }
+        else
+        {
+            idTocando = idMidia; 
+            
+            player.pause();
+            var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+            
+            player.source( url );
+            player.play();
+        }
         
-//         var source = { src: url, type : "audio/mp3" };
-        
-        player.source( url );
-        player.play();
     }
-    
+
 
     var openDialog = function( element )
     {
@@ -362,11 +371,20 @@
                 _csrf: $("#csrf").val() 
             },
             done: function (e, data) {
-                $.each(data.result.files, function (index, file) {
-                    $('<p/>').text(file.name).appendTo( $("#resultados") );
-                });
-                
+                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
                 $("#table-chamadas-veiculos").bootstrapTable('refresh');
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
+            },
+            fail: function (e, data) {
+                var errors = data.jqXHR.responseJSON.errors;
+                preencheErros( errors );
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
             },
             progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);

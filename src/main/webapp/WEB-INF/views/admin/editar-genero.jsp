@@ -66,7 +66,7 @@
             <div class="row">
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="">
-                  <a class="btn btn-default" href="${context}/admin/generos/view" >
+                  <a class="btn btn-default" href="${context}/admin/generos/searches" >
                     <i class="fa fa-arrow-left"></i>
                     Voltar para Cadastro de Gêneros</a>
                 </div>            

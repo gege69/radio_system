@@ -225,6 +225,7 @@
                   method="POST">
                   
               <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+              <input type="hidden" id="idAmbienteBloco" name="idAmbiente" value="${idAmbiente}">
               <input type="hidden" id="idBloco" name="idBloco" value="${idBloco}">
               
               <div class="form-group">
@@ -367,7 +368,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
         <button class="btn btn-primary" id="btnSalvarBloco" data-dismiss="modal">Salvar</button>
       </div>
     </div>
@@ -401,7 +402,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
         <button class="btn btn-primary" id="btnTocaChamadaFuncionarios">Tocar</button>
       </div>
     </div>
@@ -430,7 +431,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
         <button class="btn btn-primary" id="btnTocaChamadaInst">Tocar</button>
       </div>
     </div>
@@ -440,7 +441,7 @@
 
 
 <div id="myModalChamadaVeiculos" class="modal fade" tabindex="-1" role="dialog" style="display : none;">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">x</button>
@@ -448,82 +449,83 @@
       </div>
       <div class="modal-body">
         <div class="row">
-        
-          <form action="#" id="formtocar" class="form-horizontal">
 
-            <div class="form-group">
-              <label for="login" class="control-label col-lg-2">Frase Inicial</label>
-              <div class="col-lg-10">
-                <select class="form-control" id="comboFraseInicial" name="veic_frase_ini">
-                </select>
-              </div>
-            </div> 
-            
-            <div class="form-group">
-              <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Marca</label>
-              <div class="col-lg-4 col-md-4 col-sm-6">
-                <select class="form-control" id="comboMarca" name="veic_marca">
-                </select>
-              </div>
-            </div> 
-            
-            <div class="form-group">
-              <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Modelo</label>
-              <div class="col-lg-4 col-md-4 col-sm-6">
-                <select class="form-control" id="comboModelo" name="veic_modelo">
-                </select>
-              </div>
-            </div> 
-            
-            <div class="form-group">
-              <label for="login" class="control-label col-sm-2 col-md-2">Cor</label>
-              <div class="col-lg-4 col-md-4 col-sm-6">
-                <select class="form-control" id="comboCor" name="veic_cor">
-                </select>
-              </div>
-            </div> 
-            
-            
-            <div class="form-group">
-              <label for="login" class="control-label col-sm-2 col-md-2 col-sm-3">Placa</label>
-              <div class="col-lg-2 col-md-2 col-sm-2">
-                <select class="form-control" id="comboPlacaLetra1" name="veic_placa_letra">
-                </select>
-              </div>
-              <div class="col-lg-2 col-md-2 col-sm-2">
-                <select class="form-control" id="comboPlacaLetra2" name="veic_placa_letra">
-                </select>
-              </div>
-              <div class="col-lg-2 col-md-2 col-sm-2">
-                <select class="form-control" id="comboPlacaLetra3" name="veic_placa_letra">
-                </select>
+          <div class="col-lg-12 col-md-12"> 
+            <form action="#" id="formtocar" class="form-horizontal">
+
+              <div class="form-group">
+                <label for="login" class="control-label col-lg-2 col-md-2 col-sm-2">Frase Inicial</label>
+                <div class="col-lg-8 col-md-8 col-sm-10">
+                  <select class="form-control" id="comboFraseInicial" name="veic_frase_ini">
+                  </select>
+                </div>
+              </div> 
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-md-2 col-sm-2">Marca</label>
+                <div class="col-lg-7 col-md-7 col-sm-9">
+                  <select class="form-control" id="comboMarca" name="veic_marca">
+                  </select>
+                </div>
+              </div> 
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-md-2 col-sm-2">Modelo</label>
+                <div class="col-lg-7 col-md-7 col-sm-9">
+                  <select class="form-control" id="comboModelo" name="veic_modelo">
+                  </select>
+                </div>
+              </div> 
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-sm-2 col-md-2">Cor</label>
+                <div class="col-lg-7 col-md-7 col-sm-9">
+                  <select class="form-control" id="comboCor" name="veic_cor">
+                  </select>
+                </div>
+              </div> 
+              
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-md-2 col-sm-2 col-xs-12">Placa</label>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                  <select class="form-control" id="comboPlacaLetra1" name="veic_placa_letra">
+                  </select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                  <select class="form-control" id="comboPlacaLetra2" name="veic_placa_letra">
+                  </select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                  <select class="form-control" id="comboPlacaLetra3" name="veic_placa_letra">
+                  </select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                  <select class="form-control" id="comboPlacaNumero1" name="veic_placa_numero">
+                  </select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                  <select class="form-control" id="comboPlacaNumero2" name="veic_placa_numero">
+                  </select>
+                </div>
+              </div> 
+              
+              <div class="form-group">
+                <label for="login" class="control-label col-lg-2 col-sm-2 col-md-2">Frase Final</label>
+                <div class="col-lg-8 col-md-8 col-sm-10">
+                  <select class="form-control" id="comboFraseFinal" name="veic_frase_fim">
+                  </select>
+                </div>
               </div>
               
-              <div class="col-lg-2 col-md-2 col-sm-2">
-                <select class="form-control" id="comboPlacaNumero1" name="veic_placa_numero">
-                </select>
-              </div>
-              <div class="col-lg-2 col-md-2 col-sm-2">
-                <select class="form-control" id="comboPlacaNumero2" name="veic_placa_numero">
-                </select>
-              </div>
-            </div> 
-            
-            <div class="form-group">
-              <label for="login" class="control-label col-sm-2 col-md-2">Frase Final</label>
-              <div class="col-lg-4 col-md-4 col-sm-6">
-                <select class="form-control" id="comboFraseFinal" name="veic_frase_fim">
-                </select>
-              </div>
-            </div>
-            
-          </form>
+            </form>
+          </div>
 
 
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
         <button class="btn btn-primary" id="btnTocarChamadaVeiculos">Tocar</button>
       </div>
     </div>
@@ -557,7 +559,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
         <button class="btn btn-primary" id="btnSalvarGeneros" >Salvar</button>
       </div>
     </div>

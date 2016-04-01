@@ -39,11 +39,9 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	@Query("SELECT m FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE m.valido = true AND a = ?1 AND c = ?2 AND g IN ?3 AND m NOT IN ?4 group by m ")
 	List<Midia> findByAmbientesAndCategoriasAndGenerosInAndMidiaNotInGroupBy( Ambiente ambiente, Categoria categoria, Set<Genero> genero, Set<Midia> midiasJaTocadas );
 
-	// Procurando por midias desse ambiente, na categoria indicada, nos generos indicados, COM repetição
-//	@Query("SELECT m.idMidia FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE a = ?1 AND c = ?2 AND g IN ?3 ")
-//	List<Long> findIdsByAmbientesAndCategoriasAndGenerosIn( Ambiente ambiente, Categoria categoria, Set<Genero> genero );
-	
-	
+	// Admin
+	Page<Midia> findByNomeContainingAndCategoriasInAndValidoTrue( Pageable pageable, String nome, List<Categoria> categorias );
+
 	// Admin
 	Page<Midia> findByCategoriasInAndValidoTrue( Pageable pageable, List<Categoria> categorias );
 

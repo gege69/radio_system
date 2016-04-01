@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -43,6 +42,7 @@ import br.com.radio.enumeration.SignoZodiaco;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Genero;
@@ -52,6 +52,7 @@ import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.Parametro;
 import br.com.radio.model.SignoMidia;
 import br.com.radio.repository.AlfanumericoMidiaRepository;
+import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
@@ -93,6 +94,9 @@ public class MidiaService {
 	private ParametroRepository parametroRepo;
 	
 	@Autowired
+	private AmbienteGeneroRepository ambienteGeneroRepo;
+	
+	@Autowired
 	private AmbienteRepository ambienteRepo;
 	
 	@Autowired
@@ -110,8 +114,24 @@ public class MidiaService {
 	@Autowired
 	private SignoMidiaRepository signoMidiaRepo;
 	
-	
-	
+	private Map<String,String> mapExtToMimeType = new HashMap<String,String>();
+	private Map<String,String> mapMimeTypeToExt = new HashMap<String,String>();
+
+	public MidiaService()
+	{
+		super();
+		this.mapExtToMimeType.put( "ogg", "audio/ogg" );
+		this.mapExtToMimeType.put( "mp3", "audio/mpeg" );
+
+		this.mapMimeTypeToExt.put( "audio/ogg", "ogg" );
+		this.mapMimeTypeToExt.put( "audio/mpeg", "mp3" );
+		this.mapMimeTypeToExt.put( "audio/mp3", "mp3" );
+		this.mapMimeTypeToExt.put( "audio/mpeg3", "mp3" );
+	}
+
+
+
+
 	@Transactional
 	public void saveUploadMulti( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Long[] ambientes ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
@@ -157,11 +177,6 @@ public class MidiaService {
 
 			File diretorio = new File(newPath);
 			
-			Map<String,String> mapasMimeType = new HashMap<String,String>();
-			mapasMimeType.put( "ogg", "audio/ogg" );
-			mapasMimeType.put( "mp3", "audio/mpeg" );
-			
-			
 			Collection<File> arquivos = FileUtils.listFiles( diretorio, new String[]{ "ogg", "mp3" }, true );
 
 			Genero genero = generoRepo.findOne( 1L );
@@ -199,7 +214,7 @@ public class MidiaService {
 
 				String hash = "";
 				
-				String contentType = mapasMimeType.get( FilenameUtils.getExtension( f.getName() ) );
+				String contentType = mapExtToMimeType.get( FilenameUtils.getExtension( f.getName() ) );
 				
 				FileInputStream fis = null;
 				try
@@ -678,6 +693,12 @@ public class MidiaService {
 		File arquivo = null;
 		Integer size = 0;
 		
+		String extensao = this.mapMimeTypeToExt.get( contentType );
+		
+		if ( extensao == null )
+			throw new RuntimeException( "Tipo de arquivo inválido. Só são aceitos arquivos de Música MP3 ou OGG." );
+		
+		
 		Midia midia = null;
 		try
 		{
@@ -834,6 +855,10 @@ public class MidiaService {
 
 
 
+	private void validaContentType( String contentType ){
+		
+		
+	}
 
 
 	private void preencheTags( String contentType, File arquivo, Midia midia ) throws IOException, UnsupportedTagException, InvalidDataException
@@ -1046,5 +1071,58 @@ public class MidiaService {
 	}
 
 	
+
+
+	@Transactional
+	public boolean deleteGenero( Long idGenero )
+	{
+		boolean result = false;
+		
+		Genero genero = generoRepo.findOne( idGenero );
+		
+		if ( genero == null )
+			throw new RuntimeException("Gênero não encontrado");
+		
+		List<AmbienteGenero> ambienteGenerosList = ambienteGeneroRepo.findByGenero( genero );
+		
+		ambienteGeneroRepo.delete( ambienteGenerosList );
+		
+		List<MidiaGenero> midiaGenerosList = midiaGeneroRepo.findByGenero( genero );
+		
+		midiaGeneroRepo.delete( midiaGenerosList );
+		
+		generoRepo.delete( genero );
+		
+		return result;
+	}
+
+
+	public String getResumoGenerosDaMidia( Midia midia ){
+		
+		int tamanho = 38;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		List<Genero> generos = midia.getGeneros();
+		
+		for ( Genero gen : generos ){
+			
+			if ( sb.length() > 0 )
+				sb.append( ", " );
+
+			sb.append( gen.getNome() );
+			
+			if ( StringUtils.length( sb.toString() ) >= tamanho )
+				break;
+		}
+		
+		String result = sb.toString();
+		
+		if ( StringUtils.length( result ) >= tamanho )
+			result = StringUtils.substring( result, 0, tamanho ) + "...";
+		
+		return result;
+	}
+
 	
 }

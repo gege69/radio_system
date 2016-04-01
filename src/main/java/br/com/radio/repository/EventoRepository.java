@@ -14,6 +14,8 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 	
 	Page<Evento> findByAmbiente( Ambiente ambiente, Pageable page );
 	
+	List<Evento> findByAmbiente( Ambiente ambiente );
+	
 	Evento findByIdEventoAndAmbiente( Long idEvento, Ambiente ambiente );
 
 	@Query(value=
