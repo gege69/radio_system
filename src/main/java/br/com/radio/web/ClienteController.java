@@ -176,7 +176,7 @@ public class ClienteController extends AbstractController {
 			String nomefantasia = "%" + search + "%";
 			String cnpj = "%" + search + "%";
 
-			clientePage = clienteRepo.findByRazaosocialContainingOrNomefantasiaContainingOrCnpjContaining( pageable, razaosocial, nomefantasia, cnpj );
+			clientePage = clienteRepo.findByRazaosocialContainingIgnoreCaseOrNomefantasiaContainingIgnoreCaseOrCnpjContaining( pageable, razaosocial, nomefantasia, cnpj );
 		}
 		
 		JSONBootstrapGridWrapper<Cliente> jsonList = new JSONBootstrapGridWrapper<Cliente>( clientePage.getContent(), clientePage.getTotalElements() );

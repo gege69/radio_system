@@ -88,6 +88,12 @@ var configuraMultiplosMusica = function()
 
 $(function(){
     
+    var token = $("input[name='_csrf']").val();
+    var header = "X-CSRF-TOKEN";
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+
     $('#btnSalvarBloco').on('click', salvarBlocos);
     
     $('#qtdMusicas').change( function() { configuraMultiplosMusica(); } );

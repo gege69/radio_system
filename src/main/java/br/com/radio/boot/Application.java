@@ -1,24 +1,13 @@
 package br.com.radio.boot;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
-import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
-import br.com.radio.util.UtilsStr;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 

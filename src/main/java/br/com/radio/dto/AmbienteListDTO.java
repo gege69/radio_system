@@ -1,12 +1,9 @@
 package br.com.radio.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import br.com.radio.model.Ambiente;
-import br.com.radio.util.UtilsDates;
 
 public class AmbienteListDTO implements Serializable {
 

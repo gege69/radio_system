@@ -42,7 +42,6 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
-import br.com.radio.model.Cliente;
 import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Funcionalidade;
@@ -53,12 +52,10 @@ import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
-import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.EventoHorarioRepository;
 import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.ProgramacaoRepository;
-import br.com.radio.service.ClienteService;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.service.UsuarioService;
@@ -144,9 +141,9 @@ public class AmbienteController extends AbstractController {
 		return "ambiente/incluir";
 	}
 	
-	@RequestMapping(value="/ambientes/administrar" , method=RequestMethod.GET)
+	@RequestMapping(value="/ambientes/searches" , method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
-	public String administrar( ModelMap model, Principal principal )
+	public String cadastroAmbientes( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -157,7 +154,7 @@ public class AmbienteController extends AbstractController {
 		
 		model.addAttribute( "qtdAmbientes", count );
 		
-		return "ambiente/listar-ambientes";
+		return "ambiente/cadastro-ambientes";
 	}
 	
 	
@@ -331,7 +328,9 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/ambientes", "/api/ambientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Ambiente> listAmbiente( @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+	public @ResponseBody JSONBootstrapGridWrapper<Ambiente> listAmbiente( 
+																 @RequestParam(value="search", required=false) String search, 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
 																 Principal principal )
 	{
@@ -342,7 +341,16 @@ public class AmbienteController extends AbstractController {
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
 		
-		Page<Ambiente> ambientePage = ambienteRepo.findByCliente( pageable, usuario.getCliente() );
+		Page<Ambiente> ambientePage = null;
+		
+		if ( StringUtils.isBlank( search )){
+			ambientePage = ambienteRepo.findByCliente( pageable, usuario.getCliente() );
+		}
+		else
+		{
+			String nome = "%"+ search + "%";
+			ambientePage = ambienteRepo.findByClienteAndNomeContainingIgnoreCase( pageable, usuario.getCliente(), nome );
+		}
 		
 		JSONBootstrapGridWrapper<Ambiente> jsonList = new JSONBootstrapGridWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
 

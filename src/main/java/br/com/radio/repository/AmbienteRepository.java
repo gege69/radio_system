@@ -12,6 +12,8 @@ import br.com.radio.model.Cliente;
 public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 
 	Page<Ambiente> findByCliente( Pageable pageable, Cliente cliente );
+
+	Page<Ambiente> findByClienteAndNomeContainingIgnoreCase( Pageable pageable, Cliente cliente, String nome );
 	
 	List<Ambiente> findByCliente( Cliente cliente );
 

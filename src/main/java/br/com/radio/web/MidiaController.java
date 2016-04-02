@@ -345,7 +345,7 @@ public class MidiaController extends AbstractController {
 			if ( categorias != null && categorias.length > 0 )
 				midiaPage = midiaRepo.findByAmbientesAndNomeContainingAndCategoriasInAndValidoTrue( ambiente, "%"+nome+"%", Categoria.listByIds( categorias ), pageable );
 			else
-				midiaPage = midiaRepo.findByAmbientesAndNomeContainingAndValidoTrue( ambiente, "%"+nome+"%", pageable );
+				midiaPage = midiaRepo.findByAmbientesAndNomeContainingIgnoreCaseAndValidoTrue( ambiente, "%"+nome+"%", pageable );
 			
 			List<Midia> midiaList = midiaPage.getContent();
 			

@@ -12,7 +12,7 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Administrar Ambiente<br/>
+          <h3>Administrar Ambientes<br/>
             <small>Você possui ${qtdAmbientes} ambiente(es) cadastrado(s)</small>
           </h3>
           
@@ -29,14 +29,16 @@
                  data-side-pagination="server"
                  data-pagination="true"
                  data-page-size=6
+                 data-search="true"
                  data-locale = "pt_BR"
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="nome" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" data-formatter="nomeFormatter">Nome</th>
-                      <th data-field="espelhar" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="espelharFormatter" data-halign="center" data-align="center">Espelhar</th>
-                      <th data-field="editar" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="editarFormatter" data-halign="center" data-align="center">Editar</th>
-                      <th data-field="remover" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="removeFormatter" data-halign="center" data-align="center">Remover</th>
+                      <th data-field="idAmbiente" class="col-lg-1 col-md-1 col-sm-1 col-xs-1" data-formatter="nomeFormatter">Id</th>
+                      <th data-field="nome" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" data-formatter="nomeFormatter">Nome</th>
+                      <th data-field="editar" class="col-lg-2 col-md-2 col-sm-2 col-xs-2" data-formatter="editarFormatter" data-halign="center" data-align="center">Editar</th>
+                      <th data-field="espelhar" class="col-lg-2 col-md-2 col-sm-2 col-xs-2" data-formatter="espelharFormatter" data-halign="center" data-align="center">Espelhar</th>
+                      <th data-field="remover" class="col-lg-2 col-md-2 col-sm-2 col-xs-2" data-formatter="removeFormatter" data-halign="center" data-align="center">Remover</th>
                   </tr>
                 </thead>
               </table>
@@ -44,15 +46,15 @@
             </div>
           </div>
           
-          <div class="row">
-            <div class="col-lg-10 col-md-10">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="check_pacote"> Exibir somente ambientes com pacote de Programetes opcionais
-                </label>
-              </div>
-            </div>
-          </div>
+<!--           <div class="row"> -->
+<!--             <div class="col-lg-10 col-md-10"> -->
+<!--               <div class="checkbox"> -->
+<!--                 <label> -->
+<!--                   <input type="checkbox" id="check_pacote"> Exibir somente ambientes com pacote de Programetes opcionais -->
+<!--                 </label> -->
+<!--               </div> -->
+<!--             </div> -->
+<!--           </div> -->
           
           <div class="spacer-vertical40"></div>
           
@@ -95,7 +97,8 @@
     }
     
     function espelharFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/espelhar"> <i class="fa fa-lg fa-files-o"></i></a>';
+        return '<i class="fa fa-lg fa-files-o"></i>';
+//         return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/espelhar"> <i class="fa fa-lg fa-files-o"></i></a>';
     }
     
     function editarFormatter(value, row) {
@@ -104,7 +107,8 @@
 
     function removeFormatter(value, row) {
         // pensar melhor nesse.... tem que ser um ajax perguntando certeza e usando o DELETE 
-        return '<a class="btn btn-link" href="#"> <i class="fa fa-lg fa-trash-o"></i></a>';
+        return '<i class="fa fa-lg fa-trash-o"></i>';
+//         return '<a class="btn btn-link" href="#"> <i class="fa fa-lg fa-trash-o"></i></a>';
     }
 
 

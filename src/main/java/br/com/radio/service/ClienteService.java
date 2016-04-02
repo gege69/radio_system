@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,7 +170,7 @@ public class ClienteService {
 			String nomefantasia = "%" + search + "%";
 			String cnpj = "%" + search + "%";
 
-			paginaCliente = clienteRepo.findByRazaosocialContainingOrNomefantasiaContainingOrCnpjContaining( pageable, razaosocial, nomefantasia, cnpj );
+			paginaCliente = clienteRepo.findByRazaosocialContainingIgnoreCaseOrNomefantasiaContainingIgnoreCaseOrCnpjContaining( pageable, razaosocial, nomefantasia, cnpj );
 		}
 		
 		List<ClienteRelatorioDTO> listaRelatorio = new ArrayList<ClienteRelatorioDTO>();

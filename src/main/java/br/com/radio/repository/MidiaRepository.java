@@ -25,7 +25,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	
 	Page<Midia> findByAmbientesAndValidoTrue( Pageable pageable, Ambiente ambiente );
 	
-	Page<Midia> findByAmbientesAndNomeContainingAndValidoTrue( Ambiente ambiente, String nome, Pageable pageable );
+	Page<Midia> findByAmbientesAndNomeContainingIgnoreCaseAndValidoTrue( Ambiente ambiente, String nome, Pageable pageable );
 	
 	Page<Midia> findByAmbientesAndNomeContainingAndCategoriasInAndValidoTrue( Ambiente ambiente, String nome, List<Categoria> categorias, Pageable pageable );
 	

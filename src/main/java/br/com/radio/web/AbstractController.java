@@ -173,6 +173,7 @@ public abstract class AbstractController {
 		return jsonObject.toString();
 	}
 
+
 	protected String writeOkResponse(){
 		
 		JsonObject obj = Json.createObjectBuilder().add("ok", 1 ).build();
@@ -180,7 +181,6 @@ public abstract class AbstractController {
 		
 		return jsonResult;
 	}
-	
 	
 
 	@SuppressWarnings( "unchecked" )

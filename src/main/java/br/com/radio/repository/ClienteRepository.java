@@ -14,6 +14,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 	
 	Cliente findByCnpj( String cnpj );
 	
-	Page<Cliente> findByRazaosocialContainingOrNomefantasiaContainingOrCnpjContaining( Pageable pageable, String razaosocial, String nomefantasia, String cnpj );
+	Page<Cliente> findByRazaosocialContainingIgnoreCaseOrNomefantasiaContainingIgnoreCaseOrCnpjContaining( Pageable pageable, String razaosocial, String nomefantasia, String cnpj );
 	
 }

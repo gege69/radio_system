@@ -1,6 +1,5 @@
 package br.com.radio.config;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MensagensProfile {

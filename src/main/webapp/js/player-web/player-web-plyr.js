@@ -136,8 +136,6 @@ var play = function(){
         
         if ( content.link != null && content.link != '' )
         {
-            console.log(content.link);
-            
             determinaVolume( content );
 
             var urlMidia = buildUrl( content.link );
@@ -345,10 +343,10 @@ $(document).ready(function() {
         play();
     });
     
-//    $('#botao-next').click( function(){
-//        desligaMicrofone();
-//        next();
-//    });
+    $('#botao-next').click( function(){
+        desligaMicrofone();
+        next();
+    });
     
     $(".campo-slider").on("slide", function(slideEvt) {
         alteraVolume(slideEvt.value);

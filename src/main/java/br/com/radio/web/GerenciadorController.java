@@ -127,6 +127,7 @@ public class GerenciadorController extends AbstractController {
 		Long count = ambienteRepo.countByCliente( usuario.getCliente() );
 		
 		model.addAttribute( "qtdAmbientes", count );
+		model.addAttribute( "isAdministrador", hasAuthority( "ADM_SISTEMA" ));
 		
 		return "gerenciador/principal";
 	}

@@ -22,14 +22,15 @@
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/ambientes/new">
-                      <i class="fa fa-3x icone-main fa-shopping-cart"></i>
+                      <i class="fa fa-2x icone-main fa-plus"></i>
+                      <i class="fa fa-3x icone-main fa-tasks"></i>
                       <span class="label-botao-main">Incluir Ambiente</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/ambientes/administrar">
-                      <i class="fa fa-3x icone-main fa-random"></i>
-                      <span class="label-botao-main">Administar Ambiente</span>
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/ambientes/searches">
+                      <i class="fa fa-3x icone-main fa-tasks"></i>
+                      <span class="label-botao-main">Administar Ambientes</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
@@ -45,7 +46,7 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
+                    <a class="btn btn-default btn-block btn-md botao-main disabled" data-toggle="modal" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-eye"></i>
                       <span class="label-botao-main">Monitoramento</span>
                     </a>
@@ -68,13 +69,13 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
-                      <i class="fa fa-3x icone-main fa-key"></i>
-                      <span class="label-botao-main">Ferramentas</span>
-                    </a>
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/clientes/view">
+                      <i class="fa fa-3x icone-main fa-street-view"></i>
+                      <span class="label-botao-main">Dados de Cliente</span>
+                    </a> 
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
+                    <a class="btn btn-default btn-block btn-md botao-main disabled" data-toggle="modal" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-floppy-o"></i>
                       <span class="label-botao-main">Softwares</span>
                     </a>
@@ -86,16 +87,16 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/fazer">
+                    <a class="btn btn-default btn-block btn-md botao-main disabled" data-toggle="modal" href="${context}/fazer">
                       <i class="fa fa-3x icone-main fa-android"></i>
                       <span class="label-botao-main">Mobile</span>
                     </a> 
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/clientes/view">
-                      <i class="fa fa-3x icone-main fa-street-view"></i>
-                      <span class="label-botao-main">Dados de Cliente</span>
-                    </a> 
+                    <a class="btn btn-default btn-block btn-md botao-main disabled" data-toggle="modal" href="${context}/fazer">
+                      <i class="fa fa-3x icone-main fa-key"></i>
+                      <span class="label-botao-main">Ferramentas</span>
+                    </a>
                   </div>
                 </div>              
               </div>
@@ -103,10 +104,12 @@
               <div class="row row-centered">
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/painel">
-                      <i class="fa fa-3x icone-main fa-street-view"></i>
-                      <span class="label-botao-main">ADMINISTRAR</span>
-                    </a> 
+                    <c:if test="${isAdministrador}">
+                      <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/painel">
+                        <i class="fa fa-3x icone-main fa-street-view"></i>
+                        <span class="label-botao-main">ADMINISTRAR</span>
+                      </a> 
+                    </c:if>
                   </div>
                 </div>
               </div>

@@ -22,10 +22,8 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.tomcat.util.digester.SetPropertiesRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import br.com.radio.enumeration.DiaSemana;

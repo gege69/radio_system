@@ -26,6 +26,7 @@
 
   <body class="player-body" role="document">
 
+
   <nav class="navbar navbar-static-top">
     <div class="container">
       <div class="navbar-header">
@@ -103,6 +104,7 @@
             <small></small>
             
             <input type="hidden" id="idAmbiente" value="${idAmbiente}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
           </h3>
           
 
@@ -183,13 +185,13 @@
               </a>
             </td>
             
-<%--             <c:if test="${configuracao != null && configuracao.avancarRetornar}"> --%>
-<!--               <td> -->
-<!--                 <a class="btn btn-default" href="#" id="botao-next" role="button"> -->
-<!--                   <i class="fa fa-forward"></i> -->
-<!--                 </a> -->
-<!--               </td> -->
-<%--             </c:if> --%>
+            <c:if test="${configuracao != null && configuracao.avancarRetornar}">
+              <td>
+                <a class="btn btn-default" href="#" id="botao-next" role="button">
+                  <i class="fa fa-forward"></i>
+                </a>
+              </td>
+            </c:if>
           </tr>
         </table>
         <div class="spacer-vertical20"></div>
@@ -224,7 +226,6 @@
                   class="form-horizontal"
                   method="POST">
                   
-              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
               <input type="hidden" id="idAmbienteBloco" name="idAmbiente" value="${idAmbiente}">
               <input type="hidden" id="idBloco" name="idBloco" value="${idBloco}">
               
@@ -548,7 +549,6 @@
         <div class="row">
           <div class="col-lg-12 col-md-12">
             <form action="#" id="ambiente-generos-form" method="POST">
-              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
               <input type="hidden" id="idAmbiente" value="${idAmbiente}">
               <div class="form-inline">
                 <div class="container col-lg-12 col-md-12" id="view-container">
