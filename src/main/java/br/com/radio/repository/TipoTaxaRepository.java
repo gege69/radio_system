@@ -8,5 +8,7 @@ import br.com.radio.model.TipoTaxa;
 
 public interface TipoTaxaRepository extends JpaRepository<TipoTaxa, Long> {
 
-	Page<TipoTaxa> findByDescricaoContaining( Pageable pageable, String descricao );
+	Page<TipoTaxa> findByAtivoTrue( Pageable pageable );
+
+	Page<TipoTaxa> findByAtivoTrueAndDescricaoContainingIgnoreCase( Pageable pageable, String descricao );
 }

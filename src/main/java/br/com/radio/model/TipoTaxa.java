@@ -46,6 +46,9 @@ public class TipoTaxa implements Serializable {
 	@Column( name = "operacao" , columnDefinition= " TEXT default 'COBRANCA' ", nullable = false)
 	private OperacaoFinanceiraTaxa operacao;
 
+	@Column( name = "ativo", columnDefinition = "BOOL default true")
+	private Boolean ativo;
+
 	
 	public Long getIdTipotaxa()
 	{
@@ -126,6 +129,17 @@ public class TipoTaxa implements Serializable {
 	{
 		super();
 		this.porambiente = false;
+		this.ativo = true;
+	}
+
+	public Boolean getAtivo()
+	{
+		return ativo;
+	}
+
+	public void setAtivo( Boolean ativo )
+	{
+		this.ativo = ativo;
 	}
 	
 

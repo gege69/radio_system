@@ -398,6 +398,75 @@ public class AdministradorController extends AbstractController {
 	}
 
 
+	@RequestMapping( value = { "/admin/tipotaxas", "/api/admin/tipotaxas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<TipoTaxa> listTipoTaxas( 
+																 @RequestParam(value="search", required=false) String search, 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+			
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "descricao" );
+
+		Page<TipoTaxa> tipotaxaPage = null;
+		
+		if ( StringUtils.isBlank( UtilsStr.notNull( search ) ) )
+			tipotaxaPage = tipoTaxaRepo.findByAtivoTrue( pageable );
+		else
+			tipotaxaPage = tipoTaxaRepo.findByAtivoTrueAndDescricaoContainingIgnoreCase( pageable,  "%" + search + "%" );
+		
+		JSONBootstrapGridWrapper<TipoTaxa> jsonList = new JSONBootstrapGridWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
+
+		return jsonList;
+	}
+	
+
+
+
+	@RequestMapping(value= { "/admin/tipotaxas/{idTipotaxa}", "/api/admin/tipotaxas/{idTipotaxa}" }, method=RequestMethod.DELETE)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public ResponseEntity<String> deleteTipoTaxa( @PathVariable Long idTipotaxa, Principal principal, Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+		try
+		{
+			TipoTaxa tipoTaxa = tipoTaxaRepo.findOne( idTipotaxa );
+			
+			if ( tipoTaxa == null )
+				throw new RuntimeException("Tipo de Taxa não foi encontrado");
+			
+			// apenas inativando... não posso remover as ligações com as condições comerciais que existem....
+			tipoTaxa.setAtivo( false );
+			tipoTaxaRepo.save( tipoTaxa );
+
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+		}
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+
+    }	
+
+	
+	
+	
+	
 	
 	@RequestMapping( value = { "/admin/midias", "/api/admin/midias" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
@@ -696,32 +765,6 @@ public class AdministradorController extends AbstractController {
 		return jsonResult;
 	}
 	
-	
-	@RequestMapping( value = { "/admin/tipotaxas", "/api/admin/tipotaxas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<TipoTaxa> listTipoTaxas( 
-																 @RequestParam(value="search", required=false) String search, 
-																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
-																 @RequestParam(value="limit", required=false) Integer limit,
-																 Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
-			return null;
-			
-		Pageable pageable = getPageable( pageNumber, limit, "asc", "descricao" );
-
-		Page<TipoTaxa> tipotaxaPage = null;
-		
-		if ( StringUtils.isBlank( UtilsStr.notNull( search ) ) )
-			tipotaxaPage = tipoTaxaRepo.findAll( pageable );
-		else
-			tipotaxaPage = tipoTaxaRepo.findByDescricaoContaining( pageable,  "%" + search + "%");
-		
-		JSONBootstrapGridWrapper<TipoTaxa> jsonList = new JSONBootstrapGridWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
-
-		return jsonList;
-	}
 	
 }
 

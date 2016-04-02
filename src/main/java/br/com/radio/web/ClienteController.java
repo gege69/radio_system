@@ -25,10 +25,12 @@ import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
+import br.com.radio.model.TipoTaxa;
 import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
+import br.com.radio.repository.TipoTaxaRepository;
 import br.com.radio.repository.TituloRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
@@ -53,6 +55,8 @@ public class ClienteController extends AbstractController {
 	@Autowired
 	private TituloRepository tituloRepo;
 	
+	@Autowired
+	private TipoTaxaRepository tipoTaxaRepo;
 	
 	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
@@ -414,5 +418,35 @@ public class ClienteController extends AbstractController {
 
 		return jsonList;
 	}
+
+
+
+	@RequestMapping( value = { "/clientes/{idCliente}/tipotaxas", "/api/clientes/{idCliente}/tipotaxas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<TipoTaxa> listTipoTaxas( 
+															     @PathVariable Long idCliente, 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+			return null;
+			
+		if ( isAutorizado( usuario, idCliente ) )
+		{
+			Pageable pageable = getPageable( pageNumber, limit, "asc", "descricao" );
+
+			Page<TipoTaxa> tipotaxaPage = tipoTaxaRepo.findByAtivoTrue( pageable );
+			
+			JSONBootstrapGridWrapper<TipoTaxa> jsonList = new JSONBootstrapGridWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
+
+			return jsonList;
+		}
+		else
+			return null;
+
+	}
+
 }
 

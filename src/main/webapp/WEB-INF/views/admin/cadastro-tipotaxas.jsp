@@ -32,11 +32,12 @@
                  data-search="true">
                 <thead>
                   <tr>
-                      <th data-field="idTipotaxa"  class="col-lg-1 col-md-1">ID</th>
-                      <th data-field="descricao" class="col-lg-4 col-md-4">Descrição</th>
-                      <th data-field="porambiente" data-formatter="porambienteFormatter" class="col-lg-2 col-md-2">Por Ambiente?</th>
-                      <th data-field="operacao" class="col-lg-2 col-md-2">Operação</th>
-                      <th data-field="porambiente" data-formatter="removerTipoTaxaFormatter" class="col-lg-2 col-md-2">Remover</th>
+                      <th data-field="idTipotaxa"  class="col-lg-1 col-md-1 col-sm-1 col-xs-1">ID</th>
+                      <th data-field="descricao" class="col-lg-5 col-md-5 col-sm-5 col-xs-5">Descrição</th>
+                      <th data-formatter="porambienteFormatter" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Por Ambiente?</th>
+                      <th data-field="operacao" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">Operação</th>
+                      <th data-formatter="editarTipoTaxaFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Editar</th>
+                      <th data-formatter="removerTipoTaxaFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Desativar</th>
                   </tr>
                 </thead>
               </table>
@@ -71,7 +72,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Remover Tipo de Taxa</h4>
+        <h4 class="modal-title" id="titulo-modal">Desativar Tipo de Taxa</h4>
       </div>
       <div class="modal-body">
         <form action="#" class="form-horizontal" id="removeTipoTaxaForm" method="POST">
@@ -80,7 +81,9 @@
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
-              Deseja realmente remover esse Tipo de Taxa?
+              <p>Podem existir Condições Comerciais utilizando esse Tipo de Taxa. As condições que existem não serão removidas. </p>
+              <p>Você poderá reativar esse Tipo de Taxa posteriormente.</p>
+              <p>Deseja realmente inativar esse Tipo de Taxa? </p>
             </div> 
           </div>
           
@@ -115,12 +118,16 @@
     };
 
     function porambienteFormatter(value, row){
-        var icon = value == true ? 'fa-check' : 'fa-circle-thin'; 
+        var icon = row.porambiente == true ? 'fa-check' : 'fa-circle-thin'; 
         return '<i class="fa '+ icon + '"></i>';
+    }
+
+    function editarTipoTaxaFormatter(value, row) {
+        return '<a class="btn btn-link" href="${context}/admin/tipotaxas/'+ row.idTipotaxa +'/view"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
     }
     
     function removerTipoTaxaFormatter(value, row) {
-        return '<a class="btn btn-link remover-tipotaxa-class" id="btnRemoverTipoTaxa" idTipotaxa="'+ row.idTipotaxa +'" href="#"> <i class="fa fa-lg fa-trash-o"></i></a>';
+        return '<a class="btn btn-link remover-tipotaxa-class" id="btnRemoverTipoTaxa" idTipotaxa="'+ row.idTipotaxa +'" href="#"> <i class="fa fa-lg fa-thumbs-o-down"></i></a>';
     }
 
 
@@ -134,25 +141,52 @@
     }
 
 
-    var editarTipoTaxa = function( e, row, el )
+    var deletar = function()
     {
-        if ( row == null ) 
-            return;
+        // na verdade ele só desativa nesse caso
+        var idTaxatipo = $("#idTipotaxaDialog").val();
         
-        if ( row.idTipotaxa == null || row.idTipotaxa == 0 )
-        {
-            preencheAlertGeral("alertArea", "Tipo de Taxa não foi selecionado corretamente.", "danger");
-            return false;
-        }
-        else
-        {
-            var url = buildUrl( "/admin/tipotaxas/{idTipotaxa}/view", { 
-                idTipotaxa: row.idTipotaxa 
-            });
-            
-            window.location = url;
-        }
-    };
+        if ( idTaxatipo == null || idTaxatipo == 0 )
+            preencheAlertGeral( "alertArea", "Gênero não encontrado" );
+
+        var url = buildUrl( "/admin/tipotaxas/{idTaxatipo}", { idTaxatipo : idTaxatipo } );
+        
+        $.ajax({
+            type: 'DELETE',
+            contentType: 'application/json',
+            url: url,
+            dataType: 'json'
+        }).done( function(json){ 
+
+            if (json.ok == 1){
+                preencheAlertGeral( "alertArea", "Registro desativado com sucesso", "success" );
+                $("#tableTipoTaxas").bootstrapTable('refresh');
+                $('#myDialog').modal('toggle');
+            }
+            else{
+                $('#myDialog').modal('toggle');
+                preencheErros( json.errors );
+            }
+        });
+    } 
+
+//     var editarTipoTaxa = function( e, row, el )
+//     {
+//         if ( row == null ) 
+//             return;
+//         if ( row.idTipotaxa == null || row.idTipotaxa == 0 )
+//         {
+//             preencheAlertGeral("alertArea", "Tipo de Taxa não foi selecionado corretamente.", "danger");
+//             return false;
+//         }
+//         else
+//         {
+//             var url = buildUrl( "/admin/tipotaxas/{idTipotaxa}/view", { 
+//                 idTipotaxa: row.idTipotaxa 
+//             });
+//             window.location = url;
+//         }
+//     };
     
 
     $(function(){
@@ -167,10 +201,6 @@
             queryParams : queryParams
         });
 
-        $('#tableTipoTaxas').on('click-row.bs.table', function( e, row, el ){
-            editarTipoTaxa( e, row, el );
-        });
-        
         $("#tableTipoTaxas").on( 'load-success.bs.table', function( e, data ) {
             $(".remover-tipotaxa-class").click( function(){
                 openDialog($(this));
@@ -183,16 +213,11 @@
             });
         });
         
+        $("#btnConfirmarDelete").click( function(){
+            deletar();
+        });
     });
 
 </script>
-
-<style type="text/css">
-
-#tableTipoTaxas tr{
-  cursor: pointer;
-}
-
-</style>
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />
