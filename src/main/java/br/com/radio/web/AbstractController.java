@@ -20,6 +20,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
+import br.com.radio.model.Usuario;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -191,6 +193,15 @@ public abstract class AbstractController {
 		boolean result = authoritiesList.stream().anyMatch( a -> a != null && a.getAuthority().equals( authName ) );
 		
 		return result;
+	}
+	
+
+	protected boolean isAutorizado( Usuario usuario, Long idClienteRequest )
+	{
+		boolean podeEditarOutrosClientes = hasAuthority( "ADM_SISTEMA" );
+		boolean clienteDiferente = !idClienteRequest.equals( usuario.getCliente().getIdCliente() );
+
+		return !( clienteDiferente && !podeEditarOutrosClientes );
 	}
 	
 	

@@ -310,7 +310,7 @@ $(function(){
     
     refreshLinkRemoverTelefone();
     
-    $("#abas li:eq(1) a").tab('show'); 
+    $("#abas li:eq(0) a").tab('show'); 
 
     $("#btnInserirCondicaoComercial").click( function() {
         formReset($("#formCondicaoComercial"));

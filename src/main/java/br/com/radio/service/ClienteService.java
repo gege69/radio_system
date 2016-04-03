@@ -216,6 +216,46 @@ public class ClienteService {
 	}
 
 
+	
+	public Titulo saveTitulo( Usuario usuario, Titulo tituloVO ){
+		
+		if ( tituloVO == null )
+			throw new RuntimeException("Título está em branco.");
+		
+		if ( usuario == null )
+			throw new RuntimeException("Usuário está em branco.");
+		
+		if ( tituloVO.getCliente() == null || tituloVO.getCliente().getIdCliente() == null || tituloVO.getCliente().getIdCliente() <= 0 )
+			throw new RuntimeException("Cliente não foi preenchido.");
+		
+		if ( tituloVO.getDataEmissao() == null )
+			throw new RuntimeException("Data de emissão não foi preenchida.");
+		
+		if ( tituloVO.getValorLiquido() == null || tituloVO.getValorLiquido().compareTo( BigDecimal.ZERO ) <= 0 )
+			throw new RuntimeException("Valor líquido não foi preenchido ou está negativo. Por favor digite um valor Líquido válido.");
+		
+		if ( tituloVO.getIdTitulo() != null && tituloVO.getIdTitulo() > 0 )
+		{
+			Titulo tituloAtual = tituloRepo.findOne( tituloVO.getIdTitulo() );
+			
+			if ( tituloAtual != null && tituloAtual.getDataPagamento() != null )
+				throw new RuntimeException( "Não é possível alterar o Título já Pago.");
+		}
+		
+		BigDecimal valorTotal = tituloVO.getValorLiquido().add( tituloVO.getValorTaxas() ).add( tituloVO.getValorJuros() ).add( tituloVO.getValorAcresc() );
+		
+		valorTotal = valorTotal.subtract( tituloVO.getValorDescontos() );
+
+		valorTotal = valorTotal.setScale( 2, BigDecimal.ROUND_HALF_EVEN );
+		
+		tituloVO.setValorTotal( valorTotal );
+		
+		tituloVO.setDataAlteracao( new Date() );
+		
+		tituloRepo.save( tituloVO );
+		
+		return tituloVO;
+	}
 
 
 }

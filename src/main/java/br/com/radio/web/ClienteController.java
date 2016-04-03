@@ -58,6 +58,7 @@ public class ClienteController extends AbstractController {
 	@Autowired
 	private TipoTaxaRepository tipoTaxaRepo;
 	
+
 	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String cadastro( ModelMap model, Principal principal )
@@ -70,6 +71,7 @@ public class ClienteController extends AbstractController {
 		Long quantidade = clienteRepo.count();
 		
 		model.addAttribute( "qtdClientes", quantidade.intValue() );
+
 		
 		return "admin/cadastro-clientes";
 	}
@@ -83,8 +85,14 @@ public class ClienteController extends AbstractController {
 		
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
+		
+		model.addAttribute( "urlVoltarCadastro", "/admin/clientes/searches" );
+		model.addAttribute( "urlVoltarPainel", "/admin/painel" );
+		model.addAttribute( "nomePainel", "Painel de Admin");
+		model.addAttribute( "urlInserirTitulo", "/admin/titulos/new" );
+		model.addAttribute( "isAdmin", true);
 
-		return "admin/editar-cliente";
+		return "cliente/editar-cliente";
 	}
 
 	@RequestMapping(value={ "/clientes/new" }, method=RequestMethod.GET)
@@ -95,7 +103,11 @@ public class ClienteController extends AbstractController {
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 
-		return "ambiente/editar-cliente";
+		model.addAttribute( "urlVoltarPainel", "/principal" );
+		model.addAttribute( "nomePainel", "Painel Gerencial" );
+		model.addAttribute( "urlInserirTitulo", "/titulos/new" );
+		
+		return "cliente/editar-cliente";
 	}
 
 
@@ -114,8 +126,13 @@ public class ClienteController extends AbstractController {
 			Cliente cliente = clienteRepo.findOne( idCliente );
 			
 			model.addAttribute( "idCliente", cliente.getIdCliente() );
+			model.addAttribute( "urlVoltarCadastro", "/admin/clientes/searches" );
+			model.addAttribute( "urlVoltarPainel", "/admin/painel" );
+			model.addAttribute( "nomePainel", "Painel de Admin");
+			model.addAttribute( "urlInserirTitulo", "/titulos/new" );
+			model.addAttribute( "isAdmin", true);
 
-			return "admin/editar-cliente";
+			return "cliente/editar-cliente";
 		}
 	}
 
@@ -133,9 +150,7 @@ public class ClienteController extends AbstractController {
 		{
 			Cliente cliente = clienteRepo.findOne( idCliente );
 			
-			model.addAttribute( "idCliente", cliente.getIdCliente() );
-
-			return "ambiente/editar-cliente";
+			return exportaParametrosDefaultRetornaCliente( model, cliente );
 		}
 	}
 	
@@ -148,9 +163,21 @@ public class ClienteController extends AbstractController {
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
-		model.addAttribute( "idCliente", usuario.getCliente().getIdCliente() );
+		Cliente cliente = usuario.getCliente();
 
-		return "ambiente/editar-cliente";
+		return exportaParametrosDefaultRetornaCliente( model, cliente );
+	}
+
+
+
+	private String exportaParametrosDefaultRetornaCliente( ModelMap model, Cliente cliente )
+	{
+		model.addAttribute( "idCliente", cliente.getIdCliente() );
+		model.addAttribute( "urlVoltarPainel", "/principal" );
+		model.addAttribute( "nomePainel", "Painel Gerencial" );
+		model.addAttribute( "urlInserirTitulo", "/titulos/new" );
+
+		return "cliente/editar-cliente";
 	}
 	
 	
@@ -188,15 +215,6 @@ public class ClienteController extends AbstractController {
 		return jsonList;
 	}
 
-
-	private boolean isAutorizado( Usuario usuario, Long idClienteRequest )
-	{
-		boolean podeEditarOutrosClientes = hasAuthority( "ADM_SISTEMA" );
-		boolean clienteDiferente = !idClienteRequest.equals( usuario.getCliente().getIdCliente() );
-
-		return !( clienteDiferente && !podeEditarOutrosClientes );
-	}
-	
 	
 	@RequestMapping( value = { "/clientes/{idCliente}", "/api/clientes/{idCliente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody Cliente getCliente( @PathVariable Long idCliente, Principal principal  )
@@ -211,7 +229,6 @@ public class ClienteController extends AbstractController {
 		else
 			return null;
 	}
-	
 	
 	
 	@RequestMapping( value = { "/clientes", "/api/clientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -252,6 +269,7 @@ public class ClienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/clientes/{idCliente}/condicoescomerciais", "/api/clientes/{idCliente}/condicoescomerciais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody JSONBootstrapGridWrapper<CondicaoComercial> listCondicoesComerciais( @PathVariable Long idCliente,
 																@RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																@RequestParam(value="limit", required=false) Integer limit,
@@ -282,6 +300,7 @@ public class ClienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/clientes/{idCliente}/condicoescomerciais", "/api/clientes/{idCliente}/condicoescomerciais" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody String saveCondicaoComercial( @RequestBody @Valid CondicaoComercial condicaoComercialVO, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
@@ -316,6 +335,7 @@ public class ClienteController extends AbstractController {
 
 
 	@RequestMapping( value = { "/clientes/{idCliente}/condicoescomerciais/{idCondcom}", "/api/clientes/{idCliente}/condicoescomerciais/{idCondcom}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody CondicaoComercial getCondicaoComercial( @PathVariable Long idCliente, @PathVariable Long idCondcom, Principal principal  )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );

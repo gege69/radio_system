@@ -16,10 +16,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import br.com.radio.json.JSONBigDecimalDeserializer;
+import br.com.radio.json.JSONBigDecimalSerializer;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -42,9 +46,9 @@ public class Titulo implements Serializable {
 	@Column( name = "id_titulo", nullable = false )
 	private Long idTitulo;
 	
-	@JsonIgnore
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@OneToOne
-	@JoinColumn(name="id_cliente")
+	@JoinColumn(name="id_cliente", nullable = false)
 	private Cliente cliente;
 	
 	@JsonIgnore
@@ -76,29 +80,59 @@ public class Titulo implements Serializable {
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacancelamento")
 	private Date dataCancelamento;
+
+	// Mesmo que exista uma data de emissão vou deixar a data de criação do regsitro aqui também
+	@JsonDeserialize(using=JSONDateDeserializer.class)
+	@JsonSerialize(using=JSONDateSerializer.class)
+	@NotNull( message = "A data de criação do Ambiente é de preenchimento obrigatório" )	
+	@Temporal( TemporalType.TIMESTAMP )
+	@Column( name = "datacriacao", nullable = false )
+	private Date dataCriacao;	
+
+	@JsonDeserialize(using=JSONDateDeserializer.class)
+	@JsonSerialize(using=JSONDateSerializer.class)
+	@Temporal( TemporalType.TIMESTAMP )
+	@Column( name = "dataalteracao")
+	private Date dataAlteracao;
 	
 	@Column(name="numeronotafiscal")
 	private String numeroNotaFiscal;
 	
-	@Column(name="valor_liquido", columnDefinition = "numeric(12,2)", precision=2, scale=2)
+
+	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
+	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+	@NotNull( message = "O valor líquido é de preenchimento obrigatório" )	
+	@Column(name="valor_liquido", columnDefinition = "numeric(12,2)", precision=2, scale=2, nullable = false)
 	private BigDecimal valorLiquido;
 	
+	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
+	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_taxas", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorTaxas;
 	
+	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
+	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_descontos", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorDescontos;
 
+	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
+	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_juros", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorJuros;
 	
+	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
+	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_acresc", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorAcresc;
 	
 	// LIQUIDO + TAXAS + JUROS + ACRESCIMOS - DESCONTOS
-	@Column(name="valor_total", columnDefinition = "numeric(12,2)", precision=2, scale=2)
+	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
+	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+	@Column(name="valor_total", columnDefinition = "numeric(12,2)", precision=2, scale=2, nullable = false)
 	private BigDecimal valorTotal;
 	
+	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
+	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_pago", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorPago;
 	
@@ -190,6 +224,8 @@ public class Titulo implements Serializable {
 
 	public BigDecimal getValorLiquido()
 	{
+		if ( valorLiquido == null )
+			valorLiquido = BigDecimal.ZERO;
 		return valorLiquido;
 	}
 
@@ -200,6 +236,8 @@ public class Titulo implements Serializable {
 
 	public BigDecimal getValorTaxas()
 	{
+		if ( valorTaxas == null )
+			valorTaxas = BigDecimal.ZERO;
 		return valorTaxas;
 	}
 
@@ -210,6 +248,8 @@ public class Titulo implements Serializable {
 
 	public BigDecimal getValorDescontos()
 	{
+		if ( valorDescontos == null )
+			valorDescontos = BigDecimal.ZERO;
 		return valorDescontos;
 	}
 
@@ -220,6 +260,8 @@ public class Titulo implements Serializable {
 
 	public BigDecimal getValorJuros()
 	{
+		if ( valorJuros == null )
+			valorJuros = BigDecimal.ZERO;
 		return valorJuros;
 	}
 
@@ -230,6 +272,8 @@ public class Titulo implements Serializable {
 
 	public BigDecimal getValorAcresc()
 	{
+		if ( valorAcresc == null )
+			valorAcresc = BigDecimal.ZERO;
 		return valorAcresc;
 	}
 
@@ -240,6 +284,8 @@ public class Titulo implements Serializable {
 
 	public BigDecimal getValorTotal()
 	{
+		if ( valorTotal == null )
+			valorTotal = BigDecimal.ZERO;
 		return valorTotal;
 	}
 
@@ -250,6 +296,8 @@ public class Titulo implements Serializable {
 
 	public BigDecimal getValorPago()
 	{
+		if ( valorPago == null )
+			valorPago = BigDecimal.ZERO;
 		return valorPago;
 	}
 
@@ -306,15 +354,49 @@ public class Titulo implements Serializable {
 			return false;
 		return true;
 	}
-
+	
+	
 	@Override
 	public String toString()
 	{
 		return String
 				.format(
-						"Titulo [idTitulo=%s, cliente=%s, usuario=%s, dataEmissao=%s, dataVencimento=%s, dataPagamento=%s, dataCancelamento=%s, numeroNotaFiscal=%s, valorLiquido=%s, valorTaxas=%s, valorDescontos=%s, valorJuros=%s, valorAcresc=%s, valorTotal=%s, valorPago=%s, linhadigitavel=%s, historico=%s]",
-						idTitulo, cliente, usuario, dataEmissao, dataVencimento, dataPagamento, dataCancelamento, numeroNotaFiscal, valorLiquido, valorTaxas, valorDescontos, valorJuros, valorAcresc,
-						valorTotal, valorPago, linhadigitavel, historico );
+						"Titulo [idTitulo=%s, cliente=%s, usuario=%s, dataEmissao=%s, dataVencimento=%s, dataPagamento=%s, dataCancelamento=%s, dataCriacao=%s, dataAlteracao=%s, numeroNotaFiscal=%s, valorLiquido=%s, valorTaxas=%s, valorDescontos=%s, valorJuros=%s, valorAcresc=%s, valorTotal=%s, valorPago=%s, linhadigitavel=%s, historico=%s]",
+						idTitulo, cliente, usuario, dataEmissao, dataVencimento, dataPagamento, dataCancelamento, dataCriacao, dataAlteracao, numeroNotaFiscal, valorLiquido, valorTaxas,
+						valorDescontos, valorJuros, valorAcresc, valorTotal, valorPago, linhadigitavel, historico );
+	}
+
+	public Titulo()
+	{
+		super();
+		this.dataCriacao = new Date();
+		this.valorLiquido = BigDecimal.ZERO;
+		this.valorAcresc = BigDecimal.ZERO;
+		this.valorDescontos = BigDecimal.ZERO;
+		this.valorJuros = BigDecimal.ZERO;
+		this.valorPago = BigDecimal.ZERO;
+		this.valorTaxas = BigDecimal.ZERO;
+		this.valorTotal= BigDecimal.ZERO;
+	}
+
+	public Date getDataCriacao()
+	{
+		return dataCriacao;
+	}
+
+	public void setDataCriacao( Date dataCriacao )
+	{
+		this.dataCriacao = dataCriacao;
+	}
+
+	public Date getDataAlteracao()
+	{
+		return dataAlteracao;
+	}
+
+	public void setDataAlteracao( Date dataAlteracao )
+	{
+		this.dataAlteracao = dataAlteracao;
 	}
 	
 	

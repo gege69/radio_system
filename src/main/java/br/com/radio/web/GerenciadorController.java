@@ -80,7 +80,6 @@ public class GerenciadorController extends AbstractController {
 	@RequestMapping( value = "endpoints", method = RequestMethod.GET )
 	public String getEndPointsInView( Model model )
 	{
-		
 		Comparator<EndPointDTO> byPath = (EndPointDTO i1, EndPointDTO i2) -> i1.getPatternsCondition().compareTo( i2.getPatternsCondition());
 		
 		List<EndPointDTO> endpoints = new ArrayList<EndPointDTO>();
