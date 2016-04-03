@@ -129,7 +129,7 @@ public class ClienteController extends AbstractController {
 			model.addAttribute( "urlVoltarCadastro", "/admin/clientes/searches" );
 			model.addAttribute( "urlVoltarPainel", "/admin/painel" );
 			model.addAttribute( "nomePainel", "Painel de Admin");
-			model.addAttribute( "urlInserirTitulo", "/titulos/new" );
+			model.addAttribute( "urlInserirTitulo", "/admin/titulos/new" );
 			model.addAttribute( "isAdmin", true);
 
 			return "cliente/editar-cliente";
