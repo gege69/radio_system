@@ -33,12 +33,14 @@ import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
+import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Perfil;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.GeneroRepository;
@@ -71,6 +73,8 @@ public class GerenciadorController extends AbstractController {
 	private CategoriaRepository categoriaRepo;
 	@Autowired
 	private PerfilRepository perfilRepo;
+	@Autowired
+	private AudioOpcionalRepository opcionalRepo;
 	@Autowired
 	private UsuarioService usuarioService;
 	
@@ -269,7 +273,7 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/perfis", "/api/perfis" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Perfil> getPerfis()
+	public @ResponseBody JSONBootstrapGridWrapper<Perfil> listPerfis()
 	{
 		List<Perfil> perfilList = perfilRepo.findAll();
 		
@@ -283,7 +287,7 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/fusohorarios", "/api/fusohorarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<FusoHorario> getFusos()
+	public @ResponseBody JSONListWrapper<FusoHorario> listFusos()
 	{
 		List<FusoHorario> fusoList = fusoRepo.findAllWithSortByOrderComum();
 		
@@ -306,7 +310,7 @@ public class GerenciadorController extends AbstractController {
 	 */
 	@RequestMapping( value = { 	"/generos", "/api/generos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Genero> getGeneros( HttpServletResponse response )
+	public @ResponseBody JSONListWrapper<Genero> listGeneros( HttpServletResponse response )
 	{
 		List<Genero> generos = generoRepo.findAllByOrderByNome();
 		
@@ -319,7 +323,7 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping( value = { 	"/categorias", "/api/categorias" }, 
 			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Categoria> getCategorias( @RequestParam(value="simpleUpload", required=false) Boolean simpleUpload, HttpServletResponse response )
+	public @ResponseBody JSONListWrapper<Categoria> listCategorias( @RequestParam(value="simpleUpload", required=false) Boolean simpleUpload, HttpServletResponse response )
 	{
 		List<Categoria> categorias = null;
 		
@@ -333,6 +337,21 @@ public class GerenciadorController extends AbstractController {
 		
 		return jsonList;
 	}
+
+
+
+	@RequestMapping( value = { "/opcionais", "/api/opcionais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<AudioOpcional> listOpcionais()
+	{
+		List<AudioOpcional> opcionalList = opcionalRepo.findAll();
+		
+		int total = opcionalList.size();
+		
+		JSONBootstrapGridWrapper<AudioOpcional> jsonList = new JSONBootstrapGridWrapper<AudioOpcional>(opcionalList, total);
+
+		return jsonList;
+	}
+
 
 	
 	

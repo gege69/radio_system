@@ -761,7 +761,7 @@ public class ProgramacaoMusicalService {
 		
 		int stepInstitucionais = bloco.getIndexInstitucionais();
 		int stepProgrametes = bloco.getIndexProgrametes();
-		int stepHoroscopo = bloco.getIndexHoroscopo();
+//		int stepHoroscopo = bloco.getIndexHoroscopo();
 		
 		LinkedList<Midia> novaListaMidias = new LinkedList<Midia>();
 		
@@ -815,11 +815,11 @@ public class ProgramacaoMusicalService {
 					adicionaComercialMerge( posicaoVinheta, rnd, blocoVinhetas, blocoComerciais, qtdComerciaisSequencia, novaListaMidias );
 			}
 				
-			if ( stepHoroscopo > 0 && countMusicasInseridas % stepHoroscopo == 0 )  // Depois de n músicas
-			{
-				// HOROSCOPO
-				addIfNotNull( novaListaMidias, blocoHoroscopo.getNextRandom( rnd ) );
-			}
+//			if ( stepHoroscopo > 0 && countMusicasInseridas % stepHoroscopo == 0 )  // Depois de n músicas
+//			{
+//				// HOROSCOPO
+//				addIfNotNull( novaListaMidias, blocoHoroscopo.getNextRandom( rnd ) );
+//			}
 		}
 		
 		dto.setMidias( novaListaMidias );

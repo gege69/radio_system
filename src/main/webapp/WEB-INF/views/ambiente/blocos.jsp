@@ -23,7 +23,7 @@
           <div class="spacer-vertical40"></div>
           
           <div class="row">
-            <div class="col-lg-10 col-md-10">
+            <div class="col-lg-7 col-md-8 col-sm-8">
               <div class="panel panel-default">
                 <div class="panel-body">
                    
@@ -39,20 +39,8 @@
                         <input type="hidden" id="idBloco" name="idBloco" value="${idBloco}">
                         
                         <div class="form-group">
-                          <label for="posicaoVinheta" class="control-label col-sm-4 col-md-3">Posicao Vinheta:</label>
-                          <div class="col-sm-6 col-md-8">
-                            <select class="form-control" id="posicaoVinheta" name="posicaoVinheta">
-                              <option value="ANTES_CADA_MUSICA">Antes de cada música</option>
-                              <option value="ANTES_BLOCO_COMERCIAL">Antes do bloco Comercial</option>
-                              <option value="DEPOIS_BLOCO_COMERCIAL">Depois do bloco Comercial</option>
-                              <option value="NAO_INCLUIR">Não incluir vinhetas</option> 
-                            </select>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label for="qtdMusicas" class="control-label col-sm-4 col-md-3">Músicas em sequência:</label>
-                          <div class="col-sm-6 col-md-8">
+                          <label for="qtdMusicas" class="control-label col-lg-4 col-sm-4 col-md-4">Músicas em sequência:</label>
+                          <div class="col-sm-8 col-md-8 col-lg-8">
                             <select class="form-control" id="qtdMusicas" name="qtdMusicas">
                               <option value="0" >Nenhuma Música</option>
                               <option value="1" >1</option>
@@ -89,10 +77,22 @@
                           </div>
                         </div>
                         
+                        <div class="form-group">
+                          <label for="posicaoVinheta" class="control-label col-lg-4 col-sm-4 col-md-4">Posicao Vinheta:</label>
+                          <div class="col-sm-8 col-md-8 col-lg-8">
+                            <select class="form-control" id="posicaoVinheta" name="posicaoVinheta">
+                              <option value="ANTES_CADA_MUSICA">Antes de cada música</option>
+                              <option value="ANTES_BLOCO_COMERCIAL">Antes do bloco Comercial</option>
+                              <option value="DEPOIS_BLOCO_COMERCIAL">Depois do bloco Comercial</option>
+                              <option value="NAO_INCLUIR">Não incluir vinhetas</option> 
+                            </select>
+                          </div>
+                        </div>
+
 
                         <div class="form-group">
-                          <label for="posicaoComercial" class="control-label col-sm-4 col-md-3">Posicao Comercial:</label>
-                          <div class="col-sm-6 col-md-8">
+                          <label for="posicaoComercial" class="control-label col-lg-4 col-sm-4 col-md-4">Posicao Comercial:</label>
+                          <div class="col-sm-8 col-md-8 col-lg-8">
                             <select class="form-control" id="posicaoComercial" name="posicaoComercial">
                               <option value="DEPOIS_MUSICAS">Depois das Músicas</option>
                               <option value="ANTES_INSTITUCIONAL">Antes do Institucional</option>
@@ -106,8 +106,8 @@
                         
                         
                         <div class="form-group">
-                          <label for="qtdComerciais" class="control-label col-sm-4 col-md-3">Comerciais em sequência:</label>
-                          <div class="col-sm-6 col-md-8">
+                          <label for="qtdComerciais" class="control-label col-lg-4 col-sm-4 col-md-4">Comerciais em sequência:</label>
+                          <div class="col-sm-8 col-md-8 col-lg-8">
                             <select class="form-control" id="qtdComerciais" name="qtdComerciais">
                               <option value="1" >1</option>
                               <option value="2" >2</option>
@@ -146,8 +146,8 @@
                         
                         
                         <div class="form-group">
-                          <label for="indexInstitucionais" class="control-label col-sm-4 col-md-3">Index Institucionais:</label>
-                          <div class="col-sm-6 col-md-8">
+                          <label for="indexInstitucionais" class="control-label col-lg-4 col-sm-4 col-md-4">Index Institucionais:</label>
+                          <div class="col-sm-8 col-md-8 col-lg-8">
                             <select class="form-control" id="indexInstitucionais" name="indexInstitucionais">
                               <option value="0" >Não incluir institucionais</option>
                             </select>
@@ -155,8 +155,8 @@
                         </div>
                         
                         <div class="form-group">
-                          <label for="indexProgrametes" class="control-label col-sm-4 col-md-3">Index Programetes:</label>
-                          <div class="col-sm-6 col-md-8">
+                          <label for="indexProgrametes" class="control-label col-lg-4 col-sm-4 col-md-4">Index Programetes:</label>
+                          <div class="col-sm-8 col-md-8 col-lg-8">
                             <select class="form-control" id="indexProgrametes" name="indexProgrametes">
                               <option value="0" >Não incluir programetes</option>
                             </select>
@@ -164,18 +164,29 @@
                         </div>
 
                         <div class="form-group">
-                          <label for="indexHoroscopo" class="control-label col-sm-4 col-md-3">Index Horóscopo:</label>
-                          <div class="col-sm-6 col-md-8">
-                            <select class="form-control" id="indexHoroscopo" name="indexHoroscopo">
-                              <option value="0" >Não incluir horóscopo</option>
+                          <label for="indexOpcionais" class="control-label col-lg-4 col-sm-4 col-md-4">Index Opcionais:</label>
+                          <div class="col-sm-8 col-md-8 col-lg-8">
+                            <select class="form-control" id="indexOpcionais" name="indexOpcionais">
+                              <option value="0" >Não incluir opcionais</option>
                             </select>
                           </div>
                         </div>
 
+
+                        <div class="form-group">
+
+                          <label for="indexOpcionais" class="control-label col-lg-4 col-sm-4 col-md-4">Opcionais:</label>
+                          
+                          <div class="col-sm-8 col-md-8 col-lg-8" id="containerOpcionais">
+                          </div>
+
+                        </div>
+
+
                         <div class="spacer-vertical20"></div>
   
                         <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                          <div class="col-lg-6 col-md-7 col-sm-6 col-xs-6">
                             <a class="btn btn-primary" id="btnSalvarBloco" href="#">Salvar Alterações</a>
                           </div>
                         </div>                     
@@ -225,6 +236,18 @@
       
   </div> <!-- /container -->
 
+
+<script src="${context}/js/required/jsrender.min.js"></script>
+
+<script id="viewTmplOpcionais" type="text/x-jsrender"  charset="UTF-8">
+
+
+  <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-12">
+    <label>
+      <input type="checkbox" class="checkbox-opcional" id="opcional-{{:idOpcional}}" name="opcionais[][idOpcional]" value="{{:idOpcional}}"> {{:nome}}
+    </label>
+  </div> 
+</script>
 
 
 <script src="${context}/js/required/jquery.serializejson.js"></script>

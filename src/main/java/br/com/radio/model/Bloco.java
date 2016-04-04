@@ -1,17 +1,24 @@
 package br.com.radio.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import br.com.radio.enumeration.PosicaoComercial;
 import br.com.radio.enumeration.PosicaoVinheta;
@@ -75,11 +82,16 @@ public class Bloco implements Serializable {
 	@Column( name = "indexProgrametes")
 	private Integer indexProgrametes;    // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um PROGRAMETE ( Ex : 6 -> Após 6 músicas inserir um Programete )
 	
-	@Column( name = "indexHoroscopo")
-	private Integer indexHoroscopo;     // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um HOROSCOPO
-
-	@Column( name = "indexHoraCerta")
-	private Integer indexHoraCerta;     // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um HORACERTA, porém esse campo deve ser preenchido com múltiplos de 3 ( Ex : 9 -> Após 9 músicas inserir um Programete )
+	@Column( name = "indexOpcionais")
+	private Integer indexOpcionais;     // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um OPCIONAL
+	
+	@ManyToMany(fetch=FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
+	   @JoinTable(name="bloco_audio_opcional", joinColumns = { 
+	        @JoinColumn(name="id_bloco", nullable=false, updatable=false) }, inverseJoinColumns = { 
+	        @JoinColumn(name="id_opcional", nullable=false, updatable=false) })
+	private List<AudioOpcional> opcionais;	
+	
 
 	public Long getIdBloco()
 	{
@@ -151,16 +163,6 @@ public class Bloco implements Serializable {
 		this.indexProgrametes = indexProgrametes;
 	}
 
-	public Integer getIndexHoraCerta()
-	{
-		return indexHoraCerta;
-	}
-
-	public void setIndexHoraCerta( Integer indexHoraCerta )
-	{
-		this.indexHoraCerta = indexHoraCerta;
-	}
-
 	@Override
 	public int hashCode()
 	{
@@ -198,24 +200,32 @@ public class Bloco implements Serializable {
 		this.posicaoComercial = posicaoComercial;
 	}
 
-	public Integer getIndexHoroscopo()
+	public Integer getIndexOpcionais()
 	{
-		return indexHoroscopo;
+		return indexOpcionais;
 	}
 
-	public void setIndexHoroscopo( Integer indexHoroscopo )
+	public void setIndexOpcionais( Integer indexOpcionais )
 	{
-		this.indexHoroscopo = indexHoroscopo;
+		this.indexOpcionais = indexOpcionais;
 	}
 
 	@Override
 	public String toString()
 	{
-		return String
-				.format(
-						"Bloco [idBloco=%s, ambiente=%s, posicaoVinheta=%s, qtdMusicas=%s, posicaoComercial=%s, qtdComerciais=%s, indexInstitucionais=%s, indexProgrametes=%s, indexHoroscopo=%s, indexHoraCerta=%s]",
-						idBloco, ambiente, posicaoVinheta, qtdMusicas, posicaoComercial, qtdComerciais, indexInstitucionais, indexProgrametes, indexHoroscopo, indexHoraCerta );
+		return String.format(
+				"Bloco [idBloco=%s, ambiente=%s, posicaoVinheta=%s, qtdMusicas=%s, posicaoComercial=%s, qtdComerciais=%s, indexInstitucionais=%s, indexProgrametes=%s, indexOpcionais=%s]", idBloco,
+				ambiente, posicaoVinheta, qtdMusicas, posicaoComercial, qtdComerciais, indexInstitucionais, indexProgrametes, indexOpcionais );
 	}
 
+	public List<AudioOpcional> getOpcionais()
+	{
+		return opcionais;
+	}
+
+	public void setOpcionais( List<AudioOpcional> opcionais )
+	{
+		this.opcionais = opcionais;
+	}
 
 }

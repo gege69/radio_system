@@ -74,7 +74,6 @@
                       </div>
                     </div>
                     
-    <!--                 Fazer aqui o lance igual o eventos -->
                     <div id="containertelefones">
 
                       <div class="form-group">
