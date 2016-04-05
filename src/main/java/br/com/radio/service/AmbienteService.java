@@ -195,14 +195,13 @@ public class AmbienteService {
 		Bloco bloco = new Bloco();
 		
 		bloco.setAmbiente( ambiente );
-		bloco.setIndexHoraCerta( 0 );
 		bloco.setIndexInstitucionais( 0 );
 		bloco.setIndexProgrametes( 0 );
 		bloco.setPosicaoVinheta( PosicaoVinheta.ANTES_BLOCO_COMERCIAL );
 		bloco.setPosicaoComercial( PosicaoComercial.DEPOIS_MUSICAS );
 		bloco.setQtdMusicas( 3 );
 		bloco.setQtdComerciais( 2 );
-		bloco.setIndexHoroscopo( 0 );
+		bloco.setIndexOpcionais( 0 );
 
 		blocoRepository.saveAndFlush( bloco );
 	}

@@ -117,25 +117,50 @@ var constroiCombo = function( combo, nome )
 
 var configuraComboVinheta = function(){
     
-    $('#posicaoVinheta').empty();
+    var combo = $('#posicaoVinheta');
+    combo.empty();
     
     var qtd = $('#qtdMusicas').val(); 
     
     if ( qtd != null && qtd > 0 )
-        $('#posicaoVinheta').append($("<option/>", { value: "ANTES_CADA_MUSICA", text: 'Antes de cada música' }));
+        combo.append($("<option/>", { value: "ANTES_CADA_MUSICA", text: 'Antes de cada música' }));
 
-    $('#posicaoVinheta').append($("<option/>", { value: "ANTES_BLOCO_COMERCIAL", text: 'Antes do bloco Comercial' }));
-    $('#posicaoVinheta').append($("<option/>", { value: "DEPOIS_BLOCO_COMERCIAL", text: 'Depois do bloco Comercial' }));
-    $('#posicaoVinheta').append($("<option/>", { value: "NAO_INCLUIR", text: 'Não incluir vinhetas' }));
+    combo.append($("<option/>", { value: "ANTES_BLOCO_COMERCIAL", text: 'Antes do bloco Comercial' }));
+    combo.append($("<option/>", { value: "DEPOIS_BLOCO_COMERCIAL", text: 'Depois do bloco Comercial' }));
+    combo.append($("<option/>", { value: "NAO_INCLUIR", text: 'Não incluir vinhetas' }));
     
     if ( qtd == null || qtd <= 0 )
-       $('#posicaoVinheta').val("NAO_INCLUIR");
+       combo.val("NAO_INCLUIR");
+}        
+
+
+
+var configuraComboComercial = function(){
+
+    var combo = $('#posicaoComercial');
+    combo.empty();
+    
+    var qtd = $('#qtdMusicas').val(); 
+    
+    if ( qtd != null && qtd > 0 )
+        combo.append($("<option/>", { value: "DEPOIS_MUSICAS", text: 'Depois das Músicas' }));
+
+    combo.append($("<option/>", { value: "ANTES_INSTITUCIONAL", text: 'Antes do Institucional' }));
+    combo.append($("<option/>", { value: "DEPOIS_INSTITUCIONAL", text: 'Depois do Institucional' }));
+    combo.append($("<option/>", { value: "ANTES_PROGRAMETE", text: 'Antes do Programete' }));
+    combo.append($("<option/>", { value: "DEPOIS_PROGRAMETE", text: 'Depois do Programete' }));
+    combo.append($("<option/>", { value: "NAO_INCLUIR", text: 'Não incluir comerciais' }));
+
+    if ( qtd == null || qtd <= 0 )
+       combo.val("ANTES_INSTITUCIONAL"); 
 }        
 
 
 var configuraMultiplosMusica = function()
 {
     configuraComboVinheta();
+    
+    configuraComboComercial();
 
     $('#indexInstitucionais').empty();
     $('#indexInstitucionais').append($("<option/>", { value: 0, text: 'Não incluir Institucionais' }));

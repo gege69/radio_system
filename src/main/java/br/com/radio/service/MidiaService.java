@@ -50,7 +50,6 @@ import br.com.radio.model.Midia;
 import br.com.radio.model.MidiaAmbiente;
 import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.Parametro;
-import br.com.radio.model.SignoMidia;
 import br.com.radio.repository.AlfanumericoMidiaRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
@@ -62,7 +61,6 @@ import br.com.radio.repository.MidiaCategoriaRepository;
 import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
-import br.com.radio.repository.SignoMidiaRepository;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -110,9 +108,6 @@ public class MidiaService {
 	
 	@PersistenceContext
 	protected EntityManager em;
-	
-	@Autowired
-	private SignoMidiaRepository signoMidiaRepo;
 	
 	private Map<String,String> mapExtToMimeType = new HashMap<String,String>();
 	private Map<String,String> mapMimeTypeToExt = new HashMap<String,String>();
@@ -593,12 +588,12 @@ public class MidiaService {
 	
 
 	@Transactional
-	public Midia saveUploadHoroscopo( MultipartFile multiPartFile, Cliente cliente, String descricao, String signo ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUploadOpcional( MultipartFile multiPartFile, Cliente cliente, String descricao, Long idOpcional ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		if ( StringUtils.isBlank( signo ) )
-			throw new RuntimeException("É necessário determinar algum signo");
+		if ( idOpcional == null || idOpcional <= 0 )
+			throw new RuntimeException("É necessário determinar o Nome do Opcional");
 		
-		Categoria categoria = categoriaRepo.findByCodigo( Categoria.HOROSCOPO );
+		Categoria categoria = categoriaRepo.findByCodigo( Categoria.OPCIONAL );
 		
 		byte[] bytes = multiPartFile.getBytes();
 		
@@ -608,20 +603,9 @@ public class MidiaService {
 		
 		associaMidiaParaTodosAmbientes( midia );
 		
-		SignoZodiaco signoZodiaco = SignoZodiaco.valueOf( signo );
+		// implementar aqui como vou organizar os opcionais
 		
-		SignoMidia signoMidia = signoMidiaRepo.findByMidia( midia );
 		
-		if ( signoMidia != null )
-		{
-			if ( !signoMidia.getSigno().equals( signoZodiaco ) )
-				throw new RuntimeException( "Essa mídia já está associada à outro signo." );   // por enquanto vai ter que deletar a mídia e subir de novo
-		}
-		else
-		{
-			signoMidia = new SignoMidia( signoZodiaco, midia );
-			signoMidiaRepo.save( signoMidia );
-		}
 			
 		return midia;
 	}	
@@ -796,47 +780,6 @@ public class MidiaService {
 	}
 
 
-	public Midia alteraDadosHoroscopo( Midia midiaVO, String signo )
-	{
-		Midia midia = midiaRepo.findOne( midiaVO.getIdMidia() );
-		
-		if ( midia == null )
-			throw new RuntimeException( "Mídia não encontrada");
-
-		if ( StringUtils.isBlank( midiaVO.getNome() ) )
-			throw new RuntimeException("Nome não pode ser branco");
-		
-		if ( midia.getCategorias() == null )
-			throw new RuntimeException("Categoria não definida");
-		
-		if ( midia.getCategorias().size() > 1 )
-			throw new RuntimeException("Existe mais de uma categoria definida para essa Mídia");
-		
-		Categoria categoria = midia.getCategorias().get( 0 );
-		
-		midia.setNome( midiaVO.getNome() );
-		
-		if ( StringUtils.isNotBlank( midiaVO.getDescricao() ) )
-			midia.setDescricao( midiaVO.getDescricao() );
-		
-		midiaRepo.save( midia );
-		
-		SignoMidia signoMidia = signoMidiaRepo.findByMidia( midia );
-		
-		SignoZodiaco signoZodiaco = SignoZodiaco.valueOf( signo );
-		
-		if ( !signoMidia.getSigno().equals( signoZodiaco ) )
-		{
-			signoMidiaRepo.delete( signoMidia );
-			
-			SignoMidia novoSignoMidia = new SignoMidia( signoZodiaco, midia );
-			
-			signoMidiaRepo.save( novoSignoMidia );
-		}
-		
-		return midia;
-	}
-	
 
 
 	private String getDefaultPath( String hash, String contentType )
@@ -1036,6 +979,24 @@ public class MidiaService {
 		
 		return result;
 	}
+
+
+	/**
+	 * Esse método vai buscar as midias por categoria e por ambiente e ativas
+	 * 
+	 * também vai pegar apenas as que tiverem duração preenchida.
+	 * 
+	 * @param ambiente
+	 * @param categoria
+	 * @return
+	 */
+	public List<Midia> getMidiasComerciais( Ambiente ambiente, Categoria categoria )
+	{
+		List<Midia> result = midiaRepo.findByAmbientesAndCategoriasAndValidoTrueAndDuracaoGreaterThan( ambiente, categoria, 0 );
+		
+		return result;
+	}
+
 	
 
 	@Transactional

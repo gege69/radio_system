@@ -38,7 +38,7 @@ public class Categoria implements Serializable {
 	public static final String VEIC_PLACA_LETRA = 		"veic_placa_letra";
 	public static final String VEIC_PLACA_NUMERO = 		"veic_placa_numero";
 
-	public static final String HOROSCOPO = 			"horoscopo";
+	public static final String OPCIONAL = 			"opcional";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -31,20 +31,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.radio.dto.MidiaSignoDTO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
-import br.com.radio.model.SignoMidia;
 import br.com.radio.model.TipoTaxa;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.PerfilRepository;
-import br.com.radio.repository.SignoMidiaRepository;
 import br.com.radio.repository.TipoTaxaRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.MidiaService;
@@ -76,9 +73,6 @@ public class AdministradorController extends AbstractController {
 	@Autowired
 	private CategoriaRepository categoriaRepo;
 	
-	@Autowired
-	private SignoMidiaRepository signoMidiaRepo;
-
 	@Autowired
 	private TipoTaxaRepository tipoTaxaRepo;
 	
@@ -521,37 +515,37 @@ public class AdministradorController extends AbstractController {
 
 
 
-	@RequestMapping( value = { "/admin/midias/horoscopo", "/api/admin/midias/horoscopo" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaHoroscopo(
-																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
-																	@RequestParam(value="limit", required = false) Integer limit, 
-																	@RequestParam(value="order", required = false) String order )
-	{
-		Pageable pageable = null;
-		
-		Categoria categoria = categoriaRepo.findByCodigo( Categoria.HOROSCOPO );
-		 
-		pageable = getPageable( pageNumber, limit, order, "nome" ); 
-		
-		if ( categoria == null )
-			throw new RuntimeException("Categoria não encontrada");
-		
-		Page<Midia> page = midiaRepo.findByCategoriasAndValidoTrue( pageable, categoria );
-		
-		List<Midia> list = page.getContent();
-		
-		list.forEach( m -> { 
-			
-			SignoMidia signo = signoMidiaRepo.findByMidia( m );
-			
-			if ( signo != null )
-				m.getMidiaView().put( "signo", signo.getSigno().getDescricao() );
-		});
-		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( list, page.getTotalElements() );
-
-		return jsonList;
-	}
+//	@RequestMapping( value = { "/admin/midias/horoscopo", "/api/admin/midias/horoscopo" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+//	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaHoroscopo(
+//																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
+//																	@RequestParam(value="limit", required = false) Integer limit, 
+//																	@RequestParam(value="order", required = false) String order )
+//	{
+//		Pageable pageable = null;
+//		
+//		Categoria categoria = categoriaRepo.findByCodigo( Categoria.HOROSCOPO );
+//		 
+//		pageable = getPageable( pageNumber, limit, order, "nome" ); 
+//		
+//		if ( categoria == null )
+//			throw new RuntimeException("Categoria não encontrada");
+//		
+//		Page<Midia> page = midiaRepo.findByCategoriasAndValidoTrue( pageable, categoria );
+//		
+//		List<Midia> list = page.getContent();
+//		
+//		list.forEach( m -> { 
+//			
+//			SignoMidia signo = signoMidiaRepo.findByMidia( m );
+//			
+//			if ( signo != null )
+//				m.getMidiaView().put( "signo", signo.getSigno().getDescricao() );
+//		});
+//		
+//		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( list, page.getTotalElements() );
+//
+//		return jsonList;
+//	}
 
 
 	
@@ -696,12 +690,12 @@ public class AdministradorController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/admin/upload-horoscopo", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/upload-opcional", method=RequestMethod.POST)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public ResponseEntity<String> uploadHoroscopo(
+	public ResponseEntity<String> uploadOpcional(
     		@RequestParam("file") MultipartFile file, 
+    		@RequestParam("idOpcional") Long idOpcional,
     		@RequestParam(name="descricao", required=false) String descricao,
-    		@RequestParam("signo") String signo,
     		Principal principal, 
     		Model model )
 	{
@@ -716,14 +710,12 @@ public class AdministradorController extends AbstractController {
 		{
 			try
 			{
-				midiaService.saveUploadHoroscopo( file, usuario.getCliente(), descricao, signo );
+				midiaService.saveUploadOpcional( file, usuario.getCliente(), descricao, idOpcional );
 						
 				jsonResult = writeOkResponse();
 			}
 			catch ( Exception e )
 			{
-				//e.printStackTrace();
-
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
 			}
@@ -738,32 +730,6 @@ public class AdministradorController extends AbstractController {
     }		
 	
 	
-	@RequestMapping( value = { "/admin/midia/horoscopo",
-							   "/api/admin/midia/horoscopo" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveDadosHoroscopo( @RequestBody @Valid MidiaSignoDTO midiaSignoDTO, BindingResult result, Principal principal )
-	{
-		String jsonResult = null;
-	
-		try
-		{
-			Usuario usuario = usuarioService.getUserByPrincipal( principal );
-			
-			if ( usuario == null || usuario.getCliente().getIdCliente() == null )
-				throw new RuntimeException("Usuário não encontrado");
-			
-			midiaService.alteraDadosHoroscopo( midiaSignoDTO.getMidia(), midiaSignoDTO.getSigno() );
-			
-			jsonResult = writeOkResponse();
-		}
-		catch ( Exception e )
-		{
-			e.printStackTrace();
-			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-		}
-
-		return jsonResult;
-	}
 	
 	
 }

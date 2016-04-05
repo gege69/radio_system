@@ -15,7 +15,7 @@ import br.com.radio.model.Midia;
  * 
  * @author pazin
  */
-public class BlocosManipulacaoDTO {
+public class ListaInesgotavelRandom implements ListaInesgotavel {
 	
 	private List<Midia> midiasConsumir = new ArrayList<Midia>();
 	
@@ -39,6 +39,7 @@ public class BlocosManipulacaoDTO {
 			// resetando
 			midiasConsumir.addAll( midiasUtilizadas );
 			midiasUtilizadas.clear();
+			System.out.println("Reset! "+ this.categoria.getCodigo());
 		}
 			
 		int indexSelect = rnd.nextInt( midiasConsumir.size() );
@@ -52,10 +53,11 @@ public class BlocosManipulacaoDTO {
 		// Mesmo que essa mídia seja várias coisas ao mesmo tempo ( Comercial e Programete ) preciso saber qual foi a escolha dela
 		m.setCategoriaSelecionada( this.categoria );
 		
+		
 		return m;
 	}
 	
-	public BlocosManipulacaoDTO( List<Midia> midiasConsumir, Categoria categoria )
+	public ListaInesgotavelRandom( List<Midia> midiasConsumir, Categoria categoria )
 	{
 		super();
 		this.midiasConsumir = midiasConsumir;
@@ -69,13 +71,13 @@ public class BlocosManipulacaoDTO {
 	}
 
 
-	public BlocosManipulacaoDTO( List<Midia> midiasConsumir )
+	public ListaInesgotavelRandom( List<Midia> midiasConsumir )
 	{
 		super();
 		this.midiasConsumir = midiasConsumir;
 	}
 
-	public BlocosManipulacaoDTO()
+	public ListaInesgotavelRandom()
 	{
 		super();
 		// TODO Auto-generated constructor stub
@@ -110,5 +112,6 @@ public class BlocosManipulacaoDTO {
 	{
 		this.categoria = categoria;
 	}
-	
+
+
 }

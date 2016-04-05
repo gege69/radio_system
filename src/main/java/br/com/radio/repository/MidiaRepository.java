@@ -18,6 +18,9 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	Page<Midia> findByAmbientesAndCategoriasAndValidoTrue( Pageable pageable, Ambiente ambiente, Categoria categoria );
 	
 	List<Midia> findByAmbientesAndCategoriasAndValidoTrue( Ambiente ambiente, Categoria categoria );
+
+	// Para montar os blocos comerciais é interessante pegar apenas as mídias comerciais que tenham duração maior que zero pra evitar um bug
+	List<Midia> findByAmbientesAndCategoriasAndValidoTrueAndDuracaoGreaterThan( Ambiente ambiente, Categoria categoria, Integer duracao );
 	
 	Page<Midia> findByAmbientesAndCategorias_codigoAndValidoTrue( Pageable pageable, Ambiente ambiente, String codigo );
 
