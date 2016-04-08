@@ -1,8 +1,5 @@
 package br.com.radio.boot;
 
-import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,33 +9,30 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import br.com.radio.model.Ambiente;
-import br.com.radio.model.Categoria;
+import br.com.radio.model.Cliente;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
-import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
-import br.com.radio.service.MidiaService;
+import br.com.radio.service.ClienteService;
 import br.com.radio.service.ProgramacaoMusicalService;
-import br.com.radio.service.programacaomusical.ListaInesgotavel;
-import br.com.radio.service.programacaomusical.ListaInesgotavelRandom;
-import br.com.radio.service.programacaomusical.ListaInesgotavelRandomAlternada;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
 
-//@SpringBootApplication
-//@ComponentScan( basePackages = { "br.com.radio.*" } )
-//@EnableConfigurationProperties
-//@ActiveProfiles({"default"})
-//@EnableTransactionManagement
+@SpringBootApplication
+@ComponentScan( basePackages = { "br.com.radio.*" } )
+@EnableConfigurationProperties
+@ActiveProfiles({"default"})
+@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)
 	{
-//		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
-////		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
+		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
+//		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 //		
+		ClienteService clienteService = ctx.getBean( ClienteService.class );
 //		MidiaService midiaService = ctx.getBean( MidiaService.class );
 //		CategoriaRepository categoriaRepo = ctx.getBean( CategoriaRepository.class );
 //		AmbienteRepository ambienteRepo = ctx.getBean( AmbienteRepository.class );
@@ -46,7 +40,9 @@ public class Application {
 //		Ambiente ambiente = ambienteRepo.findOne( 1L );
 		
 
-
+		Cliente cliente = clienteService.testeCliente();
+		
+		System.out.println(cliente);
 
 //		criarVariosAmbientes( ctx );
 		

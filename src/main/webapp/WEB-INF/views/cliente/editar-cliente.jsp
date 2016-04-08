@@ -3,7 +3,6 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <meta name="_csrf" th:content="${_csrf.token}"/>
 
-</script>
 
 
   <div class="container">

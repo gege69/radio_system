@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,6 +54,30 @@ public class ClienteService {
 	
 	@Autowired
 	private TituloRepository tituloRepo;
+
+	@Autowired
+	private EntityManager entityManager;
+	
+	
+	
+	
+	
+	@Transactional
+	public Cliente testeCliente(){
+		
+		// DÁ PRA USAR O CRITERIA DO HIBERNATE COM O ENTITY MANAGER!!!!!!!! 
+
+		Session session = entityManager.unwrap( Session.class );
+		
+		Criteria crit = session.createCriteria( Cliente.class );
+		
+		crit.add( Restrictions.eq( "cnpj", "28372714000140" ) );
+		
+		List<Cliente> result = crit.list();
+
+		// TESTE
+		return result.get( 0 );
+	}
 
 
 	@Transactional
