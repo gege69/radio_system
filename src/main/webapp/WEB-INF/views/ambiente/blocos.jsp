@@ -80,7 +80,7 @@
                         <div class="form-group">
                           <label for="posicaoVinheta" class="control-label col-lg-4 col-sm-4 col-md-4">Posicao Vinheta:</label>
                           <div class="col-sm-8 col-md-8 col-lg-8">
-                            <select class="form-control" id="posicaoVinheta" name="posicaoVinheta">
+                            <select class="form-control controleBloco" id="posicaoVinheta" name="posicaoVinheta">
                               <option value="ANTES_CADA_MUSICA">Antes de cada música</option>
                               <option value="ANTES_BLOCO_COMERCIAL">Antes do bloco Comercial</option>
                               <option value="DEPOIS_BLOCO_COMERCIAL">Depois do bloco Comercial</option>
@@ -93,7 +93,7 @@
                         <div class="form-group">
                           <label for="posicaoComercial" class="control-label col-lg-4 col-sm-4 col-md-4">Posicao Comercial:</label>
                           <div class="col-sm-8 col-md-8 col-lg-8">
-                            <select class="form-control" id="posicaoComercial" name="posicaoComercial">
+                            <select class="form-control controleBloco" id="posicaoComercial" name="posicaoComercial">
                               <option value="DEPOIS_MUSICAS">Depois das Músicas</option>
                               <option value="ANTES_INSTITUCIONAL">Antes do Institucional</option>
                               <option value="DEPOIS_INSTITUCIONAL">Depois do Institucional</option>
@@ -108,7 +108,7 @@
                         <div class="form-group">
                           <label for="qtdComerciais" class="control-label col-lg-4 col-sm-4 col-md-4">Comerciais em sequência:</label>
                           <div class="col-sm-8 col-md-8 col-lg-8">
-                            <select class="form-control" id="qtdComerciais" name="qtdComerciais">
+                            <select class="form-control controleBloco" id="qtdComerciais" name="qtdComerciais">
                               <option value="1" >1</option>
                               <option value="2" >2</option>
                               <option value="3" >3</option>
@@ -148,7 +148,7 @@
                         <div class="form-group">
                           <label for="indexInstitucionais" class="control-label col-lg-4 col-sm-4 col-md-4">Index Institucionais:</label>
                           <div class="col-sm-8 col-md-8 col-lg-8">
-                            <select class="form-control" id="indexInstitucionais" name="indexInstitucionais">
+                            <select class="form-control controleBloco" id="indexInstitucionais" name="indexInstitucionais">
                               <option value="0" >Não incluir institucionais</option>
                             </select>
                           </div>
@@ -157,7 +157,7 @@
                         <div class="form-group">
                           <label for="indexProgrametes" class="control-label col-lg-4 col-sm-4 col-md-4">Index Programetes:</label>
                           <div class="col-sm-8 col-md-8 col-lg-8">
-                            <select class="form-control" id="indexProgrametes" name="indexProgrametes">
+                            <select class="form-control controleBloco" id="indexProgrametes" name="indexProgrametes">
                               <option value="0" >Não incluir programetes</option>
                             </select>
                           </div>
@@ -166,7 +166,7 @@
                         <div class="form-group">
                           <label for="indexOpcionais" class="control-label col-lg-4 col-sm-4 col-md-4">Index Opcionais:</label>
                           <div class="col-sm-8 col-md-8 col-lg-8">
-                            <select class="form-control" id="indexOpcionais" name="indexOpcionais">
+                            <select class="form-control controleBloco" id="indexOpcionais" name="indexOpcionais">
                               <option value="0" >Não incluir opcionais</option>
                             </select>
                           </div>
@@ -188,6 +188,7 @@
                         <div class="row">
                           <div class="col-lg-6 col-md-7 col-sm-6 col-xs-6">
                             <a class="btn btn-primary" id="btnSalvarBloco" href="#">Salvar Alterações</a>
+
                           </div>
                         </div>                     
                           
@@ -199,6 +200,22 @@
                 </div>
               </div>
             </div>
+
+<!--             <div class="col-lg-7 col-md-8 col-sm-8"> -->
+            <div class="col-lg-5 col-md-4 col-sm-4 hidden-xs">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <h4>Exemplo: <span id="indicadorSalvo" style="display: none;" class="label label-success">Salvo</span></h4>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div id="containerExemplo" style="margin-left:10px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
           </div>
           
           <div class="spacer-vertical40"></div>
@@ -244,7 +261,7 @@
 
   <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-12">
     <label>
-      <input type="checkbox" class="checkbox-opcional" id="opcional-{{:idOpcional}}" name="opcionais[][idOpcional]" value="{{:idOpcional}}"> {{:nome}}
+      <input type="checkbox" class="checkbox-opcional checkBloco" id="opcional-{{:idOpcional}}" name="opcionais[][idOpcional]" value="{{:idOpcional}}"> {{:nome}}
     </label>
   </div> 
 </script>

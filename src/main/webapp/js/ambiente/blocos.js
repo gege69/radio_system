@@ -18,13 +18,21 @@ var salvar = function(){
     }).done( function(json){ 
 
         if (json.ok == 1 ){
+
+            $("#indicadorSalvo").show();
+            $("#indicadorSalvo").removeClass("label-warning");
+            $("#indicadorSalvo").addClass("label-success");
+            $("#indicadorSalvo").html("Salvo");
+
             preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
+
             jump(''); // topo da pagina
         }
         else{
             preencheErros( json.errors );
         }
     });
+    
 };
 
 var makeListTmpl = function(json){
@@ -55,6 +63,9 @@ var listaOpcionais = function( opcionaisList ){
             $('#opcional-'+obj.idOpcional).prop('checked', true);
         });
         
+        $('.checkBloco').change( function() { 
+            getExemplo( null, false );
+        });
     } );
 }
 
@@ -84,6 +95,9 @@ var getDados = function()
         
         listaOpcionais( opcionais );
          
+        var salvo = ( json != null && json.idBloco != null && json.idBloco > 0 );
+        getExemplo( json, salvo );
+        
         jump('ambiente-bloco-form');
     });
 }
@@ -177,6 +191,49 @@ var configuraMultiplosMusica = function()
 }
 
 
+
+var getExemplo = function( bloco, salvo ){
+    
+    var url = buildUrl( "/ambientes/{idAmbiente}/blocos/exemplo", {
+        idAmbiente : idAmbiente
+    });
+    
+    var dados = null;
+    if ( bloco == null )
+        dados = JSON.stringify( $('#ambiente-bloco-form').serializeJSON() );
+    else
+        dados = JSON.stringify( bloco );
+    
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data:  dados
+        
+    }).done( function(json){ 
+
+        if (json != null ){
+            
+            $("#indicadorSalvo").show();
+            
+            if ( salvo == null || salvo == false ){
+                $("#indicadorSalvo").removeClass("label-success");
+                $("#indicadorSalvo").addClass("label-warning");
+                $("#indicadorSalvo").html("Não salvo...");
+            }
+            
+            var container = $("#containerExemplo");
+            container.empty();
+
+            $.each( json, function( idx, item ){
+                container.append( $("<p/>", { "class": "small", text: item }) );
+            });
+        }
+    });
+};
+
+
 $(function(){
 
     var token = $("input[name='_csrf']").val();
@@ -187,7 +244,14 @@ $(function(){
     
     $('#btnSalvarBloco').on('click', salvar);
     
-    $('#qtdMusicas').change( function() { configuraMultiplosMusica(); } );
+    $('#qtdMusicas').change( function() { 
+        configuraMultiplosMusica(); 
+        getExemplo( null, false );
+    });
+
+    $('.controleBloco').change( function() { 
+        getExemplo( null, false );
+    });
     
     getDados();
 });

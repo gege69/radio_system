@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import br.com.radio.model.ProgramacaoGenero;
 import br.com.radio.model.Transmissao;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.BlocoRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.GeneroRepository;
@@ -61,6 +63,8 @@ import br.com.radio.service.programacaomusical.ListaInesgotavelRandom;
 import br.com.radio.service.programacaomusical.ListaInesgotavelRandomAlternada;
 import br.com.radio.service.programacaomusical.ProgramacaoListMidiaListDTO;
 import br.com.radio.util.UtilsDates;
+
+import com.google.common.collect.Iterators;
 
 
 @Service
@@ -105,6 +109,8 @@ public class ProgramacaoMusicalService {
 	@Autowired
 	private AmbienteGeneroRepository ambienteGeneroRepo;
 
+	@Autowired
+	private AudioOpcionalRepository opcionalRepo;
 	
 	private static final Logger logger = Logger.getLogger(ProgramacaoMusicalService.class);
 	
@@ -425,7 +431,7 @@ public class ProgramacaoMusicalService {
 		
 		Set<Midia> musicasJaTocadas = transmissoesTocadas.stream().map( Transmissao::getMidia ).collect( Collectors.toCollection( HashSet::new ) );
 		
-//		System.out.println( "Já Tocadas : " + musicasJaTocadas.size() );
+		System.out.println( "Já Tocadas : " + musicasJaTocadas.size() );
 
 		List<Programacao> programacaoDia = programacaoRepo.findByAmbienteAndDiaSemanaAndAtivoTrue( ambiente, diaSemana );
 		
@@ -446,8 +452,14 @@ public class ProgramacaoMusicalService {
 			// Esse select pode ser melhorado para buscar as músicas mais famosas para não incluir músicas ruins de artistas famosos...
 			List<Midia> midias = null;
 			
-			if ( musicasJaTocadas != null && musicasJaTocadas.size() > 0 )
+			if ( musicasJaTocadas != null && musicasJaTocadas.size() > 0 ){
+				
 				midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosInAndMidiaNotInGroupBy( ambiente, categoria, generosSet, musicasJaTocadas );
+				
+				// isso não pode ser zero.... não posso gerar
+				if ( midias == null || midias.size() == 0 )
+					midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosInGroupBy( ambiente, categoria, generosSet );
+			}
 			else
 				midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosInGroupBy( ambiente, categoria, generosSet );
 			
@@ -696,6 +708,7 @@ public class ProgramacaoMusicalService {
 	}
 
 
+	@SuppressWarnings( "unchecked" )
 	@Transactional
 	public List<Midia> getMidiasOpcionais( Ambiente ambiente, AudioOpcional opcional ){
 		
@@ -723,13 +736,15 @@ public class ProgramacaoMusicalService {
 		
 		List<ListaInesgotavel> listasInesgotaveis = new ArrayList<ListaInesgotavel>();
 		
+		Categoria categoriaOpcional = categoriaRepo.findByCodigo( Categoria.OPCIONAL );
+
 		Ambiente ambiente = bloco.getAmbiente();
 		
 		for ( AudioOpcional opcional : bloco.getOpcionais() ){
 
 			List<Midia> midiasOpcional = getMidiasOpcionais( ambiente, opcional );
 			
-			ListaInesgotavel li = new ListaInesgotavelRandom( midiasOpcional );
+			ListaInesgotavel li = new ListaInesgotavelRandom( midiasOpcional, categoriaOpcional );
 			
 			listasInesgotaveis.add( li );
 		}
@@ -740,6 +755,166 @@ public class ProgramacaoMusicalService {
 	}
 
 	
+	
+
+
+	private String geraStringExemploMusica( int qtd ) {
+		
+		if ( qtd > 1 )
+			return String.format( "%d Músicas", qtd );
+		else
+			return "Música";
+	}
+
+
+	private String geraStringExemploComercial( int qtd ) {
+		
+		if ( qtd > 1 )
+			return String.format( "%d Comerciais", qtd );
+		else
+			return "Comercial";
+	}
+
+
+	public List<String> getExemploSequenciaBlocoComMusicas( Bloco bloco ){
+		
+		List<String> result = new ArrayList<String>();
+		
+		PosicaoVinheta posicaoVinheta = bloco.getPosicaoVinheta();
+		PosicaoComercial posicaoComercial = bloco.getPosicaoComercial();
+		
+		if ( posicaoVinheta == null || posicaoComercial == null )
+			return null;
+		
+		if ( bloco.getQtdMusicas() == null || bloco.getQtdComerciais() == null )
+			return null;
+		
+		if ( bloco.getIndexInstitucionais() == null )
+			bloco.setIndexInstitucionais( 0 );
+
+		if ( bloco.getIndexProgrametes() == null )
+			bloco.setIndexProgrametes( 0 );
+
+		if ( bloco.getIndexOpcionais() == null )
+			bloco.setIndexOpcionais( 0 );
+		
+		Iterator<AudioOpcional> iteratorOpcionais = null;
+		List<AudioOpcional> listaOpcionais = new ArrayList<AudioOpcional>();
+		
+		if ( bloco.getOpcionais() != null ){
+			
+			for ( AudioOpcional opc : bloco.getOpcionais() ){
+				
+				AudioOpcional audioOpcional = opcionalRepo.findOne( opc.getIdOpcional() );
+				listaOpcionais.add( audioOpcional );
+			}
+		}
+		
+		if ( bloco.getOpcionais() != null )
+			iteratorOpcionais = Iterators.cycle( listaOpcionais );
+		
+		int qtdMusicasSequencia = bloco.getQtdMusicas();
+		int qtdComerciaisSequencia = bloco.getQtdComerciais();
+		
+		int stepInstitucionais = bloco.getIndexInstitucionais();
+		int stepProgrametes = bloco.getIndexProgrametes();
+		int stepOpcionais = bloco.getIndexOpcionais();
+
+		int countMusicasInseridas = 0;
+
+		for ( int i = 0; i <= 4; i++ ){
+
+			if ( qtdMusicasSequencia > 0 ) {
+
+				if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_CADA_MUSICA ) ) {
+					result.add( "Vinheta" );
+				}
+				
+				result.add( geraStringExemploMusica( qtdMusicasSequencia ) );
+				countMusicasInseridas += qtdMusicasSequencia;
+
+				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_MUSICAS ) ) {
+					
+					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+					
+					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
+					
+					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+				}
+			}
+				
+			if ( stepInstitucionais > 0 && countMusicasInseridas % stepInstitucionais == 0 )  // Depois de n músicas
+			{
+				if ( posicaoComercial.equals( PosicaoComercial.ANTES_INSTITUCIONAL ) ){
+					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+					
+					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
+					
+					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+				}
+				
+				result.add("Institucional");
+
+				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_INSTITUCIONAL ) ){
+					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+					
+					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
+					
+					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+				}
+			}
+			
+			if ( stepProgrametes > 0 && countMusicasInseridas % stepProgrametes == 0 )  // Depois de n músicas
+			{
+				if ( posicaoComercial.equals( PosicaoComercial.ANTES_PROGRAMETE ) ){
+					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+					
+					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
+					
+					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+				}
+				
+				result.add( "Programete");
+				
+				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_PROGRAMETE ) ){
+					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );
+					
+					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
+					
+					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
+						result.add( "Vinheta" );				
+				}
+			}
+				
+			if ( stepOpcionais > 0 && countMusicasInseridas % stepOpcionais == 0 ) 
+			{
+				// OPCIONAL
+				if ( iteratorOpcionais != null && iteratorOpcionais.hasNext() ){
+					AudioOpcional opcional = iteratorOpcionais.next();
+					result.add( String.format( "Opcional (%s)", opcional.getNome() ) );
+				}
+			}	
+			
+		}
+		
+		result = result.subList( 0, Math.min( 15, result.size() ) );
+
+		result.add( "...etc" );
+		
+		return result;
+	}
+	
+
+
 	private void applyMergeBlocosSemMusica( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
 		Bloco bloco = blocoRepo.findByAmbiente( ambiente ); 
@@ -753,7 +928,6 @@ public class ProgramacaoMusicalService {
 		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
 		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
 		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
-		Categoria opcional = categoriaRepo.findByCodigo( Categoria.OPCIONAL );
 		
 		ListaInesgotavelRandom liVinhetas = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, vinheta ), vinheta );
 		ListaInesgotavelRandom liComerciais = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, comercial ), comercial );
@@ -825,7 +999,7 @@ public class ProgramacaoMusicalService {
 		
 		dto.setMidias( result );
 	}
-	
+
 	
 	
 	private boolean verificaMomentoVinhetaMerge( PosicaoVinheta posicaoVinhetaAtual, PosicaoVinheta posicaoVinhetaVerificar, ListaInesgotavelRandom blocoVinhetas )  
@@ -838,7 +1012,6 @@ public class ProgramacaoMusicalService {
 	{
 		return ( posicaoComercialConfigurado.equals( posicaoComercialVerificar ) && blocoComerciais.temRegistro() );
 	}
-	
 	
 	
 	private void applyMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
@@ -856,13 +1029,12 @@ public class ProgramacaoMusicalService {
 		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
 		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
 		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
-		Categoria opcional = categoriaRepo.findByCodigo( Categoria.OPCIONAL );
 		
 		ListaInesgotavelRandom liVinhetas = new ListaInesgotavelRandom( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, vinheta ), vinheta );
 		ListaInesgotavelRandom liComerciais = new ListaInesgotavelRandom( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, comercial ), comercial );
 		ListaInesgotavelRandom liInstitucionais = new ListaInesgotavelRandom( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, institucional ), institucional );
 		ListaInesgotavelRandom liProgrametes = new ListaInesgotavelRandom( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, programete ), programete );
-
+		ListaInesgotavel liOpcionais = getListaInesgotavelOpcionais( bloco );
 
 		int qtdMusicasSequencia = bloco.getQtdMusicas();
 		int qtdComerciaisSequencia = bloco.getQtdComerciais();
@@ -877,6 +1049,7 @@ public class ProgramacaoMusicalService {
 
 		while ( !musicasEmbaralhadas.isEmpty() )
 		{
+			// Talvez mudar isso para o caso onde existam poucas músicas ficar em loop inserindo as mesmas músicas sempre
 			List<Midia> sequenciaMusicas = consomeN( musicasEmbaralhadas, qtdMusicasSequencia );
 			
 			if ( verificaMomentoVinhetaMerge( posicaoVinheta, PosicaoVinheta.ANTES_CADA_MUSICA, liVinhetas ) )
@@ -923,11 +1096,11 @@ public class ProgramacaoMusicalService {
 					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
 			}
 				
-//			if ( stepHoroscopo > 0 && countMusicasInseridas % stepHoroscopo == 0 )  // Depois de n músicas
-//			{
-//				// HOROSCOPO
-//				addIfNotNull( novaListaMidias, blocoHoroscopo.getNextRandom( rnd ) );
-//			}
+			if ( stepOpcionais > 0 && countMusicasInseridas % stepOpcionais == 0 ) 
+			{
+				// OPCIONAL
+				addIfNotNull( novaListaMidias, liOpcionais.getNextRandom( rnd ) );
+			}
 		}
 		
 		dto.setMidias( novaListaMidias );
@@ -964,7 +1137,15 @@ public class ProgramacaoMusicalService {
 	}
 	
 
-	
+
+	/**
+	 * Consome N elementos da Lista Inesgotável 
+	 * 
+	 * @param blocoDTO
+	 * @param n
+	 * @param rnd
+	 * @return
+	 */
 	public List<Midia> consomeNFromListaInesgotavel( ListaInesgotavelRandom blocoDTO, Integer n, ThreadLocalRandom rnd )
 	{
 		List<Midia> result = new LinkedList<Midia>();

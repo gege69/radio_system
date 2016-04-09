@@ -25,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -892,6 +893,43 @@ public class AmbienteController extends AbstractController {
 		
 		return jsonList;
 	}
+	
+	
+	
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/blocos/exemplo" }, method = RequestMethod.POST, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String getExemploBloco( @PathVariable Long idAmbiente, @RequestBody Bloco bloco ){
+		
+		String jsonResult = "";
+		
+		try
+		{
+			Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+			
+			if ( ambiente == null )
+				throw new RuntimeException("Ambiente não encontrado");
+			
+			if ( bloco == null )
+				throw new RuntimeException("Bloco não encontrado");
+			
+			List<String> exemplo = programacaoMusicalService.getExemploSequenciaBlocoComMusicas( bloco );
+			
+			JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+			
+			for ( String str : exemplo ){
+				jsonArrayBuilder.add(str);
+			}
+
+			jsonResult = jsonArrayBuilder.build().toString();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+		
+		return jsonResult;
+	}
+	
 	
 	
 }

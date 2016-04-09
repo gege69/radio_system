@@ -20,8 +20,6 @@ import com.google.common.collect.Iterators;
  */
 public class ListaInesgotavelRandomAlternada implements ListaInesgotavel {
 	
-	private List<ListaInesgotavel> listasInesgotaveis;
-	
 	private Iterator<ListaInesgotavel> iteratorListas;
 	
 	private ListaInesgotavel listaInesgotavelAtual;
@@ -30,7 +28,6 @@ public class ListaInesgotavelRandomAlternada implements ListaInesgotavel {
 	public ListaInesgotavelRandomAlternada( List<ListaInesgotavel> listasInesgotaveis )
 	{
 		if ( listasInesgotaveis != null ){
-			this.listasInesgotaveis = listasInesgotaveis;
 			this.iteratorListas = Iterators.cycle( listasInesgotaveis );
 			
 			alternarLista();

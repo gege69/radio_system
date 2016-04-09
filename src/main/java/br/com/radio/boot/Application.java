@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -23,16 +24,16 @@ import br.com.radio.service.ProgramacaoMusicalService;
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
 
-@SpringBootApplication
-@ComponentScan( basePackages = { "br.com.radio.*" } )
-@EnableConfigurationProperties
-@ActiveProfiles({"default"})
-@EnableTransactionManagement
+//@SpringBootApplication
+//@ComponentScan( basePackages = { "br.com.radio.*" } )
+//@EnableConfigurationProperties
+//@ActiveProfiles({"default"})
+//@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)
 	{
-		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
+		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 //		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 //		
 		ProgramacaoMusicalService progService = ctx.getBean( ProgramacaoMusicalService.class );
@@ -44,7 +45,7 @@ public class Application {
 //		
 		Ambiente ambiente = ambienteRepo.findOne( 1L );
 		
-		AudioOpcional opcional = opcionalRepo.findOne( 2L );
+		AudioOpcional opcional = opcionalRepo.findOne( 1L );
 //		criarVariosAmbientes( ctx );
 		
 //		criaProgramacaoVariosAmbientes( ctx );
@@ -54,7 +55,16 @@ public class Application {
 		result.forEach( m -> {
 			System.out.println(m.toString());
 		});
+
+		System.out.println("xxxxxxxxxxxxxxxxxxxxx");
 		
+		opcional = opcionalRepo.findOne( 2L );
+
+		result = progService.getMidiasOpcionais( ambiente, opcional );
+		
+		result.forEach( m -> {
+			System.out.println(m.toString());
+		});
 	}
 
 	

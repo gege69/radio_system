@@ -39,7 +39,6 @@ public class ListaInesgotavelRandom implements ListaInesgotavel {
 			// resetando
 			midiasConsumir.addAll( midiasUtilizadas );
 			midiasUtilizadas.clear();
-			System.out.println("Reset! "+ this.categoria.getCodigo());
 		}
 			
 		int indexSelect = rnd.nextInt( midiasConsumir.size() );
@@ -70,12 +69,6 @@ public class ListaInesgotavelRandom implements ListaInesgotavel {
 		return String.format( "BlocosManipulacaoDTO [midiasConsumir=%s, midiasUtilizadas=%s]", midiasConsumir, midiasUtilizadas );
 	}
 
-
-	public ListaInesgotavelRandom( List<Midia> midiasConsumir )
-	{
-		super();
-		this.midiasConsumir = midiasConsumir;
-	}
 
 	public ListaInesgotavelRandom()
 	{
