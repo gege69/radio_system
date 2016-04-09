@@ -33,11 +33,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
+import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.TipoTaxa;
 import br.com.radio.model.Usuario;
+import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
@@ -63,6 +65,9 @@ public class AdministradorController extends AbstractController {
 	
 	@Autowired
 	private GeneroRepository generoRepo;
+	
+	@Autowired
+	private AudioOpcionalRepository opcionalRepo;
 	
 	@Autowired
 	private MidiaRepository midiaRepo;
@@ -230,6 +235,22 @@ public class AdministradorController extends AbstractController {
     }	
 
 
+
+	@RequestMapping(value="/admin/opcionais/searches", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String opcionais( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		Long quantidade = opcionalRepo.count();
+		
+		model.addAttribute( "qtdOpcionais", quantidade.intValue() );
+		
+		return "admin/cadastro-opcionais";
+	}
 	
 	
 	@RequestMapping(value="/admin/upload-painel/view", method=RequestMethod.GET)
@@ -245,8 +266,146 @@ public class AdministradorController extends AbstractController {
 	}
 	
 	
-	
-	
+	@RequestMapping( value = { 	"/admin/opcionais", "/api/admin/opcionais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody JSONListWrapper<AudioOpcional> getOpcionais(
+												@RequestParam(value="search", required=false) String search, 
+												@RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+												@RequestParam(value="limit", required=false) Integer limit )
+	{
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
+
+		Page<AudioOpcional> generos = null;
+		
+		if ( StringUtils.isBlank( search ) )
+			generos = opcionalRepo.findAll( pageable );
+		else {
+			String nome = "%" + search + "%";
+			generos = opcionalRepo.findByNomeContainingIgnoreCase( pageable, nome );
+		}
+
+		JSONListWrapper<AudioOpcional> jsonList = new JSONListWrapper<AudioOpcional>( generos.getContent(), generos.getTotalElements() );
+
+		return jsonList;
+	}
+
+
+	@RequestMapping( value = { "/admin/opcionais/{idOpcional}", "/api/admin/opcionais/{idOpcional}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody AudioOpcional getOpcional( @PathVariable Long idOpcional )
+	{
+		AudioOpcional opcional = opcionalRepo.findOne( idOpcional );
+
+		return opcional;
+	}
+
+
+	@RequestMapping( value = { "/admin/opcionais", "/api/admin/opcionais" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String saveOpcional( @RequestBody @Valid AudioOpcional opcional, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+
+		if ( result.hasErrors() ){
+
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+					throw new RuntimeException("Usuário não encontrado");
+				
+				if ( opcional.getAtivo() == null )
+					opcional.setAtivo( false );
+
+				opcionalRepo.save( opcional );
+
+				jsonResult = writeObjectAsString( opcional );
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+
+
+	@RequestMapping(value={ "/admin/opcionais/new" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String novoOpcional( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+
+		if ( usuario == null || usuario.getCliente() == null )
+		return "HTTPerror/404";
+
+		return "admin/editar-opcional";
+	}
+
+
+	@RequestMapping(value={ "/admin/opcionais/{idOpcional}/view" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String editarOpcional( @PathVariable Long idOpcional, ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+
+		if ( usuario == null || usuario.getCliente() == null )
+		return "HTTPerror/404";
+
+		AudioOpcional opcional = opcionalRepo.findOne( idOpcional );
+
+		model.addAttribute( "idOpcional", opcional.getIdOpcional() );
+
+		return "admin/editar-opcional";
+	}	
+
+
+
+	@RequestMapping(value= { "/admin/opcionais/{idOpcional}", "/api/admin/opcionais/{idOpcional}" }, method=RequestMethod.DELETE)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public ResponseEntity<String> inativarOpcional( @PathVariable Long idOpcional, Principal principal, Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+
+		try
+		{
+			AudioOpcional opcional = opcionalRepo.findOne( idOpcional );
+			
+			if ( opcional == null )
+				throw new RuntimeException("Opcional não encontrado");
+			
+			opcional.setAtivo( false );
+			
+			opcionalRepo.save( opcional );
+			
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+		}
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+
+	}	
+
+
+
 	@RequestMapping(value="/admin/upload-chamadas-veiculos/view", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String uploadChamadasVeiculos( ModelMap model, Principal principal )
@@ -286,16 +445,16 @@ public class AdministradorController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/admin/upload-horoscopo/view", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/upload-opcional/view", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String uploadHoroscopo( ModelMap model, Principal principal )
+	public String uploadOpcional( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
-		return "admin/upload-horoscopo";
+		return "admin/upload-opcional";
 	}
 	
 	
@@ -512,40 +671,6 @@ public class AdministradorController extends AbstractController {
 		return jsonList;
 	}
 	
-
-
-
-//	@RequestMapping( value = { "/admin/midias/horoscopo", "/api/admin/midias/horoscopo" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-//	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaHoroscopo(
-//																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
-//																	@RequestParam(value="limit", required = false) Integer limit, 
-//																	@RequestParam(value="order", required = false) String order )
-//	{
-//		Pageable pageable = null;
-//		
-//		Categoria categoria = categoriaRepo.findByCodigo( Categoria.HOROSCOPO );
-//		 
-//		pageable = getPageable( pageNumber, limit, order, "nome" ); 
-//		
-//		if ( categoria == null )
-//			throw new RuntimeException("Categoria não encontrada");
-//		
-//		Page<Midia> page = midiaRepo.findByCategoriasAndValidoTrue( pageable, categoria );
-//		
-//		List<Midia> list = page.getContent();
-//		
-//		list.forEach( m -> { 
-//			
-//			SignoMidia signo = signoMidiaRepo.findByMidia( m );
-//			
-//			if ( signo != null )
-//				m.getMidiaView().put( "signo", signo.getSigno().getDescricao() );
-//		});
-//		
-//		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( list, page.getTotalElements() );
-//
-//		return jsonList;
-//	}
 
 
 	

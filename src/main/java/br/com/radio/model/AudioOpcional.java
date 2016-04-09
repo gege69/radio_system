@@ -38,7 +38,7 @@ public class AudioOpcional implements Serializable {
 	@Column( name = "datacriacao" )
 	private Date dataCriacao;
 	
-	@Column( name="ativo")
+	@Column( name="ativo", columnDefinition = "BOOL default true")
 	private Boolean ativo;
 
 	public Long getIdOpcional()
@@ -120,6 +120,16 @@ public class AudioOpcional implements Serializable {
 	public String toString()
 	{
 		return String.format( "AudioOpcional [idOpcional=%s, nome=%s, descricao=%s, dataCriacao=%s]", idOpcional, nome, descricao, dataCriacao );
+	}
+
+	public Boolean getAtivo()
+	{
+		return ativo;
+	}
+
+	public void setAtivo( Boolean ativo )
+	{
+		this.ativo = ativo;
 	}
 
 

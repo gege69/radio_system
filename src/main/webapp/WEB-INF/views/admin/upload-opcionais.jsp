@@ -17,7 +17,7 @@
     
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Upload de Chamadas de Horóscopo<br/>
+          <h3>Upload de Opcionais<br/>
           </h3>
           
           <div class="spacer-vertical20"></div>
@@ -26,70 +26,33 @@
             <div class="col-lg-12 col-md-12">
               
               <div class="row">
-                <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label for="login" class="control-label col-lg-3 col-sm-3 col-md-3">Opcional</label>
+                  <div class="col-lg-6 col-md-6">
+                    <select class="form-control" id="opcionalCombo" name="opcional">
+                    </select>
+                  </div>
+                </div> 
+              </div>
 
-                  <div class="panel panel-default">
-                    <div class="panel-body">
-                      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
+              <div class="spacer-vertical20"></div>
+              
+              <div class="row">
+                <div class="col-lg-6 col-md-7">
 
-                      <input type="file" id="fileupload" name="file" multiple style="display : none;">
+                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
 
-                      <div class="col-lg-2 col-md-3 col-sm-4">
-                        <span class="btn btn-primary btn-file">
-                            Escolha o arquivo<input type="file" id="outrofileupload" name="file2">
-                        </span>
-                      </div>
-                      
-                      <div class="col-lg-offset-2 col-md-offset-3 col-sm-offset-4">          
-                        <p class="form-control-static" id="static-arquivos"></p>
-                      </div>
+                  <span class="btn btn-primary btn-file">
+                      Escolha os arquivos<input type="file" id="fileupload" name="file" multiple>
+                  </span>
 
-                      <div class="spacer-vertical10"></div>
+                  <div class="spacer-vertical10"></div>
 
-                      <div id="resultados">
-                        <div id="progress" class="progress">
-                            <div class="progress-bar progress-bar-success"></div>
-                        </div>
-                        <div id="files" class="files"></div>            
-                      </div>
-
-                      <div class="spacer-vertical10"></div>
-
-                      <div class="row">
-                        <div class="form-group">
-                          <label for="login" class="control-label col-lg-1 col-sm-2 col-md-1 col-xs-3">Signo:</label>
-                          <div class="col-lg-4 col-md-4 col-sm-5 col-xs-9">
-                            <select class="form-control" id="signo-combo" name="signo">
-                              <option value="ARIES">Áries</option>
-                              <option value="TOURO">Touro</option>
-                              <option value="GEMEOS">Gêmeos</option>
-                              <option value="CANCER">Câncer</option>
-                              <option value="LEAO">Leão</option>
-                              <option value="VIRGEM">Virgem</option>
-                              <option value="LIBRA">Libra</option>
-                              <option value="ESCORPIAO">Escorpião</option>
-                              <option value="SAGITARIO">Sagitário</option>
-                              <option value="CAPRICORNIO">Capricórnio</option>
-                              <option value="AQUARIO">Aquário</option>
-                              <option value="PEIXES">Peixes</option>
-                            </select>
-                          </div>
-                        </div> 
-                      </div>
-
-                      <div class="spacer-vertical10"></div>
-
-                      <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                          <div class="pull-right">
-                            <a class="btn btn-success" id="btnIniciar" href="#"> <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a>    
-                          </div>          
-                        </div>
-                      </div>            
-                      
+                  <div id="resultados">
+                    <div id="progress" class="progress">
+                        <div class="progress-bar progress-bar-success"></div>
                     </div>
+                    <div id="files" class="files"></div>            
                   </div>
 
                 </div>
@@ -99,9 +62,9 @@
               <div class="spacer-vertical20"></div>
               
               <table  
-                 id="table-horoscopo"
+                 id="table-chamadas-veiculos"
                  data-toggle="table"
-                 data-url="${context}/admin/midias/horoscopo"
+                 data-url="${context}/admin/midias"
                  data-height="400"
                  data-side-pagination="server"
                  data-pagination="true"
@@ -112,9 +75,8 @@
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="nome" class="col-lg-5 col-md-4">Nome do Arquivo</th>
+                      <th data-field="nome" class="col-lg-7 col-md-6">Nome do Arquivo</th>
                       <th data-field="descricao" class="col-lg-2 col-md-3">Descrição</th>
-                      <th data-field="signo" class="col-lg-2 col-md-2">Signo</th>
                       <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Editar</th>
                       <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
                       <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
@@ -162,7 +124,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Alterar dados da Mídia de Horóscopo</h4>
+        <h4 class="modal-title" id="titulo-modal">Alterar nome da Chamada de Veículo</h4>
       </div>
       <div class="modal-body">
         <form action="#" class="form-horizontal" id="altera-nome-midia-form" method="POST">
@@ -172,6 +134,13 @@
           <div class="row">
             <div class="col-lg-12 col-md-12">
 
+              <div class="form-group">
+                <label for="login" class="control-label col-sm-2 col-md-2">Tipo</label>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                  <p class="form-control-static" id="tipo"></p>
+                </div>
+              </div>
+              
               <div class="form-group">
                 <label for="login" class="control-label col-sm-2 col-md-2">Nome</label>
                 <div class="col-lg-8 col-md-10">
@@ -185,27 +154,6 @@
                   <input type="text" class="form-control" id="descricaoMidia" name="descricao">
                 </div>
               </div>
-              
-              <div class="form-group">
-                <label for="login" class="control-label col-sm-2 col-md-2">Signo</label>
-                <div class="col-lg-8 col-md-10">
-                  <select class="form-control" id="signo-combo-modal" name="signo">
-                    <option value="ARIES">Áries</option>
-                    <option value="TOURO">Touro</option>
-                    <option value="GEMEOS">Gêmeos</option>
-                    <option value="CANCER">Câncer</option>
-                    <option value="LEAO">Leão</option>
-                    <option value="VIRGEM">Virgem</option>
-                    <option value="LIBRA">Libra</option>
-                    <option value="ESCORPIAO">Escorpião</option>
-                    <option value="SAGITARIO">Sagitário</option>
-                    <option value="CAPRICORNIO">Capricórnio</option>
-                    <option value="AQUARIO">Aquário</option>
-                    <option value="PEIXES">Peixes</option>
-                  </select>
-                </div>
-              </div> 
-              
             </div> 
           </div>
           
@@ -227,7 +175,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Remover Música</h4>
+        <h4 class="modal-title" id="titulo-modal">Remover Chamada de Veículo</h4>
       </div>
       <div class="modal-body">
         <form action="#" class="form-horizontal" id="remove-midia-form" method="POST">
@@ -236,7 +184,7 @@
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
-              Deseja realmente remover essa Música?
+              Deseja realmente remover essa Chamada de Veículo?
             </div> 
           </div>
           
@@ -272,8 +220,8 @@
 
     function queryParams(params) {
 
-        params.pageNumber = $('#table-horoscopo').bootstrapTable('getOptions').pageNumber;
-        params.codigo = "horoscopo";
+        params.pageNumber = $('#table-chamadas-veiculos').bootstrapTable('getOptions').pageNumber;
+        params.codigo = $("#categoria-combo").val();
         
         return params;
     };
@@ -292,18 +240,29 @@
     
     var player = null;
     
+
+    var idTocando = null;
+    
     var playChamada = function( element )
     {
-        player.pause();
-        
         var idMidia = element.attr("idMidia");
         
-        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+        if ( idMidia == idTocando && !player.media.paused ){
+            player.pause();
+        }
+        else
+        {
+            idTocando = idMidia; 
+            
+            player.pause();
+            var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+            
+            player.source( url );
+            player.play();
+        }
         
-        player.source( url );
-        player.play();
     }
-    
+
 
     var openDialog = function( element )
     {
@@ -348,11 +307,15 @@
     {
         var idMidia = element.attr("idMidia");
         
-        var row = $('#table-horoscopo').bootstrapTable('getRowByUniqueId', idMidia);
+        var row = $('#table-chamadas-veiculos').bootstrapTable('getRowByUniqueId', idMidia);
 
         $('#idMidia').val( idMidia );
         $('#nomeMidia').val( row.nome );
         $('#descricaoMidia').val( row.descricao );
+        
+        var texto = $("#categoria-combo :selected").text();
+        
+        $('#tipo').html( texto );
         
         $('#myModal').modal('show');
         $('#nomeMidia').focus();
@@ -360,32 +323,22 @@
 
 
     
-    // mudar o nome da midia
     var salvar = function()
     {
-        var url = buildUrl( "/admin/midia/horoscopo");
+        var url = buildUrl( "/admin/chamada-veiculos");
         
-        var dados = $('#altera-nome-midia-form').serializeJSON();
-       
-        var midiaSignoDTO = { midia : { 
-                                        idMidia : dados.idMidia,
-                                        nome : dados.nome,
-                                        descricao : dados.descricao
-                                      }, 
-                              signo : dados.signo 
-                            };
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
             url: url,
             dataType: 'json',
-            data:  JSON.stringify( midiaSignoDTO )
+            data:  JSON.stringify( $('#altera-nome-midia-form').serializeJSON() )
             
         }).done( function(json){ 
 
             if (json.ok == 1){
                 preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                $("#table-horoscopo").bootstrapTable('refresh');
+                $("#table-chamadas-veiculos").bootstrapTable('refresh');
                 $('#myModal').modal('toggle');
             }
             else{
@@ -395,34 +348,36 @@
         });
     } 
     
+    
+    var buscaValor = function()
+    {
+        var result = $("#categoria-combo").val();
+        return result;
+    }
+    
    
     var configuraUploader = function() 
     {
-        var _url = buildUrl( "/admin/upload-horoscopo" );
-        
         $('#fileupload').fileupload({
             dataType: 'json',
-            url : _url,
             formData: { 
                 _csrf: $("#csrf").val() 
             },
-            add: function (e, data) {
-                
-                data.formData = { 
-                                  _csrf: $("#csrf").val(), 
-                                  signo : $("#signo-combo").val()
-                                };
-                
-                data.submit();
-            },
             done: function (e, data) {
-//                 $.each(data.result.files, function (index, file) {
-//                     $('<p/>').text(file.name).appendTo( $("#resultados") );
-//                 });
-                
+                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+                $("#table-chamadas-veiculos").bootstrapTable('refresh');
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
             },
-            stop : function(e, data) {
-                $("#table-horoscopo").bootstrapTable('refresh');
+            fail: function (e, data) {
+                var errors = data.jqXHR.responseJSON.errors;
+                preencheErros( errors );
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
             },
             progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -430,30 +385,23 @@
                     'width',
                     progress + '%'
                 );
-                
             } 
         }); 
         
+        var _url = buildUrl( "/admin/upload-chamadas-veiculos" );
+
+        $('#fileupload').fileupload(
+           'option',
+           {
+              url : _url,
+              formData: { 
+                _csrf: $("#csrf").val(), 
+                codigo : buscaValor() 
+              }
+           }
+        );
     }
-
-
-  
    
-    var iniciarUpload = function()
-    {
-        var filesList = $('#outrofileupload')[0].files;
-        $('#fileupload').fileupload('add', { files : filesList } );
-        
-    }
-    
-    var mostrarArquivos = function()
-    {
-        var filesList = $('#outrofileupload')[0].files; 
-       
-        if ( filesList && filesList.length > 0 )
-          $("#static-arquivos").html( filesList.length + " arquivo(s) selecionado(s)" );
-        
-    }
 
     $(function(){
         
@@ -463,14 +411,44 @@
             xhr.setRequestHeader(header, token);
         });
 
+// PRECISO EVOLUIR O PLYR PARA A VERSÃO 1.5 NÃO ESTAVA TOCANDO....
+
+// NÃO ESTAVA NEM CHEGANDO NO SPRING, TALVEZ ELE NO ESTEJA FAZENDO GET.
+
         plyr.setup( { options : ["current-time", "duration", "mute"]});
 
         player = $('#player1')[0].plyr;
 
+//         player = plyr.setup( { controls : ["restart", "rewind", "play", "current-time", "duration", "mute" ], fullscreen : { enabled : false } } )[0];
+        
+ 
+        $("#categoria-combo").change( function() {
+           $("#table-chamadas-veiculos").bootstrapTable('refresh');
+           var texto = $("#categoria-combo :selected").text();
+           $("#categoria-span").html( texto );
+           $("#botao-arquivo").html( "Clique para adicionar arquivos de '" + texto +"'" );
+
+           $('#progress .progress-bar').css(
+                   'width',
+                   0 + '%'
+               );
+
+           var codigo = buscaValor();
+
+           $('#fileupload').fileupload(
+              'option',
+              {
+                 formData: { 
+                   _csrf: $("#csrf").val(), 
+                   codigo : codigo 
+                 }
+              }
+           );
+        });
         
         configuraUploader();
         
-        $("#table-horoscopo").on( 'load-success.bs.table', function( e, data ) {
+        $("#table-chamadas-veiculos").on( 'load-success.bs.table', function( e, data ) {
             $(".editar-class").click( function(){
                 openPopup($(this));
             });
@@ -484,7 +462,7 @@
             });
         });
         
-        $("#table-horoscopo").on( 'page-change.bs.table', function ( e, number, size ){
+        $("#table-chamadas-veiculos").on( 'page-change.bs.table', function ( e, number, size ){
             $(".editar-class").click( function(){
                 openPopup($(this));
             });
@@ -508,33 +486,22 @@
        
         $('#myModal').on('shown.bs.modal', function () {
             $('#nomeMidia').focus();
-        });
+        })
 
         $('#myDialog').on('shown.bs.modal', function () {
             $('#btnNaoDialog').focus();
-        });
-        
-        $("#btnIniciar").click( function(){
-            iniciarUpload();  
-        });
+        })
         
         $("#outrofileupload").blur(function(){
             mostrarArquivos();
         });
-        
-        $("#outrofileupload").change(function(){
-            $('#progress .progress-bar').css(
-                'width',
-                0 + '%'
-            );
-        }); 
     });
 
 </script>
 
 <style type="text/css">
 
-#table-horoscopo tr{
+#table-generos tr{
   cursor: pointer;
 }
 

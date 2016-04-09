@@ -22,13 +22,19 @@
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/admin/upload-chamadas-veiculos/view">
-                      <i class="fa fa-3x icone-main fa-car"></i>
+                      <span class="fa-stack fa-2x" style=" margin: 3px auto 12px;">
+                        <i class="fa fa-cloud fa-stack-2x"></i>
+                        <i class="fa fa-car fa-stack-1x fa-inverse"></i>
+                      </span>
                       <span class="label-botao-main">Chamada de Veículos</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-letras/view">
-                      <i class="fa fa-3x icone-main fa-font"></i>
+                      <span class="fa-stack fa-2x" style=" margin: 3px auto 12px;">
+                        <i class="fa fa-cloud fa-stack-2x"></i>
+                        <i class="fa fa-font fa-stack-1x fa-inverse"></i>
+                      </span>
                       <span class="label-botao-main">Letras e Números</span>
                     </a>
                   </div>
@@ -43,14 +49,21 @@
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-musica/view">
-                      <i class="fa fa-3x icone-main fa-music"></i>
+                      <span class="fa-stack fa-2x" style=" margin: 3px auto 12px;">
+                        <i class="fa fa-cloud fa-stack-2x"></i>
+                        <i class="fa fa-music fa-stack-1x fa-inverse"></i>
+                      </span>
                       <span class="label-botao-main">Música</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-horoscopo/view">
-                      <i class="fa fa-3x icone-main fa-star"></i>
-                      <span class="label-botao-main">Horóscopo</span>
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-opcionais/view">
+                      <span class="fa-stack fa-2x" style=" margin: 3px auto 12px;">
+                        <i class="fa fa-cloud fa-stack-2x"></i>
+                        <i class="fa fa-sitemap fa-stack-1x fa-inverse"></i>
+                      </span>
+                      <br/>
+                      <span class="label-botao-main">Opcionais</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
