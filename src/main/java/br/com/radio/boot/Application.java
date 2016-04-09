@@ -1,5 +1,7 @@
 package br.com.radio.boot;
 
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -9,12 +11,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import br.com.radio.model.Ambiente;
-import br.com.radio.model.Cliente;
+import br.com.radio.model.AudioOpcional;
+import br.com.radio.model.Midia;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
-import br.com.radio.service.ClienteService;
 import br.com.radio.service.ProgramacaoMusicalService;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
@@ -32,22 +35,26 @@ public class Application {
 		ApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 //		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 //		
-		ClienteService clienteService = ctx.getBean( ClienteService.class );
+		ProgramacaoMusicalService progService = ctx.getBean( ProgramacaoMusicalService.class );
+//		ClienteService clienteService = ctx.getBean( ClienteService.class );
 //		MidiaService midiaService = ctx.getBean( MidiaService.class );
 //		CategoriaRepository categoriaRepo = ctx.getBean( CategoriaRepository.class );
-//		AmbienteRepository ambienteRepo = ctx.getBean( AmbienteRepository.class );
+		AmbienteRepository ambienteRepo = ctx.getBean( AmbienteRepository.class );
+		AudioOpcionalRepository opcionalRepo = ctx.getBean( AudioOpcionalRepository.class );
 //		
-//		Ambiente ambiente = ambienteRepo.findOne( 1L );
+		Ambiente ambiente = ambienteRepo.findOne( 1L );
 		
-
-		Cliente cliente = clienteService.testeCliente();
-		
-		System.out.println(cliente);
-
+		AudioOpcional opcional = opcionalRepo.findOne( 2L );
 //		criarVariosAmbientes( ctx );
 		
 //		criaProgramacaoVariosAmbientes( ctx );
 																																																								
+		List<Midia> result = progService.getMidiasOpcionais( ambiente, opcional );
+		
+		result.forEach( m -> {
+			System.out.println(m.toString());
+		});
+		
 	}
 
 	

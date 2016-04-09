@@ -4,12 +4,11 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.UserDTO;

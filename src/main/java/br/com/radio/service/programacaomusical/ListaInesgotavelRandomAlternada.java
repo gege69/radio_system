@@ -29,15 +29,16 @@ public class ListaInesgotavelRandomAlternada implements ListaInesgotavel {
 	
 	public ListaInesgotavelRandomAlternada( List<ListaInesgotavel> listasInesgotaveis )
 	{
-		this.listasInesgotaveis = listasInesgotaveis;
-		
-		this.iteratorListas = Iterators.cycle( listasInesgotaveis );
-		
-		alternarLista();
+		if ( listasInesgotaveis != null ){
+			this.listasInesgotaveis = listasInesgotaveis;
+			this.iteratorListas = Iterators.cycle( listasInesgotaveis );
+			
+			alternarLista();
+		}
 	}
 	
 	private void alternarLista(){
-		if ( iteratorListas.hasNext() )
+		if ( iteratorListas != null && iteratorListas.hasNext() )
 			this.listaInesgotavelAtual = iteratorListas.next();
 	}
 
@@ -57,6 +58,9 @@ public class ListaInesgotavelRandomAlternada implements ListaInesgotavel {
 	@Override
 	public Midia getNextRandom( ThreadLocalRandom rnd )
 	{
+		if ( getListaInesgotavelAtual() == null )
+			return null;
+
 		Midia result = getListaInesgotavelAtual().getNextRandom( rnd );
 		
 		// Primeiro pega o registro depois alterna.
@@ -68,18 +72,27 @@ public class ListaInesgotavelRandomAlternada implements ListaInesgotavel {
 	@Override
 	public List<Midia> getMidiasConsumir()
 	{
+		if ( getListaInesgotavelAtual() == null )
+			return null;
+
 		return getListaInesgotavelAtual().getMidiasConsumir();
 	}
 
 	@Override
 	public List<Midia> getMidiasUtilizadas()
 	{
+		if ( getListaInesgotavelAtual() == null )
+			return null;
+
 		return getListaInesgotavelAtual().getMidiasUtilizadas();
 	}
 
 	@Override
 	public Categoria getCategoria()
 	{
+		if ( getListaInesgotavelAtual() == null )
+			return null;
+
 		return getListaInesgotavelAtual().getCategoria();
 	}
 	

@@ -53,7 +53,9 @@ public class Bloco implements Serializable {
 	@Column( name = "posicaoVinheta" )
 	private PosicaoVinheta posicaoVinheta;
 
-	/* Quantidade de Músicas em sequência ( a única coisa que pode quebrar é a vinheta )*/
+	/**
+	 * Quantidade de Músicas em sequência ( a única coisa que pode quebrar é a vinheta )
+	 */
 	@Column( name = "qtdMusicas")
 	private Integer qtdMusicas;
 
@@ -61,11 +63,15 @@ public class Bloco implements Serializable {
 	@Column( name = "posicaoComercial" )
 	private PosicaoComercial posicaoComercial;
 	
-	/* Quantidade de Comerciais em sequência  */
+	/**
+	 * Quantidade de Comerciais em sequência  
+	 */
 	@Column( name = "qtdComerciais" )
 	private Integer qtdComerciais;      
 	
-	/* Os campos abaixo tem que ser dinamicamente alterados com base na quantidade de músicas em sequencia....
+	/** 
+	 * ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 * Os campos abaixo tem que ser dinamicamente alterados com base na quantidade de músicas em sequencia....
 	 * 
 	 * Por exemplo se a quantidade de músicas em sequência é 2 esses campos tem que múltiplos de 2 : 
 	 * 
@@ -74,17 +80,30 @@ public class Bloco implements Serializable {
 	 * em caso de 5 músicas :
 	 * 
 	 * 5, 10, 15, 20...
+	 * ---------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 	 */
-	
+
+	/**
+	 * O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um INSTITUCIONAL ( Ex : 6 -> Após 6 músicas inserir um Institucional )
+	 */
 	@Column( name = "indexInstitucionais")
-	private Integer indexInstitucionais;    // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um INSTITUCIONAL ( Ex : 6 -> Após 6 músicas inserir um Institucional )
+	private Integer indexInstitucionais;   
 	
+	/**
+	 *  O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um PROGRAMETE ( Ex : 6 -> Após 6 músicas inserir um Programete )
+	 */
 	@Column( name = "indexProgrametes")
-	private Integer indexProgrametes;    // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um PROGRAMETE ( Ex : 6 -> Após 6 músicas inserir um Programete )
+	private Integer indexProgrametes;  
 	
+	/**
+	 * O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um OPCIONAL
+	 */
 	@Column( name = "indexOpcionais")
-	private Integer indexOpcionais;     // O número gravado aqui nesse campo é a quantidade de músicas que serão tocadas antes do programa inserir um OPCIONAL
+	private Integer indexOpcionais; 
 	
+	/**
+	 * Quais opcionais foram selecionados para esse Bloco
+	 */
 	@ManyToMany(fetch=FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	   @JoinTable(name="bloco_audio_opcional", joinColumns = { 

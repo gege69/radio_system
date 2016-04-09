@@ -16,49 +16,48 @@ import javax.persistence.Table;
 /**
  * Tabela de ligação 
  * 
- * Midia x Categoria
+ * Midia x Opcional
  * 
  * @author pazin
  *
  */
 @Entity
-@Table(name="midia_categoria")
+@Table(name="midia_opcional")
 public class MidiaOpcional implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column( name = "id_mediacat", nullable = false )
-	private Long idMediacat;
+	@Column( name = "id_mediaopcional", nullable = false )
+	private Long idMediaopcional;
 
 	@ManyToOne
-	@JoinColumn(name="id_categoria")
-	private Categoria categoria;
+	@JoinColumn(name="id_opcional")
+	private AudioOpcional opcional;
 	
 	@ManyToOne
 	@JoinColumn(name="id_midia")
 	private Midia midia;
 
-	
-	public Long getIdMediacat()
+	public Long getIdMediaopcional()
 	{
-		return idMediacat;
+		return idMediaopcional;
 	}
 
-	public void setIdMediacat( Long idMediacat )
+	public void setIdMediaopcional( Long idMediaopcional )
 	{
-		this.idMediacat = idMediacat;
+		this.idMediaopcional = idMediaopcional;
 	}
 
-	public Categoria getCategoria()
+	public AudioOpcional getOpcional()
 	{
-		return categoria;
+		return opcional;
 	}
 
-	public void setCategoria( Categoria categoria )
+	public void setOpcional( AudioOpcional opcional )
 	{
-		this.categoria = categoria;
+		this.opcional = opcional;
 	}
 
 	public Midia getMidia()
@@ -71,7 +70,41 @@ public class MidiaOpcional implements Serializable {
 		this.midia = midia;
 	}
 
-	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( idMediaopcional == null ) ? 0 : idMediaopcional.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( !( obj instanceof MidiaOpcional ) )
+			return false;
+		MidiaOpcional other = (MidiaOpcional) obj;
+		if ( idMediaopcional == null )
+		{
+			if ( other.idMediaopcional != null )
+				return false;
+		}
+		else if ( !idMediaopcional.equals( other.idMediaopcional ) )
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "MidiaOpcional [idMediaopcional=%s, opcional=%s, midia=%s]", idMediaopcional, opcional, midia );
+	}
+
 	
 
 }

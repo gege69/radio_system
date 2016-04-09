@@ -17,7 +17,6 @@ import java.util.Random;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 
 import net.openhft.hashing.LongHashFunction;
 
@@ -35,10 +34,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.MusicTags;
-import br.com.radio.enumeration.SignoZodiaco;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;

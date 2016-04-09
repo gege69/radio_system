@@ -18,13 +18,17 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.PosicaoComercial;
@@ -32,12 +36,14 @@ import br.com.radio.enumeration.PosicaoVinheta;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteGenero;
+import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
+import br.com.radio.model.MidiaOpcional;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
 import br.com.radio.model.Transmissao;
@@ -50,7 +56,9 @@ import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.repository.TransmissaoRepository;
+import br.com.radio.service.programacaomusical.ListaInesgotavel;
 import br.com.radio.service.programacaomusical.ListaInesgotavelRandom;
+import br.com.radio.service.programacaomusical.ListaInesgotavelRandomAlternada;
 import br.com.radio.service.programacaomusical.ProgramacaoListMidiaListDTO;
 import br.com.radio.util.UtilsDates;
 
@@ -83,7 +91,7 @@ public class ProgramacaoMusicalService {
 	private Environment env;
 	
 	@Autowired
-	private EntityManager em;
+	private EntityManager entityManager;
 
 	@Autowired 
 	private TransmissaoRepository transmissaoRepo;
@@ -687,6 +695,50 @@ public class ProgramacaoMusicalService {
 			novaListaMidias.add( midia );
 	}
 
+
+	@Transactional
+	public List<Midia> getMidiasOpcionais( Ambiente ambiente, AudioOpcional opcional ){
+		
+		Session session = entityManager.unwrap( Session.class );
+		
+		Criteria crit = session.createCriteria( MidiaOpcional.class );
+		crit.createAlias( "midia", "m", JoinType.INNER_JOIN );
+		crit.createAlias( "m.ambientes", "a", JoinType.INNER_JOIN );
+		crit.add( Restrictions.eq( "a.idAmbiente", ambiente.getIdAmbiente() ) );
+		crit.add( Restrictions.eq( "opcional", opcional ) );
+		
+		List<MidiaOpcional> listMidiaOpcional = crit.list();
+		
+		List<Midia> result = new ArrayList<Midia>();
+
+		listMidiaOpcional.forEach( mo -> {
+			result.add( mo.getMidia() );
+		});
+		
+		return result;
+	}
+
+
+	private ListaInesgotavelRandomAlternada getListaInesgotavelOpcionais( Bloco bloco ){
+		
+		List<ListaInesgotavel> listasInesgotaveis = new ArrayList<ListaInesgotavel>();
+		
+		Ambiente ambiente = bloco.getAmbiente();
+		
+		for ( AudioOpcional opcional : bloco.getOpcionais() ){
+
+			List<Midia> midiasOpcional = getMidiasOpcionais( ambiente, opcional );
+			
+			ListaInesgotavel li = new ListaInesgotavelRandom( midiasOpcional );
+			
+			listasInesgotaveis.add( li );
+		}
+		
+		ListaInesgotavelRandomAlternada result = new ListaInesgotavelRandomAlternada( listasInesgotaveis );
+
+		return result;
+	}
+
 	
 	private void applyMergeBlocosSemMusica( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
@@ -707,6 +759,7 @@ public class ProgramacaoMusicalService {
 		ListaInesgotavelRandom liComerciais = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, comercial ), comercial );
 		ListaInesgotavelRandom liInstitucionais = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, institucional ), institucional );
 		ListaInesgotavelRandom liProgrametes = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, programete ), programete );
+		ListaInesgotavel liOpcionais = getListaInesgotavelOpcionais( bloco );
 
 		int qtdComerciaisSequencia = bloco.getQtdComerciais();
 		int stepInstitucionais = bloco.getIndexInstitucionais();
@@ -748,6 +801,12 @@ public class ProgramacaoMusicalService {
 				
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_PROGRAMETE, liComerciais ) )
 					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+			}
+			
+			if ( stepOpcionais > 0 ) 
+			{
+				// OPCIONAL
+				addIfNotNull( novaListaMidias, liOpcionais.getNextRandom( rnd ) );
 			}
 			
 			if ( novaListaMidias.size() == 0 ) // sinal de configuração ruim.... evitar loop infinito
@@ -1032,8 +1091,8 @@ public class ProgramacaoMusicalService {
 				
 				if ( i % batchSize == 0 )
 				{
-					em.flush();
-					em.clear();
+					entityManager.flush();
+					entityManager.clear();
 				}
 				
 				index = i + 1;
@@ -1041,8 +1100,8 @@ public class ProgramacaoMusicalService {
 				qtdTransmissoes++;
 			}
 			
-			em.flush();
-			em.clear();
+			entityManager.flush();
+			entityManager.clear();
 			
 //			System.out.println( String.format( "Programação das %d as %d produzida com %d músicas", prog.getHoraInicio(), prog.getHoraFim(), qtdTransmissoes ) );
 		}

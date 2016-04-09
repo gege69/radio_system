@@ -37,6 +37,9 @@ public class AudioOpcional implements Serializable {
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao" )
 	private Date dataCriacao;
+	
+	@Column( name="ativo")
+	private Boolean ativo;
 
 	public Long getIdOpcional()
 	{
