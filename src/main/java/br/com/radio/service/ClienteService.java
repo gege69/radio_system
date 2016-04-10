@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -204,7 +205,9 @@ public class ClienteService {
 		List<ClienteRelatorioDTO> listaRelatorio = new ArrayList<ClienteRelatorioDTO>();
 		
 		for ( Cliente cliente : paginaCliente.getContent() ){
-			
+
+			cliente = (Cliente) entityManager.unwrap(SessionImplementor.class).getPersistenceContext().unproxy(cliente);
+
 			// implementar
 			Usuario usuario = usuarioService.getUsuarioMaisRelevantePorCliente( cliente );
 			

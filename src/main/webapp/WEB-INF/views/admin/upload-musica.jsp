@@ -428,13 +428,6 @@
                 
                 data.submit();
             },
-            done: function (e, data) {
-                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
-                $('#progress .progress-bar').css(
-                        'width',
-                        0 + '%'
-                    );
-            },
             fail: function (e, data) {
                 var errors = data.jqXHR.responseJSON.errors;
                 preencheErros( errors );
@@ -445,6 +438,11 @@
             },
             stop : function(e, data) {
                 $("#table-musicas").bootstrapTable('refresh');
+                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
             },
             progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -452,6 +450,7 @@
                     'width',
                     progress + '%'
                 );
+                
                 
             } 
         }); 

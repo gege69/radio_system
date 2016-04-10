@@ -57,7 +57,7 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-opcionais/view">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-opcional/view">
                       <span class="fa-stack fa-2x" style=" margin: 3px auto 12px;">
                         <i class="fa fa-cloud fa-stack-2x"></i>
                         <i class="fa fa-sitemap fa-stack-1x fa-inverse"></i>

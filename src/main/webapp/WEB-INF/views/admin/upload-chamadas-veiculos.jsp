@@ -370,7 +370,7 @@
             formData: { 
                 _csrf: $("#csrf").val() 
             },
-            done: function (e, data) {
+            stop: function (e, data) {
                 preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
                 $("#table-chamadas-veiculos").bootstrapTable('refresh');
                 $('#progress .progress-bar').css(

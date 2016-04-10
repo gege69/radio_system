@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import net.openhft.hashing.LongHashFunction;
 
@@ -26,12 +25,18 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,22 +47,26 @@ import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteGenero;
+import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.MidiaAmbiente;
 import br.com.radio.model.MidiaGenero;
+import br.com.radio.model.MidiaOpcional;
 import br.com.radio.model.Parametro;
 import br.com.radio.repository.AlfanumericoMidiaRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
 import br.com.radio.repository.MidiaCategoriaRepository;
 import br.com.radio.repository.MidiaGeneroRepository;
+import br.com.radio.repository.MidiaOpcionalRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
 
@@ -104,9 +113,15 @@ public class MidiaService {
 	
 	@Autowired
 	private ClienteRepository clienteRepo;
+
+	@Autowired
+	private AudioOpcionalRepository opcionalRepo;
 	
-	@PersistenceContext
-	protected EntityManager em;
+	@Autowired
+	private MidiaOpcionalRepository midiaOpcionalRepo;
+
+	@Autowired
+	private EntityManager entityManager;
 	
 	private Map<String,String> mapExtToMimeType = new HashMap<String,String>();
 	private Map<String,String> mapMimeTypeToExt = new HashMap<String,String>();
@@ -122,7 +137,6 @@ public class MidiaService {
 		this.mapMimeTypeToExt.put( "audio/mp3", "mp3" );
 		this.mapMimeTypeToExt.put( "audio/mpeg3", "mp3" );
 	}
-
 
 
 
@@ -594,6 +608,11 @@ public class MidiaService {
 		
 		Categoria categoria = categoriaRepo.findByCodigo( Categoria.OPCIONAL );
 		
+		AudioOpcional opcional = opcionalRepo.findOne( idOpcional );
+		
+		if ( opcional == null )
+			throw new RuntimeException("Opcional não cadastrado.");
+		
 		byte[] bytes = multiPartFile.getBytes();
 		
 		String hash = geraHashDoArquivo( bytes );
@@ -601,10 +620,13 @@ public class MidiaService {
 		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
 		
 		associaMidiaParaTodosAmbientes( midia );
+
+		MidiaOpcional mo = new MidiaOpcional();
 		
-		// implementar aqui como vou organizar os opcionais
+		mo.setMidia( midia );
+		mo.setOpcional( opcional );
 		
-		
+		midiaOpcionalRepo.save( mo );
 			
 		return midia;
 	}	
@@ -1057,6 +1079,48 @@ public class MidiaService {
 	}
 
 
+	@Transactional
+	public boolean deleteMidiaOpcionalSePossivel( Long idMidia )
+	{
+		boolean result = false;
+		
+		Midia midia = midiaRepo.findOne( idMidia );
+		
+		if ( midia == null )
+			throw new RuntimeException( "Mídia não encontrada" );
+		
+		List<MidiaAmbiente> associacoesAmbientes = midiaAmbienteRepo.findByMidia( midia );
+
+		for ( MidiaAmbiente ma : associacoesAmbientes )
+		{
+			midiaAmbienteRepo.delete( ma );
+			midiaAmbienteRepo.flush();
+		}
+
+		List<MidiaOpcional> midiaOpcionais = midiaOpcionalRepo.findByMidia( midia );
+		
+		for ( MidiaOpcional mo : midiaOpcionais )
+		{
+			midiaOpcionalRepo.delete( mo );
+			midiaOpcionalRepo.flush();
+		}
+		
+		midia = midiaRepo.findOne( idMidia );
+
+		String filePath = midia.getFilepath();
+
+		midia.setValido( false );
+		
+		midiaRepo.save( midia );
+		
+		// aqui tenho que tentar destruir o arquivo fisico no disco
+		FileUtils.deleteQuietly( new File( filePath ) );
+		
+		return result;
+	}
+
+
+
 	public String getResumoGenerosDaMidia( Midia midia ){
 		
 		int tamanho = 38;
@@ -1082,6 +1146,70 @@ public class MidiaService {
 			result = StringUtils.substring( result, 0, tamanho ) + "...";
 		
 		return result;
+	}
+
+
+	@Transactional	
+	public List<Midia> getMidiasOpcionais( Ambiente ambiente, AudioOpcional opcional ){
+		
+		Page<Midia> resultPage = getMidiasOpcionais( ambiente, opcional, null );
+
+		return resultPage.getContent();
+	}
+	
+
+	@SuppressWarnings( "unchecked" )
+	@Transactional
+	public Page<Midia> getMidiasOpcionais( Ambiente ambiente, AudioOpcional opcional, Pageable pageable ){
+		
+		Session session = entityManager.unwrap( Session.class );
+
+		Categoria categoriaOpcional = categoriaRepo.findByCodigo( Categoria.OPCIONAL );
+		
+		Criteria critCount = createCriteriaMidiaOpcional( ambiente, opcional, session, categoriaOpcional );
+		critCount.setProjection( Projections.rowCount() );
+		Long total = (Long)critCount.uniqueResult();
+
+		Criteria crit = createCriteriaMidiaOpcional( ambiente, opcional, session, categoriaOpcional );
+		
+		if ( pageable != null ){
+			crit.setMaxResults( pageable.getPageSize() );
+			crit.setFirstResult( pageable.getPageNumber() );
+		}
+
+		
+		List<MidiaOpcional> listMidiaOpcional = crit.list();
+		
+		List<Midia> listMidias = new ArrayList<Midia>();
+
+		listMidiaOpcional.forEach( mo -> {
+			listMidias.add( mo.getMidia() );
+		});
+		
+		PageImpl<Midia> paginaMidiasOpcionais = new PageImpl<Midia>( listMidias, pageable, total );
+		
+		return paginaMidiasOpcionais;
+	}
+
+
+
+	private Criteria createCriteriaMidiaOpcional( Ambiente ambiente, AudioOpcional opcional, Session session, Categoria categoriaOpcional )
+	{
+		Criteria crit = session.createCriteria( MidiaOpcional.class );
+		crit.createAlias( "midia", "m", JoinType.INNER_JOIN );
+		crit.createAlias( "m.categorias", "c", JoinType.INNER_JOIN );
+
+		if ( ambiente != null ){
+			crit.createAlias( "m.ambientes", "a", JoinType.INNER_JOIN );
+			crit.add( Restrictions.eq( "a.idAmbiente", ambiente.getIdAmbiente() ) );
+		}
+
+		crit.add( Restrictions.eq( "c.idCategoria", categoriaOpcional.getIdCategoria() ) );
+		
+		if ( opcional != null )
+			crit.add( Restrictions.eq( "opcional", opcional ) );
+
+		return crit;
 	}
 
 	

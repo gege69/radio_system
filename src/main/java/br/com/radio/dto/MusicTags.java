@@ -15,6 +15,9 @@ public class MusicTags {
 	
 	public void copyToMidia( Midia midia )
 	{
+		if ( trackLength == 0 )
+			trackLength = 1;
+
 		midia.setDuracao( trackLength );
 
 		midia.setTitle( title );

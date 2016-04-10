@@ -268,7 +268,7 @@ public class AdministradorController extends AbstractController {
 	
 	@RequestMapping( value = { 	"/admin/opcionais", "/api/admin/opcionais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody JSONListWrapper<AudioOpcional> getOpcionais(
+	public @ResponseBody JSONListWrapper<AudioOpcional> listOpcionais(
 												@RequestParam(value="search", required=false) String search, 
 												@RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 												@RequestParam(value="limit", required=false) Integer limit )
@@ -403,6 +403,7 @@ public class AdministradorController extends AbstractController {
 		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
 
 	}	
+
 
 
 
@@ -673,6 +674,70 @@ public class AdministradorController extends AbstractController {
 	
 
 
+
+	
+	@RequestMapping( value = { "/admin/midias/opcionais", "/api/admin/midias/opcionais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaOpcional(
+//																	@RequestParam(value="search", required = false) String search,  
+																	@RequestParam(value="idOpcional", required = false) Long idOpcional,  
+																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
+																	@RequestParam(value="limit", required = false) Integer limit, 
+																	@RequestParam(value="order", required = false) String order )
+	{
+		Pageable pageable = null;
+		
+		pageable = getPageable( pageNumber, limit, order, "nome" ); 
+
+		AudioOpcional opcional = null;
+
+		if ( idOpcional != null )
+			opcional = opcionalRepo.findOne( idOpcional );
+		
+		Page<Midia> page = midiaService.getMidiasOpcionais( null, opcional, pageable );
+		
+		List<Midia> midiasList = page.getContent();
+		
+		for ( Midia midia : midiasList ){
+			String generos = midiaService.getResumoGenerosDaMidia( midia );
+			midia.getMidiaView().put( "generos", generos );
+			if ( opcional != null )
+				midia.getMidiaView().put( "opcional", opcional.getNome() );
+		}
+		
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midiasList, page.getTotalElements() );
+
+		return jsonList;
+	}
+
+
+
+	@RequestMapping(value= { "/admin/midias/opcionais/{idMidia}", "/api/admin/midias/opcionais/{idMidia}" }, method=RequestMethod.DELETE)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public ResponseEntity<String> deleteMidiaOpcional( @PathVariable Long idMidia, Principal principal, Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+		try
+		{
+			midiaService.deleteMidiaOpcionalSePossivel( idMidia );
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+		}
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+
+    }	
 	
 	
 	

@@ -22,10 +22,6 @@ import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -44,7 +40,6 @@ import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
-import br.com.radio.model.MidiaOpcional;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
 import br.com.radio.model.Transmissao;
@@ -708,28 +703,7 @@ public class ProgramacaoMusicalService {
 	}
 
 
-	@SuppressWarnings( "unchecked" )
-	@Transactional
-	public List<Midia> getMidiasOpcionais( Ambiente ambiente, AudioOpcional opcional ){
-		
-		Session session = entityManager.unwrap( Session.class );
-		
-		Criteria crit = session.createCriteria( MidiaOpcional.class );
-		crit.createAlias( "midia", "m", JoinType.INNER_JOIN );
-		crit.createAlias( "m.ambientes", "a", JoinType.INNER_JOIN );
-		crit.add( Restrictions.eq( "a.idAmbiente", ambiente.getIdAmbiente() ) );
-		crit.add( Restrictions.eq( "opcional", opcional ) );
-		
-		List<MidiaOpcional> listMidiaOpcional = crit.list();
-		
-		List<Midia> result = new ArrayList<Midia>();
-
-		listMidiaOpcional.forEach( mo -> {
-			result.add( mo.getMidia() );
-		});
-		
-		return result;
-	}
+	
 
 
 	private ListaInesgotavelRandomAlternada getListaInesgotavelOpcionais( Bloco bloco ){
@@ -742,9 +716,9 @@ public class ProgramacaoMusicalService {
 		
 		for ( AudioOpcional opcional : bloco.getOpcionais() ){
 
-			List<Midia> midiasOpcional = getMidiasOpcionais( ambiente, opcional );
+			List<Midia> midiasOpcional = midiaService.getMidiasOpcionais( ambiente, opcional );
 			
-			ListaInesgotavel li = new ListaInesgotavelRandom( midiasOpcional, categoriaOpcional );
+			ListaInesgotavel li = new ListaInesgotavelRandom( new ArrayList<Midia>( midiasOpcional ), categoriaOpcional );
 			
 			listasInesgotaveis.add( li );
 		}
@@ -754,7 +728,6 @@ public class ProgramacaoMusicalService {
 		return result;
 	}
 
-	
 	
 
 

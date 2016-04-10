@@ -20,63 +20,93 @@
           <h3>Upload de Opcionais<br/>
           </h3>
           
-          <div class="spacer-vertical20"></div>
+<!--           <div class="spacer-vertical20"></div> -->
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
-              
-              <div class="row">
-                <div class="form-group">
-                  <label for="login" class="control-label col-lg-3 col-sm-3 col-md-3">Opcional</label>
-                  <div class="col-lg-6 col-md-6">
-                    <select class="form-control" id="opcionalCombo" name="opcional">
-                    </select>
-                  </div>
-                </div> 
-              </div>
 
-              <div class="spacer-vertical20"></div>
-              
-              <div class="row">
-                <div class="col-lg-6 col-md-7">
+              <div class="row"> 
 
-                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
+                <div class="col-lg-9 col-md-9">
+                  <div class="panel panel-default">
+                    <div class="panel-body">
+                    
+                      <form action="#" id="formUploadOpcionais" class="form">
 
-                  <span class="btn btn-primary btn-file">
-                      Escolha os arquivos<input type="file" id="fileupload" name="file" multiple>
-                  </span>
+                        <div class="row">
+                          <div class="col-lg-12 ">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
+                            <input type="hidden" name="codigo" value="opcional" id="codigo" />  
 
-                  <div class="spacer-vertical10"></div>
+                            <input type="file" id="fileupload" name="file" multiple style="display : none;">
 
-                  <div id="resultados">
-                    <div id="progress" class="progress">
-                        <div class="progress-bar progress-bar-success"></div>
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                              <span class="btn btn-primary btn-file">
+                                  Escolha os arquivos<input type="file" id="outrofileupload" name="file2" multiple>
+                              </span>
+                            </div>
+                            
+                            <div class="col-lg-offset-3 col-md-offset-4 col-sm-offset-6">          
+                              <p class="form-control-static" id="static-arquivos"></p>
+                            </div>
+
+                            <div class="spacer-vertical10"></div>
+
+                            <div id="resultados">
+                              <div id="progress" class="progress">
+                                  <div class="progress-bar progress-bar-success"></div>
+                              </div>
+                              <div id="files" class="files"></div>            
+                            </div>
+                            
+                            <div class="form-group">
+                              <label for="login" class="control-label col-lg-3 col-sm-3 col-md-3">Filtro do Opcional</label>
+                              <div class="col-lg-6 col-md-6">
+                                <select class="form-control" id="idOpcional" name="idOpcional">
+                                  <option value="" disabled="disabled">Selecione</option>
+                                </select>
+                              </div>
+                            </div> 
+
+                          </div>
+                        </div>
+                        
+                        <div class="row">
+                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                          </div>
+                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="pull-right">
+                              <a class="btn btn-success" id="btnIniciar" href="#"> <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a>    
+                            </div>          
+                          </div>
+                        </div>            
+
+                      </form>
+
                     </div>
-                    <div id="files" class="files"></div>            
                   </div>
-
                 </div>
-              
+
               </div>
-            
+
               <div class="spacer-vertical20"></div>
-              
+
               <table  
-                 id="table-chamadas-veiculos"
+                 id="tableOpcionais"
                  data-toggle="table"
-                 data-url="${context}/admin/midias"
+                 data-url="${context}/admin/midias/opcionais"
                  data-height="400"
                  data-side-pagination="server"
                  data-pagination="true"
                  data-page-size=6
                  data-locale = "pt_BR"
+                 data-page-list="[6,12,25]"
                  data-unique-id="idMidia"
-                 data-page-list = "[6,12,25]"
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
                       <th data-field="nome" class="col-lg-7 col-md-6">Nome do Arquivo</th>
-                      <th data-field="descricao" class="col-lg-2 col-md-3">Descrição</th>
+                      <th data-field="opcional" class="col-lg-2 col-md-3">Opcional</th>
                       <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Editar</th>
                       <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Remover</th>
                       <th data-field="idMidia" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-2">Tocar</th>
@@ -118,13 +148,12 @@
   </div> <!-- /container -->
 
 
-
 <div class="modal fade" id="myModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Alterar nome da Chamada de Veículo</h4>
+        <h4 class="modal-title" id="titulo-modal">Alterar nome do Opcional</h4>
       </div>
       <div class="modal-body">
         <form action="#" class="form-horizontal" id="altera-nome-midia-form" method="POST">
@@ -133,13 +162,6 @@
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
-
-              <div class="form-group">
-                <label for="login" class="control-label col-sm-2 col-md-2">Tipo</label>
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                  <p class="form-control-static" id="tipo"></p>
-                </div>
-              </div>
               
               <div class="form-group">
                 <label for="login" class="control-label col-sm-2 col-md-2">Nome</label>
@@ -147,13 +169,7 @@
                   <input type="text" class="form-control" id="nomeMidia" name="nome">
                 </div>
               </div>
-
-              <div class="form-group">
-                <label for="login" class="control-label col-sm-2 col-md-2">Descrição</label>
-                <div class="col-lg-8 col-md-10">
-                  <input type="text" class="form-control" id="descricaoMidia" name="descricao">
-                </div>
-              </div>
+              
             </div> 
           </div>
           
@@ -175,7 +191,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Remover Chamada de Veículo</h4>
+        <h4 class="modal-title" id="titulo-modal">Remover Opcional</h4>
       </div>
       <div class="modal-body">
         <form action="#" class="form-horizontal" id="remove-midia-form" method="POST">
@@ -184,7 +200,7 @@
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
-              Deseja realmente remover essa Chamada de Veículo?
+              Deseja realmente remover esse Opcional?
             </div> 
           </div>
           
@@ -198,8 +214,6 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-
 
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
@@ -220,9 +234,9 @@
 
     function queryParams(params) {
 
-        params.pageNumber = $('#table-chamadas-veiculos').bootstrapTable('getOptions').pageNumber;
-        params.codigo = $("#categoria-combo").val();
-        
+        params.pageNumber = $('#tableOpcionais').bootstrapTable('getOptions').pageNumber;
+        params.codigo = 'opcional'
+        params.idOpcional = $("#idOpcional").val();
         return params;
     };
 
@@ -240,27 +254,16 @@
     
     var player = null;
     
-
-    var idTocando = null;
-    
     var playChamada = function( element )
     {
+        player.pause();
+        
         var idMidia = element.attr("idMidia");
         
-        if ( idMidia == idTocando && !player.media.paused ){
-            player.pause();
-        }
-        else
-        {
-            idTocando = idMidia; 
-            
-            player.pause();
-            var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
-            
-            player.source( url );
-            player.play();
-        }
+        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
         
+        player.source( url );
+        player.play();
     }
 
 
@@ -281,7 +284,7 @@
         if ( idMidia == null || idMidia == 0 )
             preencheAlertGeral( "alertArea", "Mídia não encontrada" );
 
-        var url = buildUrl( "/admin/chamada-veiculos/{idMidia}", { idMidia : idMidia } );
+        var url = buildUrl( "/admin/midias/opcionais/{idMidia}", { idMidia : idMidia } );
         
         $.ajax({
             type: 'DELETE',
@@ -292,7 +295,7 @@
 
             if (json.ok == 1){
                 preencheAlertGeral( "alertArea", "Registro removido com sucesso", "success" );
-                $("#table-chamadas-veiculos").bootstrapTable('refresh');
+                $("#tableOpcionais").bootstrapTable('refresh');
                 $('#myDialog').modal('toggle');
             }
             else{
@@ -303,15 +306,15 @@
     } 
     
     
+    
     var openPopup = function( element )
     {
         var idMidia = element.attr("idMidia");
         
-        var row = $('#table-chamadas-veiculos').bootstrapTable('getRowByUniqueId', idMidia);
-
+        var row = $('#tableOpcionais').bootstrapTable('getRowByUniqueId', idMidia);
+        
         $('#idMidia').val( idMidia );
         $('#nomeMidia').val( row.nome );
-        $('#descricaoMidia').val( row.descricao );
         
         var texto = $("#categoria-combo :selected").text();
         
@@ -322,10 +325,9 @@
     }
 
 
-    
     var salvar = function()
     {
-        var url = buildUrl( "/admin/chamada-veiculos");
+        var url = buildUrl( "/admin/midia");
         
         $.ajax({
             type: 'POST',
@@ -338,7 +340,7 @@
 
             if (json.ok == 1){
                 preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                $("#table-chamadas-veiculos").bootstrapTable('refresh');
+                $("#tableOpcionais").bootstrapTable('refresh');
                 $('#myModal').modal('toggle');
             }
             else{
@@ -349,27 +351,36 @@
     } 
     
     
-    var buscaValor = function()
-    {
-        var result = $("#categoria-combo").val();
-        return result;
-    }
     
-   
     var configuraUploader = function() 
     {
+        var _url = buildUrl( "/admin/upload-opcional" );
+        
         $('#fileupload').fileupload({
             dataType: 'json',
+            url : _url,
             formData: { 
                 _csrf: $("#csrf").val() 
             },
-            done: function (e, data) {
-                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
-                $("#table-chamadas-veiculos").bootstrapTable('refresh');
-                $('#progress .progress-bar').css(
-                        'width',
-                        0 + '%'
-                    );
+            add: function (e, data) {
+                
+                removeErros( $("#formUploadOpcionais") );
+                
+                var idOpcional = $("#idOpcional").val();
+                if ( idOpcional == null || idOpcional == "" )
+                {
+                    preencheAlertGeral("alertArea", "Preencha o Opcional.", "danger");
+                    preencheErroField("idOpcional", "Necessário");
+                    return false;
+                }
+                
+                data.formData = { 
+                    _csrf: $("#csrf").val(), 
+                    codigo : $("#codigo").val(),
+                    idOpcional : $("#idOpcional").val()
+                };
+                
+                data.submit();
             },
             fail: function (e, data) {
                 var errors = data.jqXHR.responseJSON.errors;
@@ -385,24 +396,82 @@
                     'width',
                     progress + '%'
                 );
-            } 
+            },
+            stop : function( e, data) {
+                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+                $("#tableOpcionais").bootstrapTable('refresh');
+                $('#progress .progress-bar').css(
+                        'width',
+                        0 + '%'
+                    );
+            }
         }); 
-        
-        var _url = buildUrl( "/admin/upload-chamadas-veiculos" );
 
-        $('#fileupload').fileupload(
-           'option',
-           {
-              url : _url,
-              formData: { 
-                _csrf: $("#csrf").val(), 
-                codigo : buscaValor() 
-              }
-           }
-        );
     }
    
 
+    var iniciarUpload = function()
+    {
+        var filesList = $('#outrofileupload')[0].files;
+
+        if ( filesList == null || filesList.length == 0 ) { 
+            preencheAlertGeral( "alertArea", "Selecione o arquivo e adicione uma letra ou número");
+            return;
+        }
+        
+        var idOpcional = $("#idOpcional").val()
+        
+        if ( idOpcional == null || idOpcional === "" ){
+            preencheAlertGeral( "alertArea", "Escolha para qual Opcional será adicionada essa Mídia");
+            return;
+        }
+
+        $('#fileupload').fileupload('add', { files : filesList } );
+        
+    }
+    
+    var mostrarArquivos = function()
+    {
+        var filesList = $('#outrofileupload')[0].files; 
+       
+        if ( filesList && filesList.length > 0 )
+          $("#static-arquivos").html( filesList.length + " arquivo(s) selecionado(s)" );
+        
+    }
+
+
+
+    var getOpcionais = function()
+    {
+        var url = buildUrl( "/admin/opcionais"); 
+        
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: url,
+            dataType: 'json'
+        }).done( function(json) {
+            
+            $("#idOpcional").empty();
+            
+            $('#idOpcional').append($('<option>', { 
+                disabled : "disabled",
+                selected : "selected",
+                text: "Selecione"
+            }));
+            
+            $.each(json.rows, function (i, op) {
+                $('#idOpcional').append($('<option>', { 
+                    value: op.idOpcional,
+                    text : op.nome  
+                }));
+            });
+
+           $("#tableOpcionais").bootstrapTable('refresh');
+        });
+    };
+
+    
     $(function(){
         
         var token = $("input[name='_csrf']").val();
@@ -411,44 +480,23 @@
             xhr.setRequestHeader(header, token);
         });
 
-// PRECISO EVOLUIR O PLYR PARA A VERSÃO 1.5 NÃO ESTAVA TOCANDO....
-
-// NÃO ESTAVA NEM CHEGANDO NO SPRING, TALVEZ ELE NO ESTEJA FAZENDO GET.
-
         plyr.setup( { options : ["current-time", "duration", "mute"]});
 
         player = $('#player1')[0].plyr;
 
-//         player = plyr.setup( { controls : ["restart", "rewind", "play", "current-time", "duration", "mute" ], fullscreen : { enabled : false } } )[0];
-        
- 
-        $("#categoria-combo").change( function() {
-           $("#table-chamadas-veiculos").bootstrapTable('refresh');
-           var texto = $("#categoria-combo :selected").text();
-           $("#categoria-span").html( texto );
-           $("#botao-arquivo").html( "Clique para adicionar arquivos de '" + texto +"'" );
+        $("#idOpcional").change( function() {
+
+           $("#tableOpcionais").bootstrapTable('refresh');
 
            $('#progress .progress-bar').css(
                    'width',
                    0 + '%'
                );
-
-           var codigo = buscaValor();
-
-           $('#fileupload').fileupload(
-              'option',
-              {
-                 formData: { 
-                   _csrf: $("#csrf").val(), 
-                   codigo : codigo 
-                 }
-              }
-           );
         });
         
         configuraUploader();
         
-        $("#table-chamadas-veiculos").on( 'load-success.bs.table', function( e, data ) {
+        $("#tableOpcionais").on( 'load-success.bs.table', function( e, data ) {
             $(".editar-class").click( function(){
                 openPopup($(this));
             });
@@ -462,7 +510,7 @@
             });
         });
         
-        $("#table-chamadas-veiculos").on( 'page-change.bs.table', function ( e, number, size ){
+        $("#tableOpcionais").on( 'page-change.bs.table', function ( e, number, size ){
             $(".editar-class").click( function(){
                 openPopup($(this));
             });
@@ -492,9 +540,22 @@
             $('#btnNaoDialog').focus();
         })
         
+        $("#btnIniciar").click( function(){
+            iniciarUpload();  
+        });
+        
         $("#outrofileupload").blur(function(){
             mostrarArquivos();
         });
+
+        $("#outrofileupload").change(function(){
+            $('#progress .progress-bar').css(
+                'width',
+                0 + '%'
+            );
+        });
+
+        getOpcionais();
     });
 
 </script>

@@ -19,6 +19,7 @@ import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
+import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
@@ -38,19 +39,21 @@ public class Application {
 //		
 		ProgramacaoMusicalService progService = ctx.getBean( ProgramacaoMusicalService.class );
 //		ClienteService clienteService = ctx.getBean( ClienteService.class );
-//		MidiaService midiaService = ctx.getBean( MidiaService.class );
+		MidiaService midiaService = ctx.getBean( MidiaService.class );
 //		CategoriaRepository categoriaRepo = ctx.getBean( CategoriaRepository.class );
 		AmbienteRepository ambienteRepo = ctx.getBean( AmbienteRepository.class );
 		AudioOpcionalRepository opcionalRepo = ctx.getBean( AudioOpcionalRepository.class );
 //		
-		Ambiente ambiente = ambienteRepo.findOne( 1L );
+//		Ambiente ambiente = ambienteRepo.findOne( 1L );
+		Ambiente ambiente = null;
 		
-		AudioOpcional opcional = opcionalRepo.findOne( 1L );
+//		AudioOpcional opcional = opcionalRepo.findOne( 1L );
+		AudioOpcional opcional = null;
 //		criarVariosAmbientes( ctx );
 		
 //		criaProgramacaoVariosAmbientes( ctx );
 																																																								
-		List<Midia> result = progService.getMidiasOpcionais( ambiente, opcional );
+		List<Midia> result = midiaService.getMidiasOpcionais( ambiente, opcional );
 		
 		result.forEach( m -> {
 			System.out.println(m.toString());
@@ -60,7 +63,7 @@ public class Application {
 		
 		opcional = opcionalRepo.findOne( 2L );
 
-		result = progService.getMidiasOpcionais( ambiente, opcional );
+		result = midiaService.getMidiasOpcionais( ambiente, opcional );
 		
 		result.forEach( m -> {
 			System.out.println(m.toString());
