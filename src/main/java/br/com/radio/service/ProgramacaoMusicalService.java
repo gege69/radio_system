@@ -449,6 +449,8 @@ public class ProgramacaoMusicalService {
 			
 			if ( musicasJaTocadas != null && musicasJaTocadas.size() > 0 ){
 				
+				//TODO: aqui tem que tentar evitar trazer música sem artista.... isso dá problema no shuffle
+
 				midias = midiaRepo.findByAmbientesAndCategoriasAndGenerosInAndMidiaNotInGroupBy( ambiente, categoria, generosSet, musicasJaTocadas );
 				
 				// isso não pode ser zero.... não posso gerar
@@ -1135,6 +1137,9 @@ public class ProgramacaoMusicalService {
 	
 	private void applySpotifyShuffle( ProgramacaoListMidiaListDTO dto )
 	{
+		// hack para ignorar musicas sem artistas...
+		dto.setMidias( dto.getMidias().stream().filter( m -> StringUtils.isNotBlank( m.getArtist() ) ).collect( Collectors.toList() ) );
+
 		List<Midia> musicas = dto.getMidias();
 		
 		Double tamanhoLista = Integer.valueOf( musicas.size() ).doubleValue();
