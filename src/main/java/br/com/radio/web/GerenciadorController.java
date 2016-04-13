@@ -35,6 +35,7 @@ import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
+import br.com.radio.model.Cliente;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Perfil;
@@ -124,10 +125,14 @@ public class GerenciadorController extends AbstractController {
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		if ( usuario == null || usuario.getCliente() == null )
+		Cliente cliente = usuario.getCliente();
+		
+		if ( usuario == null || cliente == null )
 			return null;
 		
-		Long count = ambienteRepo.countByCliente( usuario.getCliente() );
+		Long count = ambienteRepo.countByCliente( cliente );
+		
+		model.addAttribute( "razaoSocial", cliente.getRazaosocial() );
 		
 		model.addAttribute( "qtdAmbientes", count );
 		model.addAttribute( "isAdministrador", hasAuthority( "ADM_SISTEMA" ));

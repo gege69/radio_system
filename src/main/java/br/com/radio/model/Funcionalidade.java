@@ -35,6 +35,9 @@ public class Funcionalidade implements Serializable {
 	@Column( name="extrahtml", columnDefinition = "TEXT" )
 	private String extrahtml;
 
+	@Column( name = "ativo", columnDefinition = "BOOL default true")
+	private Boolean ativo;
+
 	public Long getIdFuncionalidade()
 	{
 		return idFuncionalidade;
@@ -129,6 +132,17 @@ public class Funcionalidade implements Serializable {
 	{
 		return String.format( "Funcionalidade [idFuncionalidade=%s, nome=%s]", idFuncionalidade, nome );
 	}
+
+	public Boolean getAtivo()
+	{
+		return ativo;
+	}
+
+	public void setAtivo( Boolean ativo )
+	{
+		this.ativo = ativo;
+	}
+
 
 	
 }

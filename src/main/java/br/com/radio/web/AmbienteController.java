@@ -301,8 +301,7 @@ public class AmbienteController extends AbstractController {
 	public @ResponseBody String getFuncionalidadesAmbiente( @PathVariable Long idAmbiente, @PathVariable String modo, HttpServletResponse response )
 	{
 		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
-
-		List<Funcionalidade> funcionalidades = funcionalidadeRepo.findAll( new Sort( Sort.Direction.ASC, "ordem" ) );
+		List<Funcionalidade> funcionalidades = funcionalidadeRepo.findByAtivo( new Sort( Sort.Direction.ASC, "ordem" ) , true );
 		
 		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 

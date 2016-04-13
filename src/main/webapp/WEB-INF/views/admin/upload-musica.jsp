@@ -581,7 +581,15 @@
             iniciarUpload();  
         });
 
-        $("#outrofileupload").blur(function(){
+//         $("#outrofileupload").blur(function(){
+//             mostrarArquivos();
+//         });
+
+        $("#outrofileupload").click(function(){
+            $(this).val();
+        });
+        
+        $("#outrofileupload").change(function(){
             mostrarArquivos();
         });
         

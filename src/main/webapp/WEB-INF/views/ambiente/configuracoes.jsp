@@ -63,7 +63,7 @@
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
                       <input type="checkbox" id="chamVeiculo" name="chamVeiculo" value="true"> 
-                        Habilitar módulo para chamada de proprietários de veículos
+                        Habilitar módulo para chamada de veículos
                       </label>
                     </div>
                     
@@ -77,35 +77,21 @@
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
                       <input type="checkbox" id="chamVariosFuncionarios" name="chamVariosFuncionarios" value="true"> 
-                        Permitir chamar vários funcionários simultâneamente
+                        Permitir chamada de funcionários
                       </label>
                     </div>
                     
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
                       <input type="checkbox" id="chamInstantanea" name="chamInstantanea" value="true"> 
-                        Habilitar módulo de chamada instantânea (oferta relâmpago)
-                      </label>
-                    </div>
-                    
-                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                      <label>
-                      <input type="checkbox" id="rodoviarias" name="rodoviarias" value="true"> 
-                        Habilitar módulo Rodoviária
-                      </label>
-                    </div>
-                    
-                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                      <label>
-                      <input type="checkbox" id="horoscopo" name="horoscopo" value="true"> 
-                        Habilitar módulo de horóscopo
+                        Habilitar módulo de chamada instantânea
                       </label>
                     </div>
                     
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
                       <input type="checkbox" id="agendMidia" name="agendMidia" value="true"> 
-                        Habilitar módulo de agendamento de mídias c/ hora marcada
+                        Habilitar módulo eventos
                       </label>
                     </div>
                     
@@ -146,43 +132,8 @@
                     
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
-                      <input type="checkbox" id="nobreak" name="nobreak" value="true"> 
-                        Habilitar no-break
-                      </label>
-                    </div>
-                    
-                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                      <label>
                       <input type="checkbox" id="menuDownloads" name="menuDownloads" value="true"> 
                         Habilitar o menu de Downloads 
-                      </label>
-                    </div>
-                    
-                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                      <label>
-                      <input type="checkbox" id="locutorVirtual" name="locutorVirtual" value="true"> 
-                        Habilitar o módulo Locutor Virtual
-                      </label>
-                    </div>
-                    
-                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                      <label>
-                      <input type="checkbox" id="pedidoMusical" name="pedidoMusical" value="true"> 
-                        Habilitar sistema de pedidos musicais
-                      </label>
-                    </div>
-                    
-                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                      <label>
-                      <input type="checkbox" id="pedidoMusicalVinheta" name="pedidoMusicalVinheta" value="true"> 
-                        Reproduzir vinheta do pedido musical
-                      </label>
-                    </div>
-                    
-                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                      <label>
-                      <input type="checkbox" id="generosByCC" name="generosByCC" value="true"> 
-                        Habilitar Gêneros by Creative Commons
                       </label>
                     </div>
                     
