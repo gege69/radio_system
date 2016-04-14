@@ -69,7 +69,9 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                           <div class="pull-right">
-                            <a class="btn btn-success" id="btnIniciar" href="#"> <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a>    
+                            <button type="button" class="btn btn-success" id="btnIniciar">
+                              <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a> 
+                            </button>
                           </div>          
                         </div>
                       </div>            
@@ -426,11 +428,14 @@
                                   "generos[]" : array_values
                                 };
                 
+                $("#btnIniciar").prop("disabled", true);
+                
                 data.submit();
             },
             fail: function (e, data) {
                 var errors = data.jqXHR.responseJSON.errors;
                 preencheErros( errors );
+                $("#btnIniciar").prop("disabled", false);
                 $('#progress .progress-bar').css(
                         'width',
                         0 + '%'
@@ -439,6 +444,7 @@
             stop : function(e, data) {
                 $("#table-musicas").bootstrapTable('refresh');
                 preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+                $("#btnIniciar").prop("disabled", false);
                 $('#progress .progress-bar').css(
                         'width',
                         0 + '%'
@@ -580,10 +586,6 @@
         $("#btnIniciar").click( function(){
             iniciarUpload();  
         });
-
-//         $("#outrofileupload").blur(function(){
-//             mostrarArquivos();
-//         });
 
         $("#outrofileupload").click(function(){
             $(this).val();
