@@ -558,6 +558,9 @@ public class ProgramacaoMusicalService {
 	@Transactional
 	public void geraTransmissao( Ambiente ambiente )
 	{
+
+		// melhorar... se estiver quase acabando o dia.. gerar para o dia posterior também
+
 		// Gerar sempre....  inativando os registros de transmissão anteriores		
 		int ignoradas = transmissaoRepo.setStatusIgnorada( ambiente ); // o que não tocou não será mais tocado... vou gerar uma nova playlist
 		int inativos = transmissaoRepo.setLinkInativo( ambiente );  // inativando os registros 

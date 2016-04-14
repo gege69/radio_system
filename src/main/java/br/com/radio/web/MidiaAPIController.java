@@ -381,6 +381,11 @@ public class MidiaAPIController extends AbstractController {
 
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
 		
+		if ( transmissao == null){
+			progMusicalService.geraTransmissao( ambiente );
+			transmissao = progMusicalService.getTransmissaoAoVivo( ambiente );
+		}
+
 		if ( transmissao == null )
 			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
 		
