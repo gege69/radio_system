@@ -15,7 +15,7 @@
     <div class="row">
       <div class="col-xs-12 col-md-5 col-sm-6 col-lg-5">
 
-        <form:form modelAttribute="user" method="POST">
+        <form:form modelAttribute="user" id="ambiente-form" method="POST">
           <div class="form-group">
             <label for="login">Empresa</label>
             <form:input class="form-control" path="nmEmpresa" value="" placeholder="Nome"/>
@@ -23,8 +23,19 @@
           </div>
           <div class="form-group">
             <label for="login">CNPJ/CPF</label>
-            <form:input class="form-control" path="cdCNPJCPF" value="" placeholder="Nome"/>
+            <form:input class="form-control cpfcnpj" id="cpfcnpj" path="cdCNPJCPF" value="" placeholder="Nome"/>
             <form:errors path="cdCNPJCPF" element="div" class="alert alert-danger"/>
+          </div>
+          <div class="form-group">
+            <label for="estabelecimento">Estabelecimento</label>
+            <form:select class="form-control" path="estabelecimento" id="estabelecimento">
+                <form:option value="LOJA" label="Loja" selected="selected"/>
+                <form:option value="RESTAURANTE" label="Restaurante"/>
+                <form:option value="SUPERMERCADO" label="Supermercado"/>
+                <form:option value="ACADEMIA" label="Academia"/>
+                <form:option value="REVENDA" label="Revenda"/>
+                <form:option value="OUTRO" label="Outro"/>
+            </form:select>
           </div>
           <div class="form-group">
             <label for="login">Nome</label>
@@ -43,7 +54,7 @@
           </div>
           <div class="form-group">
             <label for="senha">Senha</label>
-            <form:input class="form-control" path="password" value="" placeholder="Senha" type="password"/>
+            <form:input class="form-control" path="password" value="" id="password" placeholder="Senha" type="password"/>
             <form:errors path="password" element="div" class="alert alert-danger"/>
           </div>
           <div class="form-group">
@@ -51,7 +62,19 @@
             <form:input class="form-control" path="matchingPassword" value="" placeholder="Senha" type="password"/>
             <form:errors path="matchingPassword" element="div" class="alert alert-danger"/>
           </div>
-          <button type="submit" class="btn btn-default">Gravar</button>
+          
+          <div class="spacer-vertical20"></div>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <a class="btn btn-default" href="${context}"><i class="fa fa-arrow-left"></i> Voltar ao Início</a>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="pull-right">
+                <button type="submit" class="btn btn-primary">Gravar</button>
+              </div>
+            </div>
+          </div>
           
           <div class="spacer-vertical20"></div>
           
@@ -62,5 +85,42 @@
     </div>
       
   </div> <!-- /container -->
+
+
+
+<script type="text/javascript" src="${context}/js/required/jquery.mask.min.js"></script>
+<script type="text/javascript" src="${context}/js/required/zxcvbn.js"></script>
+
+<script type="text/javascript">
+
+
+  
+
+
+$(function(){
+    
+    
+    $("#cpfcnpj").keydown(function(){
+        try {
+            $("#cpfcnpj").unmask();
+        } catch (e) {}
+
+        var tamanho = $("#cpfcnpj").val().length;
+
+        if(tamanho <= 11){
+            $("#cpfcnpj").mask("999.999.999-999");
+        } else {
+            $("#cpfcnpj").mask("99.999.999/9999-99");
+        }                   
+    });
+
+    $('#password').keyup( function( event ) {
+        keyup_validasenha( event );
+    });
+
+});
+
+</script>
+
 
 <jsp:include page="../bottom.jsp" />

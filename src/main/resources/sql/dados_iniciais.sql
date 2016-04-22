@@ -59,14 +59,14 @@ VALUES
 -- Usuários Padrão
 insert into usuario ( id_usuario, login, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
 values ( nextval('usuario_id_usuario_seq'), 'fpazin', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_cliente from cliente where codigo = 'Eterion' ), null, now(), true, 'Fernando Pazin', 'pazinfernando@gmail.com');
-insert into usuario ( id_usuario, login, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
+insert into usuario ( id_usuario, ogin, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
 values ( nextval('usuario_id_usuario_seq'), 'gaugusto', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_cliente from cliente where codigo = 'Eterion' ), null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
 
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'DESENVOLVEDOR' );
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'ADMINISTRADOR' );
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'GERENTE' );
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'SUPERVISOR' );
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'USUARIO' );
+insert into perfil values ( nextval('perfil_id_perfil_seq'), 'DESENVOLVEDOR', false );
+insert into perfil values ( nextval('perfil_id_perfil_seq'), 'ADMINISTRADOR', false );
+insert into perfil values ( nextval('perfil_id_perfil_seq'), 'GERENTE', false );
+insert into perfil values ( nextval('perfil_id_perfil_seq'), 'SUPERVISOR', false );
+insert into perfil values ( nextval('perfil_id_perfil_seq'), 'USUARIO', false );
 
 
 -- dando as permissões padrão do perfil...
@@ -198,7 +198,7 @@ insert into funcionalidade ( ordem, nome, url, icone, ativo ) values ( 13, 'Rela
 insert into funcionalidade ( ordem, nome, url, icone, ativo ) values ( 14, 'Downloads' ,            '/ambientes/%d/downloads/view' ,          'fa-floppy-o', true ); 
 insert into funcionalidade ( ordem, nome, url, icone, ativo ) values ( 15, 'Logomarca' ,            '/ambientes/%d/logomarcas/view' ,           'fa-trademark', true ); 
 insert into funcionalidade ( ordem, nome, url, icone, extrahtml, ativo ) values ( 16, 'Simular' ,               '/player/ambientes/%d/player/view' ,          'fa-play' , ' target="_blank" ', true ); 
-insert into funcionalidade ( ordem, nome, url, icone, ativo ) values ( 17, 'SendVoice' ,            '/ambientes/%d/sendvoices/view' ,           'fa-microphone', true ); 
+insert into funcionalidade ( ordem, nome, url, icone, ativo ) values ( 17, 'SendVoice' ,            '/ambientes/%d/sendvoices/view' ,           'fa-microphone', false ); 
 
 
 

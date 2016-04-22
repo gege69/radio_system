@@ -1,25 +1,7 @@
 
-//var toJSON = function(data) {
-//
-//	var obj = {};
-//
-//	$.each(data, function() {
-//		if (obj[this.name]) {
-//			if (!obj[this.name].push) {
-//				obj[this.name] = [ obj[this.name] ];
-//			}
-//			obj[this.name].push(this.value || '');
-//		} else {
-//			obj[this.name] = this.value || '';
-//		}
-//	});
-//
-//	return JSON.stringify(obj);
-//};
 
 var buildUrl = function( path , data )
 {
-    // contextPath definido no main.jsp
     var url = URI.expand( contextPath + path, data ).toString();
     
     return url;
@@ -280,10 +262,10 @@ var jump = function( h )
 
 
 
-var keyup_validasenha = function( event ) {
+var keyup_validasenha = function( event, extra_dict ) {
     var text = $('#password').val(); 
-    var result = zxcvbn(text);
-
+    var result = zxcvbn(text, ["eterion", "rdcenter", "radio", "ambiente"]);
+        
     if ( text == '' )
     {
         removeErros( $('#ambiente-form') );

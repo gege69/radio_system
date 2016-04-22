@@ -55,9 +55,6 @@ import br.com.radio.util.UtilsStr;
 public class AdministradorController extends AbstractController {
 	
 	@Autowired
-	private PerfilRepository perfilRepo;
-
-	@Autowired
 	private UsuarioService usuarioService;
 	
 	@Autowired

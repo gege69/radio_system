@@ -577,7 +577,7 @@
 </script>  
 
 
-<div id="myModalConversas" class="modal fade" tabindex="-1" role="dialog">
+<div id="myModalConversas" class="modal fade higherWider" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -632,5 +632,7 @@
 <script src="${context}/js/required/jsrender.min.js" defer></script>
 <script src="${context}/js/gerenciador/conversas.js"></script>
 <!-- basicamente necessários para o "Conversas" -->
+
+
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

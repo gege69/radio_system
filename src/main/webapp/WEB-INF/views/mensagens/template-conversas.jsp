@@ -32,7 +32,7 @@
                       <tr>
   <!--                         <th data-field="idConversa">Id</th> -->
                           <th data-field="dataAtualizacao">Atualização em:</th>
-                          <th data-field="participantes">Ambiente(s) e Usuário(s)</th>
+                          <th data-field="participantes">Participantes</th>
   <!--                         <th data-field="dataVigenciaInicio">Vigência Início</th> -->
   <!--                         <th data-field="dataVigenciaFim">Vigência Fim</th> -->
                       </tr>

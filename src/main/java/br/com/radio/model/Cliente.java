@@ -18,6 +18,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
 
 import br.com.radio.json.JSONDateSerializer;
 
@@ -41,16 +43,20 @@ public class Cliente implements Serializable {
 	private String cnpj;
 
 	@Column( name = "codigo", columnDefinition = "TEXT" )
+	@Length(min=5, max=80, message="O Código do Cliente deve ter entre 5 e 40 caracteres.")
 	private String codigo;
 	
 	@NotNull( message = "A razão social do cliente é de preenchimento obrigatório" )
+	@Length(min=5, max=80, message="A Razão Social do Cliente deve ter entre 5 e 80 caracteres.")
 	@Column( name = "razaosocial", nullable = false, columnDefinition = "TEXT" )
 	private String razaosocial;
 	
 	@Column( name = "nomefantasia", columnDefinition = "TEXT" )
+	@Length(min=5, max=80, message="O Nome Fantasia do Cliente deve ter entre 5 e 80 caracteres.")
 	private String nomefantasia;
 	
 	@Column( name = "dominio", columnDefinition = "TEXT" )
+	@Length(min=5, max=80, message="O Domínio do Cliente deve ter entre 5 e 80 caracteres.")
 	private String dominio;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)
@@ -64,6 +70,7 @@ public class Cliente implements Serializable {
 	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;
 	
+	@Email(message="Email inválido")
 	@Column( name="email", columnDefinition = "TEXT")
 	private String email;
 	
@@ -108,6 +115,10 @@ public class Cliente implements Serializable {
 	
 	@Column( name = "ativo" )
 	private Boolean ativo;
+
+	@Column( name = "estabelecimento", length = 40 )
+	private String estabelecimento;
+
 		
 	public Cliente()
 	{
@@ -358,6 +369,16 @@ public class Cliente implements Serializable {
 	public void setDiaVencimento( Integer diaVencimento )
 	{
 		this.diaVencimento = diaVencimento;
+	}
+
+	public String getEstabelecimento()
+	{
+		return estabelecimento;
+	}
+
+	public void setEstabelecimento( String estabelecimento )
+	{
+		this.estabelecimento = estabelecimento;
 	}
 
 

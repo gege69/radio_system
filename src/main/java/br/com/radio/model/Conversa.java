@@ -23,6 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
@@ -238,7 +239,20 @@ public class Conversa implements Serializable {
 
 	
 	
-	public String resumoParticipantes()
+	
+	private boolean isPlayer( Usuario usuario ){
+		boolean result = usuario.getUsuarioTipo().equals( UsuarioTipo.PLAYER );
+		return result;
+	}
+	
+	
+	/**
+	 * O usuário do tipo player não pode enxergar outros ambientes.... então só os usuários comuns vão constar na lista. 
+	 * 
+	 * @param usuarioLogado
+	 * @return
+	 */
+	public String resumoParticipantes( Usuario usuarioLogado )
 	{
 		String result = "";
 		
@@ -246,6 +260,9 @@ public class Conversa implements Serializable {
 		{
 			for ( Usuario u : usuarios )
 			{
+				if ( isPlayer( usuarioLogado ) && isPlayer( u ) ) 
+					continue;
+				
 				if ( !result.equals( "" ) )
 					result += ", " + u.getNome(); 
 				else
@@ -262,9 +279,9 @@ public class Conversa implements Serializable {
 		return result;
 	}
 	
-	public void buildView()
+	public void buildViewParaUsuario( Usuario usuario )
 	{
-		conversaView.put( "participantes", this.resumoParticipantes() );
+		conversaView.put( "participantes", this.resumoParticipantes( usuario ) );
 	}
 
 	@Override

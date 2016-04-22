@@ -33,6 +33,9 @@ public class Perfil implements Serializable {
 	@Column( name = "nome", nullable = false, columnDefinition = "TEXT" )
 	private String nome;
 
+	@Column( name="comum", columnDefinition = "boolean default true" )
+	private boolean comum;
+
 	public Long getIdPerfil()
 	{
 		return idPerfil;
@@ -86,6 +89,14 @@ public class Perfil implements Serializable {
 		return true;
 	}
 
+	public boolean isComum()
+	{
+		return comum;
+	}
 
+	public void setComum( boolean comum )
+	{
+		this.comum = comum;
+	}
 	
 }

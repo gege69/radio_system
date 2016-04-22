@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.dto.AlterarSenhaDTO;
-import br.com.radio.dto.UserDTO;
+import br.com.radio.dto.RegistroDTO;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.enumeration.UsuarioTipo;
@@ -78,7 +78,7 @@ public class UsuarioService {
 
 	
 	@Transactional
-	public Usuario registraNovoUsuarioGerenciador( UserDTO dto )
+	public Usuario registraNovoUsuarioGerenciador( RegistroDTO dto )
 	{
 		// Proteger de algum jeito contra brute force com memoization talvez
 		
@@ -112,6 +112,7 @@ public class UsuarioService {
 		cliente.setCodigo( StringUtils.remove( UtilsStr.unaccent( StringUtils.lowerCase( dto.getNmEmpresa() ) ), " " ) );
 		cliente.setDominio( null );
 		cliente.setDataCriacao( new Date() );
+		cliente.setEstabelecimento( dto.getEstabelecimento() );
 		
 		clienteService.saveCliente( cliente );
 		
@@ -121,7 +122,7 @@ public class UsuarioService {
 		
 		UsuarioPerfil usuPerfil = new UsuarioPerfil();
 		
-		usuPerfil.setPerfil( perfilRepo.findByNome( "GERENTE" ) );
+		usuPerfil.setPerfil( perfilRepo.findByNomeAndComumTrue( "GERENTE" ) );
 		usuPerfil.setUsuario( usuario );
 		
 		usuarioPerfilRepo.save( usuPerfil );
@@ -132,10 +133,8 @@ public class UsuarioService {
 	
 	
 	@Transactional
-	public Usuario saveUsuarioGerenciador( UsuarioGerenciadorDTO usuarioGerenciadorDTO )
+	public Usuario saveUsuarioGerenciador( UsuarioGerenciadorDTO usuarioGerenciadorDTO, Cliente cliente )
 	{
-		Cliente cliente = clienteRepo.findOne( 1l );
-		
 		Long countUsuarios = 0l;
 		
 		Usuario usuarioDTO = usuarioGerenciadorDTO.getUsuario();

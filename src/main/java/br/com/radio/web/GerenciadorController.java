@@ -249,7 +249,7 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/usuarios", "/api/usuarios" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveUsuario( @RequestBody @Valid UsuarioGerenciadorDTO usuarioGerenciadorDTO, BindingResult result )
+	public @ResponseBody String saveUsuario( @RequestBody @Valid UsuarioGerenciadorDTO usuarioGerenciadorDTO, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
 		
@@ -261,7 +261,12 @@ public class GerenciadorController extends AbstractController {
 		{
 			try
 			{
-				usuarioService.saveUsuarioGerenciador( usuarioGerenciadorDTO );
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente() == null )
+					throw new RuntimeException("Cliente não encontrado.");
+
+				usuarioService.saveUsuarioGerenciador( usuarioGerenciadorDTO, usuario.getCliente() );
 				
 				jsonResult = writeOkResponse();
 			}
@@ -280,7 +285,14 @@ public class GerenciadorController extends AbstractController {
 	@RequestMapping( value = { "/perfis", "/api/perfis" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONBootstrapGridWrapper<Perfil> listPerfis()
 	{
-		List<Perfil> perfilList = perfilRepo.findAll();
+		boolean admSistema = hasAuthority( "ADM_SISTEMA" );
+
+		List<Perfil> perfilList = null;
+		
+		if ( admSistema )
+			perfilList = perfilRepo.findAll();
+		else
+			perfilList = perfilRepo.findByComumTrue();
 		
 		int total = perfilList.size();
 		

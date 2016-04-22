@@ -255,6 +255,16 @@ var marcaLinha = function( e, row, el )
 }
 
 
+var atualiza = function(){
+    atualizaConversaAtual();
+    atualizaListaConversas();
+}
+
+var atualizaListaConversas = function(){
+    $tableconversas.bootstrapTable('refresh');
+}
+
+
 var atualizaConversaAtual = function(){
     
     var painelMensagens = $('#painel-mensagens');
@@ -298,6 +308,6 @@ $(function(){
         enviarMensagem();        
     });
     
-    window.setInterval(atualizaConversaAtual, 10000); 
+    window.setInterval(atualiza, 10000); 
     
 });

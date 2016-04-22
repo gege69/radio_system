@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.radio.dto.UserDTO;
+import br.com.radio.dto.RegistroDTO;
 import br.com.radio.model.Usuario;
 import br.com.radio.service.UsuarioService;
 
@@ -55,7 +55,7 @@ public class AuthenticationController extends AbstractController {
 	@RequestMapping(value="/register", method=RequestMethod.GET)
 	public String registro( HttpServletRequest request, ModelMap model )
 	{
-		UserDTO userDto = new UserDTO();
+		RegistroDTO userDto = new RegistroDTO();
 	    model.addAttribute("user", userDto);
     
 		return "auth/register";	
@@ -63,7 +63,7 @@ public class AuthenticationController extends AbstractController {
 	
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public ModelAndView registrar( @ModelAttribute("user") @Valid UserDTO accountDto, BindingResult result, WebRequest request, Errors errors )
+	public ModelAndView registrar( @ModelAttribute("user") @Valid RegistroDTO accountDto, BindingResult result, WebRequest request, Errors errors )
 	{
 		Usuario usuario = null;
 		

@@ -145,6 +145,24 @@ public class Midia implements Serializable {
 	
 	@Column( name="ativo")
 	private Boolean ativo;
+
+	/**
+	 * Essa data marca o início da validade da mídia (quando ela poderá ser sorteada para ser tocada) (INCLUSIVO ex: 01/07/2016 indica que ela tocará nesse dia)
+	 */
+	@JsonDeserialize(using=JSONDateDeserializer.class)
+	@JsonSerialize(using=JSONDateSerializer.class)
+	@Temporal( TemporalType.TIMESTAMP )
+	@Column( name = "datainiciovalidade")
+	private Date dataInicioValidade;
+
+	/**
+	 * Essa data marca o fim da validade da mídia (quando ela deixará de ser sorteada para ser tocada) (INCLUSIVO ex: 09/07/2016 indica que ela tocará nesse dia... será o seu último dia)
+	 */
+	@JsonDeserialize(using=JSONDateDeserializer.class)
+	@JsonSerialize(using=JSONDateSerializer.class)
+	@Temporal( TemporalType.TIMESTAMP )
+	@Column( name = "datafimvalidade")
+	private Date dataFimValidade;
 	
 	@JsonIgnore
 	@ManyToMany(fetch=FetchType.LAZY)
@@ -468,5 +486,28 @@ public class Midia implements Serializable {
 	{
 		this.midiaView = midiaView;
 	}
+
+	public Date getDataInicioValidade()
+	{
+		return dataInicioValidade;
+	}
+
+	public void setDataInicioValidade( Date dataInicioValidade )
+	{
+		this.dataInicioValidade = dataInicioValidade;
+	}
+
+	public Date getDataFimValidade()
+	{
+		return dataFimValidade;
+	}
+
+	public void setDataFimValidade( Date dataFimValidade )
+	{
+		this.dataFimValidade = dataFimValidade;
+	}
 	
+
+
+
 }

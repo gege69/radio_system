@@ -297,9 +297,11 @@
                       
                       <div class="col-lg-2 col-md-2">
                         <div class="">
-                          <a class="btn btn-default" href="${context}${urlInserirTitulo}?idCliente=${idCliente}" >
-                            <i class="fa fa-plus"></i>
-                            Inserir Título</a>
+                          <c:if test="${isAdmin}">
+                            <a class="btn btn-default" href="${context}${urlInserirTitulo}?idCliente=${idCliente}" >
+                              <i class="fa fa-plus"></i>
+                              Inserir Título</a>
+                          </c:if>
                         </div>            
                       </div>                
                     </div>
