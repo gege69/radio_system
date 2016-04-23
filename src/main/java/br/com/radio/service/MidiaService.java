@@ -69,6 +69,7 @@ import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaOpcionalRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
+import br.com.radio.service.vo.GravaMidiaParameter;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -139,38 +140,6 @@ public class MidiaService {
 	}
 
 
-
-	@Transactional
-	public void saveUploadMulti( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Long[] ambientes ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
-	{
-		if ( categorias == null || categorias.length <= 0 )
-			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
-		
-		if ( ambientes == null || ambientes.length <= 0 )
-			throw new RuntimeException("Nenhum ambiente selecionado para receber a Mídia. Escolha pelo menos um ambiente.");
-		
-		byte[] bytes = multiPartFile.getBytes(); 
-		
-		String hash = geraHashDoArquivo( bytes );
-		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, categorias, hash, multiPartFile.getContentType(), null );
-
-		boolean aoMenosUm = false;
-		for ( Long id : ambientes )
-		{
-			Ambiente ambiente = ambienteRepo.findOne( id );
-			
-			if ( ambiente != null )
-			{
-				aoMenosUm = true;
-				associaMidiaEAmbiente( ambiente, midia );
-			}
-		}
-		
-		if ( !aoMenosUm )
-			throw new RuntimeException( "Nenhum ambiente encontrado para associação." );
-		
-	}
 	
 	
 	
@@ -244,8 +213,10 @@ public class MidiaService {
 
 				fis = new FileInputStream( f );
 				
-				Midia midia = gravaMidia( fis, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, contentType, "" );
+				GravaMidiaParameter parametros = new GravaMidiaParameter( f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, contentType, "", null );
 				
+				Midia midia = gravaMidia( fis, parametros );
+
 				fis.close();
 				
 				if ( StringUtils.isBlank( midia.getArtist() ) )
@@ -256,9 +227,7 @@ public class MidiaService {
 				List<Ambiente> ambientes = ambienteRepo.findAll();
 				
 				for ( Ambiente ambiente : ambientes )
-				{
 					associaTodasMidiasParaAmbiente( ambiente );
-				}
 				
 				if ( !StringUtils.equals( grupoArtista, midia.getArtist() ) )
 				{
@@ -383,7 +352,7 @@ public class MidiaService {
 				
 				Long size = f.length();
 				
-				Midia midia = gravaMidia( null, f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, contenttype, "", size.intValue() );
+				Midia midia = gravaMidia( null, new GravaMidiaParameter( f.getName(), cliente, new Long[] { categoria.getIdCategoria() }, hash, contenttype, "", size.intValue() ) );
 				
 				if ( StringUtils.isBlank( midia.getArtist() ) )
 					midia.setArtist( pasta );
@@ -440,6 +409,41 @@ public class MidiaService {
 		}
 	}
 	
+
+
+	@Transactional
+	public void saveUploadMulti( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Long[] ambientes, Date dataInicioValidade, Date dataFimValidade ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	{
+		if ( categorias == null || categorias.length <= 0 )
+			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
+		
+		if ( ambientes == null || ambientes.length <= 0 )
+			throw new RuntimeException("Nenhum ambiente selecionado para receber a Mídia. Escolha pelo menos um ambiente.");
+		
+		byte[] bytes = multiPartFile.getBytes(); 
+		
+		String hash = geraHashDoArquivo( bytes );
+
+		GravaMidiaParameter parametros = new GravaMidiaParameter( multiPartFile.getOriginalFilename(), cliente, categorias, hash, multiPartFile.getContentType(), null, null, dataInicioValidade, dataFimValidade );
+		parametros.validar();
+		
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), parametros );
+
+		boolean aoMenosUm = false;
+		for ( Long id : ambientes )
+		{
+			Ambiente ambiente = ambienteRepo.findOne( id );
+			
+			if ( ambiente != null )
+			{
+				aoMenosUm = true;
+				associaMidiaEAmbiente( ambiente, midia );
+			}
+		}
+		
+		if ( !aoMenosUm )
+			throw new RuntimeException( "Nenhum ambiente encontrado para associação." );
+	}
 	
 	
 	/**
@@ -468,7 +472,9 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
+		GravaMidiaParameter parametros = new GravaMidiaParameter( multiPartFile.getOriginalFilename(), cliente, new Long[] { categoria.getIdCategoria() }, hash, multiPartFile.getContentType(), descricao, null );
+		
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), parametros );
 		
 		associaGenerosParaMusica( midia, arrayGeneros );
 		
@@ -492,10 +498,12 @@ public class MidiaService {
 		
 		Midia result = null;
 		
+		SaveUploadParameter parametros = new SaveUploadParameter( multiPartFile, categoria, cliente, descricao );
+		
 		if ( categoria == null || categoria.getCodigo().equals( Categoria.VEIC_PLACA_LETRA ) || categoria.getCodigo().equals( Categoria.VEIC_PLACA_NUMERO )  )
-			result = saveUploadChamadaVeiculoAlfaNumerico( multiPartFile, categoria, cliente, descricao );
+			result = saveUploadChamadaVeiculoAlfaNumerico( parametros );
 		else
-			result = saveUploadChamadaVeiculoOutros( multiPartFile, categoria, cliente, descricao );
+			result = saveUploadChamadaVeiculoOutros( parametros );
 		
 		return result;
 	}
@@ -503,9 +511,10 @@ public class MidiaService {
 
 
 	@Transactional
-	public Midia saveUploadChamadaVeiculoOutros( MultipartFile multiPartFile, Categoria categoria, Cliente cliente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUploadChamadaVeiculoOutros( SaveUploadParameter saveUploadParametros  ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		byte[] bytes = multiPartFile.getBytes();
+		String descricao = saveUploadParametros.getDescricao();
+		byte[] bytes = saveUploadParametros.getMultiPartFile().getBytes();
 		
 		String hash = geraHashDoArquivo( bytes );
 		
@@ -525,9 +534,11 @@ public class MidiaService {
 //		}
 
 		if ( StringUtils.isBlank( descricao ) )
-			descricao = multiPartFile.getOriginalFilename();
+			descricao = saveUploadParametros.getMultiPartFile().getOriginalFilename();
 
-		midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
+		GravaMidiaParameter gravaMidiaParametros = new GravaMidiaParameter( saveUploadParametros.getMultiPartFile().getOriginalFilename(), saveUploadParametros.getCliente(), new Long[] { saveUploadParametros.getCategoria().getIdCategoria() }, hash, saveUploadParametros.getMultiPartFile().getContentType(), descricao, null );
+		
+		midia = gravaMidia( saveUploadParametros.getMultiPartFile().getInputStream(), gravaMidiaParametros );
 		
 		associaMidiaParaTodosAmbientes( midia );
 		
@@ -538,16 +549,15 @@ public class MidiaService {
 	
 	
 	@Transactional
-	public Midia saveUploadChamadaVeiculoAlfaNumerico( MultipartFile multiPartFile, Categoria categoria, Cliente cliente, String alfanumerico ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUploadChamadaVeiculoAlfaNumerico( SaveUploadParameter saveUploadParametros ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
-		alfanumerico = StringUtils.trim( alfanumerico );
+		String alfanumerico = StringUtils.trim( saveUploadParametros.getDescricao() );
 		
 		if ( StringUtils.isBlank( alfanumerico ) )
 			throw new RuntimeException( "A Letra (ou número) correspondente ao áudio é obrigatório ( Ex: 'A' ou '19' )" );
 		
 		if ( !StringUtils.isAlphanumeric( alfanumerico ) )
 			throw new RuntimeException( "O caractére preenchido é inválido.");
-		
 		
 		boolean numerico = StringUtils.isNumeric( alfanumerico );
 		
@@ -557,7 +567,8 @@ public class MidiaService {
 		if ( !numerico && StringUtils.length( alfanumerico ) > 1 )
 			throw new RuntimeException( "As letras que formam a placa precisam ser gravadas separadamente ( Ex: A, B, F, etc )");
 		
-		
+		Categoria categoria = saveUploadParametros.getCategoria();
+
 		if ( numerico )
 			categoria = categoriaRepo.findByCodigo( Categoria.VEIC_PLACA_NUMERO );
 		else
@@ -566,11 +577,13 @@ public class MidiaService {
 			alfanumerico = StringUtils.upperCase( alfanumerico );
 		}
 		
-		byte[] bytes = multiPartFile.getBytes();
+		byte[] bytes = saveUploadParametros.getMultiPartFile().getBytes();
 		
 		String hash = geraHashDoArquivo( bytes );
+
+		GravaMidiaParameter parametros = new GravaMidiaParameter( saveUploadParametros.getMultiPartFile().getOriginalFilename(), saveUploadParametros.getCliente(), new Long[] { categoria.getIdCategoria() }, hash, saveUploadParametros.getMultiPartFile().getContentType(), alfanumerico, null );
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), alfanumerico );
+		Midia midia = gravaMidia( saveUploadParametros.getMultiPartFile().getInputStream(), parametros );
 		
 		// pode ter um bug aqui... uma midia "deletada" em uma categoria pode ser reativada em outra... e ficar com as duas categorias.  :TODO
 
@@ -616,8 +629,11 @@ public class MidiaService {
 		byte[] bytes = multiPartFile.getBytes();
 		
 		String hash = geraHashDoArquivo( bytes );
+
+		GravaMidiaParameter parametros = new GravaMidiaParameter( multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao, null );
+		parametros.validar();
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao );
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), parametros );
 		
 		associaMidiaParaTodosAmbientes( midia );
 
@@ -657,19 +673,12 @@ public class MidiaService {
 		if ( categoria == null )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
-		return saveUpload( multiPartFile, new Long[] { categoria.getIdCategoria() }, cliente, ambiente, descricao );
+		return saveUpload( multiPartFile, new Long[] { categoria.getIdCategoria() }, cliente, ambiente, descricao, null, null );
 	}
 	
 
-	
-	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
-	{
-		return saveUpload( multiPartFile, categorias, cliente, ambiente, null );
-	}
-	
-	
 	@Transactional
-	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente, String descricao, Date dataInicioValidade, Date dataFimValidade ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
@@ -678,27 +687,24 @@ public class MidiaService {
 		
 		String hash = geraHashDoArquivo( bytes );
 		
-		Midia midia = gravaMidia( multiPartFile.getInputStream(), multiPartFile.getOriginalFilename(), cliente, categorias, hash, multiPartFile.getContentType(), descricao );
+		GravaMidiaParameter parametros = new GravaMidiaParameter( multiPartFile.getOriginalFilename(), cliente, categorias, hash, multiPartFile.getContentType(), descricao, null, dataInicioValidade, dataFimValidade );
+		parametros.validar();
+		
+		Midia midia = gravaMidia( multiPartFile.getInputStream(), parametros );
 		
 		associaMidiaEAmbiente( ambiente, midia );
 		
 		return midia;
 	}
-
-	
-	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String contentType, String descricao ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
-	{
-		return gravaMidia( is, originalName, cliente, categorias, hash, contentType, descricao, null );
-	}
 	
 
-	public Midia gravaMidia( InputStream is, String originalName, Cliente cliente, Long[] categorias, String hash, String contentType, String descricao, Integer fileSize ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public Midia gravaMidia( InputStream is , GravaMidiaParameter parametros  ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		List<Categoria> categoriaList = null;
 		File arquivo = null;
 		Integer size = 0;
 		
-		String extensao = this.mapMimeTypeToExt.get( contentType );
+		String extensao = this.mapMimeTypeToExt.get( parametros.getContentType() );
 		
 		if ( extensao == null )
 			throw new RuntimeException( "Tipo de arquivo inválido. Só são aceitos arquivos de Música MP3 ou OGG." );
@@ -707,9 +713,9 @@ public class MidiaService {
 		Midia midia = null;
 		try
 		{
-			String path = getDefaultPath( hash, contentType );
+			String path = getDefaultPath( parametros.getHash(), parametros.getContentType() );
 
-			midia = midiaRepo.findByFilehash( hash );
+			midia = midiaRepo.findByFilehash( parametros.getHash() );
 		
 			boolean preencher = false;
 
@@ -729,26 +735,28 @@ public class MidiaService {
 				if ( is != null )
 					size = IOUtils.copy( is, new FileOutputStream( arquivo ) );
 				else
-					size = fileSize;
+					size = parametros.getFileSize();
 				
 				midia.setDataUpload( new Date() );
-				midia.setNome( originalName );
+				midia.setNome( parametros.getOriginalName() );
 				midia.setFilepath( path );
-				midia.setFilehash( hash );
-				midia.setMimetype( contentType ); 
+				midia.setFilehash( parametros.getHash() );
+				midia.setMimetype( parametros.getContentType() ); 
 				midia.setFilesize( size );
-				midia.setExtensao( FilenameUtils.getExtension( originalName ) );
+				midia.setExtensao( FilenameUtils.getExtension( parametros.getOriginalName() ) );
 				midia.setValido( true );
 				midia.setCached( false );
+				midia.setDataInicioValidade( parametros.getDataInicioValidade() );
+				midia.setDataFimValidade( parametros.getDataFimValidade() );
 
-				preencheTags( contentType, arquivo, midia );
+				preencheTags( parametros.getContentType(), arquivo, midia );
 			}
 			
-			midia.setDescricao( descricao );
+			midia.setDescricao( parametros.getDescricao() );
 
-			if ( categorias != null && categorias.length > 0 )
+			if ( parametros.getCategorias() != null && parametros.getCategorias().length > 0 )
 			{
-				categoriaList = categoriaRepo.findByIdCategoriaIn( categorias );
+				categoriaList = categoriaRepo.findByIdCategoriaIn( parametros.getCategorias() );
 				
 				midia.setCategorias( categoriaList );
 			}

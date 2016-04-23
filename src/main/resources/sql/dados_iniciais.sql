@@ -62,11 +62,11 @@ values ( nextval('usuario_id_usuario_seq'), 'fpazin', '$2a$08$jzf4G7i5TxtpYwZwEp
 insert into usuario ( id_usuario, ogin, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
 values ( nextval('usuario_id_usuario_seq'), 'gaugusto', '$2a$08$jzf4G7i5TxtpYwZwEpsguudbkTgm2vmTmClah6sZkp9FqhGAG5uMC', ( select id_cliente from cliente where codigo = 'Eterion' ), null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
 
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'DESENVOLVEDOR', false );
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'ADMINISTRADOR', false );
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'GERENTE', false );
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'SUPERVISOR', false );
-insert into perfil values ( nextval('perfil_id_perfil_seq'), 'USUARIO', false );
+insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'DESENVOLVEDOR', false );
+insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'ADMINISTRADOR', false );
+insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'GERENTE', true );
+insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'SUPERVISOR', true );
+insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'USUARIO', true );
 
 
 -- dando as permissões padrão do perfil...
@@ -174,7 +174,7 @@ insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval
 
 
 insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'BASE_MIDIA_PATH', '/home/pazin/teste/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'BASE_MIDIA_PATH', '/home/ubuntu/repositorioMusicas/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
 
 insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
 values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'SERVER_REQUEST_PATH', '', 'A definir', null );

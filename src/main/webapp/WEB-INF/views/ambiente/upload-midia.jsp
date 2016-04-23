@@ -11,24 +11,11 @@
 
     <div class="row">
     
-      <div class="row" id="alertArea">
-
-        <c:if test="${not empty error}">      
-          <div class="alert alert-danger" role="alert" id="alertalertArea" >
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <div id="errogeral">${error}</div>
-          </div>
-        </c:if>
-        
-        <c:if test="${not empty success}">      
-          <div class="alert alert-success" role="alert" id="alertalertArea" >
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <div id="errogeral">${success}</div>
-          </div>
-        </c:if>
-        
+      <div class="row">
+        <div class="col-lg-12 col-md-12" id="alertArea">
+        </div>
       </div>
-      
+
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Gerenciar ${nomeCategoria}<br/>
@@ -44,23 +31,41 @@
                   <div class="row">
                     
                     <div class="col-md-12">
-                      <form action="${context}/ambientes/${idAmbiente}/view-upload-midia/${codigo}" 
+                      <form 
+                            action="#" 
                             method="POST" 
                             id="ambiente-upload-midia" 
                             class="form" 
                             enctype="multipart/form-data">
                       
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                        <input type="hidden" id="idCategoria" name="idCategoria" value="${idCategoria}">
                         <input type="hidden" id="idAmbiente" name="idAmbiente" value="${idAmbiente}">
+                        <input type="hidden" id="idCategoria" name="idCategoria" value="${idCategoria}">
                         
-                        
-                        <div class="col-lg-7 col-md-9 col-sm-12">
-                          <div class="form-group">
-                            <label for="file">Arquivo:</label>
-                            <input type="file" class="form-control" id="arquivo" name="file" placeholder="algum arquivo">
-                          </div>
+                        <input type="file" id="fileupload" name="file" multiple style="display : none;">
+
+                        <div class="col-lg-2 col-md-3 col-sm-4">
+                          <span class="btn btn-primary btn-file">
+                              Escolha os arquivos<input type="file" id="outrofileupload" name="file2" multiple>
+                          </span>
                         </div>
+
+                        <input type="file" id="fileupload" name="file" multiple style="display : none;">
+
+                        <div class="col-lg-offset-2 col-md-offset-3 col-sm-offset-4">          
+                          <p class="form-control-static" id="static-arquivos"></p>
+                        </div>
+
+                        <div class="spacer-vertical10"></div>
+
+                        <div id="resultados">
+                          <div id="progress" class="progress">
+                              <div class="progress-bar progress-bar-success"></div>
+                          </div>
+                          <div id="files" class="files"></div>            
+                        </div>
+
+                        <div class="spacer-vertical10"></div>
 
                         <div class="col-lg-7 col-md-9 col-sm-12">
                           <div class="form-group">
@@ -69,23 +74,50 @@
                           </div>
                         </div>
 
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
-                          <div class="form-group" id="checkBoxContainer">
+                        <div class="col-lg-7 col-md-9 col-sm-12">
+                          <div class="form-group">
+                            <label class="control-label" for="chave">Data Início Validade:</label>
+                            <div class="input-group date col-lg-4 col-md-6 col-sm-5">
+                              <input type="text" class="form-control" id="dataInicio" name="dataInicio">
+                                <span class="input-group-addon">
+                                  <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label class="control-label" for="chave">Data Fim Validade:</label>
+                            <div class="input-group date col-lg-4 col-md-6 col-sm-5">
+                              <input type="text" class="form-control" id="dataFim" name="dataFim">
+                                <span class="input-group-addon">
+                                  <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
                           </div>
                         </div>
                         
-                        <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <div class="form-group">
-                              <a class="btn btn-primary" href="#" id="btnUploadMidia">Upload Mídia</a>
-                            </div>
-                          </div>
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <div class="form-group pull-right">
-                              <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view-pesquisa-midia" id="btnPesquisar">Busca Básica</a>
+
+                        <div class="col-lg-7 col-md-9 col-sm-12">
+                          <div class="form-group">
+                            <label for="file">Categorias:</label>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                              <div class="form-group" id="checkBoxContainer">
+                              </div>
                             </div>
                           </div>
                         </div>
+
+                        <div class="row">
+                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                          </div>
+                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="pull-right">
+                              <button type="button" class="btn btn-success" id="btnIniciar">
+                                <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a> 
+                              </button>
+                            </div>          
+                          </div>
+                        </div>        
                         
                       </form>
                     </div>
@@ -99,7 +131,7 @@
                   <div class="row">
                     <div class="col-lg-12 col-md-12">
                       <table  
-                         id="table"
+                         id="tabelaMidiaUpload"
                          data-toggle="table"
                          data-url="${context}/ambientes/${idAmbiente}/midias-por-categoria/${idCategoria}/"
                          data-height="400"
@@ -166,19 +198,30 @@
   </div> <!-- /container -->
 
 
+
 <script src="${context}/js/required/jsrender.min.js"></script>
 <script src="${context}/js/required/bootbox.min.js"></script>
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
 
+<script src="${context}/js/required/jquery-ui.min.js"></script>
+
+<script src="${context}/js/required/jquery.iframe-transport.js"></script>
+<script src="${context}/js/required/jquery.fileupload.js"></script>
+
+<script src="${context}/js/required/bootstrap-datepicker.min.js"></script>
+<script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script>
+<link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
 
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 
 <script id="viewTmpl" type="text/x-jsrender">
 <label class="checkbox-inline">
-  <input type="checkbox" id="inlineCheck{{:idCategoria}}" name="categorias[]" value="{{:idCategoria}}"> {{:nome}}
+  <input type="checkbox" class="checkbox-categoria" id="inlineCheck{{:idCategoria}}" name="categorias[idCategoria]" value="{{:idCategoria}}"> {{:nome}}
 </label>
 </script>  
+
+
 
 <script src="${context}/js/ambiente/upload-midia.js"  charset="UTF-8"></script>
 

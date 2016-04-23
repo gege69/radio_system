@@ -121,105 +121,105 @@ public class MidiaController extends AbstractController {
 	
 	
 	
-	
-	@RequestMapping(value="/ambientes/{idAmbiente}/view-upload-midia/{codigo}", method=RequestMethod.POST)
-    public String uploadTela(
-    		@PathVariable Long idAmbiente,
-    		@PathVariable String codigo,
-    		@RequestParam("file") MultipartFile file,
-    		@RequestParam(value="descricao", required = false) String descricao,
-    		@RequestParam("categorias[]") Long[] categorias,
-    		Principal principal, 
-    		Model model )
-	{
+//	
+//	@RequestMapping(value="/ambientes/{idAmbiente}/view-upload-midia/{codigo}", method=RequestMethod.POST)
+//    public String uploadTela(
+//    		@PathVariable Long idAmbiente,
+//    		@PathVariable String codigo,
+//    		@RequestParam("file") MultipartFile file,
+//    		@RequestParam(value="descricao", required = false) String descricao,
+//    		@RequestParam("categorias[]") Long[] categorias,
+//    		Principal principal, 
+//    		Model model )
+//	{
+//
+//		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+//		
+//		if ( usuario == null || usuario.getCliente() == null )
+//			return "HTTPerror/404";
+//		
+//		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+//		
+//		if ( ambiente != null )
+//		{
+//			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+//			model.addAttribute( "nome", ambiente.getNome() );
+//
+//			Categoria categoria = categoriaRepo.findByCodigo( codigo );
+//			
+//			if ( categoria != null )
+//			{
+//				model.addAttribute( "idCategoria",  categoria.getIdCategoria() );
+//				model.addAttribute( "nomeCategoria",  categoria.getNome() );
+//				model.addAttribute( "codigo",  categoria.getCodigo() );
+//			}
+//			
+//			if ( !file.isEmpty() )
+//			{
+//				try
+//				{
+//					midiaService.saveUpload( file, categorias, usuario.getCliente(), ambiente, descricao, null, null );
+//					
+//					model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
+//				}
+//				catch ( Exception e )
+//				{
+//					e.printStackTrace();
+//
+//					model.addAttribute( "error", e.getMessage() );
+//				}
+//			}
+//			else
+//			{
+//				model.addAttribute( "error", "O arquivo está vazio" );
+//			}
+//		}
+//
+//	    return "ambiente/upload-midia";
+//    }
 
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-		
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-
-			Categoria categoria = categoriaRepo.findByCodigo( codigo );
-			
-			if ( categoria != null )
-			{
-				model.addAttribute( "idCategoria",  categoria.getIdCategoria() );
-				model.addAttribute( "nomeCategoria",  categoria.getNome() );
-				model.addAttribute( "codigo",  categoria.getCodigo() );
-			}
-			
-			if ( !file.isEmpty() )
-			{
-				try
-				{
-					midiaService.saveUpload( file, categorias, usuario.getCliente(), ambiente, descricao );
-					
-					model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
-				}
-				catch ( Exception e )
-				{
-					e.printStackTrace();
-
-					model.addAttribute( "error", e.getMessage() );
-				}
-			}
-			else
-			{
-				model.addAttribute( "error", "O arquivo está vazio" );
-			}
-		}
-
-	    return "ambiente/upload-midia";
-    }
 
 
-
-	
-	
 	
 	
-	@RequestMapping(value="/view-upload-multi", method=RequestMethod.POST)
-    public String uploadMultiTela(
-    		@RequestParam("file") MultipartFile file,
-    		@RequestParam("ambientes[]") Long[] ambientes,    		
-    		@RequestParam("categorias[]") Long[] categorias,
-    		Principal principal, 
-    		Model model )
-	{
-
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-		
-		if ( !file.isEmpty() )
-		{
-			try
-			{
-				midiaService.saveUploadMulti( file, categorias, usuario.getCliente(), ambientes );
-				
-				model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
-			}
-			catch ( Exception e )
-			{
-				e.printStackTrace();
-				
-				model.addAttribute( "error", e.getMessage() );
-			}
-		}
-		else
-		{
-			model.addAttribute( "error", "O arquivo está vazio" );
-		}
-
-	    return "gerenciador/upload-multi";
-    }
+	
+	
+//	@RequestMapping(value="/view-upload-multi", method=RequestMethod.POST)
+//    public String uploadMultiTela(
+//    		@RequestParam("file") MultipartFile file,
+//    		@RequestParam("ambientes[]") Long[] ambientes,    		
+//    		@RequestParam("categorias[]") Long[] categorias,
+//    		Principal principal, 
+//    		Model model )
+//	{
+//
+//		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+//		
+//		if ( usuario == null || usuario.getCliente() == null )
+//			return "HTTPerror/404";
+//		
+//		if ( !file.isEmpty() )
+//		{
+//			try
+//			{
+//				midiaService.saveUploadMulti( file, categorias, usuario.getCliente(), ambientes );
+//				
+//				model.addAttribute( "success", String.format( "Arquivo \"%s\" enviado com sucesso", file.getOriginalFilename() ) );
+//			}
+//			catch ( Exception e )
+//			{
+//				e.printStackTrace();
+//				
+//				model.addAttribute( "error", e.getMessage() );
+//			}
+//		}
+//		else
+//		{
+//			model.addAttribute( "error", "O arquivo está vazio" );
+//		}
+//
+//	    return "gerenciador/upload-multi";
+//    }
 	
 	
 	

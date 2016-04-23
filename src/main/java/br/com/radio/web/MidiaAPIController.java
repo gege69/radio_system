@@ -3,6 +3,7 @@ package br.com.radio.web;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 import javax.json.Json;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -150,6 +152,103 @@ public class MidiaAPIController extends AbstractController {
 
 		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
     }	
+
+
+
+	@RequestMapping(value="/api/upload-midia-multi-ambientes", method=RequestMethod.POST)
+    public ResponseEntity<String> uploadMultiAmbiente(
+    		@RequestParam("file") MultipartFile file,
+    		@RequestParam("ambientes[]") Long[] ambientes,    		
+    		@RequestParam("categorias[]") Long[] categorias,
+    		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") Date inicioValidade,
+    		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") Date fimValidade,
+    		Principal principal, 
+    		Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+		if ( file != null && !file.isEmpty() )
+		{
+			try
+			{
+				midiaService.saveUploadMulti( file, categorias, usuario.getCliente(), ambientes, inicioValidade, fimValidade );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			}
+		}
+		else
+		{
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
+			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+		}
+
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+    }
+
+
+
+	@RequestMapping(value="/api/ambientes/{idAmbiente}/upload-midia-categorias", method=RequestMethod.POST)
+    public ResponseEntity<String> uploadMultiCategorias(
+    		@PathVariable Long idAmbiente,
+    		@RequestParam("file") MultipartFile file,
+    		@RequestParam(value="descricao", required = false) String descricao,
+    		@RequestParam("categorias[]") Long[] categorias,
+    		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") Date inicioValidade,
+    		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") Date fimValidade,
+    		Principal principal, 
+    		Model model )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			if ( file != null && !file.isEmpty() )
+			{
+				try
+				{
+					midiaService.saveUpload( file, categorias, usuario.getCliente(), ambiente, descricao, inicioValidade, fimValidade );
+					
+					jsonResult = writeOkResponse();
+				}
+				catch ( Exception e )
+				{
+					e.printStackTrace();
+
+					jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+					return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+				}
+			}
+			else
+			{
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
+				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			}
+		}
+
+		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+    }
+
+
 
 
 

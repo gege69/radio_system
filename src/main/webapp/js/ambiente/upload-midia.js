@@ -61,19 +61,6 @@ var makeListTmpl = function(json){
     $('#checkBoxContainer').append(content);
 };
 
-// futuramente tornar esse Upload em ajax
-var upload = function( idAmbiente )
-{
-    $('#btnUploadMidia').disable();
-    
-    // pegar as categorias e fazer a listinha de strings 
-    $("#ambiente-upload-midia").submit();
-    
-    $("#ambiente-upload-midia").bind('ajax:complete', function() {
-        console.log('teste');
-    });
-}
-
 
 var deletaMidia = function( idMidia )
 {
@@ -97,6 +84,106 @@ var deletaMidia = function( idMidia )
     
 }
 
+
+var getCategoriasSelecionadas = function()
+{
+    var array_values = [];
+    $('.checkbox-categoria').each( function() {
+        if( $(this).is(':checked') ) {
+            array_values.push( parseInt( $(this).val() ) );
+        }
+    });
+    
+    return array_values;
+}
+
+
+var configuraUploader = function() 
+{
+    var _url = buildUrl( "/api/ambientes/{idAmbiente}/upload-midia-categorias", {
+        idAmbiente : idAmbiente
+    });
+    
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        url : _url,
+        formData: { 
+            _csrf: $("#csrf").val() 
+        },
+        add: function (e, data) {
+            
+            var array_values = getCategoriasSelecionadas();
+            
+            data.formData = { 
+                              _csrf: $("#csrf").val(), 
+                              "categorias[]" : array_values,
+                              iniciovalidade : $("#dataInicio").val(),
+                              fimvalidade : $("#dataFim").val(),
+                              descricao : $("#descricao").val()
+                            };
+            
+            $("#btnIniciar").prop("disabled", true);
+            
+            data.submit();
+        },
+        fail: function (e, data) {
+            var errors = data.jqXHR.responseJSON.errors;
+            preencheErros( errors );
+            $("#btnIniciar").prop("disabled", false);
+            $('#progress .progress-bar').css(
+                    'width',
+                    0 + '%'
+                );
+        },
+        stop : function(e, data) {
+            $("#tabelaMidiaUpload").bootstrapTable('refresh');
+            preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+            $("#btnIniciar").prop("disabled", false);
+            $('#progress .progress-bar').css(
+                    'width',
+                    0 + '%'
+                );
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+            
+            
+        } 
+    }); 
+    
+}
+
+var iniciarUpload = function()
+{
+    var filesList = $('#outrofileupload')[0].files;
+    
+    if ( filesList == null || filesList.length == 0 ) { 
+        preencheAlertGeral( "alertArea", "Selecione as músicas e algum gênero primeiro.");
+        return;
+    }
+    
+    var array_values = getCategoriasSelecionadas();
+    
+    if ( array_values == null || array_values.length == 0 ){
+        preencheAlertGeral( "alertArea", "Nenhuma categoria selecionado");
+        return;
+    }
+    
+    $('#fileupload').fileupload('add', { files : filesList } );
+}
+
+var mostrarArquivos = function()
+{
+    var filesList = $('#outrofileupload')[0].files; 
+   
+    if ( filesList && filesList.length > 0 )
+      $("#static-arquivos").html( filesList.length + " arquivo(s) selecionado(s)" );
+    
+}
 
 
 var aplicarProgramacao = function(){
@@ -143,10 +230,6 @@ $(function(){
         xhr.setRequestHeader(header, token);
     });
     
-    $('#btnUploadMidia').on('click', function(){
-        upload( idAmbiente );
-    });
-    
     listaCategorias();
     
     $table.on('load-success.bs.table', function( data ){
@@ -162,9 +245,30 @@ $(function(){
         });
     });
     
+    $('.input-group.date').datepicker({
+        format: "dd/mm/yyyy",
+        clearBtn: true,
+        language: "pt-BR",
+        todayBtn : "linked",
+        autoclose : true
+    });
+
+    configuraUploader();
+
+    $("#outrofileupload").click(function(){
+        $(this).val();
+    });
+
+    $("#outrofileupload").change(function(){
+        mostrarArquivos();
+    });
     
     $("#aplicar-programacao").click( function() {
         aplicarProgramacao();
+    });
+
+    $("#btnIniciar").click( function(){
+        iniciarUpload();  
     });
 });
 
