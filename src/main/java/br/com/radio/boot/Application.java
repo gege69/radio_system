@@ -8,19 +8,22 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.model.Ambiente;
-import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
-import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
+import br.com.radio.util.UtilsDates;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
@@ -37,37 +40,25 @@ public class Application {
 		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 //		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 //		
-		ProgramacaoMusicalService progService = ctx.getBean( ProgramacaoMusicalService.class );
-//		ClienteService clienteService = ctx.getBean( ClienteService.class );
 		MidiaService midiaService = ctx.getBean( MidiaService.class );
-//		CategoriaRepository categoriaRepo = ctx.getBean( CategoriaRepository.class );
 		AmbienteRepository ambienteRepo = ctx.getBean( AmbienteRepository.class );
-		AudioOpcionalRepository opcionalRepo = ctx.getBean( AudioOpcionalRepository.class );
 //		
-//		Ambiente ambiente = ambienteRepo.findOne( 1L );
-		Ambiente ambiente = null;
+		Ambiente ambiente = ambienteRepo.findOne( 1L );
+//		Ambiente ambiente = null;
 		
-//		AudioOpcional opcional = opcionalRepo.findOne( 1L );
-		AudioOpcional opcional = null;
-//		criarVariosAmbientes( ctx );
+//		String search = null;
 		
-//		criaProgramacaoVariosAmbientes( ctx );
-																																																								
-		List<Midia> result = midiaService.getMidiasOpcionais( ambiente, opcional );
+		MidiaFilter filter = MidiaFilter.create()
+								.setAmbiente( ambiente )
+								.setVerificaValidade( true )
+								.setCodigoCategoria( "comercial" );
 		
-		result.forEach( m -> {
-			System.out.println(m.toString());
+		List<Midia> list = midiaService.findMidiasCategorias( filter );
+		
+		list.forEach( m -> {
+			System.out.println(m.getNome() + "  " + UtilsDates.format( m.getDataInicioValidade() ) + "  " + UtilsDates.format( m.getDataFimValidade() )  );
 		});
 
-		System.out.println("xxxxxxxxxxxxxxxxxxxxx");
-		
-		opcional = opcionalRepo.findOne( 2L );
-
-		result = midiaService.getMidiasOpcionais( ambiente, opcional );
-		
-		result.forEach( m -> {
-			System.out.println(m.toString());
-		});
 	}
 
 	

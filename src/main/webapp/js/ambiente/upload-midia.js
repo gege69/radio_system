@@ -4,7 +4,7 @@ var idAmbiente = $('#idAmbiente').val();
  
 var idCategoria = $('#idCategoria').val();
 
-var $table = $('#table');
+var $table = $('#tabelaMidiaUpload');
 
 function catFormatter(value, row) {
     
@@ -21,7 +21,7 @@ function deleteFormatter(value, row) {
 
 function queryParams(params) {
 
-    params.pageNumber = $('#table').bootstrapTable('getOptions').pageNumber;
+    params.pageNumber = $('#tabelaMidiaUpload').bootstrapTable('getOptions').pageNumber;
     
     return params;
 }
@@ -74,6 +74,7 @@ var deletaMidia = function( idMidia )
         if ( json.ok == 1 )
         {
             preencheAlertGeral( "alertArea", "Registro excluído com sucesso.", "success" );
+            $("#tabelaMidiaUpload").bootstrapTable('refresh');
             jump('');
         }
         else{
@@ -162,7 +163,7 @@ var iniciarUpload = function()
     var filesList = $('#outrofileupload')[0].files;
     
     if ( filesList == null || filesList.length == 0 ) { 
-        preencheAlertGeral( "alertArea", "Selecione as músicas e algum gênero primeiro.");
+        preencheAlertGeral( "alertArea", "Selecione as músicas primeiro.");
         return;
     }
     
@@ -234,11 +235,8 @@ $(function(){
     
     $table.on('load-success.bs.table', function( data ){
         $('.btnDeletar').click( function(){
-            
             var idMidia = $(this).attr("idMidia"); 
-
             bootbox.confirm( "Tem certeza que deseja excluir essa mídia?", function( result ){
-                
                 if ( result )
                     deletaMidia( idMidia );
             });

@@ -27,6 +27,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.PosicaoComercial;
 import br.com.radio.enumeration.PosicaoVinheta;
@@ -907,10 +908,10 @@ public class ProgramacaoMusicalService {
 		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
 		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
 		
-		ListaInesgotavelRandom liVinhetas = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, vinheta ), vinheta );
-		ListaInesgotavelRandom liComerciais = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, comercial ), comercial );
-		ListaInesgotavelRandom liInstitucionais = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, institucional ), institucional );
-		ListaInesgotavelRandom liProgrametes = new ListaInesgotavelRandom( midiaService.getMidiasComerciais( ambiente, programete ), programete );
+		ListaInesgotavelRandom liVinhetas = getListasRandomPorCategoria( ambiente, vinheta );
+		ListaInesgotavelRandom liComerciais = getListasRandomPorCategoria( ambiente, comercial );
+		ListaInesgotavelRandom liInstitucionais = getListasRandomPorCategoria( ambiente, institucional );
+		ListaInesgotavelRandom liProgrametes = getListasRandomPorCategoria( ambiente, programete );
 		ListaInesgotavel liOpcionais = getListaInesgotavelOpcionais( bloco );
 
 		int qtdComerciaisSequencia = bloco.getQtdComerciais();
@@ -991,6 +992,22 @@ public class ProgramacaoMusicalService {
 		return ( posicaoComercialConfigurado.equals( posicaoComercialVerificar ) && blocoComerciais.temRegistro() );
 	}
 	
+
+
+	private ListaInesgotavelRandom getListasRandomPorCategoria( Ambiente ambiente, Categoria categoria ){
+
+		MidiaFilter filter = MidiaFilter.create()
+								.setAmbiente( ambiente )
+								.setCategoria( categoria )
+								.setVerificaValidade( true );
+
+		List<Midia> midias = midiaService.findMidiasCategorias( filter );
+
+		ListaInesgotavelRandom listaInesgotavelRandom = new ListaInesgotavelRandom( midias, categoria );
+		
+		return listaInesgotavelRandom;
+	}
+
 	
 	private void applyMergeBlocos( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )
 	{
@@ -1008,10 +1025,10 @@ public class ProgramacaoMusicalService {
 		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
 		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
 		
-		ListaInesgotavelRandom liVinhetas = new ListaInesgotavelRandom( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, vinheta ), vinheta );
-		ListaInesgotavelRandom liComerciais = new ListaInesgotavelRandom( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, comercial ), comercial );
-		ListaInesgotavelRandom liInstitucionais = new ListaInesgotavelRandom( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, institucional ), institucional );
-		ListaInesgotavelRandom liProgrametes = new ListaInesgotavelRandom( midiaService.getMidiasAtivasPorAmbienteCategoria( ambiente, programete ), programete );
+		ListaInesgotavelRandom liVinhetas = getListasRandomPorCategoria( ambiente, vinheta );
+		ListaInesgotavelRandom liComerciais = getListasRandomPorCategoria( ambiente, comercial );
+		ListaInesgotavelRandom liInstitucionais = getListasRandomPorCategoria( ambiente, institucional );
+		ListaInesgotavelRandom liProgrametes = getListasRandomPorCategoria( ambiente, programete );
 		ListaInesgotavel liOpcionais = getListaInesgotavelOpcionais( bloco );
 
 		int qtdMusicasSequencia = bloco.getQtdMusicas();

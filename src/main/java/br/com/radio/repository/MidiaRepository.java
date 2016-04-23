@@ -15,22 +15,23 @@ import br.com.radio.model.Midia;
 
 public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
-	Page<Midia> findByAmbientesAndCategoriasAndValidoTrue( Pageable pageable, Ambiente ambiente, Categoria categoria );
-	
-	List<Midia> findByAmbientesAndCategoriasAndValidoTrue( Ambiente ambiente, Categoria categoria );
+
+
+//	List<Midia> findByAmbientesAndCategoriasAndValidoTrue( Ambiente ambiente, Categoria categoria );
+
 
 	// Para montar os blocos comerciais é interessante pegar apenas as mídias comerciais que tenham duração maior que zero pra evitar um bug
-	List<Midia> findByAmbientesAndCategoriasAndValidoTrueAndDuracaoGreaterThan( Ambiente ambiente, Categoria categoria, Integer duracao );
-	
-	Page<Midia> findByAmbientesAndCategorias_codigoAndValidoTrue( Pageable pageable, Ambiente ambiente, String codigo );
+//	List<Midia> findByAmbientesAndCategoriasAndValidoTrueAndDuracaoGreaterThan( Ambiente ambiente, Categoria categoria, Integer duracao );
 
-	List<Midia> findByAmbientesAndCategorias_codigoAndValidoTrue( Ambiente ambiente, String codigo );
 	
-	Page<Midia> findByAmbientesAndValidoTrue( Pageable pageable, Ambiente ambiente );
+//	Page<Midia> findByAmbientesAndCategorias_codigoAndValidoTrue( Pageable pageable, Ambiente ambiente, String codigo );
+//	List<Midia> findByAmbientesAndCategorias_codigoAndValidoTrue( Ambiente ambiente, String codigo );
 	
-	Page<Midia> findByAmbientesAndNomeContainingIgnoreCaseAndValidoTrue( Ambiente ambiente, String nome, Pageable pageable );
+//	Page<Midia> findByAmbientesAndValidoTrue( Pageable pageable, Ambiente ambiente );
 	
-	Page<Midia> findByAmbientesAndNomeContainingAndCategoriasInAndValidoTrue( Ambiente ambiente, String nome, List<Categoria> categorias, Pageable pageable );
+//	Page<Midia> findByAmbientesAndNomeContainingIgnoreCaseAndValidoTrue( Ambiente ambiente, String nome, Pageable pageable );
+	
+//	Page<Midia> findByAmbientesAndNomeContainingAndCategoriasInAndValidoTrue( Ambiente ambiente, String nome, List<Categoria> categorias, Pageable pageable );
 	
 	Midia findByFilehash( String filehash );
 	

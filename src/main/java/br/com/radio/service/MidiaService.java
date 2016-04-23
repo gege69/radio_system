@@ -27,6 +27,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
@@ -43,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.MusicTags;
-import br.com.radio.json.JSONBootstrapGridWrapper;
+import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteGenero;
@@ -746,13 +748,13 @@ public class MidiaService {
 				midia.setExtensao( FilenameUtils.getExtension( parametros.getOriginalName() ) );
 				midia.setValido( true );
 				midia.setCached( false );
-				midia.setDataInicioValidade( parametros.getDataInicioValidade() );
-				midia.setDataFimValidade( parametros.getDataFimValidade() );
 
 				preencheTags( parametros.getContentType(), arquivo, midia );
 			}
 			
 			midia.setDescricao( parametros.getDescricao() );
+			midia.setDataInicioValidade( parametros.getDataInicioValidade() );
+			midia.setDataFimValidade( parametros.getDataFimValidade() );
 
 			if ( parametros.getCategorias() != null && parametros.getCategorias().length > 0 )
 			{
@@ -975,55 +977,117 @@ public class MidiaService {
 	
 	
 	
-	public JSONBootstrapGridWrapper<Midia> filtraMidia( Long idAmbiente, Long idCategoria, String codigoCategoria, Pageable pageable )
-	{
-		Page<Midia> midiaPage = null;
+	
+	/**
+	 * Por convenção o início do metodo como "filtra" implica que ele é utilizado pela tela (por isso também ele retorna um Page)
+	 * Métodos que são usados por business serão iniciados por "find" e retornam List.
+	 * 
+	 * @param pageable
+	 * @param filter
+	 * @return
+	 */
+	@SuppressWarnings( "unchecked" )
+	@Transactional
+	public Page<Midia> filtraMidiasCategorias( Pageable pageable, MidiaFilter filter ){
+		
+		Session session = entityManager.unwrap( Session.class );
+		
+		Criteria critCount = createCriteriaMidiasCategorias( filter, session );
+		critCount.setProjection( Projections.rowCount() );
+		Long total = (Long)critCount.uniqueResult();
 
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		Criteria crit = createCriteriaMidiasCategorias( filter, session );
 		
-		if ( idCategoria != null && idCategoria > 0 )
-			midiaPage = midiaRepo.findByAmbientesAndCategoriasAndValidoTrue( pageable, ambiente, new Categoria( idCategoria, "" ) );
-		else if ( StringUtils.isNotBlank( codigoCategoria ) )
-			midiaPage = midiaRepo.findByAmbientesAndCategorias_codigoAndValidoTrue( pageable, ambiente, codigoCategoria );
-		else
-			midiaPage = midiaRepo.findByAmbientesAndValidoTrue( pageable, ambiente );
+		if ( pageable != null ){
+			crit.setMaxResults( pageable.getPageSize() );
+			crit.setFirstResult( pageable.getPageNumber() );
+		}
 		
-		List<Midia> midiaList = midiaPage.getContent();
+		List<Midia> listMidia = crit.list();
+
+		buildMidiaViewCategoria( listMidia );
 		
+		PageImpl<Midia> paginaMidias = new PageImpl<Midia>( listMidia, pageable, total );
+		
+		return paginaMidias;
+	}
+	
+
+	
+	@SuppressWarnings( "unchecked" )
+	@Transactional
+	public List<Midia> findMidiasCategorias( MidiaFilter filter ){
+		
+		Session session = entityManager.unwrap( Session.class );
+		
+		Criteria crit = createCriteriaMidiasCategorias( filter, session );
+		
+		List<Midia> result = crit.list();
+		
+		return result;
+	}
+
+
+	private Criteria createCriteriaMidiasCategorias( MidiaFilter filter, Session session )
+	{
+		Criteria crit = session.createCriteria( Midia.class );
+		
+		boolean isIdCategoria = ( filter.getCategoria() != null && filter.getCategoria().getIdCategoria() != null && filter.getCategoria().getIdCategoria() > 0 );
+		boolean isListaCategorias = ( filter.getCategoriaIds() != null && filter.getCategoriaIds().size() > 0 );
+		boolean isCodigoCategoria = ( filter.getCategoria() != null && filter.getCategoria().getIdCategoria() == null && StringUtils.isNotBlank( filter.getCategoria().getCodigo() ) );
+		
+		if ( isIdCategoria || isListaCategorias || isCodigoCategoria ){
+			crit.createAlias( "categorias", "c" );
+			
+			if ( isIdCategoria )
+				crit.add( Restrictions.eq( "c.idCategoria", filter.getCategoria().getIdCategoria() ) );
+			else if ( isListaCategorias )
+				crit.add( Restrictions.in( "c.idCategoria", filter.getCategoriaIds() ) );
+			else if ( isCodigoCategoria )
+				crit.add( Restrictions.eq( "c.codigo", filter.getCategoria().getCodigo() ) );
+		}
+
+		if ( filter.getAmbiente() != null ){
+			crit.createAlias( "ambientes", "a" );
+			crit.add( Restrictions.eq( "a.idAmbiente", filter.getAmbiente().getIdAmbiente() ) );
+		}
+		crit.add( Restrictions.eq( "valido", true ) );
+		
+		if ( filter.hasSearch() )
+			crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ) ) );
+		
+		if ( filter.isVerificaValidade() ){
+			
+			Conjunction conj = Restrictions.conjunction();
+			
+			Disjunction disjuntionInicio = Restrictions.disjunction();
+			
+			disjuntionInicio.add( Restrictions.isNull( "dataInicioValidade" ) );
+			disjuntionInicio.add( Restrictions.sqlRestriction( "date_trunc( 'day', {alias}.datainiciovalidade ) <= date_trunc( 'day', now())" ) );
+			
+			Disjunction disjuntionFim = Restrictions.disjunction();
+			
+			disjuntionFim.add( Restrictions.isNull( "dataFimValidade" ) );
+			disjuntionFim.add( Restrictions.sqlRestriction( "date_trunc( 'day', {alias}.datafimvalidade ) >= date_trunc( 'day', now())" ) );
+			
+			conj.add( disjuntionInicio );
+			conj.add( disjuntionFim );
+			
+			crit.add( conj );
+		}
+
+		return crit;
+	}
+
+
+
+	private void buildMidiaViewCategoria( List<Midia> midiaList )
+	{
 		midiaList.stream().forEach( m -> {
 			m.getCategorias().forEach( cat -> {
 				m.getMidiaView().put( cat.getCodigo(), "true" );
 			});
 		});
-		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<Midia>(midiaList, midiaPage.getTotalElements() );
-		return jsonList;
-	}
-
-	
-	
-	public List<Midia> getMidiasAtivasPorAmbienteCategoria( Ambiente ambiente, Categoria categoria )
-	{
-		List<Midia> result = midiaRepo.findByAmbientesAndCategoriasAndValidoTrue( ambiente, categoria );
-		
-		return result;
-	}
-
-
-	/**
-	 * Esse método vai buscar as midias por categoria e por ambiente e ativas
-	 * 
-	 * também vai pegar apenas as que tiverem duração preenchida.
-	 * 
-	 * @param ambiente
-	 * @param categoria
-	 * @return
-	 */
-	public List<Midia> getMidiasComerciais( Ambiente ambiente, Categoria categoria )
-	{
-		List<Midia> result = midiaRepo.findByAmbientesAndCategoriasAndValidoTrueAndDuracaoGreaterThan( ambiente, categoria, 0 );
-		
-		return result;
 	}
 
 	

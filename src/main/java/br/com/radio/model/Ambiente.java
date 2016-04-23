@@ -187,6 +187,12 @@ public class Ambiente implements Serializable {
 		this.ativo = true;
 	}
 
+	public Ambiente( Long idAmbiente )
+	{
+		super();
+		this.idAmbiente = idAmbiente;
+	}
+
 	public Long getIdAmbiente()
 	{
 		return idAmbiente;

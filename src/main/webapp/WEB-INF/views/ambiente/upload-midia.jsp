@@ -140,13 +140,16 @@
                          data-page-size=7
                          data-page-list="[7]"
                          data-locale = "pt_BR"
+                         data-unique-id="idMidia"
+                         data-search="true"
                          data-query-params="queryParams" >
                         <thead>
                           <tr>
 <!--                               <th data-field="idMidia">ID</th> -->
                               <th data-field="nome">Nome</th>
                               <th data-field="descricao">Descrição</th>
-                              <th data-field="dataUpload">Upload</th>
+                              <th data-field="dataInicioValidade">Início Validade</th>
+                              <th data-field="dataFimValidade">Fim Validade</th>
                               <th data-field="vinheta" data-formatter="catFormatter" data-align="center">Vinheta</th>
                               <th data-field="inst" data-formatter="catFormatter" data-align="center">Institucional</th>
                               <th data-field="comercial" data-formatter="catFormatter" data-align="center">Comercial</th>
