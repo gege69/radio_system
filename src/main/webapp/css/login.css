@@ -1,0 +1,32 @@
+@font-face {
+  font-family: 'Conv_NexaBold';
+  src: url('fonts/NexaBold.eot');
+  src: local('☺'), url('../fonts/NexaBold.woff') format('woff'), url('../fonts/NexaBold.ttf') format('truetype'), url('../fonts/NexaBold.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.nomeempresa {
+    color: white;
+    font-size: 4.5em;
+    font-family: 'Conv_NexaBold'; 
+}
+
+body {
+    background: url('../images/slide1.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+.panel-transparent {
+    background: none;
+}
+
+.panel-transparent .panel-heading{
+    background: rgba(255,255,255,0.85)!important;
+}
+
+.panel-transparent .panel-body{
+    background: rgba(255,255,255,0.85)!important;
+}

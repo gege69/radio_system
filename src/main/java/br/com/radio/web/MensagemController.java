@@ -59,6 +59,8 @@ public class MensagemController extends AbstractController {
 		
 		if ( usuario != null )
 			model.addAttribute( "idUsuario", usuario.getIdUsuario() );
+
+		model.addAttribute( "isGerenciador",  usuario.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR ) );
 		
 		return "mensagens/conversas";
 	}
@@ -123,7 +125,6 @@ public class MensagemController extends AbstractController {
 	@RequestMapping( value = { "/conversas/usuarios", "/api/conversas/usuarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Usuario> getUsuarios( @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
-//																 @RequestParam(value="all", required=false) Boolean all,
 																 @RequestParam(value="sort", required=false) String sort,
 																 Principal principal )
 	{
@@ -140,7 +141,7 @@ public class MensagemController extends AbstractController {
 		Page<Usuario> usuarioPage = null;
 		
 		if ( all != null && all )
-			usuarioPage = usuarioRepo.findByCliente( pageable, usuario.getCliente() );
+			usuarioPage = usuarioRepo.findByClienteAndIdUsuarioNot( pageable, usuario.getCliente(), usuario.getIdUsuario() );
 		else
 			usuarioPage = usuarioRepo.findByClienteAndUsuarioTipo( pageable, usuario.getCliente(), UsuarioTipo.GERENCIADOR );
 

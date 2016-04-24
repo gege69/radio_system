@@ -154,19 +154,19 @@
       </div>
       
       <div class="col-md-2 col-sm-2 col-xs-12 col-centered" >
-        <div class="player" id="player1" style="display : none;">
+        <div class="plyr" id="player1" style="display : none;">
             <audio controls>
                 <source src="" type="audio/ogg">
             </audio>
         </div>
 
-        <div class="player" id="player2" style="display : none;">
+        <div class="plyr" id="player2" style="display : none;">
             <audio controls>
                 <source src="" type="audio/ogg">
             </audio>
         </div>
       
-        <div class="player" id="playerDing" style="display : none;">
+        <div class="plyr" id="playerDing" style="display : none;">
             <audio controls>
                 <source src="${context}/static_sound/ding.mp3" type="audio/ogg">
             </audio>
@@ -602,13 +602,12 @@
   
 <jsp:include page="/WEB-INF/views/scripts.jsp" />
 
-<link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css">
-<script src="https://cdn.plyr.io/1.3.7/plyr.js"></script>
+<link rel="stylesheet" href="https://cdn.plyr.io/1.5.21/plyr.css">
+<script src="https://cdn.plyr.io/1.5.21/plyr.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
 
 <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
-
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
 <script src="${context}/js/player-web/player-web-plyr.js" charset="UTF-8"></script>
@@ -624,9 +623,10 @@
 
 <!-- basicamente necessários para o "Conversas" -->
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+<script src="${context}/js/required/bootstrap-table/bootstrap-table.js" defer></script>
+<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" defer></script>
+
 <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
-<script src="${context}/js/required/bootstrap-table/bootstrap-table.js" async></script>
-<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" async></script>
 <script src="${context}/js/required/bootstrap-datepicker.min.js"></script>
 <script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script>
 <script src="${context}/js/required/jsrender.min.js" defer></script>

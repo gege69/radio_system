@@ -19,12 +19,16 @@ import br.com.radio.exception.EmailExistsException;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Perfil;
+import br.com.radio.model.Permissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.UsuarioPerfil;
+import br.com.radio.model.UsuarioPermissao;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.PerfilRepository;
+import br.com.radio.repository.PermissaoRepository;
 import br.com.radio.repository.UsuarioPerfilRepository;
+import br.com.radio.repository.UsuarioPermissaoRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.util.UtilsStr;
 
@@ -51,6 +55,12 @@ public class UsuarioService {
 	
 	@Autowired
 	private AmbienteRepository ambienteRepo;
+	
+	@Autowired
+	private PermissaoRepository permissaoRepo;
+	
+	@Autowired
+	private UsuarioPermissaoRepository usuarioPermissaoRepo;
 	
 	
 	public void changeUserPassword( String name, AlterarSenhaDTO alterarSenhaDTO )
@@ -205,9 +215,10 @@ public class UsuarioService {
 		return usuario;
 	}
 	
+
 	
 	
-	public Usuario registerNewUserPlayer( Ambiente ambiente )
+	public Usuario saveUsuarioAmbientePlayer( Ambiente ambiente )
 	{
 		Usuario usuario = new Usuario();
 		usuario.setLogin( ambiente.getLogin() );
@@ -223,15 +234,22 @@ public class UsuarioService {
 		usuario.setPassword( passwordEncoder.encode( usuario.getPassword() ) );
 		usuario.setAtivo( true );
 		usuario.setUsuarioTipo( UsuarioTipo.PLAYER );
-		usuario.setAmbiente( ambiente );		
 		
+		this.save( usuario );
+
+		Permissao permissao = permissaoRepo.findByCodigo( "PLAYER" );
+		
+		UsuarioPermissao usuarioPermissao = new UsuarioPermissao( usuario, permissao );
+		
+		usuarioPermissaoRepo.save( usuarioPermissao );
+
 		return usuario;
 	}
 	
 	
 	public Usuario save( Usuario usuario )
 	{
-		usuarioRepo.save( usuario );
+		usuarioRepo.saveAndFlush( usuario );
 		
 		return usuario;
 	}

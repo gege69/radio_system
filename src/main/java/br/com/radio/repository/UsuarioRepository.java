@@ -21,7 +21,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	Usuario findByLogin( String login );
 	
 	Page<Usuario> findByClienteAndUsuarioTipo( Pageable pageable, Cliente cliente, UsuarioTipo usuarioTipo );
-	
+
 	Page<Usuario> findByCliente( Pageable pageable, Cliente cliente );
+	
+	// Para poder ignorar o próprio usuário
+	Page<Usuario> findByClienteAndIdUsuarioNot( Pageable pageable, Cliente cliente, Long idUsuario );
 	
 }

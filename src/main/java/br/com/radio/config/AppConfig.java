@@ -21,6 +21,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import br.com.radio.security.config.SecurityConfigMulti;
@@ -132,7 +133,7 @@ public class AppConfig {
 	@Bean  
     public ResourceBundleMessageSource messageSource() {  
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();  
-        source.setBasename("application");  
+        source.setBasenames( "application", "messages" );
         source.setUseCodeAsDefaultMessage(true);  
         return source;  
     }  

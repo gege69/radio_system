@@ -89,9 +89,8 @@ public class AmbienteService {
 		
 		ambiente.setLogomarca( logo );
 		ambiente.setLogomimetype( "image/png" );
-		
 
-		Usuario usuario = usuarioService.registerNewUserPlayer( ambiente );
+		Usuario usuario = usuarioService.saveUsuarioAmbientePlayer( ambiente );
 		
 		ambiente.setPassword( "" );
 		
@@ -99,7 +98,7 @@ public class AmbienteService {
 		
 		usuario.setAmbiente( ambiente );
 		usuarioService.save( usuario );
-		
+
 		criaConfiguracoesDefault( ambiente );
 		
 		midiaService.associaTodasMidiasParaAmbiente( ambiente );

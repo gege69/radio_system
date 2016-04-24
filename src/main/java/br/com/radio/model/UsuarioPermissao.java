@@ -101,7 +101,14 @@ public class UsuarioPermissao implements Serializable {
 	{
 		super();
 		this.dataCriacao = new Date();
-		// TODO Auto-generated constructor stub
+	}
+	
+	public UsuarioPermissao( Usuario usuario, Permissao permissao )
+	{
+		super();
+		this.usuario = usuario;
+		this.permissao = permissao;
+		this.dataCriacao = new Date();
 	}
 
 	@Override

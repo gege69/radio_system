@@ -10,19 +10,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfigMulti {
 
 	
@@ -48,9 +47,13 @@ public class SecurityConfigMulti {
 
 	@Bean
 	public PasswordEncoder getPasswordEncoder(){
-		
 		return new BCryptPasswordEncoder();
-		
+	}
+	
+	
+	@Bean
+	public AccessDeniedHandler getAccessDeniedHandler(){
+		return new MyAccessDeniedHandler("/403");		
 	}
 	
 	@Bean
@@ -92,7 +95,7 @@ public class SecurityConfigMulti {
 	    		// Disable CSFR protection on the following urls:
 	    		private AntPathRequestMatcher[] requestMatchers = {
 	    		    new AntPathRequestMatcher("/api/**"),
-	    		    new AntPathRequestMatcher("/player/**")
+//	    		    new AntPathRequestMatcher("/player/**")
 	    		};
 	
 	    		@Override
@@ -116,7 +119,8 @@ public class SecurityConfigMulti {
             	// desabilitando o CSRF para as URLs de API
             	.csrf().requireCsrfProtectionMatcher( csrfRequestMatcher )
             	.and()
-            	.requestMatchers().antMatchers( "/api/**", "/player/**" )
+//            	.requestMatchers().antMatchers( "/api/**", "/player/**" )
+            	.requestMatchers().antMatchers( "/api/**" )
             	.and()
             	.authorizeRequests().anyRequest().authenticated()
                 .and()
@@ -137,11 +141,16 @@ public class SecurityConfigMulti {
 		@Autowired
 		private SimpleAuthenticationHandler simpleAuthenticationHandler;
 		
+		@Autowired
+		private AccessDeniedHandler myAccessDeniedHandler;
+		
 		@Override
 	    public void configure(WebSecurity web) throws Exception {
-	        web.ignoring().antMatchers("/favicon.ico", "/resources/**",  "/images/**", "/bundle/**", "/css/**", "/faviconfolder/**", "/js/**", "/fonts/**" );
+	        web.ignoring().antMatchers("/favicon.ico", "/resources/**",  "/images/**", "/bundle/**", "/css/**", "/faviconfolder/**", "/js/**", "/fonts/**", "/static_sound/**" );
 	    }
 
+		
+		
 		@Override
 		protected void configure( HttpSecurity http ) throws Exception
 		{
@@ -150,6 +159,7 @@ public class SecurityConfigMulti {
 			// access-denied-page: this is the page users will be
 			// redirected to when they try to access protected areas.
 			.exceptionHandling()
+//				.accessDeniedHandler( myAccessDeniedHandler )
 				.accessDeniedPage( "/403" )
 				.and()
 
@@ -162,6 +172,7 @@ public class SecurityConfigMulti {
 			.authorizeRequests()
 				.antMatchers( "/register" ).permitAll()
 				.antMatchers( "/login**" ).permitAll()
+				.antMatchers( "/player**" ).hasAuthority( "PLAYER" )
 				.antMatchers( "/admin/**" ).hasAuthority( "ADM_SISTEMA" )
 				.antMatchers( "/**" ).hasAuthority( "ADMINISTRAR_AMB" )
 				.anyRequest().authenticated()
@@ -177,6 +188,7 @@ public class SecurityConfigMulti {
 			// authentication-failure-url: the URL to which the user will be redirected if they fail login
 			// username-parameter: the name of the request parameter which contains the username
 			// password-parameter: the name of the request parameter which contains the password
+
 			.formLogin()
 				.loginPage( "/login" )
 				.defaultSuccessUrl("/principal", true)

@@ -30,11 +30,13 @@
                    data-query-params="queryParamsConversas" >
                     <thead>
                       <tr>
-  <!--                         <th data-field="idConversa">Id</th> -->
                           <th data-field="dataAtualizacao">Atualização em:</th>
                           <th data-field="participantes">Participantes</th>
-  <!--                         <th data-field="dataVigenciaInicio">Vigência Início</th> -->
-  <!--                         <th data-field="dataVigenciaFim">Vigência Fim</th> -->
+                          
+                          <c:if test="${isGerenciador}">
+                            <th data-field="ambientes">Ambientes</th>
+                          </c:if>        
+
                       </tr>
                     </thead>
                   </table>

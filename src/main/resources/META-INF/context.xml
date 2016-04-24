@@ -22,6 +22,8 @@
 	<!-- <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" 
 		/> -->
 
+<!--   <Valve className="org.apache.catalina.authenticator.FormAuthenticator" cache="false" /> -->
+
     <Resource auth="Container" driverClassName="org.postgresql.Driver"
         maxActive="20" maxIdle="10" maxWait="-1" name="jdbc/radio"
         password="psysadm" type="javax.sql.DataSource" url="jdbc:postgresql://localhost:5432/radiodb"

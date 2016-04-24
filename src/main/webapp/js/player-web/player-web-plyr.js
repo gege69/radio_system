@@ -139,8 +139,16 @@ var play = function(){
             determinaVolume( content );
 
             var urlMidia = buildUrl( content.link );
-            
-            player.source(urlMidia);
+
+            var fonte = { 
+                type : 'audio' ,
+                sources : [{
+                   src : urlMidia,
+                   type : content.midia.mimetype
+                }]
+            };
+
+            player.source(fonte);
             player.play();
         }
 
@@ -179,7 +187,15 @@ var next = function(){
 
             var urlMidia = buildUrl( content.link );
 
-            player.source( urlMidia );
+            var fonte = { 
+                type : 'audio' ,
+                sources : [{
+                   src : urlMidia,
+                   type : content.midia.mimetype
+                }]
+            };
+
+            player.source(fonte);
             player.play();
         }
 

@@ -77,6 +77,10 @@
           <div class="spacer-vertical20"></div>
           
           <form:errors element="div" class="alert alert-danger"/>
+
+          <div class="spacer-vertical20"></div>
+
+          <div class="g-recaptcha" data-sitekey="6LdVLB4TAAAAAETjSrTfFRSLv4MHi_bXTjJBO9hd"></div>
         </form:form>
         
       </div>
@@ -97,20 +101,14 @@
 
 $(function(){
     
-    
-    $("#cpfcnpj").keydown(function(){
-        try {
-            $("#cpfcnpj").unmask();
-        } catch (e) {}
+    var options =  {onKeyPress: function(campo, e, field, options){
+      var masks = ['000.000.000-000', '00.000.000/0000-00'];
+        mask = (campo.length>14) ? masks[1] : masks[0];
+      $('#cpfcnpj').mask(mask, options);
+    }};
 
-        var tamanho = $("#cpfcnpj").val().length;
+    $('#cpfcnpj').mask('00.000.000/0000-00', options);    
 
-        if(tamanho <= 11){
-            $("#cpfcnpj").mask("999.999.999-999");
-        } else {
-            $("#cpfcnpj").mask("99.999.999/9999-99");
-        }                   
-    });
 
     $('#password').keyup( function( event ) {
         keyup_validasenha( event );

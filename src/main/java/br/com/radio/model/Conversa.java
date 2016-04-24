@@ -260,7 +260,34 @@ public class Conversa implements Serializable {
 		{
 			for ( Usuario u : usuarios )
 			{
-				if ( isPlayer( usuarioLogado ) && isPlayer( u ) ) 
+				if ( isPlayer( u ) ) 
+					continue;
+				
+				if ( !result.equals( "" ) )
+					result += ", " + u.getNome(); 
+				else
+					result += u.getNome();
+				
+				if ( result.length() > 28 )
+				{
+					result += " ... (" +usuarios.size() + " no total)";
+					break;
+				}				
+			}
+		}
+		
+		return result;
+	}
+	
+	public String resumoAmbientes()
+	{
+		String result = "";
+		
+		if ( usuarios != null && usuarios.size() > 0 )
+		{
+			for ( Usuario u : usuarios )
+			{
+				if ( !isPlayer( u ) ) 
 					continue;
 				
 				if ( !result.equals( "" ) )
@@ -282,6 +309,9 @@ public class Conversa implements Serializable {
 	public void buildViewParaUsuario( Usuario usuario )
 	{
 		conversaView.put( "participantes", this.resumoParticipantes( usuario ) );
+
+		if ( !isPlayer( usuario ) )
+			conversaView.put( "ambientes", this.resumoAmbientes() );
 	}
 
 	@Override
