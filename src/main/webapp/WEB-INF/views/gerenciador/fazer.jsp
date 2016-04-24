@@ -3,12 +3,11 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
 
+<jsp:include page="/WEB-INF/views/top.jsp" />    
+
+
   <div class="container">
   
-    <div class="jumbotron">
-      <h2>Logotipo aqui!</h2>
-    </div>
-
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-body">

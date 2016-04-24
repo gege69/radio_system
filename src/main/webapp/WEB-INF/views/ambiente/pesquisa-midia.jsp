@@ -4,12 +4,10 @@
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 
-  <div class="container">
-  
-    <div class="jumbotron">
-      <h2>Logotipo aqui!</h2>
-    </div>
+<jsp:include page="/WEB-INF/views/top.jsp" />    
 
+  <div class="container">
+ 
     <div class="row">
     
       <div class="row" id="alertArea">

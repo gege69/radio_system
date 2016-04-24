@@ -3,17 +3,14 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <meta name="_csrf" th:content="${_csrf.token}"/>
 
-  <div class="container">
-  
-    <div class="jumbotron">
-      <h2>Logotipo aqui!</h2>
-    </div>
+<jsp:include page="/WEB-INF/views/top.jsp" />    
 
+  <div class="container">
+ 
     <div class="row">
     
       <div class="row" id="alertArea">
       </div>
-    
     
       <div class="panel panel-default">
         <div class="panel-body">

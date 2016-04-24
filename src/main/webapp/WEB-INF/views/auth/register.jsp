@@ -6,12 +6,10 @@
 <%@ page session="false"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 
-  <div class="container theme-showcase">
-  
-    <div class="jumbotron">
-      <h1>Logotipo aqui!</h1>
-    </div>
+<jsp:include page="/WEB-INF/views/top.jsp" />    
 
+  <div class="container">
+  
     <div class="row">
       <div class="col-xs-12 col-md-5 col-sm-6 col-lg-5">
 

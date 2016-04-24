@@ -1,4 +1,33 @@
 
+@font-face {
+  font-family: 'Conv_NexaBold';
+  src: url('fonts/NexaBold.eot');
+  src: local('☺'), url('../fonts/NexaBold.woff') format('woff'), url('../fonts/NexaBold.ttf') format('truetype'), url('../fonts/NexaBold.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.nomeempresa {
+    font-size: 4.5em;
+    font-family: 'Conv_NexaBold'; 
+}
+
+#masthead {
+  min-height:116px;
+  background-color:#EEE;
+    color:#000000;
+  margin-bottom: 20px;
+}
+
+#masthead h1 {
+  font-size: 4.5em;
+  font-family: 'Conv_NexaBold'; 
+}
+
+#masthead .well {
+  margin-top:16%;
+  background-color:#226622;
+    border-color:#225522;
+}
 
 /*isso está deprecated*/
 .rodape {
@@ -182,7 +211,7 @@
  
  
 body {
-  padding-top: 40px;
+  padding-top: 20px;
   padding-bottom: 30px;
 }
 

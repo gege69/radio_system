@@ -139,7 +139,7 @@ public class SecurityConfigMulti {
 		
 		@Override
 	    public void configure(WebSecurity web) throws Exception {
-	        web.ignoring().antMatchers("/favicon.ico", "/resources/**",  "/images/**", "/bundle/**", "/css/**", "/faviconfolder/**", "/js/**"  );
+	        web.ignoring().antMatchers("/favicon.ico", "/resources/**",  "/images/**", "/bundle/**", "/css/**", "/faviconfolder/**", "/js/**", "/fonts/**" );
 	    }
 
 		@Override
