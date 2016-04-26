@@ -265,7 +265,7 @@ var jump = function( h )
 
 var keyup_validasenha = function( event ) {
     var text = $('#password').val(); 
-    var result = zxcvbn(text, ["eterion", "rdcenter", "radio", "ambiente", "som"]);
+    var result = zxcvbn(text, ["eterion", "rdcenter", "radio", "ambiente", "som", "123456"]);
         
     if ( text == '' )
     {
@@ -274,7 +274,7 @@ var keyup_validasenha = function( event ) {
     }
     else
     {
-        if ( result != null && result.score <= 2 )
+        if ( result != null && result.score <= 1 )
         {
             removeErros();
             
@@ -287,7 +287,7 @@ var keyup_validasenha = function( event ) {
             
             preencheErroFieldUpdate( 'password', texto );
         }
-        else if ( result != null && result.score == 3 )
+        else if ( result != null && result.score <= 3 )
         {
             removeErros();
             feedbackFieldUpdate( 'password', 'Senha razoável', 'warning', 'exclamation-circle' );

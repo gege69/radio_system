@@ -75,11 +75,7 @@ public class UsuarioService {
 			throw new RuntimeException( "Usuário não encontrado" );
 		else
 		{
-			Zxcvbn zxcvbn = new Zxcvbn();
-			Strength strength = zxcvbn.measure( usuario.getPassword());
-			
-			if ( strength.getScore() <= 2 )
-				throw new RuntimeException("Senha é muito fraca.");
+			validaForcaSenha( usuario.getPassword() );
 
 			// Já foi verificado se os passwords batem no validator durante o request...
 			if ( !passwordEncoder.matches( alterarSenhaDTO.getSenha_atual(), usuario.getPassword() ) )
@@ -113,11 +109,7 @@ public class UsuarioService {
 		if ( StringUtils.isBlank( dto.getPassword() ) )
 			throw new RuntimeException( "Senha está em branco." );
 
-		Zxcvbn zxcvbn = new Zxcvbn();
-		Strength strength = zxcvbn.measure(dto.getPassword());
-		
-		if ( strength.getScore() <= 2 )
-			throw new RuntimeException("Senha é muito fraca.");
+		validaForcaSenha( dto.getPassword() );
 		
 		Usuario usuario = new Usuario();
 		
@@ -238,11 +230,7 @@ public class UsuarioService {
 	{
 		Usuario usuario = usuarioRepo.findByAmbiente( ambiente );
 
-		Zxcvbn zxcvbn = new Zxcvbn();
-		Strength strength = zxcvbn.measure( password );
-		
-		if ( strength.getScore() <= 2 )
-			throw new RuntimeException("Senha é muito fraca.");
+		validaForcaSenha( password );
 
 		if ( usuario != null ){
 			
@@ -283,6 +271,16 @@ public class UsuarioService {
 		}
 
 		return usuario;
+	}
+
+
+	public void validaForcaSenha( String password ){
+		
+		Zxcvbn zxcvbn = new Zxcvbn();
+		Strength strength = zxcvbn.measure( password, Arrays.asList( "eterion", "rdcenter", "radio", "ambiente", "som", "123456" ) );
+		
+		if ( strength.getScore() <= 1 )
+			throw new RuntimeException("Senha é muito fraca.");
 	}
 	
 	
