@@ -17,7 +17,7 @@ var getDados = function()
         url: url,
         dataType: 'json'
     }).done( function(json) {
-        removeErros( $('#tituloform') );
+        removeErros();
         $('#tituloform').populate(json);
         jump('ncmForm');
     });
@@ -47,7 +47,7 @@ var validaForm = function(){
     
     var isOk = true;
     
-    removeErros( $('#tituloform') );
+    removeErros();
     
     var arrayCampos = [
                         {field: "dataEmissao",      desc : "Data Emissão"},

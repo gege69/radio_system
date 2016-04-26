@@ -111,7 +111,7 @@
           dataType: 'json'
       }).done( function(json) {
           
-          removeErros( $('#opcionaisForm') );
+          removeErros();
           
           $('#opcionaisForm').populate(json);
 
@@ -124,7 +124,7 @@
       
       var isOk = true;
       
-      removeErros( $('#opcionaisForm') );
+      removeErros();
       
       var arrayCampos = [
                           {field: "descricao",      desc : "Descrição"},

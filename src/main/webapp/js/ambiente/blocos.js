@@ -83,7 +83,7 @@ var getDados = function()
         dataType: 'json'
     }).done( function(json) {
         
-        removeErros( $('#ambiente-bloco-form') );
+        removeErros();
 
         $('#ambiente-bloco-form').populate(json);
          

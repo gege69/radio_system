@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import br.com.radio.enumeration.UsuarioTipo;
+import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Usuario;
 
@@ -17,6 +18,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	Long countByEmailOrLoginAndIdUsuarioNot( String email, String login, Long idUsuario );
 	
 	Long countByLogin( String login );
+
+	Usuario findByAmbiente( Ambiente ambiente );
+
+	Long countByLoginAndIdUsuarioNot( String login, Long idUsuario );
 	
 	Usuario findByLogin( String login );
 	

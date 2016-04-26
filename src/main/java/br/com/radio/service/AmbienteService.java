@@ -1,6 +1,7 @@
 package br.com.radio.service;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.enumeration.PosicaoComercial;
 import br.com.radio.enumeration.PosicaoVinheta;
+import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.enumeration.VozLocucao;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -90,14 +92,13 @@ public class AmbienteService {
 		ambiente.setLogomarca( logo );
 		ambiente.setLogomimetype( "image/png" );
 
-		Usuario usuario = usuarioService.saveUsuarioAmbientePlayer( ambiente );
+		String password = ambiente.getPassword();
 		
 		ambiente.setPassword( "" );
-		
+
 		ambiente = ambienteRepo.saveAndFlush( ambiente );
 		
-		usuario.setAmbiente( ambiente );
-		usuarioService.save( usuario );
+		usuarioService.saveUsuarioAmbientePlayer( ambiente, password );
 
 		criaConfiguracoesDefault( ambiente );
 		
@@ -126,19 +127,29 @@ public class AmbienteService {
 		{
 			String login = ambiente.getLogin();
 			
-			Long count = 0l;
+			String mensagemErro = "O login informado não está disponível por favor insira outro." ;
 
-			// Contando pra ver se tem algum outro login que não seja esse ambiente ( para o caso de update )
-			if ( ambiente.getIdAmbiente() != null )
-				count = ambienteRepo.countByLoginAndIdAmbienteNot( login, ambiente.getIdAmbiente() );
-			else
-				count = ambienteRepo.countByLogin( login );
-			
-			if ( usuarioService.countByLogin( login ) > 0 )
-				throw new RuntimeException( "O login informado não está disponível por favor insira outro." );
-			 
-			if ( count > 0 )
-				throw new RuntimeException( "O login informado não está disponível por favor insira outro." );
+			Usuario usuario = usuarioService.findLogin( login );
+				
+			// Update
+			if ( ambiente.getIdAmbiente() != null ){
+				Ambiente ambienteBanco = ambienteRepo.findByLogin( login );
+				
+				if ( ambienteBanco != null && !ambienteBanco.getIdAmbiente().equals( ambiente.getIdAmbiente() ) )
+					throw new RuntimeException( mensagemErro );
+				
+				if ( usuario != null && ( usuario.getAmbiente() == null || !usuario.getAmbiente().getIdAmbiente().equals( ambiente.getIdAmbiente() ) ) )
+					throw new RuntimeException( mensagemErro );
+			}
+			else {
+				long count = ambienteRepo.countByLogin( login );
+				
+				if ( count > 0 )
+					throw new RuntimeException( mensagemErro );
+				
+				if ( usuario != null )
+					throw new RuntimeException( mensagemErro );
+			}
 			
 			if ( StringUtils.contains( login , " " ) )
 				throw new RuntimeException( "O login informado não deve ter espaços." );

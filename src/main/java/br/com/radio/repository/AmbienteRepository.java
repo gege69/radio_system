@@ -23,8 +23,6 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 	
 	Long countByCliente( Cliente cliente );
 	
-	Long countByLoginAndIdAmbienteNot( String login, Long idAmbiente );
-	
 	Long countByLogin( String login );
 	
 	Ambiente findByLogin( String login );

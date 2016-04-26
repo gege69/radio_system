@@ -102,7 +102,7 @@
           dataType: 'json'
       }).done( function(json) {
           
-          removeErros( $('#generoform') );
+          removeErros();
           
           $('#generoform').populate(json);
 
@@ -115,7 +115,7 @@
       
       var isOk = true;
       
-      removeErros( $('#generoform') );
+      removeErros();
       
       var arrayCampos = [
                           {field: "descricao",      desc : "Descrição"},

@@ -32,7 +32,7 @@ var validaForm = function(){
     
     var isOk = true;
     
-    removeErros( $('#formtocar') );
+    removeErros();
     
     var arrayCampos = [
                         {field: "comboFraseInicial",      desc : ""},

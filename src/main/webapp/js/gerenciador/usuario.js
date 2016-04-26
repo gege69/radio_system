@@ -33,7 +33,7 @@ var getDados = function( id )
         dataType: 'json'
     }).done( function(json) {
         
-        removeErros( $('#usuario-form') );
+        removeErros();
         $('#usuario-form').populate(json);
         
         if ( json.perfis != null )
@@ -55,7 +55,7 @@ var validaForm = function(){
     
     var isOk = true;
     
-    removeErros( $('#usuario-form') );
+    removeErros();
     
     var arrayCampos = [
                         {field: "nome",           desc : "Nome do Usuário"},

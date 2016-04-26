@@ -288,7 +288,7 @@
             dataType: 'json'
         }).done( function(json) {
             
-            removeErros( $('#ambiente-config-form') );
+            removeErros();
             $('#ambiente-config-form').populate(json);
              
             $('#slider1').bootstrapSlider('setValue', json.volumeMusicas ? json.volumeMusicas : 0 );

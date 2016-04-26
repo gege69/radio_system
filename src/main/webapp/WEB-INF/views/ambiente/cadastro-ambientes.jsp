@@ -26,7 +26,7 @@
                  data-height="400"
                  data-side-pagination="server"
                  data-pagination="true"
-                 data-page-size=6
+                 data-page-size=5
                  data-search="true"
                  data-locale = "pt_BR"
                  data-query-params="queryParams" >

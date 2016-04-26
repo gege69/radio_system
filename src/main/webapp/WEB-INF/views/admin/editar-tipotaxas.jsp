@@ -116,7 +116,7 @@
           dataType: 'json'
       }).done( function(json) {
           
-          removeErros( $('#tipotaxasform') );
+          removeErros();
           
           $('#tipotaxasform').populate(json);
 
@@ -129,7 +129,7 @@
       
       var isOk = true;
       
-      removeErros( $('#tipotaxasform') );
+      removeErros();
       
       var arrayCampos = [
                           {field: "descricao",      desc : "Descrição"},

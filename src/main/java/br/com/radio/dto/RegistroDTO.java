@@ -33,7 +33,7 @@ public class RegistroDTO implements IPasswordMatch {
      
     @NotNull
     @NotEmpty
-	@Length(min=7, max=40, message="A senha do Usuário deve ter entre no mínimo 7 caracteres.")
+	@Length(min=6, max=40, message="A senha do Usuário deve ter entre no mínimo 6 caracteres.")
     private String password;
     private String matchingPassword;
      

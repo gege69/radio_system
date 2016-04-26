@@ -386,7 +386,7 @@
             },
             add: function (e, data) {
                 
-                removeErros( $("#form-upload-alfanum") );
+                removeErros();
                 
                 var alfa = $("#alfanumerico").val();
                 if ( alfa == null || alfa == "" || alfa.length > 2 )

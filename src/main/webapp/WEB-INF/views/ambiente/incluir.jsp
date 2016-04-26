@@ -45,6 +45,12 @@
               <div class="col-sm-5 col-md-4">
                 <input type="password" class="form-control" id="password" placeholder="Senha" name="password">
               </div>
+              
+              <div class="checkbox col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <label>
+                  <input type="checkbox" id="mostrarSenha" name="mostrarSenha" value="false"> Mostrar senha
+                </label>
+              </div>
             </div>
             
             <div class="form-group">
@@ -94,7 +100,7 @@
         
         var isOk = true;
         
-        removeErros( $('#ambiente-form') );
+        removeErros();
         
         var arrayCampos = [
                             {field: "nome_amb",          desc : "Nome do Ambiente"},
@@ -145,7 +151,14 @@
         $('#btnAdicionar').on('click', salvar);
         
         $('#password').keyup( function( event ) {
-            keyup_validasenha( event );
+            keyup_validasenha( $("ambiente-form"), event );
+        });
+
+        $("#mostrarSenha").click(function(){
+            if ( $("#mostrarSenha").prop('checked') )
+                $("#password").attr("type", "input");
+            else
+                $("#password").attr("type", "password");
         });
         
     });

@@ -67,19 +67,20 @@ var makeRodapeTmpl = function( total, paginaAtual, listFunction ){
 };
 
 
-var removeErros = function( form )
+var removeErros = function()
 {
-    form.find('.form-group').removeClass('has-error').removeClass('has-success').removeClass('has-warning');
-    form.find('#inputError2Status').remove();
-    form.find('.icone-fa-feedback').remove();
-    form.find('.alert').remove();
+    $('.form-group').removeClass('has-error');
+    $('.form-group').removeClass('has-success');
+    $('.form-group').removeClass('has-warning');
+    $('#inputError2Status').remove();
+    $('.icone-fa-feedback').remove();
       
     $('.alert').remove(); // limpando geral  
 }
 
 var formReset = function( form )
 {
-	removeErros(form);
+	removeErros();
 	
 	$(form).find(':input').not(':button, :submit, :reset, :checkbox, :radio').val('');
 	$(form).find(':checkbox, :radio').prop('checked', false);
@@ -262,34 +263,42 @@ var jump = function( h )
 
 
 
-var keyup_validasenha = function( event, extra_dict ) {
+var keyup_validasenha = function( event ) {
     var text = $('#password').val(); 
-    var result = zxcvbn(text, ["eterion", "rdcenter", "radio", "ambiente"]);
+    var result = zxcvbn(text, ["eterion", "rdcenter", "radio", "ambiente", "som"]);
         
     if ( text == '' )
     {
-        removeErros( $('#ambiente-form') );
+        removeErros();
         return;
     }
     else
     {
-        if ( result != null && result.score <= 1 )
+        if ( result != null && result.score <= 2 )
         {
-            removeErros( $('#ambiente-form') );
-            preencheErroFieldUpdate( 'password', 'Senha muito fraca' );
+            removeErros();
+            
+            var texto = "<b>Senha muito fraca</b>" +
+                        "<br/>" +
+                        "<ul>" +
+                        "  <li>Você NÃO precisa de caracteres complicados para montar sua senha."+
+                        "  <li>Basta que a senha NÃO seja curta e óbvia"+
+                        "</ul>";
+            
+            preencheErroFieldUpdate( 'password', texto );
         }
-        else if ( result != null && result.score <= 3 )
+        else if ( result != null && result.score == 3 )
         {
-            removeErros( $('#ambiente-form') );
+            removeErros();
             feedbackFieldUpdate( 'password', 'Senha razoável', 'warning', 'exclamation-circle' );
         }
         else if (  result != null && result.score > 3 )
         {
-            removeErros( $('#ambiente-form') );
+            removeErros();
             feedbackFieldUpdate( 'password', 'Senha Forte', 'success', 'check' );
         }
         else
-            removeErros( $('#ambiente-form') );            
+            removeErros();            
     }
 }
 

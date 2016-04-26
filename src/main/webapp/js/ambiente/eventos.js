@@ -85,7 +85,7 @@ var validaForm = function(){
     
     var isOk = true;
     
-    removeErros( $('#form-evento') );
+    removeErros();
     
     var arrayCampos = [
                         {field: "combocategoria",       desc : "Tipo de Mídia"},

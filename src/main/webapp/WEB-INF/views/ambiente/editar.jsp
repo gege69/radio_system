@@ -142,6 +142,17 @@
                 </div>
                 
                 <div class="form-group">
+                  <label for="mostrarSenha" class="control-label col-sm-2 col-md-4"></label>
+                  <div class="checkbox col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <label>
+                      <input type="checkbox" id="mostrarSenha" name="mostrarSenha" value="false"> Mostrar senha
+                    </label>
+                  </div>
+                </div>
+
+                <div class="spacer-vertical80"></div>
+
+                <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Fuso-horário:</label>
                   <div class="col-sm-4 col-md-6">
                     <select class="form-control" id="idFusohorario" name="fusoHorario[idFusohorario]">
@@ -222,7 +233,7 @@
             dataType: 'json'
         }).done( function(json) {
             
-            removeErros( $('#ambiente-form') );
+            removeErros();
              $('#ambiente-form').populate(json);
             jump('ncmForm');
         });
@@ -254,7 +265,7 @@
         
         var isOk = true;
         
-        removeErros( $('#ambiente-form') );
+        removeErros();
         
         var arrayCampos = [
                             {field: "nome_amb",      desc : "Nome do Ambiente"},
@@ -311,7 +322,12 @@
             keyup_validasenha( event );
         });
         
-        
+        $("#mostrarSenha").click(function(){
+            if ( $("#mostrarSenha").prop('checked') )
+                $("#password").attr("type", "input");
+            else
+                $("#password").attr("type", "password");
+        }); 
     });
 
 </script>

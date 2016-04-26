@@ -158,7 +158,10 @@ public abstract class AbstractController {
 	
 	
 	protected String writeSingleErrorAsJSONErroMessage(String field, String message ){
-		
+
+		if ( StringUtils.isBlank( message ) )
+			message = "Erro no sistema (null)";
+
 		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 		
 		JsonObject obj = Json.createObjectBuilder()

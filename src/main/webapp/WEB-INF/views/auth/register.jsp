@@ -13,14 +13,14 @@
     <div class="row">
       <div class="col-xs-12 col-md-5 col-sm-6 col-lg-5">
 
-        <form:form modelAttribute="user" id="ambiente-form" method="POST">
+        <form:form modelAttribute="user" id="registerform" method="POST">
           <div class="form-group">
-            <label for="login">Empresa</label>
+            <label for="login">Razão Social</label>
             <form:input class="form-control" path="nmEmpresa" value="" placeholder="Nome"/>
             <form:errors path="nmEmpresa" element="div" class="alert alert-danger"/>
           </div>
           <div class="form-group">
-            <label for="login">CNPJ/CPF</label>
+            <label for="login">CPF/CNPJ</label>
             <form:input class="form-control cpfcnpj" id="cpfcnpj" path="cdCNPJCPF" value="" placeholder="Nome"/>
             <form:errors path="cdCNPJCPF" element="div" class="alert alert-danger"/>
           </div>
@@ -55,9 +55,15 @@
             <form:input class="form-control" path="password" value="" id="password" placeholder="Senha" type="password"/>
             <form:errors path="password" element="div" class="alert alert-danger"/>
           </div>
+
+          <div class="form-group">
+            <label style="font-weight: initial">
+              <input type="checkbox" id="mostrarSenha" name="mostrarSenha" value="false"> Mostrar senha
+            </label>
+          </div>
           <div class="form-group">
             <label for="senha">Repetir Senha</label>
-            <form:input class="form-control" path="matchingPassword" value="" placeholder="Senha" type="password"/>
+            <form:input class="form-control" path="matchingPassword" value="" id="matchingPassword" placeholder="Senha" type="password"/>
             <form:errors path="matchingPassword" element="div" class="alert alert-danger"/>
           </div>
           
@@ -80,7 +86,7 @@
 
           <div class="spacer-vertical20"></div>
 
-          <div class="g-recaptcha" data-sitekey="6LdVLB4TAAAAAETjSrTfFRSLv4MHi_bXTjJBO9hd"></div>
+<!--           <div class="g-recaptcha" data-sitekey="6LdVLB4TAAAAAETjSrTfFRSLv4MHi_bXTjJBO9hd"></div> -->
         </form:form>
         
       </div>
@@ -111,9 +117,19 @@ $(function(){
 
 
     $('#password').keyup( function( event ) {
-        keyup_validasenha( event );
+        keyup_validasenha( $("registerform"), event );
     });
 
+    $("#mostrarSenha").click(function(){
+        if ( $("#mostrarSenha").prop('checked') ){
+            $("#matchingPassword").attr("type", "input");
+            $("#password").attr("type", "input");
+        }
+        else {
+            $("#matchingPassword").attr("type", "password");
+            $("#password").attr("type", "password");
+        }
+    }); 
 });
 
 </script>

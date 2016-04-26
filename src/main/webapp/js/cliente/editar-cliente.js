@@ -53,7 +53,7 @@ var getDados = function()
         dataType: 'json'
     }).done( function(json) {
         
-        removeErros( $('#clienteform') );
+        removeErros();
         
         var telefones = json.telefones;
        
@@ -102,7 +102,7 @@ var validaForm = function(){
     
     var isOk = true;
     
-    removeErros( $('#clienteform') );
+    removeErros();
     
     var arrayCampos = [
                         {field: "razaosocial",      desc : "Razão Social"},

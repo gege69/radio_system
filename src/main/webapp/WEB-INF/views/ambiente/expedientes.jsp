@@ -217,8 +217,7 @@
             dataType: 'json'
         }).done( function(json) {
             
-            debugger;
-            removeErros( $('#ambiente-expediente-form') );
+            removeErros();
              $('#ambiente-expediente-form').populate(json);
             jump('ambiente-expediente-form');
         });

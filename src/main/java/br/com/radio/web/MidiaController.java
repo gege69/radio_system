@@ -1,16 +1,12 @@
 package br.com.radio.web;
 
 import java.security.Principal;
-import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -25,7 +21,6 @@ import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
-import br.com.radio.model.Cliente;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
@@ -33,7 +28,6 @@ import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
-import br.com.radio.util.UtilsStr;
 
 @Controller
 public class MidiaController extends AbstractController {

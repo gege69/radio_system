@@ -40,6 +40,15 @@
                     <input type="password" class="form-control" id="password" name="password" placeholder="Nova">
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label for="mostrarSenha" class="control-label col-sm-2 col-md-4"></label>
+                  <div class="checkbox col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <label>
+                      <input type="checkbox" id="mostrarSenha" name="mostrarSenha" value="false"> Mostrar senha
+                    </label>
+                  </div>
+                </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-3 col-md-4">Confirmação Nova Senha:</label>
@@ -87,7 +96,7 @@
         
         var isOk = true;
         
-        removeErros( $('#alterar-senha-form') );
+        removeErros();
         
         var arrayCampos = [
                             {field: "senha_atual",        desc : "Senha Atual"},
@@ -134,9 +143,19 @@
         $('#btnAlterar').on('click', alteraSenha);
         
         $('#password').keyup( function( event ) {
-            keyup_validasenha( event );
+            keyup_validasenha( $("alterar-senha-form"), event );
         });
         
+        $("#mostrarSenha").click(function(){
+            if ( $("#mostrarSenha").prop('checked') ){
+                $("#matchingPassword").attr("type", "input");
+                $("#password").attr("type", "input");
+            }
+            else {
+                $("#matchingPassword").attr("type", "password");
+                $("#password").attr("type", "password");
+            }
+        }); 
     });
     
 </script>

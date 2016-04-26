@@ -362,7 +362,7 @@
             },
             add: function (e, data) {
                 
-                removeErros( $("#formUploadOpcionais") );
+                removeErros();
                 
                 var idOpcional = $("#idOpcional").val();
                 if ( idOpcional == null || idOpcional == "" )

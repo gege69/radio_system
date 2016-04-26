@@ -1,6 +1,7 @@
 package br.com.radio.service;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +32,9 @@ import br.com.radio.repository.UsuarioPerfilRepository;
 import br.com.radio.repository.UsuarioPermissaoRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.util.UtilsStr;
+
+import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.Zxcvbn;
 
 @Service
 public class UsuarioService {
@@ -71,6 +75,12 @@ public class UsuarioService {
 			throw new RuntimeException( "Usuário não encontrado" );
 		else
 		{
+			Zxcvbn zxcvbn = new Zxcvbn();
+			Strength strength = zxcvbn.measure( usuario.getPassword());
+			
+			if ( strength.getScore() <= 2 )
+				throw new RuntimeException("Senha é muito fraca.");
+
 			// Já foi verificado se os passwords batem no validator durante o request...
 			if ( !passwordEncoder.matches( alterarSenhaDTO.getSenha_atual(), usuario.getPassword() ) )
 				throw new RuntimeException( "Senha atual não confere" );
@@ -102,6 +112,12 @@ public class UsuarioService {
 		
 		if ( StringUtils.isBlank( dto.getPassword() ) )
 			throw new RuntimeException( "Senha está em branco." );
+
+		Zxcvbn zxcvbn = new Zxcvbn();
+		Strength strength = zxcvbn.measure(dto.getPassword());
+		
+		if ( strength.getScore() <= 2 )
+			throw new RuntimeException("Senha é muito fraca.");
 		
 		Usuario usuario = new Usuario();
 		
@@ -218,30 +234,53 @@ public class UsuarioService {
 
 	
 	
-	public Usuario saveUsuarioAmbientePlayer( Ambiente ambiente )
+	public Usuario saveUsuarioAmbientePlayer( Ambiente ambiente, String password )
 	{
-		Usuario usuario = new Usuario();
-		usuario.setLogin( ambiente.getLogin() );
-		usuario.setPassword( ambiente.getPassword() );
-		usuario.setCliente( ambiente.getCliente() );
-		usuario.setNome( ambiente.getNome() );
-		
-		Long countUsuarios = usuarioRepo.countByLogin( usuario.getLogin() ); 
-		
-		if ( countUsuarios != null && countUsuarios > 0 )
-			throw new EmailExistsException( "Login já existe." );
+		Usuario usuario = usuarioRepo.findByAmbiente( ambiente );
 
-		usuario.setPassword( passwordEncoder.encode( usuario.getPassword() ) );
-		usuario.setAtivo( true );
-		usuario.setUsuarioTipo( UsuarioTipo.PLAYER );
+		Zxcvbn zxcvbn = new Zxcvbn();
+		Strength strength = zxcvbn.measure( password );
 		
-		this.save( usuario );
+		if ( strength.getScore() <= 2 )
+			throw new RuntimeException("Senha é muito fraca.");
 
-		Permissao permissao = permissaoRepo.findByCodigo( "PLAYER" );
-		
-		UsuarioPermissao usuarioPermissao = new UsuarioPermissao( usuario, permissao );
-		
-		usuarioPermissaoRepo.save( usuarioPermissao );
+		if ( usuario != null ){
+			
+			if ( usuarioRepo.countByLoginAndIdUsuarioNot( ambiente.getLogin(), usuario.getIdUsuario() ) > 0 )
+				throw new RuntimeException( "O login informado não está disponível por favor insira outro." );
+
+			usuario.setPassword( password );
+			usuario.setLogin( ambiente.getLogin() );
+
+			this.save( usuario );
+		}
+		else
+		{
+			usuario = new Usuario();
+			usuario.setLogin( ambiente.getLogin() );
+			usuario.setPassword( password );
+			usuario.setCliente( ambiente.getCliente() );
+			usuario.setNome( ambiente.getNome() );
+			
+			Long countUsuarios = usuarioRepo.countByLogin( usuario.getLogin() ); 
+			
+			if ( countUsuarios != null && countUsuarios > 0 )
+				throw new EmailExistsException( "Login já existe." );
+			
+			usuario.setPassword( passwordEncoder.encode( usuario.getPassword() ) );
+			usuario.setAtivo( true );
+			usuario.setUsuarioTipo( UsuarioTipo.PLAYER );
+			
+			usuario.setAmbiente( ambiente );
+			
+			this.save( usuario );
+			
+			Permissao permissao = permissaoRepo.findByCodigo( "PLAYER" );
+			
+			UsuarioPermissao usuarioPermissao = new UsuarioPermissao( usuario, permissao );
+			
+			usuarioPermissaoRepo.save( usuarioPermissao );
+		}
 
 		return usuario;
 	}
@@ -255,13 +294,24 @@ public class UsuarioService {
 	}
 
 	
-	public Usuario getUserByPrincipal( Principal principal )
-	{
-		Usuario usuario = usuarioRepo.findByLogin( principal.getName() );
-		
+	public Usuario findOne( Long idUsuario ){
+		Usuario usuario = usuarioRepo.findOne( idUsuario );
 		return usuario;
 	}
 
+	
+	public Usuario getUserByPrincipal( Principal principal )
+	{
+		Usuario usuario = usuarioRepo.findByLogin( principal.getName() );
+		return usuario;
+	}
+	
+
+	public Usuario findLogin( String login )
+	{
+		Usuario usuario = usuarioRepo.findByLogin( login );
+		return usuario;
+	}
 
 
 	public Usuario getUsuarioMaisRelevantePorCliente( Cliente cliente ){
@@ -270,16 +320,6 @@ public class UsuarioService {
 	}
 
 
-	
-	public Long countByLogin( String login )
-	{
-		Long result = usuarioRepo.countByLogin( login ); 
-		
-		if ( result == null )
-			result = 0l;
-		
-		return result;
-	}
 	
 	
 	public UsuarioAmbienteDTO getUsuarioAmbienteByPrincipal( Long idAmbiente, Principal principal )
