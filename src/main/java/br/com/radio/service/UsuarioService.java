@@ -2,6 +2,7 @@ package br.com.radio.service;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.RegistroDTO;
@@ -66,6 +68,13 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioPermissaoRepository usuarioPermissaoRepo;
 	
+	// Essas constantes determinam a força mínima para que seja possível aceitar. O password tem que ter força maior que esse valor.
+	private final int FORCA_MIN_PLAYER = 1;
+	private final int FORCA_MIN_GERENCIADOR = 1;
+	private final int FORCA_MIN_ADM = 3;
+		
+
+
 	
 	public void changeUserPassword( String name, AlterarSenhaDTO alterarSenhaDTO )
 	{
@@ -75,7 +84,7 @@ public class UsuarioService {
 			throw new RuntimeException( "Usuário não encontrado" );
 		else
 		{
-			validaForcaSenha( usuario.getPassword() );
+			validaForcaSenha( alterarSenhaDTO.getPassword(), usuario );
 
 			// Já foi verificado se os passwords batem no validator durante o request...
 			if ( !passwordEncoder.matches( alterarSenhaDTO.getSenha_atual(), usuario.getPassword() ) )
@@ -109,18 +118,19 @@ public class UsuarioService {
 		if ( StringUtils.isBlank( dto.getPassword() ) )
 			throw new RuntimeException( "Senha está em branco." );
 
-		validaForcaSenha( dto.getPassword() );
 		
 		Usuario usuario = new Usuario();
 		
 		usuario.setEmail( dto.getCdEmail() );
 		usuario.setLogin( dto.getCdLogin() );
 		usuario.setNome( dto.getNmUsuario() );		
+		usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
 	
+		validaForcaSenha( dto.getPassword(), usuario );
+
 		usuario.setPassword( passwordEncoder.encode( dto.getPassword() ) );
 		
 		usuario.setAtivo( true );
-		usuario.setUsuarioTipo( UsuarioTipo.GERENCIADOR );
 		
 		Cliente cliente = new Cliente();
 		
@@ -195,6 +205,8 @@ public class UsuarioService {
 			usuarioDTO.setAtivo( false );
 		
 		usuario.setAtivo( usuarioDTO.getAtivo() );
+
+		validaForcaSenha( usuarioDTO.getPassword(), usuario );
 		
 		if ( StringUtils.isNotBlank( usuarioDTO.getPassword() ) )
 			usuario.setPassword( passwordEncoder.encode( usuarioDTO.getPassword() ) );
@@ -230,14 +242,15 @@ public class UsuarioService {
 	{
 		Usuario usuario = usuarioRepo.findByAmbiente( ambiente );
 
-		validaForcaSenha( password );
 
 		if ( usuario != null ){
 			
 			if ( usuarioRepo.countByLoginAndIdUsuarioNot( ambiente.getLogin(), usuario.getIdUsuario() ) > 0 )
 				throw new RuntimeException( "O login informado não está disponível por favor insira outro." );
 
-			usuario.setPassword( password );
+			validaForcaSenha( password, usuario );
+
+			usuario.setPassword(  passwordEncoder.encode( password )  );
 			usuario.setLogin( ambiente.getLogin() );
 
 			this.save( usuario );
@@ -249,7 +262,10 @@ public class UsuarioService {
 			usuario.setPassword( password );
 			usuario.setCliente( ambiente.getCliente() );
 			usuario.setNome( ambiente.getNome() );
+			usuario.setUsuarioTipo( UsuarioTipo.PLAYER );
 			
+			validaForcaSenha( password, usuario );
+
 			Long countUsuarios = usuarioRepo.countByLogin( usuario.getLogin() ); 
 			
 			if ( countUsuarios != null && countUsuarios > 0 )
@@ -257,7 +273,6 @@ public class UsuarioService {
 			
 			usuario.setPassword( passwordEncoder.encode( usuario.getPassword() ) );
 			usuario.setAtivo( true );
-			usuario.setUsuarioTipo( UsuarioTipo.PLAYER );
 			
 			usuario.setAmbiente( ambiente );
 			
@@ -274,13 +289,27 @@ public class UsuarioService {
 	}
 
 
-	public void validaForcaSenha( String password ){
+	public void validaForcaSenha( String password, Usuario usuario ){
 		
 		Zxcvbn zxcvbn = new Zxcvbn();
 		Strength strength = zxcvbn.measure( password, Arrays.asList( "eterion", "rdcenter", "radio", "ambiente", "som", "123456" ) );
 		
-		if ( strength.getScore() <= 1 )
-			throw new RuntimeException("Senha é muito fraca.");
+		List<Perfil> perfis = usuario.getPerfis();
+		
+		int forcaMinima = FORCA_MIN_PLAYER;
+		String mensagem = "";
+
+		if ( perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS ) ){
+			forcaMinima = FORCA_MIN_ADM;
+			mensagem = "A força da senha dos administradores do sistema precisa ser forte (indicador verde)";
+		}
+		else if ( usuario.getUsuarioTipo() != null && usuario.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR ) )
+			forcaMinima = FORCA_MIN_GERENCIADOR;
+		else 
+			forcaMinima = FORCA_MIN_PLAYER;
+		
+		if ( strength.getScore() < forcaMinima )
+			throw new RuntimeException("Senha é muito fraca. "+ mensagem);
 	}
 	
 	

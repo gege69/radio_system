@@ -274,7 +274,7 @@ var keyup_validasenha = function( event ) {
     }
     else
     {
-        if ( result != null && result.score <= 1 )
+        if ( result != null && result.score <= 0 )
         {
             removeErros();
             
@@ -287,12 +287,12 @@ var keyup_validasenha = function( event ) {
             
             preencheErroFieldUpdate( 'password', texto );
         }
-        else if ( result != null && result.score <= 3 )
+        else if ( result != null && result.score <= 2 )
         {
             removeErros();
             feedbackFieldUpdate( 'password', 'Senha razoável', 'warning', 'exclamation-circle' );
         }
-        else if (  result != null && result.score > 3 )
+        else if (  result != null && result.score >= 3 )
         {
             removeErros();
             feedbackFieldUpdate( 'password', 'Senha Forte', 'success', 'check' );

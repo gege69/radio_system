@@ -127,4 +127,18 @@ $(function(){
         loadSuccessGrid();
     });
     
+    $('#password').keyup( function( event ) {
+        keyup_validasenha( $("usuario-form"), event );
+    });
+
+    $("#mostrarSenha").click(function(){
+        if ( $("#mostrarSenha").prop('checked') ){
+            $("#matchingPassword").attr("type", "input");
+            $("#password").attr("type", "input");
+        }
+        else {
+            $("#matchingPassword").attr("type", "password");
+            $("#password").attr("type", "password");
+        }
+    }); 
 });

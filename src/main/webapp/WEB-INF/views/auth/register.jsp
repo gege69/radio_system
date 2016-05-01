@@ -16,12 +16,12 @@
         <form:form modelAttribute="user" id="registerform" method="POST">
           <div class="form-group">
             <label for="login">Razão Social</label>
-            <form:input class="form-control" path="nmEmpresa" value="" placeholder="Nome"/>
+            <form:input class="form-control" path="nmEmpresa" value="" placeholder="Razão Social"/>
             <form:errors path="nmEmpresa" element="div" class="alert alert-danger"/>
           </div>
           <div class="form-group">
             <label for="login">CPF/CNPJ</label>
-            <form:input class="form-control cpfcnpj" id="cpfcnpj" path="cdCNPJCPF" value="" placeholder="Nome"/>
+            <form:input class="form-control cpfcnpj" id="cpfcnpj" path="cdCNPJCPF" value="" placeholder="CPF/CNPJ"/>
             <form:errors path="cdCNPJCPF" element="div" class="alert alert-danger"/>
           </div>
           <div class="form-group">

@@ -54,6 +54,17 @@ VALUES
 ( nextval('cliente_id_cliente_seq'), true, 'Eterion', 'Eterion', '28372714000140', 'Eterion', 'eterion.com.br', null, now(), 'pazinfernando@gmail.com', '03081010', 'Rua Margarida de Lima', '25', 'APTO 61', 'Tatuapé', 'São Paulo', 'SP' );
 
 
+INSERT INTO CLIENTE 
+( id_cliente, ativo, nomefantasia, razaosocial, cnpj, codigo, dominio, dataalteracao, datacriacao, email, cep, logradouro, numero, complemento, bairro, cidade, estado )
+VALUES 
+( nextval('cliente_id_cliente_seq'), true, 'Grupo RDL', 'Grupo RDL', '05553155000179', 'rdl', 'grupordl.com.br', null, now(), 'marcelradialista@hotmail.com', '08529310', 'Av. Brasil', '2035', 'sala 13', 'Vila Romanopolis', 'Ferraz de Vasconcelos', 'SP' );
+
+
+INSERT INTO CLIENTE 
+( id_cliente, ativo, nomefantasia, razaosocial, cnpj, codigo, dominio, dataalteracao, datacriacao, email, cep, logradouro, numero, complemento, bairro, cidade, estado )
+VALUES 
+( nextval('cliente_id_cliente_seq'), true, 'AP3', 'AP3 Projetos e Eventos', '71205686000103', 'ap3', 'ap3.com.br', null, now(), 'gilmar@ap3.com', '08500405', 'Av. Quinze de Novembro', '550', 'Sala 1', 'Vila Romanopolis', 'Ferraz de Vasconcelos', 'SP' );
+
 
 
 -- Usuários Padrão
@@ -62,12 +73,18 @@ values ( nextval('usuario_id_usuario_seq'), 'fpazin', '$2a$10$c2AzJBuNjf0GXAxLO8
 insert into usuario ( id_usuario, login, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
 values ( nextval('usuario_id_usuario_seq'), 'gaugusto', '$2a$10$rIcoJp7N6yBr0bV/dsogk.acNO3NrTzlqLY2sFRNAKyMuLTMRgX1u', ( select id_cliente from cliente where codigo = 'Eterion' ), null, now(), true, 'George Augusto', 'george.g.augusto@gmail.com');
 
+insert into usuario ( id_usuario, login, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
+values ( nextval('usuario_id_usuario_seq'), 'marcel', '$2a$10$PFRzo8nLpc0wXPY39jjCOeDXn852hYkTICrbkdTHr3anGqRTDAcx2', ( select id_cliente from cliente where codigo = 'rdl' ), null, now(), true, 'Marcel', 'marcelradialista@hotmail.com');
+insert into usuario ( id_usuario, login, password, id_cliente, dataalteracao, datacriacao, ativo, nome, email ) 
+values ( nextval('usuario_id_usuario_seq'), 'gilmar', '$2a$10$d/V6dDfa.OPJDj/uH4sS/OfkqG6U1b4OAG6EtzKZGXgimG7Z0EbP2', ( select id_cliente from cliente where codigo = 'ap3' ), null, now(), true, 'Gilmar', 'gilmar@ap3.com');
 
-insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'DESENVOLVEDOR', false );
-insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'ADMINISTRADOR', false );
-insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'GERENTE', true );
-insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'SUPERVISOR', true );
-insert into perfil ( id_perfil, nome, comum ) values ( nextval('perfil_id_perfil_seq'), 'USUARIO', true );
+
+
+insert into perfil ( id_perfil, nome, comum ) values ( 1, 'DESENVOLVEDOR', false );
+insert into perfil ( id_perfil, nome, comum ) values ( 2, 'ADMINISTRADOR', false );
+insert into perfil ( id_perfil, nome, comum ) values ( 3, 'GERENTE', true );
+insert into perfil ( id_perfil, nome, comum ) values ( 4, 'SUPERVISOR', true );
+insert into perfil ( id_perfil, nome, comum ) values ( 5, 'USUARIO', true );
 
 
 -- dando as permissões padrão do perfil...
@@ -136,6 +153,10 @@ INSERT INTO PERFIL_PERMISSAO VALUES ( nextval('perfil_permissao_id_perfperm_seq'
 
 INSERT INTO USUARIO_PERFIL VALUES ( nextval('usuario_perfil_id_usuperf_seq'), (select id_perfil from perfil where nome = 'DESENVOLVEDOR'), (SELECT id_usuario FROM USUARIO WHERE login = 'fpazin') );
 INSERT INTO USUARIO_PERFIL VALUES ( nextval('usuario_perfil_id_usuperf_seq'), (select id_perfil from perfil where nome = 'DESENVOLVEDOR'), (SELECT id_usuario FROM USUARIO WHERE login = 'gaugusto') );
+
+
+INSERT INTO USUARIO_PERFIL VALUES ( nextval('usuario_perfil_id_usuperf_seq'), (select id_perfil from perfil where nome = 'ADMINISTRADOR'), (SELECT id_usuario FROM USUARIO WHERE login = 'marcel') );
+INSERT INTO USUARIO_PERFIL VALUES ( nextval('usuario_perfil_id_usuperf_seq'), (select id_perfil from perfil where nome = 'ADMINISTRADOR'), (SELECT id_usuario FROM USUARIO WHERE login = 'gilmar') );
 
 
 --INSERT INTO USUARIO_PERMISSAO VALUES ( NEXTVAL('USUARIO_PERMISSAO_ID_USUPERM_SEQ'), NOW(), ( SELECT ID_PERMISSAO FROM PERMISSAO WHERE CODIGO = 'INCLUIR_AMB'), (SELECT ID_USUARIO FROM USUARIO WHERE LOGIN = 'FPAZIN') );

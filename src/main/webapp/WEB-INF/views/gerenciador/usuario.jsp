@@ -57,6 +57,13 @@
                     <input type="password" class="form-control" id="password" name="usuario[password]" placeholder="Senha">
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label for="login" class="control-label col-sm-2 col-md-4"></label>
+                  <label style="font-weight: initial; text-align: left; " class="control-label col-sm-2 col-md-4">
+                    <input type="checkbox" id="mostrarSenha" name="mostrarSenha" value="false"> Mostrar senha
+                  </label>
+                </div>
                 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Ativo: </label>
@@ -138,6 +145,8 @@
 
 <script src="${context}/js/required/jquery.serializejson.js"></script>
 <script src="${context}/js/required/jquery.populate.js"></script>
+
+<script type="text/javascript" src="${context}/js/required/zxcvbn.js"></script>
 
 <script src="${context}/js/gerenciador/usuario.js"></script>
 

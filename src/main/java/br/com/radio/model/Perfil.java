@@ -1,11 +1,11 @@
 package br.com.radio.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -23,9 +23,16 @@ import javax.validation.constraints.NotNull;
 public class Perfil implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
+
+	public static final Perfil DESENVOLVEDOR = new Perfil( 1l, "DESENVOLVEDOR" );
+	public static final Perfil ADMINISTRADOR = new Perfil( 2l, "ADMINISTRADOR" );
+	public static final Perfil GERENTE = new Perfil( 3l, "GERENTE" );
+	public static final Perfil SUPERVISOR = new Perfil( 4l, "SUPERVISOR" );
+	public static final Perfil USUARIO = new Perfil( 5l, "USUARIO" );
+
+	public static final List<Perfil> DONOS = Arrays.asList( Perfil.ADMINISTRADOR, Perfil.DESENVOLVEDOR );
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_perfil", nullable = false )
 	private Long idPerfil;
 
@@ -98,5 +105,20 @@ public class Perfil implements Serializable {
 	{
 		this.comum = comum;
 	}
+
+	public Perfil()
+	{
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Perfil( Long idPerfil, String nome )
+	{
+		super();
+		this.idPerfil = idPerfil;
+		this.nome = nome;
+	}
+
+
 	
 }

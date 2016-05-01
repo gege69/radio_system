@@ -60,7 +60,7 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-3 col-md-4"></label>
                   <div class="col-sm-5 col-md-4">
-                    <button type="button" class="btn btn-default" id="btnAlterar">Alterar Senha</button>
+                    <button type="button" class="btn btn-primary" id="btnAlterar">Alterar Senha</button>
                   </div>
                 </div>
               </form>

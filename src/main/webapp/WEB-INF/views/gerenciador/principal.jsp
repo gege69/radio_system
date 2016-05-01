@@ -9,7 +9,7 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-heading">
-          Painel Gerencial ${razaoSocial}
+          Painel Gerencial <a href="${context}/clientes/view">${razaoSocial}</a>
         </div>
         
         <div class="panel-body">
