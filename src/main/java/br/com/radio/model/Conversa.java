@@ -26,6 +26,7 @@ import javax.persistence.Transient;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.repository.UsuarioRepository;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -239,8 +240,11 @@ public class Conversa implements Serializable {
 
 	
 	
-	
 	private boolean isPlayer( Usuario usuario ){
+		
+		if ( usuario == null || usuario.getUsuarioTipo() == null )
+			return true;
+		
 		boolean result = usuario.getUsuarioTipo().equals( UsuarioTipo.PLAYER );
 		return result;
 	}
@@ -252,7 +256,7 @@ public class Conversa implements Serializable {
 	 * @param usuarioLogado
 	 * @return
 	 */
-	public String resumoParticipantes( Usuario usuarioLogado )
+	public String resumoParticipantes()
 	{
 		String result = "";
 		
@@ -308,7 +312,7 @@ public class Conversa implements Serializable {
 	
 	public void buildViewParaUsuario( Usuario usuario )
 	{
-		conversaView.put( "participantes", this.resumoParticipantes( usuario ) );
+		conversaView.put( "participantes", this.resumoParticipantes() );
 
 		if ( !isPlayer( usuario ) )
 			conversaView.put( "ambientes", this.resumoAmbientes() );

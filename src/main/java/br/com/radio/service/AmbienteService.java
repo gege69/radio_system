@@ -1,7 +1,6 @@
 package br.com.radio.service;
 
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.enumeration.PosicaoComercial;
 import br.com.radio.enumeration.PosicaoVinheta;
-import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.enumeration.VozLocucao;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -70,6 +68,9 @@ public class AmbienteService {
 	@Autowired
 	private EventoHorarioRepository eventoHorarioRepo;
 
+	@Autowired
+	private BlocoRepository blocoRepo;
+	
 
 
 	/**
@@ -344,6 +345,21 @@ public class AmbienteService {
 		}
 
 		return evento;
+	}
+	
+	
+	
+	public Bloco saveBloco( Bloco blocoVO, Ambiente ambiente )
+	{
+		Bloco blocoExistente = blocoRepo.findByAmbiente( ambiente ); 
+		
+		if ( blocoExistente != null )
+			blocoVO.setIdBloco( blocoExistente.getIdBloco() ); // update
+		
+		blocoVO.setAmbiente( ambiente );
+		blocoRepo.save( blocoVO );
+
+		return blocoVO;
 	}
 	
 	

@@ -25,7 +25,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -697,12 +696,11 @@ public class AmbienteController extends AbstractController {
 			try
 			{
 				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-
-				if ( ambiente.getBloco() != null )
-					bloco.setIdBloco( ambiente.getBloco().getIdBloco() ); // update
 				
-				bloco.setAmbiente( ambiente );
-				blocoRepo.save( bloco );
+				if ( ambiente == null )
+					throw new RuntimeException( "Ambiente não encontrado.");
+
+				ambienteService.saveBloco( bloco, ambiente );
 				
 				jsonResult = writeOkResponse();
 			}

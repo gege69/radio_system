@@ -95,8 +95,7 @@
     }
     
     function espelharFormatter(value, row) {
-        return '<i class="fa fa-lg fa-files-o"></i>';
-//         return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/espelhar"> <i class="fa fa-lg fa-files-o"></i></a>';
+        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/espelhar"> <i class="fa fa-lg fa-files-o"></i></a>';
     }
     
     function editarFormatter(value, row) {
