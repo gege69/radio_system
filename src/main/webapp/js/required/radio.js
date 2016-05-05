@@ -278,12 +278,12 @@ var keyup_validasenha = function( event ) {
         {
             removeErros();
             
-            var texto = "<b>Senha muito fraca</b>" +
-                        "<br/>" +
-                        "<ul>" +
-                        "  <li>Você NÃO precisa de caracteres complicados para montar sua senha."+
-                        "  <li>Basta que a senha NÃO seja curta e óbvia"+
-                        "</ul>";
+            var texto = "<b>Senha muito fraca</b>" ;
+//                        "<br/>" +
+//                        "<ul>" +
+//                        "  <li>Você NÃO precisa de caracteres complicados para montar sua senha."+
+//                        "  <li>Basta que a senha NÃO seja curta e óbvia"+
+//                        "</ul>";
             
             preencheErroFieldUpdate( 'password', texto );
         }

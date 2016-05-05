@@ -393,7 +393,46 @@ public class AmbienteController extends AbstractController {
 		return jsonResult;
 	}
 	
-	
+
+
+	@RequestMapping( value = { "/ambientes/inativar", "/api/ambientes/inativar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String inativarAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+					throw new RuntimeException("Cliente do usuário não econtrado");
+				
+				if ( ambiente.getAtivo() == false )
+					throw new RuntimeException("Ambiente já está inativo");
+				
+				ambiente.setAtivo( false );
+				ambiente.setDataAlteracao( new Date() );
+				
+			// melhorar e colocar um log de quando ativou e inativou.... 
+				ambienteRepo.save( ambiente );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}	
 
 	
 	

@@ -167,6 +167,12 @@
                       </div>
                     </div>
                     
+                    <div class="form-group">
+                      <label for="login" class="control-label col-sm-2 col-md-2">Data de Cadastro</label>
+                      <div class="col-lg-2 col-md-3 col-sm-4">
+                        <input type="text" class="form-control" id="dataCriacao" name="dataCriacao" readonly="readonly">
+                      </div>
+                    </div>
                   </div>
                   
                 </div>

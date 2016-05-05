@@ -1142,13 +1142,29 @@ public class MidiaService {
 		ambienteGeneroRepo.delete( ambienteGenerosList );
 		
 		List<MidiaGenero> midiaGenerosList = midiaGeneroRepo.findByGenero( genero );
-		
+
 		midiaGeneroRepo.delete( midiaGenerosList );
 		
 		generoRepo.delete( genero );
+
 		
 		return result;
 	}
+
+	
+	@Transactional
+	public void deletaMidiasSemGenero(){
+//		
+//		Session session = entityManager.unwrap( Session.class );
+//
+//		Categoria categoriaOpcional = categoriaRepo.findByCodigo( Categoria.OPCIONAL );
+//		
+//		Criteria critCount = createCriteriaMidiaOpcional( ambiente, opcional, session, categoriaOpcional );
+//		critCount.setProjection( Projections.rowCount() );
+//		Long total = (Long)critCount.uniqueResult();
+	}
+	
+	
 
 
 	@Transactional

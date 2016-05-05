@@ -44,7 +44,6 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	
 	@RequestMapping(value = "/player", method = RequestMethod.GET )
 	public String player(Principal principal, HttpServletRequest request, ModelMap model ) 
 	{
@@ -52,19 +51,20 @@ public class PlayerWebController extends AbstractController {
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
 		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-			
-			AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
-			
-			model.addAttribute( "configuracao", configuracao );
-		
-			return "player-web/player-web";
-		}
-		else
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+		
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+		
+		AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
+		
+		model.addAttribute( "configuracao", configuracao );
+	
+		return "player-web/player-web";
 	}
 	
 
@@ -76,19 +76,20 @@ public class PlayerWebController extends AbstractController {
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
 		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-			
-			AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
-			
-			model.addAttribute( "configuracao", configuracao );
-		
-			return "player-web/player-web";
-		}
-		else
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+		
+		AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
+		
+		model.addAttribute( "configuracao", configuracao );
+	
+		return "player-web/player-web";
 	}
 	
 	
@@ -100,15 +101,16 @@ public class PlayerWebController extends AbstractController {
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
 		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-chamada-veiculos";
-		}
-		else
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-chamada-veiculos";
 	}
 	
 	
@@ -119,16 +121,17 @@ public class PlayerWebController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-chamada-instantanea";
-		}
-		else
+
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-chamada-instantanea";
 	}
 	
 	
@@ -139,16 +142,17 @@ public class PlayerWebController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-horoscopo";
-		}
-		else
+
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-horoscopo";
 	}
 	
 	
@@ -158,16 +162,17 @@ public class PlayerWebController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-config-comerciais";
-		}
-		else
+
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-config-comerciais";
 	}
 	
 	
@@ -178,15 +183,16 @@ public class PlayerWebController extends AbstractController {
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
 		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-config-institucionais";
-		}
-		else
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-config-institucionais";
 	}
 	
 	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/configprogrametes/view", method = RequestMethod.GET )
@@ -195,16 +201,17 @@ public class PlayerWebController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-config-programetes";
-		}
-		else
+
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-config-programetes";
 	}
 	
 	
@@ -215,15 +222,16 @@ public class PlayerWebController extends AbstractController {
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
 		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-generos";
-		}
-		else
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-generos";
 	}
 	
 
@@ -233,16 +241,17 @@ public class PlayerWebController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-blocos";
-		}
-		else
+
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-blocos";
 	}
 	
 	
@@ -253,15 +262,16 @@ public class PlayerWebController extends AbstractController {
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
 		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-nobreak";
-		}
-		else
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-nobreak";
 	}
 	
 	
@@ -272,16 +282,17 @@ public class PlayerWebController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-downloads";
-		}
-		else
+
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-downloads";
 	}
 
 	
@@ -292,15 +303,16 @@ public class PlayerWebController extends AbstractController {
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
 		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-relatorios";
-		}
-		else
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-relatorios";
 	}
 
 	
@@ -311,16 +323,17 @@ public class PlayerWebController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "player-web/modal-conversas";
-		}
-		else
+
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "player-web/modal-conversas";
 	}
 	
 	
@@ -330,16 +343,17 @@ public class PlayerWebController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
-		if ( ambiente != null )
-		{
-			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-			model.addAttribute( "nome", ambiente.getNome() );
-		
-			return "mensagens/template-conversas";
-		}
-		else
+
+		if ( ambiente == null )
 			return "HTTPerror/404";
+		
+		if ( !ambiente.getAtivo() )
+			return "player-web/inativo";
+
+		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+		model.addAttribute( "nome", ambiente.getNome() );
+	
+		return "mensagens/template-conversas";
 	}
 	
 }

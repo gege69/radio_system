@@ -15,24 +15,6 @@ import br.com.radio.model.Midia;
 
 public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
-
-
-//	List<Midia> findByAmbientesAndCategoriasAndValidoTrue( Ambiente ambiente, Categoria categoria );
-
-
-	// Para montar os blocos comerciais é interessante pegar apenas as mídias comerciais que tenham duração maior que zero pra evitar um bug
-//	List<Midia> findByAmbientesAndCategoriasAndValidoTrueAndDuracaoGreaterThan( Ambiente ambiente, Categoria categoria, Integer duracao );
-
-	
-//	Page<Midia> findByAmbientesAndCategorias_codigoAndValidoTrue( Pageable pageable, Ambiente ambiente, String codigo );
-//	List<Midia> findByAmbientesAndCategorias_codigoAndValidoTrue( Ambiente ambiente, String codigo );
-	
-//	Page<Midia> findByAmbientesAndValidoTrue( Pageable pageable, Ambiente ambiente );
-	
-//	Page<Midia> findByAmbientesAndNomeContainingIgnoreCaseAndValidoTrue( Ambiente ambiente, String nome, Pageable pageable );
-	
-//	Page<Midia> findByAmbientesAndNomeContainingAndCategoriasInAndValidoTrue( Ambiente ambiente, String nome, List<Categoria> categorias, Pageable pageable );
-	
 	Midia findByFilehash( String filehash );
 	
 	// Procurando por midias desse ambiente, na categoria indicada, nos generos indicados, sem repetição
@@ -52,4 +34,5 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	Page<Midia> findByCategoriasAndValidoTrue( Pageable pageable, Categoria categoria );
 	
 	Long countByNome( String nome );
+	
 }

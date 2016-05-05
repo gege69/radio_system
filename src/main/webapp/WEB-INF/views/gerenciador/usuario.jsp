@@ -77,7 +77,6 @@
               </div>
               
               <div class="col-lg-5 col-md-5">
-              
                 <table  
                    id="table-perfis"
                    class="tabela-perfis"
@@ -98,10 +97,8 @@
                       </tr>
                     </thead>
                 </table>
-              
               </div>
             </div>
-            
             
             <div class="row">
               <div class="col-lg-12 col-md-12">
