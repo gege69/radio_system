@@ -287,7 +287,7 @@ var keyup_validasenha = function( event ) {
             
             preencheErroFieldUpdate( 'password', texto );
         }
-        else if ( result != null && result.score <= 2 )
+        else if ( result != null && ( result.score > 0 && result.score <= 2 ) )
         {
             removeErros();
             feedbackFieldUpdate( 'password', 'Senha razoável', 'warning', 'exclamation-circle' );

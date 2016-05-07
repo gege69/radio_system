@@ -24,6 +24,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
+
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONDateSerializer;
 
@@ -141,11 +143,15 @@ public class Usuario implements Serializable {
 
 	public String getLogin()
 	{
+		if ( login != null )
+			login = StringUtils.lowerCase( login );
 		return login;
 	}
 
 	public void setLogin( String login )
 	{
+		if ( login != null )
+			login = StringUtils.lowerCase( login );
 		this.login = login;
 	}
 

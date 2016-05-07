@@ -2,7 +2,6 @@ package br.com.radio.service;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -69,8 +68,8 @@ public class UsuarioService {
 	private UsuarioPermissaoRepository usuarioPermissaoRepo;
 	
 	// Essas constantes determinam a força mínima para que seja possível aceitar. O password tem que ter força maior que esse valor.
-	private final int FORCA_MIN_PLAYER = 1;
-	private final int FORCA_MIN_GERENCIADOR = 1;
+	private final int FORCA_MIN_PLAYER = 0;
+	private final int FORCA_MIN_GERENCIADOR = 0;
 	private final int FORCA_MIN_ADM = 3;
 		
 
@@ -206,6 +205,10 @@ public class UsuarioService {
 		
 		usuario.setAtivo( usuarioDTO.getAtivo() );
 
+		List<Perfil> perfisDTO = usuarioGerenciadorDTO.getPerfis();
+
+		usuario.setPerfis( perfisDTO );
+
 		validaForcaSenha( usuarioDTO.getPassword(), usuario );
 		
 		if ( StringUtils.isNotBlank( usuarioDTO.getPassword() ) )
@@ -217,7 +220,7 @@ public class UsuarioService {
 		
 		if ( usuario != null && usuario.getIdUsuario() > 0 )
 		{
-			List<Perfil> perfisDTO = usuarioGerenciadorDTO.getPerfis();
+			perfisDTO = usuarioGerenciadorDTO.getPerfis();
 			
 			usuarioPerfilRepo.deleteByUsuario( usuario );
 			
