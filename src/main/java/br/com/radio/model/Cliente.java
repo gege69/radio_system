@@ -60,7 +60,6 @@ public class Cliente implements Serializable {
 	private String dominio;
 	
 	@JsonSerialize(using=JSONDateSerializer.class)
-	@NotNull( message = "A data de criação do cliente é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;

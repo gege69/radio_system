@@ -59,22 +59,22 @@ public class ClienteController extends AbstractController {
 	private TipoTaxaRepository tipoTaxaRepo;
 	
 
-	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
-	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String cadastro( ModelMap model, Principal principal )
-	{
-		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-		
-		if ( usuario == null || usuario.getCliente() == null )
-			return "HTTPerror/404";
-		
-		Long quantidade = clienteRepo.count();
-		
-		model.addAttribute( "qtdClientes", quantidade.intValue() );
-
-		
-		return "admin/cadastro-clientes";
-	}
+//	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
+//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+//	public String cadastro( ModelMap model, Principal principal )
+//	{
+//		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+//		
+//		if ( usuario == null || usuario.getCliente() == null )
+//			return "HTTPerror/404";
+//		
+//		Long quantidade = clienteRepo.count();
+//		
+//		model.addAttribute( "qtdClientes", quantidade.intValue() );
+//
+//		
+//		return "admin/cadastro-clientes";
+//	}
 	
 	
 	@RequestMapping(value={ "/admin/clientes/new" }, method=RequestMethod.GET)
@@ -398,7 +398,7 @@ public class ClienteController extends AbstractController {
 	
 
 	
-	@RequestMapping(value="/admin/relatorio-clientes", method=RequestMethod.GET)
+	@RequestMapping(value={ "/admin/relatorio-clientes", "/admin/clientes/searches" }, method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String relatorioClientes( ModelMap model, Principal principal )
 	{

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
@@ -27,6 +29,11 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 	
 	Ambiente findByLogin( String login );
 	
+//	@Modifying
+//    @Query( value = "update ambiente set ativo = ?1, set dataalteracao = clock_timestamp() where id_ambiente = ?2", nativeQuery = true )
+//    int updateToggleAtivo( Boolean ativo, Long idAmbiente );
+
+
 	/**
 	 * 
 	 * Exemplos
@@ -53,8 +60,6 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 //	@Query( value="select count(*) qtd from usuario where cd_email_usu = :email or cd_login_usu = :login", nativeQuery=true )
 //	public Optional<BigInteger> countByEmailOrLogin( @Param("email") String email, @Param("login") String login);
 //	
-
-	
 	
 	/**
 	 * Exemplo bacana pra construir o bean

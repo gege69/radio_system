@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.dto.EspelharAmbienteDTO;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.exception.ResourceNotFoundException;
@@ -118,11 +119,20 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes/{idAmbiente}/espelhar", method=RequestMethod.GET)
-	public String espelhar( @PathVariable String idAmbiente, ModelMap model, HttpServletResponse response )
+	public String espelhar( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
-		model.addAttribute( "quantidade", 1 );
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
 		
-		return "ambiente/espelhar";
+			return "ambiente/espelhar";
+		}
+		else
+			return "HTTPerror/404";
+		
 	}
 	
 	@RequestMapping(value="/ambientes/{idAmbiente}/editar", method=RequestMethod.GET)
@@ -394,9 +404,8 @@ public class AmbienteController extends AbstractController {
 	}
 	
 
-
-	@RequestMapping( value = { "/ambientes/inativar", "/api/ambientes/inativar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String inativarAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result, Principal principal )
+	@RequestMapping(value="/ambientes/{idAmbiente}/espelhar", method=RequestMethod.POST, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String espelhar( @RequestBody EspelharAmbienteDTO espelharDTO, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
 		
@@ -413,14 +422,95 @@ public class AmbienteController extends AbstractController {
 				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
 					throw new RuntimeException("Cliente do usuário não econtrado");
 				
-				if ( ambiente.getAtivo() == false )
+				ambienteService.espelharAmbiente( espelharDTO );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}	
+
+	@RequestMapping( value = { "/ambientes/inativar", "/api/ambientes/inativar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String inativarAmbiente( @RequestBody Ambiente ambienteVO, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+					throw new RuntimeException("Cliente do usuário não econtrado");
+				
+				Ambiente ambienteAtual = ambienteRepo.findOne( ambienteVO.getIdAmbiente() );
+				
+				if ( ambienteAtual == null )
+					throw new RuntimeException( "Ambiente não encontrado" );
+				
+				if ( ambienteAtual.getAtivo() == false )
 					throw new RuntimeException("Ambiente já está inativo");
 				
-				ambiente.setAtivo( false );
-				ambiente.setDataAlteracao( new Date() );
+				ambienteAtual.setAtivo( false );
+				ambienteAtual.setDataAlteracao( new Date() );
 				
-			// melhorar e colocar um log de quando ativou e inativou.... 
-				ambienteRepo.save( ambiente );
+				// Log vai ser no monitorar
+				ambienteRepo.save( ambienteAtual );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}	
+
+
+	@RequestMapping( value = { "/ambientes/ativar", "/api/ambientes/ativar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String ativarAmbiente( @RequestBody Ambiente ambienteVO, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+					throw new RuntimeException("Cliente do usuário não econtrado");
+				
+				Ambiente ambienteAtual = ambienteRepo.findOne( ambienteVO.getIdAmbiente() );
+				
+				if ( ambienteAtual == null )
+					throw new RuntimeException( "Ambiente não encontrado" );
+				
+				if ( ambienteAtual.getAtivo() == true )
+					throw new RuntimeException("Ambiente já está ativo");
+				
+				ambienteAtual.setAtivo( true );
+				ambienteAtual.setDataAlteracao( new Date() );
+				
+				ambienteRepo.save( ambienteAtual );
 				
 				jsonResult = writeOkResponse();
 			}

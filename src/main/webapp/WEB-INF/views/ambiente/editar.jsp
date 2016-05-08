@@ -130,7 +130,7 @@
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Login:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="text" class="form-control" id="login_amb" name="login" placeholder="Login">
+                    <input type="text" class="form-control" id="login_amb" name="login" placeholder="Login" style="text-transform: lowercase;">
                   </div>
                 </div>
                 

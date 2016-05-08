@@ -1264,7 +1264,6 @@ public class MidiaService {
 			crit.setMaxResults( pageable.getPageSize() );
 			crit.setFirstResult( pageable.getPageNumber() );
 		}
-
 		
 		List<MidiaOpcional> listMidiaOpcional = crit.list();
 		

@@ -51,14 +51,15 @@
           
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-              <a class="btn btn-default" href="${context}/admin/painel" >
-                  <i class="fa fa-arrow-left"></i>
-                  Voltar para o Painel de Administração</a>
+                <a class="btn btn-primary" href="${context}/admin/clientes/new">Adicionar Novo Cliente</a>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                       
+              <div class="pull-right">
+                <a class="btn btn-default" href="${context}/admin/painel">Painel de Admin</a>    
+              </div>          
             </div>
           </div>            
+
         </div>
       </div>
     </div>

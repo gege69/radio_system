@@ -47,7 +47,7 @@
           </div>
           <div class="form-group">
             <label for="login">Login</label>
-            <form:input class="form-control" path="cdLogin" value="" placeholder="Login"/>
+            <form:input class="form-control" path="cdLogin" value="" placeholder="Login" style="text-transform: lowercase;" />
             <form:errors path="cdLogin" element="div" class="alert alert-danger"/>
           </div>
           <div class="form-group">

@@ -90,7 +90,7 @@
         <h4 class="modal-title" id="titulo-modal">Inativar Ambiente</h4>
       </div>
       <div class="modal-body">
-        <form action="#" class="form-horizontal" id="inativar-ambiente-form" method="POST">
+        <form action="#" class="form-horizontal" id="inativarAmbienteForm" method="POST">
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
           <input type="hidden" id="idAmbienteDialog" name="idAmbiente" value="0">
           
@@ -120,6 +120,7 @@
 
 
 
+<script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
@@ -181,8 +182,32 @@
     }
     
 
-    function ativarAmbiente(idAmbiente){
+    function ativarAmbiente(idAmbiente)
+    {
+        if ( idAmbiente == null || idAmbiente == 0 )
+            preencheAlertGeral( "alertArea", "Ambiente não encontrado" );
+
+        var url = buildUrl( "/ambientes/ativar");
+
+        var formData =  $('#inativarAmbienteForm').serializeJSON();
+        formData.idAmbiente = idAmbiente;
         
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: url,
+            data:  JSON.stringify( formData ),
+            dataType: 'json'
+        }).done( function(json){ 
+
+            if (json.ok == 1){
+                preencheAlertGeral( "alertArea", "Ambiente desativado com sucesso", "success" );
+                $("#table-admin").bootstrapTable('refresh');
+            }
+            else{
+                preencheErros( json.errors );
+            }
+        }); 
     }
 
     function desativarAmbiente() 
@@ -194,11 +219,13 @@
 
         var url = buildUrl( "/ambientes/inativar");
         
+        var formData =  $('#inativarAmbienteForm').serializeJSON();
+        
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
             url: url,
-            data:  JSON.stringify( $('#inativar-ambiente-form').serializeJSON() ),
+            data:  JSON.stringify(formData),
             dataType: 'json'
         }).done( function(json){ 
 

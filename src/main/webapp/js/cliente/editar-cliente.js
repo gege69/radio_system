@@ -301,8 +301,12 @@ $(function(){
     $(".inteiro").mask('000');        
     $(".money").mask('000.000,00', {reverse: true});
     
-    getDados();
-    getResumo();
+    var idCliente = $("#idCliente").val();
+    
+    if ( idCliente != null && idCliente > 0 ){
+        getDados();
+        getResumo();
+    }
     
     $("#linkaddtelefone").click( function() {
         addTelefone(); 
@@ -311,6 +315,16 @@ $(function(){
     refreshLinkRemoverTelefone();
     
     $("#abas li:eq(0) a").tab('show'); 
+
+    if ( idCliente != null && idCliente > 0 ){
+        $('#tablePagamentosTitulos').bootstrapTable({
+            queryParams : queryParamsPag
+        });
+
+        $('#tableCondicoesComerciais').bootstrapTable({
+            queryParams : queryParamsCondicoesComerciais
+        });
+    }
 
     $("#btnInserirCondicaoComercial").click( function() {
         formReset($("#formCondicaoComercial"));
@@ -323,17 +337,9 @@ $(function(){
         editCondicaoComercial( e, row, el );
     });
     
-    $('#tablePagamentosTitulos').bootstrapTable({
-        queryParams : queryParamsPag
-    });
-
-    $('#tableCondicoesComerciais').bootstrapTable({
-        queryParams : queryParamsCondicoesComerciais
-    });
 
     $("#btnSalvarCondicao").click( function() {
         salvarCondicaoComercial();
     });
-
 
 });

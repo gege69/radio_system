@@ -219,22 +219,36 @@
 
                     <div id="divResumoFinanceiro" class="tab-pane fade in active">
                       <div class="col-lg-12 col-md-12">
-                        <form action="#" id="formResumo" class="form-inline">
+                        <form action="#" id="formResumo" class="form-horizontal">
 
                           <div class="form-group">
-                            <label for="cep">Total Ambientes: </label>
-                            <input type="text" class="form-control inteiro" id="totalAmbientes" name="totalAmbientes" readonly="readonly">
+                            <label for="totalAmbientes" class="control-label col-sm-3 col-md-2">Total Ambientes: </label>
+                            <div class="col-lg-2 col-md-3 col-sm-4">
+                              <input type="text" class="form-control inteiro" id="totalAmbientes" name="totalAmbientes" readonly="readonly">
+                            </div>
                           </div>
                           
                           <div class="form-group">
-                            <label for="login">Ambientes Ativos: </label>
-                            <input type="text" class="form-control inteiro" id="ambientesAtivos" name="ambientesAtivos" readonly="readonly">
+                            <label for="ambientesAtivos" class="control-label col-sm-3 col-md-2">Ambientes Ativos: </label>
+                            <div class="col-lg-2 col-md-3 col-sm-4">
+                              <input type="text" class="form-control inteiro" id="ambientesAtivos" name="ambientesAtivos" readonly="readonly">
+                            </div>
                           </div>
 
                           <div class="form-group">
-                            <label for="login">Ambientes Inativos: </label>
-                            <input type="text" class="form-control inteiro" id="ambientesInativos" name="ambientesInativos" readonly="readonly">
+                            <label for="ambientesInativos" class="control-label col-sm-3 col-md-2">Ambientes Inativos: </label>
+                            <div class="col-lg-2 col-md-3 col-sm-4">
+                              <input type="text" class="form-control inteiro" id="ambientesInativos" name="ambientesInativos" readonly="readonly">
+                            </div>
                           </div> 
+
+                          <div class="form-group">
+                            <label for="login" class="control-label col-sm-3 col-md-2">Data de Cadastro</label>
+                            <div class="col-lg-2 col-md-3 col-sm-4">
+                              <input type="text" class="form-control" id="dataCriacao" name="dataCriacao" readonly="readonly">
+                            </div>
+                          </div>
+
                         </form>
                       </div>
                     </div>

@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.springframework.beans.BeanUtils;
@@ -84,6 +86,9 @@ public class ClienteService {
 	@Transactional
 	public Cliente saveCliente( Cliente clienteVO )
 	{
+		if ( clienteVO.getDataCriacao() == null )
+			clienteVO.setDataCriacao( new Date() );
+		
 		if ( clienteVO.getAtivo() == null )
 			clienteVO.setAtivo( false );
  
@@ -187,9 +192,37 @@ public class ClienteService {
 	}
 	
 
+	
+
+	private Criteria createCriteriaCliente( String razaoSocial, String nomeFantasia, String cnpj, Session session)
+	{
+		if ( StringUtils.isBlank( razaoSocial ) && StringUtils.isBlank( nomeFantasia ) && StringUtils.isBlank( cnpj ) )
+			throw new RuntimeException("Nenhum campo preenchido");
+
+		Criteria crit = session.createCriteria( Cliente.class );
+
+		Disjunction disjunction = Restrictions.disjunction();
+
+		if ( StringUtils.isNotBlank( razaoSocial ) )
+			disjunction.add( Restrictions.ilike( "razaosocial", razaoSocial ) );
+		
+		if ( StringUtils.isNotBlank( nomeFantasia ) )
+			disjunction.add( Restrictions.ilike( "nomefantasia", nomeFantasia ) );
+		
+		if ( StringUtils.isNotBlank( cnpj ) )
+			disjunction.add( Restrictions.ilike( "cnpj", cnpj ) );
+		
+		crit.add( disjunction );
+
+		return crit;
+	}
+
+
+
+	@Transactional
 	public Page<ClienteRelatorioDTO> getRelatorioCliente( Pageable pageable, String search ){
 
-		Page<Cliente> paginaCliente = clienteRepo.findAll( pageable );
+		Page<Cliente> paginaCliente = null;
 		
 		if ( StringUtils.isBlank( UtilsStr.notNull( search ) ) )
 			paginaCliente = clienteRepo.findAll( pageable );
@@ -199,8 +232,26 @@ public class ClienteService {
 			String nomefantasia = "%" + search + "%";
 			String cnpj = "%" + search + "%";
 
-			paginaCliente = clienteRepo.findByRazaosocialContainingIgnoreCaseOrNomefantasiaContainingIgnoreCaseOrCnpjContaining( pageable, razaosocial, nomefantasia, cnpj );
+			Session session = entityManager.unwrap( Session.class );
+
+			Criteria critCount =  createCriteriaCliente( razaosocial, nomefantasia, cnpj, session );
+			critCount.setProjection( Projections.rowCount() );
+			Long total = (Long)critCount.uniqueResult();
+			
+			Criteria crit = createCriteriaCliente( razaosocial, nomefantasia, cnpj, session );
+			
+			if ( pageable != null ){
+				crit.setMaxResults( pageable.getPageSize() );
+				crit.setFirstResult( pageable.getPageNumber() );
+			}
+			
+			List<Cliente> listCliente = crit.list();
+
+			paginaCliente = new PageImpl<Cliente>( listCliente, pageable, total );
 		}
+
+		if ( paginaCliente == null )
+			throw new RuntimeException("Não foi possível buscar os clientes");
 		
 		List<ClienteRelatorioDTO> listaRelatorio = new ArrayList<ClienteRelatorioDTO>();
 		
@@ -234,7 +285,6 @@ public class ClienteService {
 			
 			if ( verificarConta.compareTo( totalPagar ) != 0 )
 				System.out.println("DEU ALGUMA COISA ERRADA NOS CALCULOS");
-			
 			
 			ClienteRelatorioDTO clienteRelatorioDTO = new ClienteRelatorioDTO( usuario, totalAmbientes, cliente, totalLiquido, totalDescontos, totalPagar );
 			
