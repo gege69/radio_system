@@ -9,4 +9,6 @@ public interface AmbienteConfiguracaoRepository extends JpaRepository<AmbienteCo
 
 	AmbienteConfiguracao findByAmbiente( Ambiente ambiente );
 	
+	Long deleteByAmbiente( Ambiente ambiente );
+	
 }

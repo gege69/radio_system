@@ -3,8 +3,11 @@ package br.com.radio.service;
 import java.time.LocalTime;
 import java.util.Base64;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import br.com.radio.model.Bloco;
 import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Genero;
+import br.com.radio.model.MidiaAmbiente;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
@@ -32,6 +36,7 @@ import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.EventoHorarioRepository;
 import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.GeneroRepository;
+import br.com.radio.repository.MidiaAmbienteRepository;
 import br.com.radio.util.Constantes;
 import br.com.radio.util.UtilsStr;
 
@@ -53,6 +58,9 @@ public class AmbienteService {
 	
 	@Autowired
 	private MidiaService midiaService;
+
+	@Autowired
+	private MidiaAmbienteRepository midiaAmbienteRepository;
 	
 	@Autowired
 	private BlocoRepository blocoRepository;
@@ -72,7 +80,9 @@ public class AmbienteService {
 	@Autowired
 	private BlocoRepository blocoRepo;
 	
-
+	@Autowired
+	private EntityManager entityManager;
+	
 
 	/**
 	 * Esse método salva o ambiente tomando cuidado para verificar os emails e endereços.
@@ -364,10 +374,50 @@ public class AmbienteService {
 	}
 	
 	
+	@Transactional
 	public void espelharAmbiente( EspelharAmbienteDTO espelharDTO ){
 		
+		if ( espelharDTO.getIdAmbienteTemplate() == null || espelharDTO.getIdAmbienteTemplate() == 0 )
+			throw new RuntimeException("Ambiente modelo não foi selecionado");
 		
+		if ( espelharDTO.getIdAmbienteAtual() == null || espelharDTO.getIdAmbienteAtual() == 0 )
+			throw new RuntimeException("Ambiente alvo não foi selecionado");
+
+		Ambiente ambienteOrigem = ambienteRepo.findOne( espelharDTO.getIdAmbienteTemplate() );
+		Ambiente ambienteAlvo = ambienteRepo.findOne( espelharDTO.getIdAmbienteAtual() );
 		
+		if ( ambienteOrigem == null )
+			throw new RuntimeException("Ambiente modelo não encontrado");
+		
+		if ( ambienteAlvo == null )
+			throw new RuntimeException("Ambiente alvo não encontrado");
+		
+		// Primeiro limpando o ambiente alvo
+		midiaAmbienteRepository.deleteByAmbiente( ambienteAlvo );
+		ambienteGeneroRepo.deleteByAmbiente( ambienteAlvo );
+		ambienteConfigRepo.deleteByAmbiente( ambienteAlvo );
+		
+		List<MidiaAmbiente> midiaAmbienteList = midiaAmbienteRepository.findByAmbiente( ambienteOrigem );
+		List<AmbienteGenero> ambienteGeneroList = ambienteGeneroRepo.findByAmbiente( ambienteOrigem );
+		AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambienteOrigem );
+		
+		Date hoje = new Date();
+		
+		midiaAmbienteList.forEach( ma -> {
+			MidiaAmbiente novoMa = new MidiaAmbiente( ambienteAlvo, ma.getMidia(), hoje );
+			midiaAmbienteRepository.save( novoMa );
+		});
+		
+		ambienteGeneroList.forEach( ag -> {
+			AmbienteGenero novoAg = new AmbienteGenero( ambienteAlvo, ag.getGenero() );
+			ambienteGeneroRepo.save( novoAg );
+		});
+
+		entityManager.detach( configuracao );
+		configuracao.setIdAmbConfig( null );
+		configuracao.setAmbiente( ambienteAlvo );
+		
+		ambienteConfigRepo.save( configuracao );
 	}
 	
 	

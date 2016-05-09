@@ -119,7 +119,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes/{idAmbiente}/espelhar", method=RequestMethod.GET)
-	public String espelhar( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	public String espelharView( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 
@@ -404,7 +404,7 @@ public class AmbienteController extends AbstractController {
 	}
 	
 
-	@RequestMapping(value="/ambientes/{idAmbiente}/espelhar", method=RequestMethod.POST, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@RequestMapping(value="/ambientes/espelhar", method=RequestMethod.POST, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String espelhar( @RequestBody EspelharAmbienteDTO espelharDTO, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
@@ -738,10 +738,7 @@ public class AmbienteController extends AbstractController {
 			
 			if ( ambienteConfiguracao.getIdAmbConfig() != null && ambienteConfiguracao.getIdAmbConfig() > 0 )
 				configuracaoAnterior = ambienteConfigRepo.findOne( ambienteConfiguracao.getIdAmbConfig() );
-			
-			if ( configuracaoAnterior == null ) // apenas para garantir : verificar se já não existe uma configuração anterior para o ambiente ( mesmo que o ID da config não seja passado )
-				configuracaoAnterior = ambiente.getConfiguracao();
-			
+
 			if ( configuracaoAnterior != null )
 			{
 				ambienteConfiguracao.setIdAmbConfig( configuracaoAnterior.getIdAmbConfig() );  // apenas garantindo o id do registro existente para que ele faça um update...

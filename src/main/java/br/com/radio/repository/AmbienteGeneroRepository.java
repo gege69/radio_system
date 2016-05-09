@@ -17,6 +17,8 @@ public interface AmbienteGeneroRepository extends JpaRepository<AmbienteGenero, 
     @Query( value = "DELETE FROM AMBIENTE_GENERO WHERE ID_AMBIENTE = :idAmbiente AND ID_GENERO NOT IN :ids ", nativeQuery = true )
     int deleteByAmbienteNotInIds(@Param("idAmbiente") Long idAmbiente, @Param("ids") List<Long> idsGeneros );
 	
+	Long deleteByAmbiente( Ambiente ambiente );
+	
 	List<AmbienteGenero> findByAmbiente( Ambiente ambiente );
 	
 	AmbienteGenero findByAmbienteAndGenero( Ambiente ambiente, Genero genero );

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -61,10 +62,6 @@ public class Ambiente implements Serializable {
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn( name="id_cliente", nullable=false )
 	private Cliente cliente;
-	
-	@JsonIgnore
-	@OneToOne(fetch=FetchType.LAZY, mappedBy= "ambiente")
-	private AmbienteConfiguracao configuracao;
 	
 	@JsonIgnore
 	@OneToOne(fetch=FetchType.LAZY, mappedBy= "ambiente")
@@ -473,16 +470,6 @@ public class Ambiente implements Serializable {
 	public void setAmbienteAPI( Map<String, String> ambienteAPI )
 	{
 		this.ambienteAPI = ambienteAPI;
-	}
-
-	public AmbienteConfiguracao getConfiguracao()
-	{
-		return configuracao;
-	}
-
-	public void setConfiguracao( AmbienteConfiguracao configuracao )
-	{
-		this.configuracao = configuracao;
 	}
 
 	public Integer getHoraIniExpediente()

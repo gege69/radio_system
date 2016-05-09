@@ -24,7 +24,10 @@ public interface MidiaAmbienteRepository extends JpaRepository<MidiaAmbiente, Lo
 					"  AND ma.id_midiaamb IS NULL ", nativeQuery = true)
 	int insertMidiasDefaultAmbiente( Long idAmbiente );
 	
-	
 	List<MidiaAmbiente> findByMidia( Midia midia );
+	
+	Long deleteByAmbiente( Ambiente ambiente );
+	
+	List<MidiaAmbiente> findByAmbiente( Ambiente ambiente );
 
 }
