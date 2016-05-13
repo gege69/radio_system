@@ -84,10 +84,10 @@
                    data-url="${context}/perfis/"
                    data-side-pagination="server"
                    data-pagination="true"
-                   data-page-size=5
+                   data-page-size=7
                    data-page-list="[5]"
                    data-locale = "pt_BR"
-                   data-height="300"
+                   data-height="400"
                    data-query-params="queryParamsPerfis" >
                     <thead>
                       <tr>
@@ -99,15 +99,22 @@
                 </table>
               </div>
             </div>
-            
+
             <div class="row">
-              <div class="col-lg-12 col-md-12">
-                <div class="pull-right">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="">
                   <button type="button" class="btn btn-primary" id="btnSalvar">
                     <i class="fa fa-floppy-o"></i>
                     Salvar Alterações
                   </button>
                 </div>            
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="pull-right">
+                  <a class="btn btn-default" href="${context}/perfis">
+                    <i class="fa fa-legal"></i>
+                    Administrar Perfis</a>
+                </div>
               </div>
             </div>
             

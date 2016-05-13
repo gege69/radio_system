@@ -39,6 +39,7 @@ import br.com.radio.model.Cliente;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Perfil;
+import br.com.radio.model.Permissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
@@ -46,6 +47,7 @@ import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.PerfilRepository;
+import br.com.radio.repository.PermissaoRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.UsuarioService;
 
@@ -78,6 +80,8 @@ public class GerenciadorController extends AbstractController {
 	private AudioOpcionalRepository opcionalRepo;
 	@Autowired
 	private UsuarioService usuarioService;
+	@Autowired
+	private PermissaoRepository permissaoRepo;
 	
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -283,7 +287,17 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	
+	@RequestMapping(value="/perfis/view", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('PERFIS')")
+	public String perfisView( ModelMap model )
+	{
+		return "gerenciador/usuario";
+	}
+		
+
+	
 	@RequestMapping( value = { "/perfis", "/api/perfis" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('USUARIOS') OR hasAuthority('PERFIS')")
 	public @ResponseBody JSONBootstrapGridWrapper<Perfil> listPerfis()
 	{
 		boolean admSistema = hasAuthority( "ADM_SISTEMA" );
@@ -301,6 +315,24 @@ public class GerenciadorController extends AbstractController {
 
 		return jsonList;
 	}
+	
+	
+	@RequestMapping( value = { "/perfis/permissoes", "/api/perfis/permissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('PERFIS')")
+	public @ResponseBody JSONBootstrapGridWrapper<Permissao> listPermissoes(
+																	 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																	 @RequestParam(value="limit", required=false) Integer limit
+																 )
+	{
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "codigo" );
+
+		Page<Permissao> permissaoPage = permissaoRepo.findAll( pageable );
+
+		JSONBootstrapGridWrapper<Permissao> jsonList = new JSONBootstrapGridWrapper<Permissao>(permissaoPage.getContent(), permissaoPage.getTotalElements());
+
+		return jsonList;
+	}	
+	
 	
 	
 	
