@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -291,7 +292,7 @@ public class GerenciadorController extends AbstractController {
 	@PreAuthorize("hasAuthority('PERFIS')")
 	public String perfisView( ModelMap model )
 	{
-		return "gerenciador/usuario";
+		return "gerenciador/perfil";
 	}
 		
 
@@ -321,18 +322,112 @@ public class GerenciadorController extends AbstractController {
 	@PreAuthorize("hasAuthority('PERFIS')")
 	public @ResponseBody JSONBootstrapGridWrapper<Permissao> listPermissoes(
 																	 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
-																	 @RequestParam(value="limit", required=false) Integer limit
+																	 @RequestParam(value="limit", required=false) Integer limit, 
+																	 Principal principal 
 																 )
 	{
-		Pageable pageable = getPageable( pageNumber, limit, "asc", "codigo" );
+		Pageable pageable = getPageable( pageNumber, 99, "asc", "codigo" );
 
-		Page<Permissao> permissaoPage = permissaoRepo.findAll( pageable );
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException("Cliente não encontrado.");
+
+		List<Perfil> perfis = usuario.getPerfis();
+
+		Page<Permissao> permissaoPage = null;
+
+		if ( perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS ) )
+			permissaoPage = permissaoRepo.findAll( pageable );
+		else 
+			permissaoPage = permissaoRepo.findByExclusivoFalse( pageable );
 
 		JSONBootstrapGridWrapper<Permissao> jsonList = new JSONBootstrapGridWrapper<Permissao>(permissaoPage.getContent(), permissaoPage.getTotalElements());
 
 		return jsonList;
 	}	
 	
+	
+	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes", "/api/perfis/{idPerfil}/permissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('PERFIS')")
+	public @ResponseBody JSONBootstrapGridWrapper<Permissao> listPermissoes(
+																	 @PathVariable Long idPerfil,
+																	 Principal principal 
+																 )
+	{
+		Pageable pageable = getPageable( 1, 99, "asc", "codigo" );
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException("Cliente não encontrado.");
+
+		List<Perfil> perfis = usuario.getPerfis();
+
+		Page<Permissao> permissaoPage = null;
+
+		if ( perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS ) )
+		else 
+
+		JSONBootstrapGridWrapper<Permissao> jsonList = new JSONBootstrapGridWrapper<Permissao>(permissaoPage.getContent(), permissaoPage.getTotalElements());
+
+		return jsonList;
+	}
+
+
+	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes/{idPermissao}", "/api/perfis/{idPerfil}/permissoes/{idPermissao}" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String savePerfilPermissao( @PathVariable Long idPerfil, @PathVariable Long idPermissao, Principal principal )
+	{
+		String jsonResult = null;
+		
+		try
+		{
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null || usuario.getCliente() == null )
+				throw new RuntimeException("Cliente não encontrado.");
+
+			usuarioService.savePerfilPermissao( idPerfil, idPermissao );
+			
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+
+		return jsonResult;
+	}
+
+
+	
+	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes/{idPermissao}", "/api/perfis/{idPerfil}/permissoes/{idPermissao}" }, method = { RequestMethod.DELETE }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String deletePerfilPermissao( @PathVariable Long idPerfil, @PathVariable Long idPermissao, Principal principal )
+	{
+		String jsonResult = null;
+		
+		try
+		{
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null || usuario.getCliente() == null )
+				throw new RuntimeException("Cliente não encontrado.");
+
+			usuarioService.deletePerfilPermissao( idPerfil, idPermissao );
+			
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+
+		return jsonResult;
+	}
+
+
 	
 	
 	

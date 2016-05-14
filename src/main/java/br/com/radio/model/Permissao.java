@@ -40,6 +40,9 @@ public class Permissao implements Serializable {
 	@NotNull( message = "A descrição da Permissão é de preenchimento obrigatório" )
 	@Column( name = "descricao", nullable = false, columnDefinition = "TEXT" )
 	private String descricao;
+
+	@Column( name = "exclusivo", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE" )
+	private boolean exclusivo = false;
 	
 	@ManyToOne
 	@JoinColumn(name="id_permissaopai")
@@ -130,6 +133,23 @@ public class Permissao implements Serializable {
 	{
 		return String.format( "Permissao [idPermissao=%s, codigo=%s, descricao=%s, permissaoPai=%s ]", idPermissao, codigo, descricao, permissaoPai );
 	}
+
+	public Permissao()
+	{
+		super();
+		this.exclusivo = false;
+	}
+
+	public boolean isExclusivo()
+	{
+		return exclusivo;
+	}
+
+	public void setExclusivo( boolean exclusivo )
+	{
+		this.exclusivo = exclusivo;
+	}
+	
 	
 
 }

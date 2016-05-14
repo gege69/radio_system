@@ -111,7 +111,7 @@
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="pull-right">
-                  <a class="btn btn-default" href="${context}/perfis">
+                  <a class="btn btn-default" href="${context}/perfis/view">
                     <i class="fa fa-legal"></i>
                     Administrar Perfis</a>
                 </div>

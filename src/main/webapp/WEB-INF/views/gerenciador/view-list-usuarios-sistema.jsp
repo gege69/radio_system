@@ -42,11 +42,27 @@
             </div>
           </div>
           
-          <div class="spacer-vertical40"></div>
-          
+          <div class="spacer-vertical20"></div>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="">
+                <a class="btn btn-primary" href="${context}/usuarios/view">Adicionar Novo Usuário</a>
+              </div>            
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="pull-right">
+                <a class="btn btn-default" href="${context}/perfis/view">
+                  <i class="fa fa-legal"></i>
+                  Administrar Perfis</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="spacer-vertical20"></div>
+
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                <a class="btn btn-primary" href="${context}/usuarios/view">Adicionar Novo Usuário</a>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="pull-right">

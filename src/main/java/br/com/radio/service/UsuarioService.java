@@ -21,12 +21,14 @@ import br.com.radio.exception.EmailExistsException;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Perfil;
+import br.com.radio.model.PerfilPermissao;
 import br.com.radio.model.Permissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.UsuarioPerfil;
 import br.com.radio.model.UsuarioPermissao;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.ClienteRepository;
+import br.com.radio.repository.PerfilPermissaoRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.PermissaoRepository;
 import br.com.radio.repository.UsuarioPerfilRepository;
@@ -63,6 +65,9 @@ public class UsuarioService {
 	
 	@Autowired
 	private PermissaoRepository permissaoRepo;
+	
+	@Autowired
+	private PerfilPermissaoRepository perfilPermissaoRepo;
 	
 	@Autowired
 	private UsuarioPermissaoRepository usuarioPermissaoRepo;
@@ -387,6 +392,48 @@ public class UsuarioService {
 		
 		return dto;
 	}
+	
+	
+	
+	public void savePerfilPermissao( Long idPerfil, Long idPermissao ){
+		
+		Perfil perfil = perfilRepo.findOne( idPerfil );
+		Permissao permissao = permissaoRepo.findOne( idPermissao );
+		
+		if ( perfil == null )
+			throw new RuntimeException("Perfil não encontrado.");
+		
+		if ( permissao == null )
+			throw new RuntimeException("Permissao não encontrada.");
+
+		PerfilPermissao perfilPermissao = perfilPermissaoRepo.findByPerfilAndPermissao( perfil, permissao );
+		
+		if ( perfilPermissao == null ){ 
+			perfilPermissao = new PerfilPermissao( perfil, permissao, new Date() );
+			
+			perfilPermissaoRepo.save( perfilPermissao );
+		}
+	}
+	
+	
+	public void deletePerfilPermissao( Long idPerfil, Long idPermissao ){
+		
+		Perfil perfil = perfilRepo.findOne( idPerfil );
+		Permissao permissao = permissaoRepo.findOne( idPermissao );
+		
+		if ( perfil == null )
+			throw new RuntimeException("Perfil não encontrado.");
+		
+		if ( permissao == null )
+			throw new RuntimeException("Permissao não encontrada.");
+		
+		PerfilPermissao perfilPermissao = perfilPermissaoRepo.findByPerfilAndPermissao( perfil, permissao );
+		
+		if ( perfilPermissao != null ){ 
+			perfilPermissaoRepo.delete( perfilPermissao );
+		}
+	}
+
 	
 	
 }

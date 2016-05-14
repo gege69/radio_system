@@ -21,7 +21,7 @@ function queryParamsPermissoes(params) {
 
 var limpaSelecaoGrid = function()
 {
-    // percorrer a grid de permissoes limpando....
+    $tablePermissoes.bootstrapTable('uncheckAll');
 }
 
 
@@ -30,6 +30,8 @@ var getDados = function( id )
     if ( id == null || id == undefined )
         alert('Id não encontrado');
     
+    $tablePermissoes.bootstrapTable('refresh');
+
     var url = buildUrl( "/perfis/{idPerfil}/permissoes", { 
         idPerfil: id
     });
@@ -58,29 +60,28 @@ var getDados = function( id )
 
 
 
-var salvar = function( id ){
+var salvarPermissao = function( idPermissao ){
     
-    var selecao = $table.bootstrapTable('getSelections');
+    var idPerfil = $("#idPerfil").val();
     
     var url = buildUrl( "/perfis/{idPerfil}/permissoes/{idPermissao}", {
-        idPerfil : idPerfil
+        idPerfil : idPerfil,
+        idPermissao : idPermissao
     } );
 
     $.ajax({
-        
         type: 'POST',
         contentType: 'application/json',
         url: url,
         dataType: 'json',
         data:  dados
-        
     }).done( function(json){ 
-
-        if (json.ok == 1){
-            preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-            jump(''); // topo da pagina
+        
+        if ( json.ok == 1 ){
+            $('#alertArea').empty();
+            preencheAlertGeral( "alertArea", "Registro salvo com sucesso", "success" );
         }
-        else{
+        if (json.ok == null || json.ok != 1){
             preencheErros( json.errors );
         }
     });
@@ -94,14 +95,10 @@ $(function(){
     $(document).ajaxSend(function(e, xhr, options) {
         xhr.setRequestHeader(header, token);
     });
-   
-    $('#btnSalvar').on('click', salvar);
     
-//    getDados( $('#idUsuario').val() );
-    
-    $table.on('load-success.bs.table', function( e, data ){
-        loadSuccessGrid();
-    });
+    $table.on('click-row.bs.table', function( e, row, el ){
+        getDados(row.idPerfil);
+    }); 
     
     $('#password').keyup( function( event ) {
         keyup_validasenha( $("usuario-form"), event );

@@ -13,7 +13,6 @@ function queryParamsPerfis(params) {
 function loadSuccessGrid()
 {
     getDados( $('#idUsuario').val() );
-
 }
 
 

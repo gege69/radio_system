@@ -9,17 +9,24 @@
  
     <div class="row">
     
-      <div class="row" id="alertArea">
-      </div>
-    
     
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Usuário<br/>
-            <small>Preencha as informações do Usuário</small>
-          </h3>
           
-          <div class="spacer-vertical40"></div>
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3>Usuário<br/>
+                <small>Preencha as informações do Usuário</small>
+              </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div> 
+          
+          <div class="row spacer-vertical20"></div> 
+
+          <input type="hidden" id="idPerfil" name="idPerfil">
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
@@ -30,8 +37,7 @@
                  data-url="${context}/perfis/"
                  data-side-pagination="server"
                  data-pagination="true"
-                 data-page-size=5
-                 data-page-list="[5]"
+                 data-page-size=9
                  data-unique-id="idPerfil"
                  data-locale = "pt_BR"
                  data-height="400"
@@ -53,44 +59,21 @@
                  data-url="${context}/perfis/permissoes"
                  data-side-pagination="server"
                  data-pagination="false"
-                 data-page-size=15
-                 data-page-list="[15]"
                  data-locale = "pt_BR"
-                 data-height="600"
+                 data-height="400"
                  data-query-params="queryParamsPerfis" >
                   <thead>
                     <tr>
                       <th data-field="state" data-checkbox="true"></th>
-                      <th data-field="codigo">Permissões</th>
+                      <th data-field="descricao">Permissões</th>
                     </tr>
                   </thead>
               </table>
             </div>
           </div>
 
+          <div class="spacer-vertical20"></div>
 
-          <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="">
-                <button type="button" class="btn btn-primary" id="btnSalvar">
-                  <i class="fa fa-floppy-o"></i>
-                  Salvar Alterações
-                </button>
-              </div>            
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
-                <a class="btn btn-default" href="${context}/principal">
-                  <i class="fa fa-key"</i>
-                  Administrar Perfis</a>
-              </div>
-            </div>
-          </div>
-
-          
-          
-          <div class="spacer-vertical40"></div>
-          
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
@@ -117,13 +100,16 @@
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
 
+<script src="${context}/js/gerenciador/perfil.js"></script>
 
-<script src="${context}/js/required/jquery.serializejson.js"></script>
-<script src="${context}/js/required/jquery.populate.js"></script>
 
-<script type="text/javascript" src="${context}/js/required/zxcvbn.js"></script>
 
-<script src="${context}/js/gerenciador/usuario.js"></script>
+<style type="text/css">
 
+#tablePerfis tr{
+  cursor: pointer;
+}
+
+</style>
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

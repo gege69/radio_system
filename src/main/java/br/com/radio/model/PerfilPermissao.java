@@ -129,6 +129,14 @@ public class PerfilPermissao implements Serializable {
 	{
 		return String.format( "PerfilPermissao [idPerfperm=%s, perfil=%s, permissao=%s ]", idPerfperm, perfil, permissao );
 	}
+
+	public PerfilPermissao( Perfil perfil, Permissao permissao, Date dataCriacao )
+	{
+		super();
+		this.perfil = perfil;
+		this.permissao = permissao;
+		this.dataCriacao = dataCriacao;
+	}
 	
 
 }
