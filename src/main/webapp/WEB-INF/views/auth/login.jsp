@@ -26,11 +26,11 @@
             <form action="login" method="POST">
               <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
               <div class="form-group">
-                <label for="login">Login</label>
+                <label for="login" style="color : black;">Login</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Login" value="">
               </div>
               <div class="form-group">
-                <label for="senha">Senha</label>
+                <label for="senha" style="color : black;">Senha</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Senha" value="">
               </div>
               <button type="submit" class="btn btn-primary">Entrar</button>

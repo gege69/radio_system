@@ -27,6 +27,7 @@
           <div class="row spacer-vertical20"></div> 
 
           <input type="hidden" id="idPerfil" name="idPerfil">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
@@ -52,6 +53,7 @@
             </div>
             
             <div class="col-lg-6 col-md-6">
+              <h4><span id="indicador" style="display: none;" class="label label-primary"></span></h4>
               <table  
                  id="tablePermissoes"
                  class="tabelaPermissoes"
@@ -60,15 +62,31 @@
                  data-side-pagination="server"
                  data-pagination="false"
                  data-locale = "pt_BR"
+                 data-unique-id="idPermissao"
                  data-height="400"
                  data-query-params="queryParamsPerfis" >
                   <thead>
                     <tr>
                       <th data-field="state" data-checkbox="true"></th>
+                        <th data-field="idPermissao">Id</th>
                       <th data-field="descricao">Permissões</th>
                     </tr>
                   </thead>
               </table>
+            </div>
+          </div>
+
+          <div class="spacer-vertical20"></div>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="">
+              </div>            
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="pull-right">
+                <button type="button" class="btn btn-primary" id="btnSalvarPermissoes">Salvar Permissões</a>
+              </div>
             </div>
           </div>
 
@@ -99,8 +117,9 @@
 
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
+<script src="${context}/js/required/jquery.serializejson.js"></script>
 
-<script src="${context}/js/gerenciador/perfil.js"></script>
+<script src="${context}/js/gerenciador/perfil.js" charset="UTF-8"></script>
 
 
 

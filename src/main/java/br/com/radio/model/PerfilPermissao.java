@@ -137,6 +137,10 @@ public class PerfilPermissao implements Serializable {
 		this.permissao = permissao;
 		this.dataCriacao = dataCriacao;
 	}
-	
+
+	public PerfilPermissao()
+	{
+		super();
+	}
 
 }

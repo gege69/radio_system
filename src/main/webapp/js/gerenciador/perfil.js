@@ -1,6 +1,6 @@
 
 var $table = $('#tablePerfis');
-var $tablePermissoes = $('#tablePerfis');
+var $tablePermissoes = $('#tablePermissoes');
 
 function queryParamsPerfis(params) {
 
@@ -25,6 +25,8 @@ var limpaSelecaoGrid = function()
 }
 
 
+var copia_dados = [];
+
 var getDados = function( id )
 {
     if ( id == null || id == undefined )
@@ -45,40 +47,60 @@ var getDados = function( id )
         
         limpaSelecaoGrid();
         
-        if ( json != null )
+        if ( json != null && json.rows != null )
         {
             var ids = [];
-            $(json).each(function(){
+            copia_dados = [];
+            $(json.rows).each(function(){
                 perfilPermissao = this;
                 ids.push( perfilPermissao.permissao.idPermissao );
+                copia_dados.push( perfilPermissao.permissao.idPermissao );
             });
-            
-            $tablePermissao.bootstrapTable('checkBy', {field:'idPermissao', values: ids } );
+
+            $("#tablePermissoes").bootstrapTable('checkBy', {field:'idPermissao', values: ids } );
         }
     });
 }
 
 
 
-var salvarPermissao = function( idPermissao ){
+
+var salvarPermissao = function(){
     
     var idPerfil = $("#idPerfil").val();
+
+    if ( idPerfil == null || idPerfil == "" ){
+        preencheAlertGeral( "alertArea", "É necessário selecionar um Perfil na tabela da esquerda.");
+        return;
+    }
     
-    var url = buildUrl( "/perfis/{idPerfil}/permissoes/{idPermissao}", {
+    var url = buildUrl( "/perfis/{idPerfil}/permissoes", {
         idPerfil : idPerfil,
-        idPermissao : idPermissao
-    } );
+    });
+    
+    var selecao = $tablePermissoes.bootstrapTable('getSelections');
+    
+    var arr_permissoes = [];
+
+    $(selecao).each(function(){
+        var linha = this;
+        arr_permissoes.push( linha.idPermissao );
+    });
+
+    var json = { idPerfil : idPerfil, idPermissoes : arr_permissoes };
+    var dados = JSON.stringify( json );
 
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
         url: url,
         dataType: 'json',
-        data:  dados
+        data : dados
     }).done( function(json){ 
         
         if ( json.ok == 1 ){
             $('#alertArea').empty();
+
             preencheAlertGeral( "alertArea", "Registro salvo com sucesso", "success" );
         }
         if (json.ok == null || json.ok != 1){
@@ -87,6 +109,8 @@ var salvarPermissao = function( idPermissao ){
     });
     
 };
+
+
 
 $(function(){
     
@@ -97,11 +121,20 @@ $(function(){
     });
     
     $table.on('click-row.bs.table', function( e, row, el ){
+        $("#idPerfil").val( row.idPerfil );
+
+        $("#indicador").show();
+        $("#indicador").html( row.nome );
+            
         getDados(row.idPerfil);
     }); 
-    
+
     $('#password').keyup( function( event ) {
         keyup_validasenha( $("usuario-form"), event );
+    });
+    
+    $("#btnSalvarPermissoes").click( function() {
+        salvarPermissao();
     });
 
     $("#mostrarSenha").click(function(){

@@ -274,7 +274,9 @@ var keyup_validasenha = function( event ) {
     }
     else
     {
-        if ( result != null && result.score <= 0 )
+        var length = text.length;
+
+        if ( length < 6 || ( result != null && result.score <= 0 ) )
         {
             removeErros();
             

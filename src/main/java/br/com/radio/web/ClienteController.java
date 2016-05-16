@@ -96,6 +96,7 @@ public class ClienteController extends AbstractController {
 	}
 
 	@RequestMapping(value={ "/clientes/new" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('DADOS_CLIENTE')")
 	public String novoCliente( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -112,6 +113,7 @@ public class ClienteController extends AbstractController {
 
 
 	@RequestMapping(value={ "/admin/clientes/{idCliente}/view" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('DADOS_CLIENTE')")
 	public String editarClienteAdmin( @PathVariable Long idCliente, ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -137,6 +139,7 @@ public class ClienteController extends AbstractController {
 	}
 
 	@RequestMapping(value={ "/clientes/{idCliente}/view" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('DADOS_CLIENTE')")
 	public String editarCliente( @PathVariable Long idCliente, ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -156,6 +159,7 @@ public class ClienteController extends AbstractController {
 	
 	
 	@RequestMapping(value={ "/clientes/view" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('DADOS_CLIENTE')")
 	public String editarClienteLogado( ModelMap model, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -217,6 +221,7 @@ public class ClienteController extends AbstractController {
 
 	
 	@RequestMapping( value = { "/clientes/{idCliente}", "/api/clientes/{idCliente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('DADOS_CLIENTE')")
 	public @ResponseBody Cliente getCliente( @PathVariable Long idCliente, Principal principal  )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -232,6 +237,7 @@ public class ClienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/clientes", "/api/clientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('DADOS_CLIENTE')")
 	public @ResponseBody String saveCliente( @RequestBody @Valid Cliente cliente, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
@@ -355,6 +361,7 @@ public class ClienteController extends AbstractController {
 
 
 	@RequestMapping( value = { "/clientes/{idCliente}/resumo", "/api/clientes/{idCliente}/resumo" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('DADOS_CLIENTE') or hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody ClienteResumoFinanceiroDTO getResumo( @PathVariable Long idCliente, Principal principal  )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -377,6 +384,7 @@ public class ClienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/clientes/{idCliente}/titulos", "/api/clientes/{idCliente}/titulos" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('DADOS_CLIENTE') or hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody JSONBootstrapGridWrapper<Titulo> listTitulos( 
 																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,

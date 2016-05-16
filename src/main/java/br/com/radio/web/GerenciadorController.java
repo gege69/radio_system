@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.EndPointDTO;
+import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONBootstrapGridWrapper;
@@ -40,6 +41,7 @@ import br.com.radio.model.Cliente;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Perfil;
+import br.com.radio.model.PerfilPermissao;
 import br.com.radio.model.Permissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
@@ -47,6 +49,7 @@ import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.GeneroRepository;
+import br.com.radio.repository.PerfilPermissaoRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.PermissaoRepository;
 import br.com.radio.repository.UsuarioRepository;
@@ -83,7 +86,9 @@ public class GerenciadorController extends AbstractController {
 	private UsuarioService usuarioService;
 	@Autowired
 	private PermissaoRepository permissaoRepo;
-	
+	@Autowired
+	private PerfilPermissaoRepository perfilPermissaoRepo;
+
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
@@ -350,86 +355,59 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes", "/api/perfis/{idPerfil}/permissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('PERFIS')")
-	public @ResponseBody JSONBootstrapGridWrapper<Permissao> listPermissoes(
+	public @ResponseBody JSONBootstrapGridWrapper<PerfilPermissao> listPermissoes(
 																	 @PathVariable Long idPerfil,
-																	 Principal principal 
-																 )
+																	 Principal principal )
 	{
-		Pageable pageable = getPageable( 1, 99, "asc", "codigo" );
+		Pageable pageable = getPageable( 1, 99, "asc", "idPerfperm" );
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
 			throw new RuntimeException("Cliente não encontrado.");
+		
+		Perfil perfil = perfilRepo.findOne( idPerfil );
 
-		List<Perfil> perfis = usuario.getPerfis();
-
-		Page<Permissao> permissaoPage = null;
-
-		if ( perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS ) )
-		else 
-
-		JSONBootstrapGridWrapper<Permissao> jsonList = new JSONBootstrapGridWrapper<Permissao>(permissaoPage.getContent(), permissaoPage.getTotalElements());
+		Page<PerfilPermissao> perfilPermissaoPage = perfilPermissaoRepo.findByPerfil( pageable, perfil );
+		
+		JSONBootstrapGridWrapper<PerfilPermissao> jsonList = new JSONBootstrapGridWrapper<PerfilPermissao>(perfilPermissaoPage.getContent(), perfilPermissaoPage.getTotalElements());
 
 		return jsonList;
 	}
 
 
-	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes/{idPermissao}", "/api/perfis/{idPerfil}/permissoes/{idPermissao}" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String savePerfilPermissao( @PathVariable Long idPerfil, @PathVariable Long idPermissao, Principal principal )
+	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes", "/api/perfis/{idPerfil}/permissoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String savePerfilPermissao( @PathVariable Long idPerfil, @RequestBody @Valid PerfilPermissaoDTO permissoesDTO, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
 		
-		try
-		{
-			Usuario usuario = usuarioService.getUserByPrincipal( principal );
-			
-			if ( usuario == null || usuario.getCliente() == null )
-				throw new RuntimeException("Cliente não encontrado.");
-
-			usuarioService.savePerfilPermissao( idPerfil, idPermissao );
-			
-			jsonResult = writeOkResponse();
+		if ( result.hasErrors() ){
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
 		}
-		catch ( Exception e )
+		else
 		{
-			e.printStackTrace();
-			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente() == null )
+					throw new RuntimeException("Cliente não encontrado.");
+				
+				usuarioService.savePerfilPermissao( usuario, permissoesDTO );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
 		}
 
 		return jsonResult;
 	}
 
 
-	
-	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes/{idPermissao}", "/api/perfis/{idPerfil}/permissoes/{idPermissao}" }, method = { RequestMethod.DELETE }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String deletePerfilPermissao( @PathVariable Long idPerfil, @PathVariable Long idPermissao, Principal principal )
-	{
-		String jsonResult = null;
-		
-		try
-		{
-			Usuario usuario = usuarioService.getUserByPrincipal( principal );
-			
-			if ( usuario == null || usuario.getCliente() == null )
-				throw new RuntimeException("Cliente não encontrado.");
-
-			usuarioService.deletePerfilPermissao( idPerfil, idPermissao );
-			
-			jsonResult = writeOkResponse();
-		}
-		catch ( Exception e )
-		{
-			e.printStackTrace();
-			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-		}
-
-		return jsonResult;
-	}
-
-
-	
-	
 	
 	@RequestMapping( value = { "/fusohorarios", "/api/fusohorarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<FusoHorario> listFusos()

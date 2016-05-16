@@ -9,6 +9,8 @@
     <jsp:include page="/WEB-INF/views/metaAndIcon.jsp" />
   
     <title>Radio System</title>
+
+<%--     <link href="${context}/css/bootstrap-themes/slate/bootstrap.min.css" rel="stylesheet"> --%>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 <%--     <link href="${context}/css/bootstrap.css" rel="stylesheet"> --%>

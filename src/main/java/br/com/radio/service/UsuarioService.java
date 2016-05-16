@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import br.com.radio.dto.AlterarSenhaDTO;
+import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.RegistroDTO;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
@@ -395,45 +396,55 @@ public class UsuarioService {
 	
 	
 	
-	public void savePerfilPermissao( Long idPerfil, Long idPermissao ){
+	/**
+	 * Se a lista de permissoes for passada como vazia significa que é pra apagar tudo mesmo 
+	 * 
+	 * @param usuario
+	 * @param permissoesDTO
+	 */
+	@Transactional
+	public void savePerfilPermissao( Usuario usuario, PerfilPermissaoDTO permissoesDTO ){
 		
-		Perfil perfil = perfilRepo.findOne( idPerfil );
-		Permissao permissao = permissaoRepo.findOne( idPermissao );
-		
+		Perfil perfil = perfilRepo.findOne( permissoesDTO.getIdPerfil() );
+
+		List<Permissao> permissoesList = null;
+
+		if ( permissoesDTO.getIdPermissoes() != null && permissoesDTO.getIdPermissoes().size() > 0 ){
+			if ( isDonoSistema( usuario ) ) {
+				permissoesList = permissaoRepo.findByIdPermissaoIn( permissoesDTO.getIdPermissoes() );
+			}
+			else {
+				permissoesList = permissaoRepo.findByIdPermissaoInAndExclusivoFalse( permissoesDTO.getIdPermissoes() );
+			}
+		}
+
 		if ( perfil == null )
 			throw new RuntimeException("Perfil não encontrado.");
 		
-		if ( permissao == null )
-			throw new RuntimeException("Permissao não encontrada.");
-
-		PerfilPermissao perfilPermissao = perfilPermissaoRepo.findByPerfilAndPermissao( perfil, permissao );
+		boolean algumExclusivo = permissoesList.stream().anyMatch( perm -> perm.isExclusivo() );
 		
-		if ( perfilPermissao == null ){ 
-			perfilPermissao = new PerfilPermissao( perfil, permissao, new Date() );
-			
+		if ( algumExclusivo ){
+			if ( !Perfil.DONOS.contains( perfil ) )
+				throw new RuntimeException("Você selecionou permissões exclusivas que só podem ser dadas para ADMINISTRADOR ou DESENVOLVEDOR");
+		}
+
+		perfilPermissaoRepo.deleteByPerfil( perfil );
+		
+		for ( Permissao p : permissoesList ){
+			PerfilPermissao perfilPermissao = new PerfilPermissao( perfil, p, new Date() );
 			perfilPermissaoRepo.save( perfilPermissao );
 		}
 	}
-	
-	
-	public void deletePerfilPermissao( Long idPerfil, Long idPermissao ){
-		
-		Perfil perfil = perfilRepo.findOne( idPerfil );
-		Permissao permissao = permissaoRepo.findOne( idPermissao );
-		
-		if ( perfil == null )
-			throw new RuntimeException("Perfil não encontrado.");
-		
-		if ( permissao == null )
-			throw new RuntimeException("Permissao não encontrada.");
-		
-		PerfilPermissao perfilPermissao = perfilPermissaoRepo.findByPerfilAndPermissao( perfil, permissao );
-		
-		if ( perfilPermissao != null ){ 
-			perfilPermissaoRepo.delete( perfilPermissao );
-		}
-	}
 
+	
+	
+	private boolean isDonoSistema( Usuario usuario )
+	{
+		List<Perfil> perfis = usuario.getPerfis();
+
+		return ( perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS ) );
+	}
+	
 	
 	
 }

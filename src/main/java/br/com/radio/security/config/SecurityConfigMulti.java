@@ -174,7 +174,7 @@ public class SecurityConfigMulti {
 				.antMatchers( "/login**" ).permitAll()
 				.antMatchers( "/player**" ).hasAuthority( "PLAYER" )
 				.antMatchers( "/admin/**" ).hasAuthority( "ADM_SISTEMA" )
-				.antMatchers( "/**" ).hasAuthority( "ADMINISTRAR_AMB" )
+				.antMatchers( "/**" ).hasAuthority( "PAINEL_GERENCIAL" )
 				.anyRequest().authenticated()
 				.and()
 //			.requiresChannel()
