@@ -12,7 +12,8 @@
       <h1>
         <div class="row row-centered">
           <div class="col-lg-12 nomeempresa">
-            RDCenter
+            <img alt="" src="${context}/images/logoBranco_menor.png">
+<!--             RDCenter -->
           </div>
         </div>
       </h1>

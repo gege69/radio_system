@@ -5,13 +5,24 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import br.com.radio.dto.AlterarSenhaAdminDTO;
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.RegistroDTO;
@@ -72,6 +83,9 @@ public class UsuarioService {
 	
 	@Autowired
 	private UsuarioPermissaoRepository usuarioPermissaoRepo;
+	
+	@Autowired
+	private EntityManager entityManager;
 	
 	// Essas constantes determinam a força mínima para que seja possível aceitar. O password tem que ter força maior que esse valor.
 	private final int FORCA_MIN_PLAYER = 0;
@@ -298,6 +312,33 @@ public class UsuarioService {
 	}
 
 
+
+	@Transactional
+	public Usuario alteraSenhaUsuarioGerenciador( AlterarSenhaAdminDTO alterarSenhaAdminDTO, Cliente cliente )
+	{
+		Long idUsuario = alterarSenhaAdminDTO.getIdUsuario();
+		
+		if ( idUsuario == null || idUsuario == 0  )
+			throw new RuntimeException("Usuário não encontrado.");
+		
+		Usuario usuario = usuarioRepo.findOne(idUsuario);
+		
+		usuario.setAtivo( true );
+
+		validaForcaSenha( alterarSenhaAdminDTO.getPassword(), usuario );
+		
+		if ( StringUtils.isNotBlank( alterarSenhaAdminDTO.getPassword() ) )
+			usuario.setPassword( passwordEncoder.encode( alterarSenhaAdminDTO.getPassword() ) );
+		
+		usuario.setDataAlteracao( new Date() );
+
+		usuarioRepo.save( usuario );
+		
+		return usuario;
+	}
+
+
+
 	public void validaForcaSenha( String password, Usuario usuario ){
 		
 		Zxcvbn zxcvbn = new Zxcvbn();
@@ -351,12 +392,73 @@ public class UsuarioService {
 
 
 	public Usuario getUsuarioMaisRelevantePorCliente( Cliente cliente ){
-		
 		return null;
 	}
 
-
 	
+	@Transactional
+	public Page<Usuario> findUsuarios( Pageable pageable, Cliente cliente, UsuarioTipo usuarioTipo, String search ) {
+		
+		Page<Usuario> result = null;
+		
+		if ( StringUtils.isBlank( search ) ){
+			result = usuarioRepo.findByClienteAndUsuarioTipo( pageable, cliente, usuarioTipo );
+		}
+		else {
+			
+			Session session = entityManager.unwrap( Session.class );
+
+			String searchTmp = "%" + search + "%";
+			
+			Criteria critCount = createCriteriaUsuario( cliente, usuarioTipo, searchTmp, searchTmp, searchTmp, session );
+			critCount.setProjection( Projections.rowCount() );
+			Long total = (Long) critCount.uniqueResult();
+			
+			Criteria crit = createCriteriaUsuario( cliente, usuarioTipo, searchTmp, searchTmp, searchTmp, session );			
+			
+			if ( pageable != null ){
+				crit.setMaxResults( pageable.getPageSize() );
+				crit.setFirstResult( pageable.getPageNumber() );
+			}
+			
+			List<Usuario> listUsuarios = crit.list();
+			
+			result = new PageImpl<Usuario>( listUsuarios, pageable, total );
+		}
+		
+		return result;
+	}
+
+
+	private Criteria createCriteriaUsuario( Cliente cliente, UsuarioTipo usuarioTipo, String nome, String email, String login, Session session)
+	{
+		Criteria crit = session.createCriteria( Usuario.class );
+
+		Disjunction disjunction = Restrictions.disjunction();
+
+		if ( StringUtils.isNotBlank( nome ) )
+			disjunction.add( Restrictions.ilike( "nome", nome ) );
+		
+		if ( StringUtils.isNotBlank( email ) )
+			disjunction.add( Restrictions.ilike( "email", email ) );
+		
+		if ( StringUtils.isNotBlank( login ) )
+			disjunction.add( Restrictions.ilike( "login", login ) );
+
+		crit.add( disjunction );
+		
+		if ( usuarioTipo != null )
+			crit.add( Restrictions.eq( "usuarioTipo", usuarioTipo ) );
+		
+		if ( cliente != null )
+			crit.add( Restrictions.eq( "cliente", cliente ) );
+
+		return crit;
+	}
+
+
+
+
 	
 	public UsuarioAmbienteDTO getUsuarioAmbienteByPrincipal( Long idAmbiente, Principal principal )
 	{

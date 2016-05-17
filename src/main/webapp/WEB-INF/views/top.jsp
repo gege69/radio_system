@@ -4,7 +4,7 @@
       <div class="container">
           <div class="row row-centered">
               <div class="col-lg-12">
-                <img alt="" src="${context}/images/logoBranco.png" style="width: 313px;">
+                <img alt="" src="${context}/images/logoBranco_menor.png" style="width: 313px;">
 <!--                    <h1 class="">RDCenter</h1> -->
               </div>
           </div>

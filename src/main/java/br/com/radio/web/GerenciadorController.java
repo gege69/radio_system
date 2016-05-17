@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import br.com.radio.dto.AlterarSenhaAdminDTO;
 import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.EndPointDTO;
 import br.com.radio.dto.PerfilPermissaoDTO;
@@ -186,12 +187,15 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/view-list-usuarios-sistema", method=RequestMethod.GET)
+	@RequestMapping(value="/usuarios/searches", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('USUARIOS')")
 	public String usuariosSistema( ModelMap model )
 	{
-		return "gerenciador/view-list-usuarios-sistema";
+		return "gerenciador/cadastro-usuarios";
 	}
+
+
+
 	
 
 	@RequestMapping(value={ "/usuarios/view", "/usuarios/{idUsuario}/view" } , method=RequestMethod.GET)
@@ -217,6 +221,8 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 	
+	
+
 	@RequestMapping( value = { "/usuarios", "/api/usuarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('USUARIOS')")
 	public @ResponseBody JSONListWrapper<Usuario> getUsuarios( @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
@@ -291,6 +297,42 @@ public class GerenciadorController extends AbstractController {
 		return jsonResult;
 	}
 	
+
+
+	@RequestMapping( value = { "/usuarios/{idUsuario}/senha", "/api/usuarios/{idUsuario}/senha" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String alteraSenhaUsuarioGerenciador( @RequestBody @Valid AlterarSenhaAdminDTO alteraSenhaAdminDTO, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente() == null )
+					throw new RuntimeException("Cliente não encontrado.");
+
+				usuarioService.alteraSenhaUsuarioGerenciador( alteraSenhaAdminDTO, usuario.getCliente() );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+
+
 	
 	
 	@RequestMapping(value="/perfis/view", method=RequestMethod.GET)

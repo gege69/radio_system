@@ -8,6 +8,88 @@ var optionsTel = {onKeyPress: function(val, e, field, options) {
 };
 
 
+function perfisUsuarioFormatter(value, row) {
+
+    var result = '';
+    
+    if ( value ) {
+        for (var i=0; i < value.length; i++){
+            
+            if ( result.length > 0 )
+                result += ', ';
+            
+            result += value[i].nome;
+        }
+    }
+
+    return result;
+}
+
+
+function senhaUsuarioFormatter(value, row){
+    return '<a class="btn btn-link senha-class" idUsuario="'+ row.idUsuario +'" href="#"> <i class="fa fa-lg fa-unlock-alt"></i></a>';
+}
+
+
+function abrePopupAlterarSenha( element ){
+
+    var idUsuario = element.attr("idUsuario");
+    
+    if ( idUsuario == null || idUsuario == "0" ){
+        preencheAlertGeral("alertArea", "Usuário não encontrado" );
+        return;
+    }
+    
+    var row = $('#tableUsuarios').bootstrapTable('getRowByUniqueId', idUsuario);
+
+    $("#idUsuario").val(row.idUsuario);
+    $("#login").val(row.login);
+    
+    $("#myModalAlterarSenha").modal('show');
+}
+
+
+function alterarSenha(){
+
+    var dados = $('#alteraSenhaForm').serializeJSON();
+    
+    var url = buildUrl( "/usuarios/{idUsuario}/senha", { 
+        idUsuario : dados.idUsuario
+    } );
+
+    var dados = JSON.stringify( dados );
+    
+    $("#password").val('');
+    $("#matchingPassword").val('');
+    $("#mostrarSenha").prop('checked', false)
+    $("#matchingPassword").attr("type", "password");
+    $("#password").attr("type", "password");
+    keyup_validasenha( $("alteraSenhaForm"), event );
+
+    $.ajax({
+        
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data:  dados
+        
+    }).done( function(json){ 
+        
+        if (json.ok == 1){
+            preencheAlertGeral( "alertArea", "Senha alterada com sucesso.", "success" );
+            $('#myModalAlterarSenha').modal('toggle');
+            jump(''); // topo da pagina
+        }
+        else{
+            $('#myModalAlterarSenha').modal('toggle');
+            preencheErros( json.errors );
+        }
+    });
+}
+
+
+
 //Tabela de Condições Comerciais
 var $tableCC = $('#tableCondicoesComerciais');
 
@@ -39,6 +121,18 @@ function queryParamsPag(params) {
     params.pageNumber = $('#tablePagamentosTitulos').bootstrapTable('getOptions').pageNumber;
     return params;
 };
+
+
+
+//Tabela de Usuários
+var $tableUsuarios = $('#tableUsuarios');
+
+function queryParamsUsuarios(params) {
+    params.pageNumber = $tableUsuarios.bootstrapTable('getOptions').pageNumber;
+    return params;
+};
+
+
 
 var getDados = function()
 {
@@ -278,8 +372,7 @@ var abreModalCondicaoComercial = function(){
     
     $("#myModalCondicaoComercial").modal({
         show:true, 
-        backdrop: 'static',              
-        keyboard: false
+        backdrop: 'static'              
     });
 };
 
@@ -324,6 +417,10 @@ $(function(){
         $('#tableCondicoesComerciais').bootstrapTable({
             queryParams : queryParamsCondicoesComerciais
         });
+
+        $('#tableUsuarios').bootstrapTable({
+            queryParams : queryParamsUsuarios
+        });
     }
 
     $("#btnInserirCondicaoComercial").click( function() {
@@ -341,5 +438,37 @@ $(function(){
     $("#btnSalvarCondicao").click( function() {
         salvarCondicaoComercial();
     });
+    
+    $("#btnConfirmarSenha").click( function() { 
+        alterarSenha();
+    });
+
+    $("#tableUsuarios").on( 'load-success.bs.table', function( e, data ) {
+        $(".senha-class").click( function(){
+            abrePopupAlterarSenha($(this));
+        });
+    });
+    
+    $("#tableUsuarios").on( 'page-change.bs.table', function ( e, number, size ){
+        $(".senha-class").click( function(){
+            abrePopupAlterarSenha($(this));
+        });
+    });
+
+    $('#password').keyup( function( event ) {
+        keyup_validasenha( $("alteraSenhaForm"), event );
+    });
+
+    $("#mostrarSenha").click(function(){
+        if ( $("#mostrarSenha").prop('checked') ){
+            $("#matchingPassword").attr("type", "input");
+            $("#password").attr("type", "input");
+        }
+        else {
+            $("#matchingPassword").attr("type", "password");
+            $("#password").attr("type", "password");
+        }
+    }); 
+
 
 });

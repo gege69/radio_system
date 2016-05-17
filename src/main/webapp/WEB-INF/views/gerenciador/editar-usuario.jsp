@@ -123,7 +123,7 @@
             <div class="row">
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="">
-                  <a class="btn btn-default" href="${context}/view-list-usuarios-sistema" >
+                  <a class="btn btn-default" href="${context}/usuarios/searches" >
                     <i class="fa fa-arrow-left"></i>
                     Voltar para Usuários</a>
                 </div>            

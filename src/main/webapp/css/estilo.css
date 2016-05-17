@@ -11,6 +11,11 @@
     font-family: 'Conv_NexaBold'; 
 }
 
+.nomeempresa img {
+    width: 430px;
+    margin-bottom: 98px;
+}
+
 #masthead {
   min-height:116px;
   background-color:#2B3E50;

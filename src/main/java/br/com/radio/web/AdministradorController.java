@@ -43,7 +43,6 @@ import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
-import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.TipoTaxaRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.MidiaService;

@@ -79,7 +79,7 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/view-list-usuarios-sistema">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/usuarios/searches">
                       <i class="fa fa-3x icone-main fa-user-plus"></i>
                       <span class="label-botao-main">Usuários do<br/>Sistema</span>
                     </a>

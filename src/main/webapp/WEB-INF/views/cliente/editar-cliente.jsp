@@ -208,7 +208,10 @@
                         </c:if>
 
                         <li><a data-toggle="tab" href="#divPagamentos">Pagamentos</a></li>
-                        <li><a data-toggle="tab" href="#divUsuarios">Usuários</a></li>
+
+                        <c:if test="${isAdmin}">
+                          <li><a data-toggle="tab" href="#divUsuarios">Usuários</a></li>
+                        </c:if>
                       </ul>
                     </div>
                   </div>
@@ -321,9 +324,35 @@
                         </div>            
                       </div>                
                     </div>
-                    <div id="divUsuarios" class="tab-pane fade in">
-                      teste usuarios
-                    </div>
+
+                    <c:if test="${isAdmin}">
+                      <div id="divUsuarios" class="tab-pane fade in">
+                        <div class="col-lg-12 col-md-12">
+                          <table  
+                             id="tableUsuarios"
+                             data-url="${context}/clientes/${idCliente}/usuarios"
+                             data-height="400"
+                             data-side-pagination="server"
+                             data-pagination="true"
+                             data-search=true
+                             data-page-size=5
+                             data-unique-id="idUsuario"
+                             data-locale = "pt_BR"
+                             data-query-params="queryParamsUsuarios">
+                            <thead>
+                              <tr>
+                                  <th data-field="nome">Nome</th>
+                                  <th data-field="login">Login</th>
+                                  <th data-field="email">Email</th>
+                                  <th data-field="perfis" data-formatter="perfisUsuarioFormatter">Perfis</th>
+                                  <th data-field="editar" data-formatter="senhaUsuarioFormatter">Reset Senha</th>
+                              </tr>
+                            </thead>
+                          </table>
+                        </div>
+                      </div>
+                    </c:if>
+                    
                   </div>
                 </div>
               </div>
@@ -422,7 +451,66 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="myModalAlterarSenha">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+          <h4 class="modal-title" id="titulo-modal">Alterar Senha</h4>
+        </div>
+        <div class="modal-body">
+          <form action="#" class="form-horizontal" id="alteraSenhaForm" method="POST">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <input type="hidden" id="idUsuario" name="idUsuario" value="" >
+            
+            <div class="form-group">
+              <label for="login" class="control-label col-sm-2 col-md-4">Login:</label>
+              <div class="col-sm-3 col-md-5">
+                <input type="text" class="form-control" id="login" placeholder="Login" style="text-transform: lowercase;" disabled>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="mostrarSenha" class="control-label col-sm-2 col-md-4"></label>
+              <div class="checkbox col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <label>
+                  <input type="checkbox" id="mostrarSenha" name="mostrarSenha" value="false"> Mostrar senha
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="login" class="control-label col-sm-2 col-md-4">Senha:</label>
+              <div class="col-sm-3 col-md-5">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Senha">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="login" class="control-label col-sm-2 col-md-4">Repetir Senha:</label>
+              <div class="col-sm-3 col-md-5">
+                <input type="password" class="form-control" id="matchingPassword" name="matchingPassword" placeholder="Repetir Senha">
+              </div>
+            </div>
+
+          </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" id="btnNaoDialog" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnConfirmarSenha">Confirmar</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
 </c:if>
+
+
+
 
 
 <script id="viewTmplTelefones" type="text/x-jsrender"  charset="UTF-8">
@@ -469,10 +557,13 @@
 
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 
+<script type="text/javascript" src="${context}/js/required/zxcvbn.js"></script>
+
 <script type="text/javascript" src="${context}/js/cliente/editar-cliente.js" async charset="UTF-8"></script>
 
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js" ></script>
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" r></script>
+
 
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />
