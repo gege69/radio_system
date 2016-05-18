@@ -189,14 +189,12 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping(value="/usuarios/searches", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('USUARIOS')")
-	public String usuariosSistema( ModelMap model )
+	public String usuariosSistema( ModelMap model, Principal principal )
 	{
 		return "gerenciador/cadastro-usuarios";
 	}
 
 
-
-	
 
 	@RequestMapping(value={ "/usuarios/view", "/usuarios/{idUsuario}/view" } , method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('USUARIOS')")
@@ -211,13 +209,13 @@ public class GerenciadorController extends AbstractController {
 				model.addAttribute( "idUsuario", usuario.getIdUsuario() );
 				model.addAttribute( "idCliente", usuario.getCliente().getIdCliente() );
 			
-				return "gerenciador/usuario";
+				return "gerenciador/editar-usuario";
 			}
 			else
 				return "HTTPerror/404";
 		}
 		else
-			return "gerenciador/usuario";
+			return "gerenciador/editar-usuario";
 	}
 	
 	

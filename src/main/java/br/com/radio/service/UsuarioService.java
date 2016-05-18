@@ -341,6 +341,9 @@ public class UsuarioService {
 
 	public void validaForcaSenha( String password, Usuario usuario ){
 		
+		if ( StringUtils.length( password ) < 6 )
+			throw new RuntimeException("Senha precisa ser maior que 6 caracteres.");
+		
 		Zxcvbn zxcvbn = new Zxcvbn();
 		Strength strength = zxcvbn.measure( password, Arrays.asList( "eterion", "rdcenter", "radio", "ambiente", "som", "123456" ) );
 		
