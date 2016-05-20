@@ -57,7 +57,6 @@
               <table  
                  id="tablePermissoes"
                  class="tabelaPermissoes"
-                 data-toggle="table"
                  data-url="${context}/perfis/permissoes"
                  data-side-pagination="server"
                  data-pagination="false"
@@ -68,7 +67,6 @@
                   <thead>
                     <tr>
                       <th data-field="state" data-checkbox="true"></th>
-                        <th data-field="idPermissao">Id</th>
                       <th data-field="descricao">Permissões</th>
                     </tr>
                   </thead>

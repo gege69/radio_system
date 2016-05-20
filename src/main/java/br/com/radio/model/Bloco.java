@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -34,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Entity
-@Table(name="bloco")
+@Table( name="bloco")
 public class Bloco implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
@@ -46,7 +47,7 @@ public class Bloco implements Serializable {
 	
 	@JsonIgnore
 	@OneToOne
-	@JoinColumn(name="id_ambiente")
+	@JoinColumn(name="id_ambiente", unique = true)
 	private Ambiente ambiente;
 
 	@Enumerated(EnumType.STRING)

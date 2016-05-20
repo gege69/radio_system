@@ -1,6 +1,7 @@
 package br.com.radio.service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -525,20 +526,31 @@ public class UsuarioService {
 
 		if ( perfil == null )
 			throw new RuntimeException("Perfil não encontrado.");
-		
-		boolean algumExclusivo = permissoesList.stream().anyMatch( perm -> perm.isExclusivo() );
-		
-		if ( algumExclusivo ){
-			if ( !Perfil.DONOS.contains( perfil ) )
-				throw new RuntimeException("Você selecionou permissões exclusivas que só podem ser dadas para ADMINISTRADOR ou DESENVOLVEDOR");
+
+		if ( permissoesList != null  ){
+			boolean algumExclusivo = permissoesList.stream().anyMatch( perm -> perm.isExclusivo() );
+			
+			if ( algumExclusivo ){
+				if ( !Perfil.DONOS.contains( perfil ) )
+					throw new RuntimeException("Você selecionou permissões exclusivas que só podem ser dadas para ADMINISTRADOR ou DESENVOLVEDOR");
+			}
 		}
 
 		perfilPermissaoRepo.deleteByPerfil( perfil );
 		
+		if ( permissoesList == null ) 
+			permissoesList = new ArrayList<Permissao>();
+			
+		boolean temBasico = permissoesList.stream().anyMatch( perm -> perm.getCodigo().equals( "PAINEL_GERENCIAL" ) );
+		
+		if ( !temBasico )
+			permissoesList.add( permissaoRepo.findByCodigo( "PAINEL_GERENCIAL" ) );
+	
 		for ( Permissao p : permissoesList ){
 			PerfilPermissao perfilPermissao = new PerfilPermissao( perfil, p, new Date() );
 			perfilPermissaoRepo.save( perfilPermissao );
 		}
+
 	}
 
 	

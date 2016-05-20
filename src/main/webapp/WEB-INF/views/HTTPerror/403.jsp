@@ -17,11 +17,18 @@
 
           <div class="panel panel-default">
             <div class="panel-heading">
-              403 - Acesso Negado
+              <p>
+                403 - Informe o erro ao Administrador do Sistema, os motivos são:
+              </p>
+              <p>
+                Você não possui permissão para essa funcionalidade, ou;
+              </p>
+              <p>
+                Você está acessando duas conexões com o mesmo navegador e por motivos de segurança o sistema realiza o bloqueio, por favor, utilize apenas uma sessão de acesso.             
+              </p>
             </div>
             <div class="panel-body">
             </div>
-          
           </div>
           
         </div>

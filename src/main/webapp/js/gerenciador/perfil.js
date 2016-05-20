@@ -1,6 +1,6 @@
 
 var $table = $('#tablePerfis');
-var $tablePermissoes = $('#tablePermissoes');
+var $tablePermissoes = null;
 
 function queryParamsPerfis(params) {
 
@@ -12,7 +12,7 @@ function queryParamsPerfis(params) {
 
 function queryParamsPermissoes(params) {
 
-    params.pageNumber = $tablePermissoes.bootstrapTable('getOptions').pageNumber;
+    params.pageNumber = $('#tablePermissoes').bootstrapTable('getOptions').pageNumber;
     
     return params;
 }
@@ -31,8 +31,14 @@ var getDados = function( id )
 {
     if ( id == null || id == undefined )
         alert('Id não encontrado');
-    
-    $tablePermissoes.bootstrapTable('refresh');
+   
+    if ( $tablePermissoes == null ){
+
+        $tablePermissoes = $('#tablePermissoes');
+        $tablePermissoes.bootstrapTable({
+            queryParams : queryParamsPermissoes
+        }); 
+    }
 
     var url = buildUrl( "/perfis/{idPerfil}/permissoes", { 
         idPerfil: id
