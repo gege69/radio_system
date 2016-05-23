@@ -54,7 +54,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 		
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -79,7 +79,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -104,7 +104,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -125,7 +125,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -146,7 +146,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -166,7 +166,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -186,7 +186,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -205,7 +205,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -225,7 +225,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -245,7 +245,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -265,7 +265,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -286,7 +286,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -306,7 +306,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -327,7 +327,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
@@ -347,7 +347,7 @@ public class PlayerWebController extends AbstractController {
 		if ( ambiente == null )
 			return "HTTPerror/404";
 		
-		if ( !ambiente.getAtivo() )
+		if ( !ambiente.isAtivo() )
 			return "player-web/inativo";
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.dto.cliente.ClienteRelatorioDTO;
 import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
+import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
@@ -154,14 +155,16 @@ public class ClienteService {
 	{
 		List<Ambiente> ambientes = ambienteRepo.findByCliente( cliente );
 		
-		Long ativos = ambientes.stream().filter( a -> a.getAtivo() ).count();
-		Long inativos = ambientes.stream().filter( a -> !a.getAtivo() ).count();
+		Long ativos = ambientes.stream().filter( a -> a.isAtivo() ).count();
+		Long inativos = ambientes.stream().filter( a -> a.isInativo() ).count();
+		Long bloqueados = ambientes.stream().filter( a -> a.isBloqueado() ).count();
 		
 		ClienteResumoFinanceiroDTO dto = new ClienteResumoFinanceiroDTO();
 		
 		dto.setAmbientesAtivos( ativos.intValue() );
 		dto.setAmbientesInativos( inativos.intValue() );
 		dto.setTotalAmbientes( ambientes.size() );
+		dto.setAmbientesBloqueados( bloqueados.intValue() );
 		
 		return dto;
 	}
@@ -265,7 +268,7 @@ public class ClienteService {
 			List<Titulo> titulosAbertos = tituloRepo.findByClienteAndDataPagamentoIsNullAndValorPago( cliente, BigDecimal.ZERO );
 			
 			// Pode ser que precise de alguma informação dos ambientes... por isso o select qualquer coisa troco por um count
-			List<Ambiente> ambientes = ambienteRepo.findByClienteAndAtivo( cliente, true );
+			List<Ambiente> ambientes = ambienteRepo.findByClienteAndStatus( cliente, StatusAmbiente.ATIVO );
 			
 			Integer totalAmbientes = ambientes.size();
 			
@@ -337,6 +340,30 @@ public class ClienteService {
 		
 		return tituloVO;
 	}
+
+
+
+
+	public Page<Ambiente> getAmbientesPorCliente( Pageable pageable, Long idCliente, String search ){
+		
+		Cliente cliente = clienteRepo.findOne( idCliente );
+		
+		if ( cliente == null )
+			return null;
+		
+		Page<Ambiente> ambientePage = null;
+
+		if ( StringUtils.isBlank( search )){
+			ambientePage = ambienteRepo.findByCliente( pageable, cliente );
+		}
+		else {
+			String nome = "%"+ search + "%";
+			ambientePage = ambienteRepo.findByClienteAndNomeContainingIgnoreCase( pageable, cliente, nome );
+		}
+		
+		return ambientePage;
+	}
+
 
 
 }

@@ -221,39 +221,78 @@
                   <div class="tab-content">
 
                     <div id="divResumoFinanceiro" class="tab-pane fade in active">
-                      <div class="col-lg-12 col-md-12">
-                        <form action="#" id="formResumo" class="form-horizontal">
-
+                      <form action="#" id="formResumo" class="form-horizontal">
+                        <div class="col-lg-6 col-md-6">
                           <div class="form-group">
-                            <label for="totalAmbientes" class="control-label col-sm-3 col-md-2">Total Ambientes: </label>
-                            <div class="col-lg-2 col-md-3 col-sm-4">
+                            <label for="totalAmbientes" class="control-label col-lg-5 col-sm-4 col-md-5">Total Ambientes: </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
                               <input type="text" class="form-control inteiro" id="totalAmbientes" name="totalAmbientes" readonly="readonly">
+                            </div>
+
+                            <div class="col-lg-2 col-md-2">
+                              <div class="">
+                                <a class="btn btn-default" href="${context}/admin/clientes/${idCliente}/ambientes" id="btnListagemAmbientes" >
+                                  <i class="fa fa-tasks"></i>
+                                  Ambientes</a>
+                              </div>            
                             </div>
                           </div>
                           
                           <div class="form-group">
-                            <label for="ambientesAtivos" class="control-label col-sm-3 col-md-2">Ambientes Ativos: </label>
-                            <div class="col-lg-2 col-md-3 col-sm-4">
+                            <label for="ambientesAtivos" class="control-label col-sm-4 col-md-5">Ambientes Ativos: </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
                               <input type="text" class="form-control inteiro" id="ambientesAtivos" name="ambientesAtivos" readonly="readonly">
                             </div>
                           </div>
 
                           <div class="form-group">
-                            <label for="ambientesInativos" class="control-label col-sm-3 col-md-2">Ambientes Inativos: </label>
-                            <div class="col-lg-2 col-md-3 col-sm-4">
+                            <label for="ambientesInativos" class="control-label col-sm-4 col-md-5">Ambientes Inativos: </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
                               <input type="text" class="form-control inteiro" id="ambientesInativos" name="ambientesInativos" readonly="readonly">
                             </div>
                           </div> 
 
                           <div class="form-group">
-                            <label for="login" class="control-label col-sm-3 col-md-2">Data de Cadastro</label>
-                            <div class="col-lg-2 col-md-3 col-sm-4">
-                              <input type="text" class="form-control" id="dataCriacao" name="dataCriacao" readonly="readonly">
+                            <label for="ambientesInativos" class="control-label col-sm-4 col-md-5">Ambientes Bloqueados: </label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                              <input type="text" class="form-control inteiro" id="ambientesBloqueados" name="ambientesBloqueados" readonly="readonly">
+                            </div>
+                          </div> 
+
+                        </div>
+
+                        <div class="col-lg-6 col-md-6">
+                          <div class="form-group">
+                            <label for="login" class="control-label col-sm-4 col-md-5">Data de Vencimento</label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                              <input type="text" class="form-control" id="dataVencimento" name="dataVencimento" readonly="readonly">
                             </div>
                           </div>
 
-                        </form>
-                      </div>
+                          <div class="form-group">
+                            <label for="login" class="control-label col-lg-5 col-sm-4 col-md-5">Fechamento de Cobrança</label>
+                            <div class="col-lg-7 col-md-7 col-sm-8">
+                              <input type="text" class="form-control" id="diasFechamento" name="diasFechamento" readonly="readonly">
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="login" class="control-label col-lg-5 col-sm-4 col-md-5">Bloquear Empresa</label>
+                            <div class="col-lg-7 col-md-7 col-sm-8">
+                              <input type="text" class="form-control" id="bloquearEmpresa" name="bloquearEmpresa" readonly="readonly">
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="login" class="control-label col-sm-4 col-md-5">Ambientes Grátis</label>
+                            <div class="col-lg-4 col-md-4 col-sm-6">
+                              <input type="text" class="form-control" id="ambientesGratis" name="ambientesGratis" readonly="readonly">
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </form>
                     </div>
 
                     <c:if test="${isAdmin}">
@@ -409,7 +448,7 @@
                     id="formCondicaoComercial" 
                     class="form-horizontal"
                     method="POST">
-                    
+
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 <input type="hidden" id="idClienteModal" name="cliente[idCliente]" value="${idCliente}" >
                 <input type="hidden" id="idCondconModal" name="idCondcom" value="" >
@@ -461,6 +500,12 @@
           <h4 class="modal-title" id="titulo-modal">Alterar Senha</h4>
         </div>
         <div class="modal-body">
+
+          <div class="row" >
+            <div class="col-lg-12" id="alertAreaSenha">
+            </div>
+          </div>
+
           <form action="#" class="form-horizontal" id="alteraSenhaForm" method="POST">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <input type="hidden" id="idUsuario" name="idUsuario" value="" >

@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
+import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 
@@ -19,9 +18,9 @@ public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
 	
 	List<Ambiente> findByCliente( Cliente cliente );
 
-	List<Ambiente> findByClienteAndAtivo( Cliente cliente, Boolean ativo );
+	List<Ambiente> findByClienteAndStatus( Cliente cliente, StatusAmbiente status );
 	
-	List<Ambiente> findByAtivo( Boolean ativo );
+	List<Ambiente> findByStatus( StatusAmbiente status );
 	
 	Long countByCliente( Cliente cliente );
 	

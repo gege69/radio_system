@@ -97,12 +97,16 @@ public class AmbienteService {
 
 		validaLogin( ambiente );
 		
-		criaExpedienteDefault( ambiente );
+		boolean ambienteNovo = ( ambiente.getIdAmbiente() == null );
 		
-		byte[] logo = Base64.getDecoder().decode( Constantes.logoRadio );
-		
-		ambiente.setLogomarca( logo );
-		ambiente.setLogomimetype( "image/png" );
+		if ( ambienteNovo ){
+			criaExpedienteDefault( ambiente );
+			
+			byte[] logo = Base64.getDecoder().decode( Constantes.logoRadio );
+			
+			ambiente.setLogomarca( logo );
+			ambiente.setLogomimetype( "image/png" );
+		}
 
 		String password = ambiente.getPassword();
 		
@@ -111,14 +115,14 @@ public class AmbienteService {
 		ambiente = ambienteRepo.saveAndFlush( ambiente );
 		
 		usuarioService.saveUsuarioAmbientePlayer( ambiente, password );
-
-		criaConfiguracoesDefault( ambiente );
 		
-		midiaService.associaTodasMidiasParaAmbiente( ambiente );
-		
-		criaBlocoDefault( ambiente );
-		
-		associaGeneroDefault( ambiente );
+		if ( ambienteNovo ){
+			criaConfiguracoesDefault( ambiente );
+			midiaService.associaTodasMidiasParaAmbiente( ambiente );
+			
+			criaBlocoDefault( ambiente );
+			associaGeneroDefault( ambiente );
+		}
 
 		return ambiente; 
 	}
@@ -174,7 +178,12 @@ public class AmbienteService {
 
 	private void criaConfiguracoesDefault( Ambiente ambiente )
 	{
-		AmbienteConfiguracao config = new AmbienteConfiguracao();
+		AmbienteConfiguracao config = ambienteConfigRepo.findByAmbiente( ambiente );
+				
+		if ( config != null )
+			return;
+		
+		config = new AmbienteConfiguracao();
 		
 		config.setAmbiente( ambiente );
 		

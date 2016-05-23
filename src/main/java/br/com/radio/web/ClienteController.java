@@ -25,6 +25,7 @@ import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
+import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.TipoTaxa;
@@ -413,7 +414,7 @@ public class ClienteController extends AbstractController {
 
 
 	@RequestMapping( value = { "/clientes/{idCliente}/usuarios", "/api/clientes/{idCliente}/usuarios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	@PreAuthorize("hasAuthority('USUARIOS')")
+	@PreAuthorize("hasAuthority('USUARIOS') or hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody JSONListWrapper<Usuario> getUsuariosByCliente( 
 																 @PathVariable Long idCliente, 
 																 @RequestParam(value="search", required=false) String search, 
@@ -427,12 +428,14 @@ public class ClienteController extends AbstractController {
 		if ( usuario == null || usuario.getCliente() == null )
 			return null;
 		
-		if ( !usuario.getCliente().getIdCliente().equals( idCliente ) )
+		Cliente cliente = clienteRepo.findOne( idCliente );
+
+		if ( cliente == null )
 			return null;
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", sort );
 		
-		Page<Usuario> usuarioPage = usuarioService.findUsuarios( pageable, usuario.getCliente(), UsuarioTipo.GERENCIADOR, search );
+		Page<Usuario> usuarioPage = usuarioService.findUsuarios( pageable, cliente, UsuarioTipo.GERENCIADOR, search );
 		
 		JSONListWrapper<Usuario> jsonList = new JSONListWrapper<Usuario>(usuarioPage.getContent(), usuarioPage.getTotalElements() );
 
@@ -512,6 +515,31 @@ public class ClienteController extends AbstractController {
 			return null;
 
 	}
+
+
+
+	@RequestMapping( value = { "/admin/clientes/{idCliente}/ambientes", "/api/clientes/{idCliente}/ambientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
+	public @ResponseBody JSONBootstrapGridWrapper<Ambiente> listAmbienteByCliente( 
+																 @PathVariable Long idCliente,
+																 @RequestParam(value="search", required=false) String search, 
+																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
+																 @RequestParam(value="limit", required=false) Integer limit,
+																 Principal principal )
+	{
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
+		
+		Page<Ambiente> ambientePage = clienteService.getAmbientesPorCliente( pageable, idCliente, search );
+		
+		if ( ambientePage == null )
+			return null;
+		
+		JSONBootstrapGridWrapper<Ambiente> jsonList = new JSONBootstrapGridWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
+
+		return jsonList;
+	}
+
+
 
 }
 

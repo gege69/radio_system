@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.service.EventoService;
@@ -33,7 +34,7 @@ public class TarefasAgendadas {
 	public void verificarProgramacaoAmbientes()
 	{
 		
-		List<Ambiente> ambientes = ambienteRepo.findByAtivo( true );
+		List<Ambiente> ambientes = ambienteRepo.findByStatus( StatusAmbiente.ATIVO );
 		
 		ambientes.forEach( amb -> {
 
@@ -57,7 +58,7 @@ public class TarefasAgendadas {
 	@Scheduled(cron="0 */5 * * * *")  // a cada 5 minutos roda
 	public void verificarEventos()
 	{
-		List<Ambiente> ambientes = ambienteRepo.findByAtivo( true );
+		List<Ambiente> ambientes = ambienteRepo.findByStatus( StatusAmbiente.ATIVO );
 		
 		logger.info( "Rodando tarefas de eventos..." );
 		

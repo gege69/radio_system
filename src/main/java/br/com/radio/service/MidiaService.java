@@ -46,6 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.MusicTags;
 import br.com.radio.dto.midia.MidiaFilter;
+import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteGenero;
@@ -881,7 +882,7 @@ public class MidiaService {
 
 	private void associaMidiaParaTodosAmbientes( Midia midia )
 	{
-		List<Ambiente> ambientes = ambienteRepo.findByAtivo( true );
+		List<Ambiente> ambientes = ambienteRepo.findByStatus( StatusAmbiente.ATIVO );
 		
 		for ( Ambiente ambiente : ambientes )
 		{

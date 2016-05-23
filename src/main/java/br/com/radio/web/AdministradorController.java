@@ -35,12 +35,15 @@ import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
+import br.com.radio.model.Cliente;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.TipoTaxa;
 import br.com.radio.model.Usuario;
+import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.TipoTaxaRepository;
@@ -76,6 +79,12 @@ public class AdministradorController extends AbstractController {
 	
 	@Autowired
 	private TipoTaxaRepository tipoTaxaRepo;
+	
+	@Autowired
+	private AmbienteRepository ambienteRepo;
+
+	@Autowired
+	private ClienteRepository clienteRepo;
 	
 	
 	@RequestMapping(value="/admin/painel", method=RequestMethod.GET)
@@ -917,6 +926,27 @@ public class AdministradorController extends AbstractController {
 	
 	
 	
+	@RequestMapping(value="/admin/clientes/{idCliente}/ambientes", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String cadastroAmbientesAdmin( @PathVariable Long idCliente, ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		Cliente cliente = clienteRepo.findOne( idCliente );
+		
+		if ( cliente == null )
+			return "HTTPerror/404";
+	
+		Long count = ambienteRepo.countByCliente( cliente );
+		
+		model.addAttribute( "qtdAmbientes", count );
+		model.addAttribute( "idCliente", idCliente );
+		
+		return "admin/cadastro-ambientes-admin";
+	}
 	
 }
 

@@ -123,7 +123,7 @@ var validaCampoIndividual = function( nomeCampo, desc, message )
 	return isOk;
 }
 
-var preencheErros = function( errors )
+var preencheErros = function( errors, forceField )
 {
     if ( errors == null ) 
         return;
@@ -136,7 +136,10 @@ var preencheErros = function( errors )
     
     if ( errors.length == 1 && ( erro.field == "alertArea" || erro.field == "global" ) )
     {
-        preencheAlertGeral( erro.field, erro.message );
+        if ( forceField != null && forceField != "" )
+            preencheAlertGeral( forceField, erro.message );
+        else
+            preencheAlertGeral( erro.field, erro.message );
     }
     else
     {
@@ -149,6 +152,7 @@ var preencheErros = function( errors )
         });  
     }
 }
+
 
 
 var preencheErroField = function( nomeCampo, msg )
@@ -230,20 +234,20 @@ var preencheAlertGeral = function( nomeCampo, msg, type )
             type = 'danger';
 
         var alertGeral = 
-            '<div class="alert alert-'+ type +'" role="alert" id="alert'+ nomeCampo +'" >'+
+            '<div class="alert alert-'+ type +'" role="alert" id="alert_div_'+ nomeCampo +'" >'+
             '  <a href="#" class="close" data-dismiss="alert">&times;</a>'+
             '  <div id="errogeral">'+ msg +'</div>'+
             '</div>';
         
-        $('#alertArea').append( alertGeral );
+        $('#' + nomeCampo).append( alertGeral );
 
         var duration = 3000; // default
 
         if ( "danger" == type )
             duration = 8000;
 
-        $("#alert" + nomeCampo ).fadeTo( duration , 500).slideUp(500, function(){
-            $("#alert" + nomeCampo ).alert('close');
+        $("#alert_div_" + nomeCampo ).fadeTo( duration , 500).slideUp(500, function(){
+            $("#alert_div_" + nomeCampo ).alert('close');
         });
     } 
 }

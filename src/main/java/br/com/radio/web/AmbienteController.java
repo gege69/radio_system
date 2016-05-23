@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.radio.dto.EspelharAmbienteDTO;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.enumeration.DiaSemana;
+import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.exception.ResourceNotFoundException;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
@@ -58,6 +59,7 @@ import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.service.AmbienteService;
+import br.com.radio.service.ClienteService;
 import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.service.UsuarioService;
 
@@ -90,6 +92,8 @@ public class AmbienteController extends AbstractController {
 	private AmbienteService ambienteService;
 	@Autowired
 	private UsuarioService usuarioService;
+	@Autowired
+	private ClienteService clienteService;
 	@Autowired
 	private ProgramacaoMusicalService programacaoMusicalService;
 	// Services ==============
@@ -366,6 +370,7 @@ public class AmbienteController extends AbstractController {
 		return jsonList;
 	}
 
+
 	
 	@RequestMapping( value = { "/ambientes", "/api/ambientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String saveAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result, Principal principal )
@@ -459,10 +464,10 @@ public class AmbienteController extends AbstractController {
 				if ( ambienteAtual == null )
 					throw new RuntimeException( "Ambiente não encontrado" );
 				
-				if ( ambienteAtual.getAtivo() == false )
+				if ( ambienteAtual.getStatus().equals( StatusAmbiente.INATIVO ) )
 					throw new RuntimeException("Ambiente já está inativo");
 				
-				ambienteAtual.setAtivo( false );
+				ambienteAtual.setStatus( StatusAmbiente.INATIVO );;
 				ambienteAtual.setDataAlteracao( new Date() );
 				
 				// Log vai ser no monitorar
@@ -482,6 +487,7 @@ public class AmbienteController extends AbstractController {
 
 
 	@RequestMapping( value = { "/ambientes/ativar", "/api/ambientes/ativar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
 	public @ResponseBody String ativarAmbiente( @RequestBody Ambiente ambienteVO, BindingResult result, Principal principal )
 	{
 		String jsonResult = null;
@@ -504,10 +510,10 @@ public class AmbienteController extends AbstractController {
 				if ( ambienteAtual == null )
 					throw new RuntimeException( "Ambiente não encontrado" );
 				
-				if ( ambienteAtual.getAtivo() == true )
+				if ( StatusAmbiente.ATIVO.equals( ambienteAtual.getStatus() ) )
 					throw new RuntimeException("Ambiente já está ativo");
 				
-				ambienteAtual.setAtivo( true );
+				ambienteAtual.setStatus( StatusAmbiente.ATIVO );
 				ambienteAtual.setDataAlteracao( new Date() );
 				
 				ambienteRepo.save( ambienteAtual );

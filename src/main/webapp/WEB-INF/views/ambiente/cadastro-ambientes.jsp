@@ -111,8 +111,8 @@
         
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" id="btnNaoDialog" data-dismiss="modal">Não</button>
-        <button type="button" class="btn btn-primary" id="btnConfirmar">Sim</button>
+        <button type="button" class="btn btn-default" id="btnConfirmar">Sim</button>
+        <button type="button" class="btn btn-primary" id="btnNaoDialog" data-dismiss="modal">Não</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -177,38 +177,10 @@
             $('#myDialog').modal('show');
         }
         else {
-            ativarAmbiente(idAmbiente);
+            preencheAlertGeral( "alertArea", "Para ativar o ambiente é necessário entrar em contato com o Administrador por telefone e solicitar a reativação.", "warning" );
         }
     }
-    
 
-    function ativarAmbiente(idAmbiente)
-    {
-        if ( idAmbiente == null || idAmbiente == 0 )
-            preencheAlertGeral( "alertArea", "Ambiente não encontrado" );
-
-        var url = buildUrl( "/ambientes/ativar");
-
-        var formData =  $('#inativarAmbienteForm').serializeJSON();
-        formData.idAmbiente = idAmbiente;
-        
-        $.ajax({
-            type: 'POST',
-            contentType: 'application/json',
-            url: url,
-            data:  JSON.stringify( formData ),
-            dataType: 'json'
-        }).done( function(json){ 
-
-            if (json.ok == 1){
-                preencheAlertGeral( "alertArea", "Ambiente desativado com sucesso", "success" );
-                $("#table-admin").bootstrapTable('refresh');
-            }
-            else{
-                preencheErros( json.errors );
-            }
-        }); 
-    }
 
     function desativarAmbiente() 
     {

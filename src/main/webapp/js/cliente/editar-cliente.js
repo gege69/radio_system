@@ -82,8 +82,7 @@ function alterarSenha(){
             jump(''); // topo da pagina
         }
         else{
-            $('#myModalAlterarSenha').modal('toggle');
-            preencheErros( json.errors );
+            preencheErros( json.errors, "alertAreaSenha" );
         }
     });
 }
@@ -313,36 +312,32 @@ var getTipoTaxas = function()
 
 var salvarCondicaoComercial = function(){
     
-    if ( validaForm() ){
-        
-        var dados = JSON.stringify( $('#formCondicaoComercial').serializeJSON() );
-        
-        var url = buildUrl( "/clientes/{idCliente}/condicoescomerciais", {
-            idCliente : $("#idCliente").val(),
-        }); 
-
-        $.ajax({
-            
-            type: 'POST',
-            contentType: 'application/json',
-            url: url,
-            dataType: 'json',
-            data: dados 
-            
-        }).done( function(json){ 
-
-            if ( json.idCondcom && json.idCondcom > 0){
-                preencheAlertGeral( "alertArea", "Registro de Condição Comercial salvo com sucesso.", "success" );
-                $('#tableCondicoesComerciais').bootstrapTable('refresh');
-                $('#myModalCondicaoComercial').modal('hide');
-            }
-            else{
-                $('#myModalCondicaoComercial').modal('hide');
-                preencheErros( json.errors );
-            }
-        });
-    }
+    var dados = JSON.stringify( $('#formCondicaoComercial').serializeJSON() );
     
+    var url = buildUrl( "/clientes/{idCliente}/condicoescomerciais", {
+        idCliente : $("#idCliente").val(),
+    }); 
+
+    $.ajax({
+        
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data: dados 
+        
+    }).done( function(json){ 
+
+        if ( json.idCondcom && json.idCondcom > 0){
+            preencheAlertGeral( "alertArea", "Registro de Condição Comercial salvo com sucesso.", "success" );
+            $('#tableCondicoesComerciais').bootstrapTable('refresh');
+            $('#myModalCondicaoComercial').modal('hide');
+        }
+        else{
+            preencheErros( json.errors );
+        }
+    });
+
 };
 
 

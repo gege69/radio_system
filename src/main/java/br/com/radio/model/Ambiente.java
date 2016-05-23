@@ -5,9 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +23,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
+import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateSerializer;
 
@@ -163,14 +165,16 @@ public class Ambiente implements Serializable {
 	@Column( name = "logomimetype")
 	private String logomimetype;
 	
-	@Column( name = "ativo", columnDefinition = "BOOL default true")
-	private Boolean ativo;
+	@Column( name= "cobrar", columnDefinition = "BOOL default true")
+	private Boolean cobrar;
 	
+	@Enumerated(EnumType.STRING)
+	@Column( name = "status", columnDefinition = "TEXT default 'ATIVO' " )
+	private StatusAmbiente status;
 	
 	// REST
 	@Transient
 	private Map<String,String> ambienteAPI = new HashMap<String,String>();
-	
 	
 	
 
@@ -181,7 +185,8 @@ public class Ambiente implements Serializable {
 		this.sincronizar = false;
 		this.download = false;
 		this.dataCriacao = new Date();
-		this.ativo = true;
+		this.cobrar = true;
+		this.status = StatusAmbiente.ATIVO;
 	}
 
 	public Ambiente( Long idAmbiente )
@@ -577,16 +582,6 @@ public class Ambiente implements Serializable {
 		this.logomimetype = logomimetype;
 	}
 
-	public Boolean getAtivo()
-	{
-		return ativo;
-	}
-
-	public void setAtivo( Boolean ativo )
-	{
-		this.ativo = ativo;
-	}
-
 	public String getCep()
 	{
 		return cep;
@@ -597,7 +592,37 @@ public class Ambiente implements Serializable {
 		this.cep = cep;
 	}
 
+	public Boolean getCobrar()
+	{
+		return cobrar;
+	}
+
+	public void setCobrar( Boolean cobrar )
+	{
+		this.cobrar = cobrar;
+	}
+
+	public StatusAmbiente getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus( StatusAmbiente status )
+	{
+		this.status = status;
+	}
 	
+	public boolean isAtivo(){
+		return StatusAmbiente.ATIVO.equals( this.getStatus() );
+	}
 	
-	
+	public boolean isInativo(){
+		return StatusAmbiente.INATIVO.equals( this.getStatus() );
+	}
+
+	public boolean isBloqueado(){
+		return StatusAmbiente.BLOQUEADO.equals( this.getStatus() );
+	}
+
+
 }
