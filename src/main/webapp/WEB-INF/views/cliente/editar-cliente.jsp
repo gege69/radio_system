@@ -602,7 +602,7 @@
 
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 
-<script type="text/javascript" src="${context}/js/required/zxcvbn.js"></script>
+<script type="text/javascript" src="${context}/js/required/zxcvbn.js" async></script>
 
 <script type="text/javascript" src="${context}/js/cliente/editar-cliente.js" async charset="UTF-8"></script>
 

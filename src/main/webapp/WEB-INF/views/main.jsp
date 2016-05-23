@@ -8,7 +8,7 @@
   
     <jsp:include page="/WEB-INF/views/metaAndIcon.jsp" />
   
-    <title>Radio System</title>
+    <title>RDCenter</title>
 
 <%--     <link href="${context}/css/bootstrap-themes/slate/bootstrap.min.css" rel="stylesheet"> --%>
     
