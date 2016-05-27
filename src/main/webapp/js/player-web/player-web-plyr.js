@@ -56,7 +56,15 @@ var schedulePlay = function()
         musicaAtual: musicaAtual
     });
 
-    player2.source( url );
+    var fonte = { 
+        type : 'audio' ,
+        sources : [{
+           src : url,
+//           type : content.midia.mimetype
+        }]
+    };
+
+    player2.source( fonte );
     player2.play();
 
     player2.media.addEventListener("ended", function() {
