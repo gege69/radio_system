@@ -89,7 +89,17 @@
           <c:if test="${configuracao != null && configuracao.atendimento}">          
             <li><a href="#" id="btn-atendimento">Atendimento</a></li>
           </c:if>          
-          
+
+        </ul>
+
+        <ul class="nav navbar-nav" style="float: right">
+          <li><a href="#" class="navbar-nav pull-right" id="btnFechar">Fechar</a>
+            <c:url var="logoutUrl" value="/logout"/>
+            <form action="${logoutUrl}" id="formLogout" method="post">
+              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form> 
+          </li>
+
         </ul>
         
       </div><!--/.nav-collapse -->
@@ -119,6 +129,30 @@
               <div class="row row-centered" >
                 <img alt="logo" src="${context}/api/ambientes/${idAmbiente}/logomarca" id="marca" class="logotipoimagem" >
               </div>
+
+              <div class="row row-centered">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-centered" >
+                  <div class="plyr player" id="player1" style="display : none;">
+                      <audio controls>
+                          <source src="" type="audio/ogg">
+                      </audio>
+                  </div>
+
+                  <div class="plyr player" id="player2" style="display : none;">
+                      <audio controls>
+                          <source src="" type="audio/ogg">
+                      </audio>
+                  </div>
+                
+                  <div class="plyr player" id="playerDing" style="display : none;">
+                      <audio controls>
+                          <source src="${context}/static_sound/ding.mp3" type="audio/ogg">
+                      </audio>
+                  </div>
+                </div>
+              </div>
+
+
               
               <div class="spacer-vertical40"></div>
             
@@ -154,23 +188,6 @@
       </div>
       
       <div class="col-md-2 col-sm-2 col-xs-12 col-centered" >
-        <div class="plyr" id="player1" style="display : none;">
-            <audio controls>
-                <source src="" type="audio/ogg">
-            </audio>
-        </div>
-
-        <div class="plyr" id="player2" style="display : none;">
-            <audio controls>
-                <source src="" type="audio/ogg">
-            </audio>
-        </div>
-      
-        <div class="plyr" id="playerDing" style="display : none;">
-            <audio controls>
-                <source src="${context}/static_sound/ding.mp3" type="audio/ogg">
-            </audio>
-        </div>
         <table style=" margin: 0 auto;">
           <tr>
             <td>
@@ -602,18 +619,17 @@
   
 <jsp:include page="/WEB-INF/views/scripts.jsp" />
 
-<link rel="stylesheet" href="https://cdn.plyr.io/1.5.21/plyr.css">
-<script src="https://cdn.plyr.io/1.5.21/plyr.js"></script>
+
+<link rel="stylesheet" href="https://cdn.plyr.io/1.6.16/plyr.css">
+<script src="https://cdn.plyr.io/1.6.16/plyr.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
 
 <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>  
 
-<script src="${context}/js/player-web/player-web-plyr.js" charset="UTF-8"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js" defer></script>
-<script src="${context}/js/required/jquery.populate.js"></script>
+<script src="${context}/js/required/jquery.populate.js" defer></script>
   
 <script src="${context}/js/player-web/modal-blocos.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-funcionarios.js" charset="UTF-8" defer></script>
@@ -627,12 +643,14 @@
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" defer></script>
 
 <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
-<script src="${context}/js/required/bootstrap-datepicker.min.js"></script>
-<script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script>
+<script src="${context}/js/required/bootstrap-datepicker.min.js" defer></script>
+<script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js" defer></script>
 <script src="${context}/js/required/jsrender.min.js" defer></script>
-<script src="${context}/js/gerenciador/conversas.js"></script>
+<script src="${context}/js/gerenciador/conversas.js" defer></script>
 <!-- basicamente necessários para o "Conversas" -->
 
+
+<script src="${context}/js/player-web/player-web-plyr.js" charset="UTF-8"></script>
 
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

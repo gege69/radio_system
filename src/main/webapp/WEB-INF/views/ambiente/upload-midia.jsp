@@ -39,6 +39,7 @@
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                         <input type="hidden" id="idAmbiente" name="idAmbiente" value="${idAmbiente}">
                         <input type="hidden" id="idCategoria" name="idCategoria" value="${idCategoria}">
+                        <input type="hidden" id="nomeCategoria" name="nomeCategoria" value="${nomeCategoria}">
                         
                         <input type="file" id="fileupload" name="file" multiple style="display : none;">
 
@@ -75,7 +76,7 @@
                         <div class="col-lg-7 col-md-9 col-sm-12">
                           <div class="form-group">
                             <label class="control-label" for="chave">Data Início Validade:</label>
-                            <div class="input-group date col-lg-4 col-md-6 col-sm-5">
+                            <div class="input-group date col-lg-4 col-md-6 col-sm-5" id="componenteDatePickerInicio">
                               <input type="text" class="form-control" id="dataInicio" name="dataInicio">
                                 <span class="input-group-addon">
                                   <i class="fa fa-calendar"></i>
@@ -85,7 +86,7 @@
                           
                           <div class="form-group">
                             <label class="control-label" for="chave">Data Fim Validade:</label>
-                            <div class="input-group date col-lg-4 col-md-6 col-sm-5">
+                            <div class="input-group date col-lg-4 col-md-6 col-sm-5" id="componenteDatePickerFim">
                               <input type="text" class="form-control" id="dataFim" name="dataFim">
                                 <span class="input-group-addon">
                                   <i class="fa fa-calendar"></i>

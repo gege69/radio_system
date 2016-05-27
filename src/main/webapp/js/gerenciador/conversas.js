@@ -308,6 +308,6 @@ $(function(){
         enviarMensagem();        
     });
     
-    window.setInterval(atualiza, 10000); 
+//    window.setInterval(atualiza, 10000); 
     
 });

@@ -104,7 +104,7 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping(value="/admin/generos/searches", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String generos( ModelMap model, Principal principal )
+	public String generos( ModelMap model, Principal principal, @RequestParam(value="cadastro", required=false) String cadastro )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -114,6 +114,13 @@ public class AdministradorController extends AbstractController {
 		Long quantidade = generoRepo.count();
 		
 		model.addAttribute( "qtdGeneros", quantidade.intValue() );
+		
+		boolean isCadastro = StringUtils.isNotBlank( cadastro );
+		
+		if ( isCadastro ){
+			String mensagem = String.format( "Gênero '%s' salvo com sucesso" , cadastro );
+			model.addAttribute( "success", mensagem );
+		}
 		
 		return "admin/cadastro-generos";
 	}

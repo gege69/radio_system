@@ -105,7 +105,6 @@
         }).done( function(json){
             makeListTmpl(json);
             
-            
             $.ajax({
                 type: 'GET',
                 contentType: 'application/json',

@@ -43,6 +43,7 @@ public class PlayerWebController extends AbstractController {
 		return "HTTPerror/500";
 	}
 	
+
 	
 	@RequestMapping(value = "/player", method = RequestMethod.GET )
 	public String player(Principal principal, HttpServletRequest request, ModelMap model ) 

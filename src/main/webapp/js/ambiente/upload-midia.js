@@ -82,7 +82,6 @@ var deletaMidia = function( idMidia )
         }
         
     } );
-    
 }
 
 
@@ -163,7 +162,8 @@ var iniciarUpload = function()
     var filesList = $('#outrofileupload')[0].files;
     
     if ( filesList == null || filesList.length == 0 ) { 
-        preencheAlertGeral( "alertArea", "Selecione as músicas primeiro.");
+        var nomeCategoria = $("#nomeCategoria").val();
+        preencheAlertGeral( "alertArea", "Selecione os arquivos de "+ nomeCategoria +" primeiro.");
         return;
     }
     
@@ -174,6 +174,19 @@ var iniciarUpload = function()
         return;
     }
     
+    var dataInicioVal = $("#dataInicio").val();
+    var dataFimVal = $("#dataFim").val();
+
+    if ( dataInicioVal == null || dataInicioVal == '' ){
+        preencheAlertGeral("alertArea", "Data de Início da Validade é obrigatória");
+        return;
+    }
+
+    if ( dataFimVal == null || dataFimVal == '' ){
+        preencheAlertGeral("alertArea", "Data Fim da Validade é obrigatória");
+        return;
+    }
+
     $('#fileupload').fileupload('add', { files : filesList } );
 }
 
@@ -183,7 +196,8 @@ var mostrarArquivos = function()
    
     if ( filesList && filesList.length > 0 )
       $("#static-arquivos").html( filesList.length + " arquivo(s) selecionado(s)" );
-    
+    else
+      $("#static-arquivos").empty();
 }
 
 
@@ -259,6 +273,12 @@ $(function(){
 
     $("#outrofileupload").change(function(){
         mostrarArquivos();
+    });
+    
+    $("#outrofileupload").blur(function(){
+        var filesList = $('#outrofileupload')[0].files;
+        if ( filesList == null || filesList.length == 0 )
+            $("#static-arquivos").empty();
     });
     
     $("#aplicar-programacao").click( function() {

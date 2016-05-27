@@ -8,6 +8,19 @@
   <div class="container">
 
     <div class="row">
+
+      <div class="row">
+        <div class="col-lg-12 col-md-12" id="alertArea">
+
+          <c:if test="${not empty success}">      
+            <div class="alert alert-success" role="alert" id="alertalertArea" >
+              <a href="#" class="close" data-dismiss="alert">&times;</a>
+              <div id="errogeral">${success}</div>
+            </div>
+          </c:if>
+        </div>
+      </div>
+
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>Administrar Gêneros Musicais<br/>

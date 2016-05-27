@@ -59,6 +59,9 @@ var schedulePlay = function()
     player2.source( url );
     player2.play();
 
+    player2.media.addEventListener("ended", function() {
+        schedulePlay();
+    });
 }
 
 var stop = function(){
@@ -147,9 +150,13 @@ var play = function(){
                    type : content.midia.mimetype
                 }]
             };
-
+            
             player.source(fonte);
             player.play();
+
+            player.media.addEventListener("ended", function() {
+                next();
+            });
         }
 
     });
@@ -157,8 +164,10 @@ var play = function(){
 
 var next = function(){
     
-    if ( player2.media.paused == false )
+    if ( player2.media.paused == false ){
+        console.log('player2-paused');
         return;
+    }
     
     var url = buildUrl( "/api/ambientes/{idAmbiente}/transmissoes/live/next", { 
         idAmbiente: idAmbiente
@@ -186,7 +195,7 @@ var next = function(){
             determinaVolume( content );
 
             var urlMidia = buildUrl( content.link );
-
+            
             var fonte = { 
                 type : 'audio' ,
                 sources : [{
@@ -197,6 +206,10 @@ var next = function(){
 
             player.source(fonte);
             player.play();
+
+            player.media.addEventListener("ended", function() {
+                next();
+            });
         }
 
     });
@@ -327,7 +340,22 @@ var toggleMicrofone = function()
 
 $(document).ready(function() {
 
-    plyr.setup();
+    plyr.setup({
+        i18n: {
+            restart:            "Restart",
+            rewind:             "Rewind {seektime} secs",
+            play:               "Play",
+            pause:              "Pause",
+            forward:            "Forward {seektime} secs",
+            buffered:           "buffered",
+            currentTime:        "Current time",
+            duration:           "Duration",
+            volume:             "Volume",
+            toggleMute:         "Toggle Mute",
+            toggleCaptions:     "Toggle Captions",
+            toggleFullscreen:   "Toggle Fullscreen"
+        }
+    });
     
     player = $('#player1')[0].plyr;
 
@@ -335,15 +363,6 @@ $(document).ready(function() {
 
     player3 = $('#playerDing')[0].plyr;
 
-    player.media.addEventListener("ended", function() { 
-        next();
-    });
-    
-    player2.media.addEventListener("ended", function() { 
-        schedulePlay();
-    });
-    
-    
     $(".campo-slider").bootstrapSlider({
         ticks: [0, 20, 40, 60, 80, 100],
         ticks_labels: ['0', '20', '40', '60', '80', '100'],
@@ -387,6 +406,10 @@ $(document).ready(function() {
     
     $("#mic").click( function(){
         toggleMicrofone();
+    });
+    
+    $("#btnFechar").click(function(){
+       $("#formLogout").submit();
     });
     
 });

@@ -146,10 +146,12 @@
           }).done( function(json){ 
 
               if ( json.idGenero && json.idGenero > 0){
+                  
+                  var url_cadastro = buildUrl( "/admin/generos/searches?cadastro={nomeGenero}", {
+                      nomeGenero : json.nome
+                  }); 
 
-                  $("#idGenero").val( json.idGenero );
-                  preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                  jump(''); // topo da pagina
+                  window.location = url_cadastro;
               }
               else{
                   preencheErros( json.errors );

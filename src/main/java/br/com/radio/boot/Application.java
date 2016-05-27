@@ -21,11 +21,11 @@ import br.com.radio.service.ProgramacaoMusicalService;
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
 
-@SpringBootApplication
-@ComponentScan( basePackages = { "br.com.radio.*" } )
-@EnableConfigurationProperties
-@ActiveProfiles({"default"})
-@EnableTransactionManagement
+//@SpringBootApplication
+//@ComponentScan( basePackages = { "br.com.radio.*" } )
+//@EnableConfigurationProperties
+//@ActiveProfiles({"default"})
+//@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)
