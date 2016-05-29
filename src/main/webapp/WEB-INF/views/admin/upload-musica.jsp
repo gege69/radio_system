@@ -440,9 +440,11 @@
                         0 + '%'
                     );
             },
+            done : function(e, data) {
+                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+            },
             stop : function(e, data) {
                 $("#table-musicas").bootstrapTable('refresh');
-                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
                 $("#btnIniciar").prop("disabled", false);
                 $('#progress .progress-bar').css(
                         'width',

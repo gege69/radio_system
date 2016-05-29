@@ -398,8 +398,10 @@
                     progress + '%'
                 );
             },
-            stop : function( e, data) {
+            done : function(e, data) {
                 preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+            },
+            stop : function( e, data) {
                 $("#tableOpcionais").bootstrapTable('refresh');
                 $('#progress .progress-bar').css(
                         'width',

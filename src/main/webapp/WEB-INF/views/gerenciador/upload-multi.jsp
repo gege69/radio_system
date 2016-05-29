@@ -307,8 +307,10 @@
                         0 + '%'
                     );
             },
-            stop : function(e, data) {
+            done : function(e, data) {
                 preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
+            },
+            stop : function(e, data) {
                 $("#btnIniciar").prop("disabled", false);
                 $('#progress .progress-bar').css(
                         'width',
