@@ -9,15 +9,19 @@
  
     <div class="row">
     
-      <div class="row" id="alertArea">
-      </div>
-    
-    
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Usuário<br/>
-            <small>Preencha as informações do Usuário</small>
-          </h3>
+        
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3>Usuário<br/>
+                <small>Preencha as informações do Usuário</small>
+              </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
           
           <div class="spacer-vertical40"></div>
 

@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.dto.AlterarSenhaAmbienteDTO;
 import br.com.radio.dto.EspelharAmbienteDTO;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.enumeration.DiaSemana;
@@ -132,7 +133,7 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
 		
-			return "ambiente/espelhar";
+			return "ambiente/espelhar-ambiente";
 		}
 		else
 			return "HTTPerror/404";
@@ -144,7 +145,25 @@ public class AmbienteController extends AbstractController {
 	{
 		model.addAttribute( "idAmbiente", idAmbiente );
 		
-		return "ambiente/editar";
+		return "ambiente/editar-ambiente";
+	}
+
+
+	@RequestMapping(value="/ambientes/{idAmbiente}/senha/edit", method=RequestMethod.GET)
+	public String alterarSenhaAmbiente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "login", ambiente.getLogin() );
+		
+			return "ambiente/alterar-login-senha-ambiente";
+		}
+		else
+			return "HTTPerror/404";
 	}
 
 	
@@ -181,7 +200,8 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-		
+			model.addAttribute( "icone", getIcone( "expediente" ) );
+
 			return "ambiente/expedientes";
 		}
 		else
@@ -198,6 +218,7 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "icone", getIcone( "generos" ) );
 		
 			return "ambiente/generos";
 		}
@@ -215,7 +236,8 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-		
+			model.addAttribute( "icone", getIcone( "config" ) );
+
 			return "ambiente/configuracoes";
 		}
 		else
@@ -232,6 +254,7 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "icone", getIcone( "blocos" ) );
 		
 			return "ambiente/blocos";
 		}
@@ -249,11 +272,22 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "icone", getIcone( "prog_musical" ) );
 		
 			return "ambiente/programacoes";
 		}
 		else
 			return "HTTPerror/404";
+	}
+
+
+
+	private String getIcone( String chave )
+	{
+		String icone = "";
+		Funcionalidade func = funcionalidadeRepo.findByCodigo( chave );
+		icone = func.getIcone();
+		return icone;
 	}	
 	
 	
@@ -269,7 +303,8 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-		
+			model.addAttribute( "icone", getIcone( "logomarca" ) );	
+
 			return "ambiente/logomarcas";
 		}
 		else
@@ -287,7 +322,8 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-		
+			model.addAttribute( "icone", getIcone( "eventos" ) );	
+
 			return "ambiente/eventos";
 		}
 		else
@@ -408,6 +444,35 @@ public class AmbienteController extends AbstractController {
 		return jsonResult;
 	}
 	
+
+	@RequestMapping(value="/ambientes/{idAmbiente}/senha", method=RequestMethod.POST, produces=APPLICATION_JSON_CHARSET_UTF_8)
+	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
+	public @ResponseBody String saveNovaSenhaAmbiente( @PathVariable Long idAmbiente, @RequestBody @Valid AlterarSenhaAmbienteDTO senhaDTO, BindingResult result, Principal principal )
+	{
+		String jsonResult = "";
+
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				ambienteService.alteraLoginSenhaAmbiente( idAmbiente, senhaDTO );
+				
+				jsonResult = Json.createObjectBuilder().add("ok", true).build().toString();
+			}
+			catch ( Exception e )
+			{
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+		
+		return jsonResult;
+	}
+
+
 
 	@RequestMapping(value="/ambientes/espelhar", method=RequestMethod.POST, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String espelhar( @RequestBody EspelharAmbienteDTO espelharDTO, BindingResult result, Principal principal )
@@ -868,6 +933,7 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "icone", getIcone( "logomarca" ) );
 
 			boolean erro = false;
 			

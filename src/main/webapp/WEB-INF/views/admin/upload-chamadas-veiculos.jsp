@@ -9,15 +9,18 @@
  
     <div class="row">
     
-      <div class="row" id="alertArea">
-      </div>
-    
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Upload de Chamadas de Veículos<br/>
-<%--             <small>Você possui ${qtdGeneros} gênero(os) cadastrado(s)</small> --%>
-          </h3>
-          
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3>Upload de Chamadas de Veículos </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
+
           <div class="spacer-vertical20"></div>
           
           <div class="row">

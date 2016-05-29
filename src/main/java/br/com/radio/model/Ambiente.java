@@ -108,8 +108,7 @@ public class Ambiente implements Serializable {
 	private String login;
 	
 	@JsonIgnore
-	@NotNull( message = "A senha é de preenchimento obrigatório" )
-	@Column( name = "password", length = 200 )
+	@Transient
 	private String password;
 	
 	@Column( name="urlambiente", columnDefinition = "TEXT" )

@@ -8,16 +8,21 @@
   
     <div class="row">
     
-      <div class="row" id="alertArea">
-      </div>
-      
       <div class="panel panel-default">
         <div class="panel-heading">
           <input type="hidden" id="idAmbiente" value="${idAmbiente}">
-          <h3>${nome}<br/>
-            <small>URL Player : ${urlambiente}</small><br/>
-            <small>Login : ${login}</small><br/>
-          </h3>
+          
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3>${nome}<br/>
+                <small>URL Player : ${urlambiente}</small><br/>
+                <small>Login : ${login}</small><br/>
+              </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
           
         </div>
         

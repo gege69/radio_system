@@ -15,26 +15,26 @@
 
             <div class="row">
               <div class="col-lg-6 col-md-6">
-                <h3>Alterar Senha<br/>
-                  <small>Atualize com frequência sua senha</small>
+                <h3>Alterar Login e Senha de ${nome}
                 </h3>
               </div>
 
               <div class="col-lg-6 col-md-6" id="alertArea">
               </div>
             </div>
-            
+
             <div class="spacer-vertical40"></div>
             
             <div>
               <form class="form-horizontal" id="alterar-senha-form" action="#">
               
+                <input type="hidden" name="idAmbiente" id="idAmbiente" value="${idAmbiente}" />
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-    
+
                 <div class="form-group">
-                  <label for="login" class="control-label col-sm-3 col-md-4">Senha Atual:</label>
-                  <div class="col-sm-5 col-md-4">
-                    <input type="password" class="form-control" id="senha_atual" name="senha_atual" placeholder="Atual">
+                  <label for="login" class="control-label col-sm-2 col-md-4">Login:</label>
+                  <div class="col-sm-3 col-md-5">
+                    <input type="text" class="form-control" id="login" name="login" placeholder="Login" style="text-transform: lowercase;" value="${login}">
                   </div>
                 </div>
                 
@@ -70,13 +70,20 @@
               </form>
             </div>
             
-            <div class="spacer-vertical80"></div>
+            <div class="spacer-vertical40"></div>
           
             <div class="row">
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="">
+                  <a class="btn btn-default" href="${context}/ambientes/searches" >
+                    <i class="fa fa-arrow-left"></i>
+                    Voltar para Administrar Ambientes</a>
+                </div>            
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="pull-right">
                   <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
-                </div>            
+                </div>
               </div>
             </div>
             
@@ -103,7 +110,7 @@
         removeErros();
         
         var arrayCampos = [
-                            {field: "senha_atual",        desc : "Senha Atual"},
+                            {field: "login",        desc : "Login"},
                             {field: "password",         desc : "Nova senha" }, 
                             {field: "matchingPassword",      desc : "Confirmação da nova senha"}
                           ];
@@ -117,17 +124,21 @@
         
         if ( validaForm() ){
             
+            var idAmbiente = $('#idAmbiente').val();
+            var url = buildUrl( "/ambientes/{idAmbiente}/senha", { 
+                idAmbiente: idAmbiente
+            });
+            
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
-                url: '${context}/senha',
+                url: url,
                 dataType: 'json',
                 data: JSON.stringify( $('#alterar-senha-form').serializeJSON() )
             }).done( function(json){ 
 
                 if (json.ok != null && json.ok == true){
                     preencheAlertGeral( "alertArea", "Senha alterada com sucesso.", "success" );
-                    jump(''); // topo da pagina
                 }
                 else
                     preencheErros( json.errors );

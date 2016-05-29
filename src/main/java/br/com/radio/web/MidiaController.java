@@ -21,10 +21,12 @@ import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
+import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
+import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
@@ -35,7 +37,10 @@ public class MidiaController extends AbstractController {
 	// DAOs =====================
 	@Autowired
 	private AmbienteRepository ambienteRepo;
-	
+
+	@Autowired
+	private FuncionalidadeRepository funcionalidadeRepo;	
+
 	@Autowired
 	private CategoriaRepository categoriaRepo;
 	
@@ -62,6 +67,7 @@ public class MidiaController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "icone", getIcone( codigo ) );
 			
 			Categoria categoria = categoriaRepo.findByCodigo( codigo );
 			
@@ -77,6 +83,19 @@ public class MidiaController extends AbstractController {
 		else
 			return "HTTPerror/404";
 	}
+
+
+	private String getIcone( String chave )
+	{
+		String icone = "";
+		Funcionalidade func = funcionalidadeRepo.findByCodigo( chave );
+		
+		if ( func != null && func.getIcone() != null )
+			icone = func.getIcone();
+
+		return icone;
+	}	
+	
 	
 	
 //	@RequestMapping( value = "/ambientes/{idAmbiente}/view-pesquisa-midia", method = RequestMethod.GET )
@@ -105,6 +124,7 @@ public class MidiaController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "icone", getIcone( "chamada_func" ) );
 			
 			return "ambiente/chamada-funcionarios";
 		}
@@ -138,6 +158,7 @@ public class MidiaController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "icone", getIcone( "chamada_func" ) );
 
 			if ( !file.isEmpty() )
 			{

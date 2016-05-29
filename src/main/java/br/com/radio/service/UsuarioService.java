@@ -266,7 +266,6 @@ public class UsuarioService {
 	{
 		Usuario usuario = usuarioRepo.findByAmbiente( ambiente );
 
-
 		if ( usuario != null ){
 			
 			if ( usuarioRepo.countByLoginAndIdUsuarioNot( ambiente.getLogin(), usuario.getIdUsuario() ) > 0 )

@@ -23,6 +23,9 @@ public class Funcionalidade implements Serializable {
 	@Column( name = "nome", columnDefinition = "TEXT" )
 	private String nome;
 
+	@Column( name = "codigo", columnDefinition = "TEXT" )
+	private String codigo;
+
 	@Column( name = "ordem")
 	private Long ordem;
 	
@@ -143,6 +146,14 @@ public class Funcionalidade implements Serializable {
 		this.ativo = ativo;
 	}
 
+	public String getCodigo()
+	{
+		return codigo;
+	}
 
+	public void setCodigo( String codigo )
+	{
+		this.codigo = codigo;
+	}
 	
 }

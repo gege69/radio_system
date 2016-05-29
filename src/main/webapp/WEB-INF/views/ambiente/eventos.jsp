@@ -1,4 +1,6 @@
 <jsp:include page="/WEB-INF/views/main.jsp" />    
+
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <meta name="_csrf" th:content="${_csrf.token}"/>
@@ -9,21 +11,26 @@
  
     <div class="row">
     
-      <div class="row" id="alertArea">
-      </div>
-      
       <div class="row">
         <div class="loader" id="ajaxload" style="display : none;"></div>
       </div>
       
-      
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Eventos   <br/>
-            <small>Reprodução de Mídias com hora marcada</small>
-          </h3>
-          
-          
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3><i class="fa ${icone }"></i> Eventos   <br/>
+                <small>Reprodução de Mídias com hora marcada</small>
+              </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
+
+          <div class="spacer-vertical20"></div>
+
           <form action="#" id="form-evento" class="form" >
             <div class="row">
             

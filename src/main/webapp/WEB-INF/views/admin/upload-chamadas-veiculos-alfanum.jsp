@@ -9,16 +9,19 @@
 
     <div class="row">
     
-      <div class="row" id="alertArea">
-      </div>
-    
-    
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Upload de Chamadas de Veículos - Letras e Números<br/>
-          </h3>
-          
-<!--           <div class="spacer-vertical20"></div> -->
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3>Upload de Chamadas de Veículos<br/>Letras e Números </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
+
+          <div class="spacer-vertical20"></div>
           
           <div class="row">
             <div class="col-lg-12 col-md-12">

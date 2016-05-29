@@ -9,17 +9,20 @@
 
     <div class="row">
 
-      <div class="row">
-        <div class="col-lg-12 col-md-12" id="alertArea">
-        </div>
-      </div>
-
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Administrar Ambientes<br/>
-            <small>Você possui ${qtdAmbientes} ambiente(es) cadastrado(s)</small>
-          </h3>
-          
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+                    <h3><i class="fa fa-tasks"></i> Administrar Ambientes<br/>
+                      <small>Você possui ${qtdAmbientes} ambiente(es) cadastrado(s)</small>
+                    </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
+
           <div class="spacer-vertical20"></div>
           
           <div class="row">
@@ -39,11 +42,12 @@
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="idAmbiente" class="col-lg-1 col-md-1 col-sm-1 col-xs-1" data-formatter="idFormatter">Id</th>
-                      <th data-field="nome" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" data-formatter="nomeFormatter">Nome</th>
-                      <th data-field="editar" class="col-lg-2 col-md-2 col-sm-2 col-xs-2" data-formatter="editarFormatter" data-halign="center" data-align="center">Editar</th>
-                      <th data-field="espelhar" class="col-lg-2 col-md-2 col-sm-2 col-xs-2" data-formatter="espelharFormatter" data-halign="center" data-align="center">Espelhar</th>
-                      <th data-field="ativo" class="col-lg-2 col-md-2 col-sm-2 col-xs-2" data-formatter="ativarFormatter" data-halign="center" data-align="center">Ativar/Inativar</th>
+                      <th data-field="idAmbiente" data-formatter="idFormatter">Id</th>
+                      <th data-field="nome" data-formatter="nomeFormatter">Nome</th>
+                      <th data-field="editar" class="col-lg-2 col-md-2 col-sm-1" data-formatter="editarFormatter">Editar</th>
+                      <th data-field="alterarsenha" class="col-lg-2 col-md-2 col-sm-1" data-formatter="senhaFormatter">Alterar Senha</th>
+                      <th data-field="espelhar" class="col-lg-2 col-md-2 col-sm-1" data-formatter="espelharFormatter">Espelhar</th>
+                      <th data-field="ativo" class="col-lg-2 col-md-2 col-sm-1" data-formatter="ativarFormatter">Inativar</th>
                   </tr>
                 </thead>
               </table>
@@ -104,6 +108,7 @@
             <div class="col-lg-12 col-md-12">
               <p>Deseja realmente inativar esse Ambiente?</p>
               <p>Não será possível utilizar o ambiente até que ele seja ativado novamente.</p>
+              <p>Você não poderá ativar o ambiente novamente.</p>
             </div> 
           </div>
           
@@ -151,11 +156,15 @@
     }
     
     function espelharFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/espelhar"> <i class="fa fa-lg fa-files-o"></i></a>';
+        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/espelhar"><i class="fa fa-lg fa-files-o"></i></a>';
     }
     
     function editarFormatter(value, row) {
-        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/editar"> <i class="fa fa-lg fa-pencil-square-o"></i></a>';
+        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/editar"><i class="fa fa-lg fa-pencil-square-o"></i></a>';
+    }
+
+    function senhaFormatter(value, row) {
+        return '<a class="btn btn-link" href="${context}/ambientes/'+ row.idAmbiente +'/senha/edit"><i class="fa fa-lg fa-key"></i></a>';
     }
 
     function ativarFormatter(value, row) {
@@ -177,7 +186,7 @@
             $('#myDialog').modal('show');
         }
         else {
-            preencheAlertGeral( "alertArea", "Para ativar o ambiente é necessário entrar em contato com o Administrador por telefone e solicitar a reativação.", "warning" );
+            preencheAlertGeral( "alertArea", "Para ativar o ambiente é necessário entrar em contato com o Administrador do sistema e solicitar a reativação.", "warning" );
         }
     }
 
@@ -243,6 +252,5 @@
     });
 
 </script>
-
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

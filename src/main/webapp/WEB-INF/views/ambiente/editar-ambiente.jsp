@@ -9,13 +9,17 @@
 
     <div class="row">
     
-      <div class="row" id="alertArea">
-      </div>
-    
-    
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Editar Ambiente</h3>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3>Editar Ambiente</h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
           
           <div class="spacer-vertical40"></div>
 
@@ -23,6 +27,7 @@
           
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <input type="hidden" id="idAmbiente_amb" name="idAmbiente" value="${idAmbiente}" >
+            <input type="hidden" id="login" name="login" value="" >
   
             <div class="row">
               <div class="col-lg-6 col-md-6">
@@ -126,31 +131,6 @@
               </div>
               
               <div class="col-lg-6 col-md-6">
-              
-                <div class="form-group">
-                  <label for="login" class="control-label col-sm-2 col-md-4">Login:</label>
-                  <div class="col-sm-3 col-md-5">
-                    <input type="text" class="form-control" id="login_amb" name="login" placeholder="Login" style="text-transform: lowercase;">
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label for="login" class="control-label col-sm-2 col-md-4">Senha:</label>
-                  <div class="col-sm-3 col-md-5">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Senha">
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label for="mostrarSenha" class="control-label col-sm-2 col-md-4"></label>
-                  <div class="checkbox col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    <label>
-                      <input type="checkbox" id="mostrarSenha" name="mostrarSenha" value="false"> Mostrar senha
-                    </label>
-                  </div>
-                </div>
-
-                <div class="spacer-vertical80"></div>
 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Fuso-horário:</label>
@@ -167,11 +147,6 @@
                       <input type="checkbox" id="opcionais_amb" name="opcionais" value="true"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais.
                     </label>
                   </div>
-<!--                   <div class="checkbox col-sm-8"> -->
-<!--                     <label> -->
-<!--                       <input type="checkbox" id="fl_opcionais_amb" name="fl_opcionais_amb"> Para cada rádio com os áudios opcionais existe o valor de R$ XX mensais. -->
-<!--                     </label> -->
-<!--                   </div> -->
                 </div>
                 
               
@@ -268,9 +243,7 @@
         removeErros();
         
         var arrayCampos = [
-                            {field: "nome_amb",      desc : "Nome do Ambiente"},
-                            {field: "login_amb",         desc : "Login" }, 
-                            {field: "password",      desc : "Senha"}
+                            {field: "nome_amb",      desc : "Nome do Ambiente"}
                           ];
         
         isOk = validaCampos( arrayCampos );

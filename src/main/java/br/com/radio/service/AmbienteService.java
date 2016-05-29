@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.radio.dto.AlterarSenhaAmbienteDTO;
 import br.com.radio.dto.EspelharAmbienteDTO;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.enumeration.PosicaoComercial;
@@ -108,15 +109,14 @@ public class AmbienteService {
 			ambiente.setLogomimetype( "image/png" );
 		}
 
-		String password = ambiente.getPassword();
-		
-		ambiente.setPassword( "" );
-
 		ambiente = ambienteRepo.saveAndFlush( ambiente );
 		
-		usuarioService.saveUsuarioAmbientePlayer( ambiente, password );
-		
 		if ( ambienteNovo ){
+			String password = ambiente.getPassword();
+			ambiente.setPassword( "" );
+
+			usuarioService.saveUsuarioAmbientePlayer( ambiente, password );
+
 			criaConfiguracoesDefault( ambiente );
 			midiaService.associaTodasMidiasParaAmbiente( ambiente );
 			
@@ -126,6 +126,29 @@ public class AmbienteService {
 
 		return ambiente; 
 	}
+
+	
+
+	@Transactional
+	public void alteraLoginSenhaAmbiente( Long idAmbiente, AlterarSenhaAmbienteDTO senhaDTO ){
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente == null )
+			throw new RuntimeException("Ambiente nãe encontrado");
+		
+		Ambiente existente = ambienteRepo.findByLogin( senhaDTO.getLogin() );
+		
+		if ( !existente.getIdAmbiente().equals( ambiente.getIdAmbiente() ) )
+			throw new RuntimeException("Já existe um outro ambiente utilizando esse login.");
+		
+		ambiente.setLogin( senhaDTO.getLogin() );
+		
+		ambienteRepo.save( ambiente );
+		
+		usuarioService.saveUsuarioAmbientePlayer( ambiente, senhaDTO.getPassword() );
+	}
+	
 
 
 	private void criaExpedienteDefault( Ambiente ambiente )

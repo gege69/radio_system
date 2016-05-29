@@ -8,16 +8,19 @@
 
     <div class="row">
 
-      <div class="row">
-        <div class="col-lg-12 col-md-12" id="alertArea">
-        </div>
-      </div>
-
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Espelhamento de Rádio<br/>
-            <small>Escolha qual ambiente servirá como modelo para ${nome}</small>
-          </h3>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3>Espelhamento de Rádio<br/>
+                <small>Escolha qual ambiente servirá como modelo para ${nome}</small>
+              </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
           
           <div class="spacer-vertical40"></div>
 

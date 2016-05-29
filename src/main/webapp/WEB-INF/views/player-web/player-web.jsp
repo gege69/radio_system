@@ -555,12 +555,16 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-      
-        <div class="row" id="alertArea">
-        </div>
-      
         <button type="button" class="close" data-dismiss="modal">x</button>
-        <h3>Gêneros</h3>
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h3>Gêneros</h3>
+          </div>
+
+          <div class="col-lg-6 col-md-6" id="alertArea">
+          </div>
+        </div>
+
       </div>
       <div class="modal-body">
         <div class="row">
@@ -599,7 +603,16 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">x</button>
-        <h3>Mensagens</h3>
+
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h3>Mensagens</h3>
+          </div>
+
+          <div class="col-lg-6 col-md-6" id="alertArea">
+          </div>
+        </div> 
+        
       </div>
       <div class="modal-body">
         <div class="row">

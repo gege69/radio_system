@@ -9,31 +9,34 @@
  
     <div class="row">
     
-      <div class="row" id="alertArea">
-
-        <c:if test="${not empty error}">      
-          <div class="alert alert-danger" role="alert" id="alertalertArea" >
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <div id="errogeral">${error}</div>
-          </div>
-        </c:if>
-        
-        <c:if test="${not empty success}">      
-          <div class="alert alert-success" role="alert" id="alertalertArea" >
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <div id="errogeral">${success}</div>
-          </div>
-        </c:if>
-        
-      </div>
-      
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Logomarca<br/>
-            <small>Enviar logo marca do Ambiente ${nome}<br/>
-                   Somente arquivos de imagem serão aceitos ( .PNG, .JPG, .JPEG, .GIF )</small>
-          </h3>
-          
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3><i class="fa ${icone }"></i> Logomarca<br/>
+                <small>Enviar logo marca do Ambiente ${nome}<br/>
+                       Somente arquivos de imagem serão aceitos ( .PNG, .JPG, .JPEG, .GIF )</small>
+              </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+              <c:if test="${not empty error}">      
+                <div class="alert alert-danger" role="alert" id="alertalertArea" >
+                  <a href="#" class="close" data-dismiss="alert">&times;</a>
+                  <div id="errogeral">${error}</div>
+                </div>
+              </c:if>
+              
+              <c:if test="${not empty success}">      
+                <div class="alert alert-success" role="alert" id="alertalertArea" >
+                  <a href="#" class="close" data-dismiss="alert">&times;</a>
+                  <div id="errogeral">${success}</div>
+                </div>
+              </c:if>
+            </div>
+          </div>        
+
           <div class="spacer-vertical20"></div>
           
           <div class="row">

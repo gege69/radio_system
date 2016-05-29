@@ -9,40 +9,42 @@
  
     <div class="row">
     
-      <div class="row" id="alertArea">
-      </div>
-    
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>
-            <div class="row">
-              <div class="col-lg-12">
 
-                <div class="row">
-                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    Programação musical
-                  </div>
-                  
-                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <div class="pull-right">
-                      <a class="btn btn-default" id="btnGeraTransmissao" href="#">Aplicar mudanças agora</a>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="row">
-                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    ( Gêneros )
-                  </div>
-                </div>
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3><i class="fa ${icone}"></i> Programação Musical<br/><br/>
+                <small>Você pode escolher o horário em que os Gêneros irão tocar no ambiente ${nome}</small>
+              </h3>
+            </div>
 
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
+
+          <div class="spacer-vertical10"></div>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="">
+                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >
+                  <i class="fa fa-arrow-left"></i>
+                  Voltar para ${nome}
+                </a>
+              </div>            
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="pull-right">
+                <a class="btn btn-default" id="btnGeraTransmissao" href="#">
+                  <i class="fa fa-mail-forward"></i>
+                  <i class="fa fa-list-ol"></i>
+                Aplicar mudanças agora</a>
               </div>
             </div>
-            <br/>
-            <small>Programação musical do ${nome}</small>
-          </h3>
-          
-          <div class="spacer-vertical20"></div>
+          </div>
+
+          <div class="spacer-vertical10"></div>
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
@@ -520,6 +522,7 @@
     });
 
 </script>
+
 
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

@@ -9,17 +9,20 @@
  
     <div class="row">
     
-      <div class="row">
-        <div class="col-lg-12 col-md-12" id="alertArea">
-        </div>
-      </div>
-
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Gerenciar ${nomeCategoria}<br/>
-            <small>Espaço para armazenamento: 0 MB em uso, 500 MB disponíveis </small>
-          </h3>
-          
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3><i class="fa ${icone}"></i> Gerenciar ${nomeCategoria}<br/>
+                <small>Espaço para armazenamento: 0 MB em uso, 500 MB disponíveis </small>
+              </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+            </div>
+          </div>
+
           <div class="spacer-vertical20"></div>
           
           <div class="row">

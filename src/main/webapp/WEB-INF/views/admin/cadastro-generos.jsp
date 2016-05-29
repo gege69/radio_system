@@ -9,23 +9,26 @@
 
     <div class="row">
 
-      <div class="row">
-        <div class="col-lg-12 col-md-12" id="alertArea">
-
-          <c:if test="${not empty success}">      
-            <div class="alert alert-success" role="alert" id="alertalertArea" >
-              <a href="#" class="close" data-dismiss="alert">&times;</a>
-              <div id="errogeral">${success}</div>
-            </div>
-          </c:if>
-        </div>
-      </div>
-
       <div class="panel panel-default">
         <div class="panel-body">
-          <h3>Administrar Gêneros Musicais<br/>
-            <small>Você possui ${qtdGeneros} gênero(os) cadastrado(s)</small>
-          </h3>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <h3>Administrar Gêneros Musicais<br/>
+                <small>Você possui ${qtdGeneros} gênero(os) cadastrado(s)</small>
+              </h3>
+            </div>
+
+            <div class="col-lg-6 col-md-6" id="alertArea">
+              <c:if test="${not empty success}">      
+                <div class="alert alert-success" role="alert" id="alertalertArea" >
+                  <a href="#" class="close" data-dismiss="alert">&times;</a>
+                  <div id="errogeral">${success}</div>
+                </div>
+              </c:if>
+            </div>
+          </div>
+
           
           <div class="spacer-vertical20"></div>
           
@@ -49,8 +52,8 @@
                       <th data-field="idGenero" class="col-md-1">ID</th>
                       <th data-field="nome" class="col-md-5">Nome</th>
                       <th data-field="descricao" class="col-md-4">Descrição</th>
-                      <th data-field="idGenero" data-formatter="editarFormatter" class="col-md-1">Editar</th>
-                      <th data-field="idGenero" data-formatter="removerFormatter" class="col-md-1">Remover</th>
+                      <th data-field="editar" data-formatter="editarFormatter" class="col-md-1">Editar</th>
+                      <th data-field="remover" data-formatter="removerFormatter" class="col-md-1">Remover</th>
                   </tr>
                 </thead>
               </table>
