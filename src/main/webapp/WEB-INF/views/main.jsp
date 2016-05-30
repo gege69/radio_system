@@ -26,6 +26,6 @@
 <!--     <script src='https://www.google.com/recaptcha/api.js'></script>     -->
   </head>
 
-  <body role="document">
+  <body role="document" class="${backgroundColor}">
      
      

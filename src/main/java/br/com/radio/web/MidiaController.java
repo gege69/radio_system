@@ -291,5 +291,26 @@ public class MidiaController extends AbstractController {
 	
 	
 	
+		@RequestMapping( value = { "/ambientes/{idAmbiente}/midias/{codigo}/validade", 
+								   "/api/ambientes/{idAmbiente}/midias/{codigo}/validade" }, 
+						 method = RequestMethod.GET, 
+						 produces = APPLICATION_JSON_CHARSET_UTF_8 )
+		public @ResponseBody JSONBootstrapGridWrapper<Midia> listChamadaInstValidade( @PathVariable Long idAmbiente, @PathVariable String codigo )
+		{
+			Pageable pageable = getPageable( 0, 1000, "asc", "descricao" ); 
+
+			MidiaFilter filter = MidiaFilter.create()
+									.setIdAmbiente( idAmbiente )
+									.setCodigoCategoria(codigo)
+									.setVerificaValidade( true );
+			
+			Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
+
+			JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
+
+			return jsonList;
+		}
+
+
 	
 }

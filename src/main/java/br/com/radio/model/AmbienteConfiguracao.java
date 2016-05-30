@@ -41,81 +41,81 @@ public class AmbienteConfiguracao implements Serializable {
 	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;
 	
-	@Column(name="autoplay")
-	private Boolean autoplay;
+	@Column(name="autoplay", columnDefinition = "BOOL default false")
+	private boolean autoplay;
 	
-	@Column(name="selecaoGenero")
-	private Boolean selecaoGenero;
+	@Column(name="selecaoGenero", columnDefinition = "BOOL default false")
+	private boolean selecaoGenero;
 	
-	@Column(name="avancarRetornar")
-	private Boolean avancarRetornar;
+	@Column(name="avancarRetornar", columnDefinition = "BOOL default false")
+	private boolean avancarRetornar;
 	
-	@Column(name="atendimento")
-	private Boolean atendimento;
+	@Column(name="atendimento", columnDefinition = "BOOL default false")
+	private boolean atendimento;
 	
-	@Column(name="chamVeiculo")
-	private Boolean chamVeiculo;
+	@Column(name="chamVeiculo", columnDefinition = "BOOL default false")
+	private boolean chamVeiculo;
 	
-	@Column(name="chamFuncionarios")
-	private Boolean chamFuncionarios;
+	@Column(name="chamFuncionarios", columnDefinition = "BOOL default false")
+	private boolean chamFuncionarios;
 	
-	@Column(name="chamVariosFuncionarios")
-	private Boolean chamVariosFuncionarios;
+	@Column(name="chamVariosFuncionarios", columnDefinition = "BOOL default false")
+	private boolean chamVariosFuncionarios;
 	
-	@Column(name="chamInstantanea")
-	private Boolean chamInstantanea;
+	@Column(name="chamInstantanea", columnDefinition = "BOOL default false")
+	private boolean chamInstantanea;
 	
-	@Column(name="rodoviarias")
-	private Boolean rodoviarias;
+	@Column(name="rodoviarias", columnDefinition = "BOOL default false")
+	private boolean rodoviarias;
 	
-	@Column(name="horoscopo")
-	private Boolean horoscopo;
+	@Column(name="horoscopo", columnDefinition = "BOOL default false")
+	private boolean horoscopo;
 	
-	@Column(name="agendMidia")
-	private Boolean agendMidia;
+	@Column(name="agendMidia", columnDefinition = "BOOL default false")
+	private boolean agendMidia;
 	
-	@Column(name="relatoriosMidia")
-	private Boolean relatoriosMidia;
+	@Column(name="relatoriosMidia", columnDefinition = "BOOL default false")
+	private boolean relatoriosMidia;
 	
-	@Column(name="controleBlocos")
-	private Boolean controleBlocos;
+	@Column(name="controleBlocos", columnDefinition = "BOOL default false")
+	private boolean controleBlocos;
 	
-	@Column(name="controleComerciais")
-	private Boolean controleComerciais;
+	@Column(name="controleComerciais", columnDefinition = "BOOL default false")
+	private boolean controleComerciais;
 	
-	@Column(name="controleInstitucionais")
-	private Boolean controleInstitucionais;
+	@Column(name="controleInstitucionais", columnDefinition = "BOOL default false")
+	private boolean controleInstitucionais;
 	
-	@Column(name="controleProgrametes")
-	private Boolean controleProgrametes;
+	@Column(name="controleProgrametes", columnDefinition = "BOOL default false")
+	private boolean controleProgrametes;
 	
-	@Column(name="nobreak")
-	private Boolean nobreak;
+	@Column(name="nobreak", columnDefinition = "BOOL default false")
+	private boolean nobreak;
 	
-	@Column(name="menuDownloads")
-	private Boolean menuDownloads;
+	@Column(name="menuDownloads", columnDefinition = "BOOL default false")
+	private boolean menuDownloads;
 	
-	@Column(name="locutorVirtual")
-	private Boolean locutorVirtual;
+	@Column(name="locutorVirtual", columnDefinition = "BOOL default false")
+	private boolean locutorVirtual;
 	
-	@Column(name="pedidoMusical")
-	private Boolean pedidoMusical;
+	@Column(name="pedidoMusical", columnDefinition = "BOOL default false")
+	private boolean pedidoMusical;
 	
-	@Column(name="pedidoMusicalVinheta")
-	private Boolean pedidoMusicalVinheta;
+	@Column(name="pedidoMusicalVinheta", columnDefinition = "BOOL default false")
+	private boolean pedidoMusicalVinheta;
 	
-	@Column(name="generosByCC")
-	private Boolean generosByCC;
+	@Column(name="generosByCC", columnDefinition = "BOOL default false")
+	private boolean generosByCC;
 	
-	@Column(name="opcionais")
-	private Boolean opcionais;
+	@Column(name="opcionais", columnDefinition = "BOOL default false")
+	private boolean opcionais;
 	
 	@Enumerated( EnumType.STRING )
 	@Column(name="vozLocucao")
 	private VozLocucao vozLocucao;
 	
-	@Column(name="controleVolumeIndividual")
-	private Boolean controleVolumeIndividual;
+	@Column(name="controleVolumeIndividual", columnDefinition = "BOOL default false")
+	private boolean controleVolumeIndividual;
 	
 	@Column(name="volumeMusicas")
 	private Integer volumeMusicas;
@@ -173,222 +173,222 @@ public class AmbienteConfiguracao implements Serializable {
 		this.ambiente = ambiente;
 	}
 
-	public Boolean getAutoplay()
+	public boolean getAutoplay()
 	{
 		return autoplay;
 	}
 
-	public void setAutoplay( Boolean autoplay )
+	public void setAutoplay( boolean autoplay )
 	{
 		this.autoplay = autoplay;
 	}
 
-	public Boolean getSelecaoGenero()
+	public boolean getSelecaoGenero()
 	{
 		return selecaoGenero;
 	}
 
-	public void setSelecaoGenero( Boolean selecaoGenero )
+	public void setSelecaoGenero( boolean selecaoGenero )
 	{
 		this.selecaoGenero = selecaoGenero;
 	}
 
-	public Boolean getAvancarRetornar()
+	public boolean getAvancarRetornar()
 	{
 		return avancarRetornar;
 	}
 
-	public void setAvancarRetornar( Boolean avancarRetornar )
+	public void setAvancarRetornar( boolean avancarRetornar )
 	{
 		this.avancarRetornar = avancarRetornar;
 	}
 
-	public Boolean getAtendimento()
+	public boolean getAtendimento()
 	{
 		return atendimento;
 	}
 
-	public void setAtendimento( Boolean atendimento )
+	public void setAtendimento( boolean atendimento )
 	{
 		this.atendimento = atendimento;
 	}
 
-	public Boolean getChamVeiculo()
+	public boolean getChamVeiculo()
 	{
 		return chamVeiculo;
 	}
 
-	public void setChamVeiculo( Boolean chamVeiculo )
+	public void setChamVeiculo( boolean chamVeiculo )
 	{
 		this.chamVeiculo = chamVeiculo;
 	}
 
-	public Boolean getChamFuncionarios()
+	public boolean getChamFuncionarios()
 	{
 		return chamFuncionarios;
 	}
 
-	public void setChamFuncionarios( Boolean chamFuncionarios )
+	public void setChamFuncionarios( boolean chamFuncionarios )
 	{
 		this.chamFuncionarios = chamFuncionarios;
 	}
 
-	public Boolean getChamVariosFuncionarios()
+	public boolean getChamVariosFuncionarios()
 	{
 		return chamVariosFuncionarios;
 	}
 
-	public void setChamVariosFuncionarios( Boolean chamVariosFuncionarios )
+	public void setChamVariosFuncionarios( boolean chamVariosFuncionarios )
 	{
 		this.chamVariosFuncionarios = chamVariosFuncionarios;
 	}
 
-	public Boolean getChamInstantanea()
+	public boolean getChamInstantanea()
 	{
 		return chamInstantanea;
 	}
 
-	public void setChamInstantanea( Boolean chamInstantanea )
+	public void setChamInstantanea( boolean chamInstantanea )
 	{
 		this.chamInstantanea = chamInstantanea;
 	}
 
-	public Boolean getRodoviarias()
+	public boolean getRodoviarias()
 	{
 		return rodoviarias;
 	}
 
-	public void setRodoviarias( Boolean rodoviarias )
+	public void setRodoviarias( boolean rodoviarias )
 	{
 		this.rodoviarias = rodoviarias;
 	}
 
-	public Boolean getHoroscopo()
+	public boolean getHoroscopo()
 	{
 		return horoscopo;
 	}
 
-	public void setHoroscopo( Boolean horoscopo )
+	public void setHoroscopo( boolean horoscopo )
 	{
 		this.horoscopo = horoscopo;
 	}
 
-	public Boolean getAgendMidia()
+	public boolean getAgendMidia()
 	{
 		return agendMidia;
 	}
 
-	public void setAgendMidia( Boolean agendMidia )
+	public void setAgendMidia( boolean agendMidia )
 	{
 		this.agendMidia = agendMidia;
 	}
 
-	public Boolean getControleBlocos()
+	public boolean getControleBlocos()
 	{
 		return controleBlocos;
 	}
 
-	public void setControleBlocos( Boolean controleBlocos )
+	public void setControleBlocos( boolean controleBlocos )
 	{
 		this.controleBlocos = controleBlocos;
 	}
 
-	public Boolean getControleComerciais()
+	public boolean getControleComerciais()
 	{
 		return controleComerciais;
 	}
 
-	public void setControleComerciais( Boolean controleComerciais )
+	public void setControleComerciais( boolean controleComerciais )
 	{
 		this.controleComerciais = controleComerciais;
 	}
 
-	public Boolean getControleInstitucionais()
+	public boolean getControleInstitucionais()
 	{
 		return controleInstitucionais;
 	}
 
-	public void setControleInstitucionais( Boolean controleInstitucionais )
+	public void setControleInstitucionais( boolean controleInstitucionais )
 	{
 		this.controleInstitucionais = controleInstitucionais;
 	}
 
-	public Boolean getControleProgrametes()
+	public boolean getControleProgrametes()
 	{
 		return controleProgrametes;
 	}
 
-	public void setControleProgrametes( Boolean controleProgrametes )
+	public void setControleProgrametes( boolean controleProgrametes )
 	{
 		this.controleProgrametes = controleProgrametes;
 	}
 
-	public Boolean getNobreak()
+	public boolean getNobreak()
 	{
 		return nobreak;
 	}
 
-	public void setNobreak( Boolean nobreak )
+	public void setNobreak( boolean nobreak )
 	{
 		this.nobreak = nobreak;
 	}
 
-	public Boolean getMenuDownloads()
+	public boolean getMenuDownloads()
 	{
 		return menuDownloads;
 	}
 
-	public void setMenuDownloads( Boolean menuDownloads )
+	public void setMenuDownloads( boolean menuDownloads )
 	{
 		this.menuDownloads = menuDownloads;
 	}
 
-	public Boolean getLocutorVirtual()
+	public boolean getLocutorVirtual()
 	{
 		return locutorVirtual;
 	}
 
-	public void setLocutorVirtual( Boolean locutorVirtual )
+	public void setLocutorVirtual( boolean locutorVirtual )
 	{
 		this.locutorVirtual = locutorVirtual;
 	}
 
-	public Boolean getPedidoMusical()
+	public boolean getPedidoMusical()
 	{
 		return pedidoMusical;
 	}
 
-	public void setPedidoMusical( Boolean pedidoMusical )
+	public void setPedidoMusical( boolean pedidoMusical )
 	{
 		this.pedidoMusical = pedidoMusical;
 	}
 
-	public Boolean getPedidoMusicalVinheta()
+	public boolean getPedidoMusicalVinheta()
 	{
 		return pedidoMusicalVinheta;
 	}
 
-	public void setPedidoMusicalVinheta( Boolean pedidoMusicalVinheta )
+	public void setPedidoMusicalVinheta( boolean pedidoMusicalVinheta )
 	{
 		this.pedidoMusicalVinheta = pedidoMusicalVinheta;
 	}
 
-	public Boolean getGenerosByCC()
+	public boolean getGenerosByCC()
 	{
 		return generosByCC;
 	}
 
-	public void setGenerosByCC( Boolean generosByCC )
+	public void setGenerosByCC( boolean generosByCC )
 	{
 		this.generosByCC = generosByCC;
 	}
 
-	public Boolean getOpcionais()
+	public boolean getOpcionais()
 	{
 		return opcionais;
 	}
 
-	public void setOpcionais( Boolean opcionais )
+	public void setOpcionais( boolean opcionais )
 	{
 		this.opcionais = opcionais;
 	}
@@ -403,12 +403,12 @@ public class AmbienteConfiguracao implements Serializable {
 		this.vozLocucao = vozLocucao;
 	}
 
-	public Boolean getControleVolumeIndividual()
+	public boolean getControleVolumeIndividual()
 	{
 		return controleVolumeIndividual;
 	}
 
-	public void setControleVolumeIndividual( Boolean controleVolumeIndividual )
+	public void setControleVolumeIndividual( boolean controleVolumeIndividual )
 	{
 		this.controleVolumeIndividual = controleVolumeIndividual;
 	}
@@ -453,12 +453,12 @@ public class AmbienteConfiguracao implements Serializable {
 		this.volumeGeral = volumeGeral;
 	}
 
-	public Boolean getRelatoriosMidia()
+	public boolean getRelatoriosMidia()
 	{
 		return relatoriosMidia;
 	}
 
-	public void setRelatoriosMidia( Boolean relatoriosMidia )
+	public void setRelatoriosMidia( boolean relatoriosMidia )
 	{
 		this.relatoriosMidia = relatoriosMidia;
 	}

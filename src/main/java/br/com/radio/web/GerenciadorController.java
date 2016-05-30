@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.h2.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,7 @@ import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.FusoHorario;
 import br.com.radio.model.Genero;
+import br.com.radio.model.Parametro;
 import br.com.radio.model.Perfil;
 import br.com.radio.model.PerfilPermissao;
 import br.com.radio.model.Permissao;
@@ -50,6 +52,7 @@ import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FusoHorarioRepository;
 import br.com.radio.repository.GeneroRepository;
+import br.com.radio.repository.ParametroRepository;
 import br.com.radio.repository.PerfilPermissaoRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.PermissaoRepository;
@@ -89,6 +92,8 @@ public class GerenciadorController extends AbstractController {
 	private PermissaoRepository permissaoRepo;
 	@Autowired
 	private PerfilPermissaoRepository perfilPermissaoRepo;
+	@Autowired
+	private ParametroRepository parametroRepo;
 
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -108,7 +113,7 @@ public class GerenciadorController extends AbstractController {
 			
 			String path = info.getPatternsCondition().toString();
 			
-			path = StringUtils.replaceAll( path, "||", "<br/>" );
+			path = path.replaceAll( "||", "<br/>" );
 			
 			dto.setPatternsCondition( path );
 			
@@ -131,8 +136,16 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	
+	/**
+	 * Em caso de sucesso no login esse é o primeiro ponto de acesso à aplicação. 
+	 * ( Exceto quando o login é de um player... nesse caso é jogado para o Player ).
+	 * 
+	 * @param model
+	 * @param principal
+	 * @return
+	 */
 	@RequestMapping(value="/principal", method=RequestMethod.GET)
-	public String principal( ModelMap model, Principal principal )
+	public String principal( ModelMap model, Principal principal, HttpServletRequest request )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -140,6 +153,12 @@ public class GerenciadorController extends AbstractController {
 		
 		if ( usuario == null || cliente == null )
 			return null;
+		
+		Parametro param = parametroRepo.findByCodigoAndCliente( "BACKGROUNDCOLOR", cliente );
+		
+		if ( param != null && StringUtils.isNotBlank( param.getValor() ) ){
+			request.getSession().setAttribute( "backgroundColor", param.getValor() );
+		}
 		
 		Long count = ambienteRepo.countByCliente( cliente );
 		

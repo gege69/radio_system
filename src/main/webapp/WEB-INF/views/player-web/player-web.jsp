@@ -4,12 +4,12 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<html lang="en" style="height: 100%">
+<html style="height: 100%">
   <head>
   
     <jsp:include page="/WEB-INF/views/metaAndIcon.jsp" />
   
-    <title>Radio System</title>
+    <title>RDCenter</title>
     
     <!-- O player-web TEM UM CSS DIFERENTE -->
     <link href="${context}/css/bootstrap-themes/slate/bootstrap.css" rel="stylesheet">

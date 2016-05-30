@@ -1,6 +1,6 @@
 var listaChamadas = function(){
     
-    var url = buildUrl( "/api/ambientes/{idAmbiente}/midias-por-categoria?codigo=chamada_inst", { 
+    var url = buildUrl( "/api/ambientes/{idAmbiente}/midias/chamada_inst/validade", { 
         idAmbiente: $("#idAmbiente").val()
     });
     
