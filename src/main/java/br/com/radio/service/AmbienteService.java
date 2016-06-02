@@ -1,6 +1,7 @@
 package br.com.radio.service;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import br.com.radio.enumeration.VozLocucao;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
+import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Bloco;
 import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
@@ -40,6 +43,7 @@ import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
 import br.com.radio.util.Constantes;
 import br.com.radio.util.UtilsStr;
+
 
 
 @Service
@@ -64,7 +68,7 @@ public class AmbienteService {
 	private MidiaAmbienteRepository midiaAmbienteRepository;
 	
 	@Autowired
-	private BlocoRepository blocoRepository;
+	private BlocoRepository blocoRepo;
 	
 	@Autowired
 	private UsuarioService usuarioService;
@@ -77,14 +81,10 @@ public class AmbienteService {
 	
 	@Autowired
 	private EventoHorarioRepository eventoHorarioRepo;
-
-	@Autowired
-	private BlocoRepository blocoRepo;
 	
 	@Autowired
 	private EntityManager entityManager;
 	
-
 	/**
 	 * Esse método salva o ambiente tomando cuidado para verificar os emails e endereços.
 	 * 
@@ -257,7 +257,7 @@ public class AmbienteService {
 		bloco.setQtdComerciais( 2 );
 		bloco.setIndexOpcionais( 0 );
 
-		blocoRepository.saveAndFlush( bloco );
+		blocoRepo.saveAndFlush( bloco );
 	}
 	
 	
@@ -429,9 +429,12 @@ public class AmbienteService {
 		ambienteGeneroRepo.deleteByAmbiente( ambienteAlvo );
 		ambienteConfigRepo.deleteByAmbiente( ambienteAlvo );
 		
+		espelharBlocos( ambienteOrigem, ambienteAlvo );
+		
+		espelharEventos( ambienteOrigem, ambienteAlvo );
+		
 		List<MidiaAmbiente> midiaAmbienteList = midiaAmbienteRepository.findByAmbiente( ambienteOrigem );
 		List<AmbienteGenero> ambienteGeneroList = ambienteGeneroRepo.findByAmbiente( ambienteOrigem );
-		AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambienteOrigem );
 		
 		Date hoje = new Date();
 		
@@ -444,15 +447,79 @@ public class AmbienteService {
 			AmbienteGenero novoAg = new AmbienteGenero( ambienteAlvo, ag.getGenero() );
 			ambienteGeneroRepo.save( novoAg );
 		});
-
-		entityManager.detach( configuracao );
-		configuracao.setIdAmbConfig( null );
-		configuracao.setAmbiente( ambienteAlvo );
 		
-		ambienteConfigRepo.save( configuracao );
+		ambienteAlvo.setHoraIniExpediente( ambienteOrigem.getHoraIniExpediente() );
+		ambienteAlvo.setMinutoIniExpediente( ambienteOrigem.getMinutoIniExpediente() );
+		ambienteAlvo.setHoraFimExpediente( ambienteOrigem.getHoraFimExpediente() );
+		ambienteAlvo.setMinutoFimExpediente( ambienteOrigem.getMinutoFimExpediente() );
+
+		AmbienteConfiguracao configuracaoOrigem = ambienteConfigRepo.findByAmbiente( ambienteOrigem );
+		AmbienteConfiguracao configuracaoAlvo = new AmbienteConfiguracao(); 
+		
+		BeanUtils.copyProperties( configuracaoOrigem, configuracaoAlvo, new String[] { "idAmbConfig", "ambiente", "dataCriacao" } );
+
+		configuracaoAlvo.setAmbiente( ambienteAlvo );
+		configuracaoAlvo.setDataCriacao( new Date() );
+		
+		ambienteConfigRepo.save( configuracaoAlvo );
+	}
+
+
+
+	private void espelharBlocos( Ambiente ambienteOrigem, Ambiente ambienteAlvo )
+	{
+		Bloco blocoOrigem = blocoRepo.findByAmbiente( ambienteOrigem );
+		Bloco blocoAlvo = blocoRepo.findByAmbiente( ambienteAlvo );
+		
+		List<AudioOpcional> opcionaisOrigem = blocoOrigem.getOpcionais();
+		List<AudioOpcional> opcionaisAlvo = new ArrayList<AudioOpcional>(); 
+		
+		opcionaisOrigem.forEach( op -> opcionaisAlvo.add( op ) );
+		
+		BeanUtils.copyProperties( blocoOrigem, blocoAlvo, new String[] { "idBloco", "ambiente", "opcionais" } );
+
+		blocoAlvo.setOpcionais( opcionaisAlvo );
+		
+		blocoRepo.save( blocoAlvo );
 	}
 	
 	
+	private void espelharEventos( Ambiente ambienteOrigem, Ambiente ambienteAlvo )
+	{
+		List<Evento> eventosOrigem = eventoRepo.findByAmbienteAndAtivoTrue( ambienteOrigem );
+		
+		eventoRepo.deleteByAmbiente( ambienteAlvo );
+		
+		List<Evento> eventosAlvo = new ArrayList<Evento>();
+		
+		Date hoje = new Date();
+		
+		eventosOrigem.forEach( evento -> {
+			
+			Evento novo = new Evento();
+			BeanUtils.copyProperties( evento, novo, new String[] { "idEvento", "ambiente", "horarios" } );
+
+			novo.setAmbiente( ambienteAlvo );
+			novo.setDataCriacao( hoje );
+			
+			List<EventoHorario> horariosOrigem = evento.getHorarios();
+			List<EventoHorario> horariosAlvo = new ArrayList<EventoHorario>();
+			
+			eventosAlvo.add( novo );
+			
+			eventoRepo.save( novo );
+			
+			horariosOrigem.forEach( hor -> {
+
+				EventoHorario novoHor = new EventoHorario();
+				BeanUtils.copyProperties( hor, novoHor, new String[] { "idEventoHorario", "evento" } );
+				novoHor.setEvento( novo );
+				
+				horariosAlvo.add( novoHor );
+			});
+			eventoHorarioRepo.save( horariosAlvo );
+		});
+	}
 	
 }
 

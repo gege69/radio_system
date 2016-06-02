@@ -114,13 +114,18 @@
             <small></small>
             
             <input type="hidden" id="idAmbiente" value="${idAmbiente}">
+            <input type="hidden" id="simulacao" value="${simulacao}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
           </h3>
           
 
           <div class="panel panel-default">
             <div class="panel-heading">
-              
+
+              <c:if test="${simulacao}">
+                <h2>Simulação de Ambiente</h2> 
+              </c:if>
+
             </div>
             <div class="panel-body">
             
@@ -183,6 +188,7 @@
         </div>
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
           <span id="nome-musica"></span>
+          <span id="artista"></span>
           <div class="spacer-vertical20"></div>
         </div>
       </div>
@@ -630,6 +636,28 @@
   </div>
 </div>
   
+
+<div id="myModalSair" class="modal fade" tabindex="-1" role="dialog" style="display : none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>Sair?</h3>
+      </div>
+      <div class="modal-body">
+        <p>Deseja realmente fechar o player?</p>
+        <p>A programação musical será encerrada</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Não</button>
+        <button class="btn btn-primary" data-dismiss="modal" id="btnSairPlayer">Sim</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <jsp:include page="/WEB-INF/views/scripts.jsp" />
 
 
@@ -643,6 +671,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js" defer></script>
 <script src="${context}/js/required/jquery.populate.js" defer></script>
+
+
+<script src="${context}/js/required/bootbox.min.js" defer></script>
   
 <script src="${context}/js/player-web/modal-blocos.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-funcionarios.js" charset="UTF-8" defer></script>

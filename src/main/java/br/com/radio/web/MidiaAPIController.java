@@ -479,7 +479,7 @@ public class MidiaAPIController extends AbstractController {
 		
 		AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
 		
-		if ( configuracao != null && configuracao.getAvancarRetornar() == false )
+		if ( configuracao == null )
 			throw new RuntimeException( "Não é possível avançar a transmissão." );
 
 		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );

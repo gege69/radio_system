@@ -8,6 +8,8 @@ import br.com.radio.model.Bloco;
 public interface BlocoRepository extends JpaRepository<Bloco, Long> {
 	
 	Bloco findByAmbiente( Ambiente ambiente );
+	
+	int deleteByAmbiente( Ambiente ambiente );
 
 }
 	

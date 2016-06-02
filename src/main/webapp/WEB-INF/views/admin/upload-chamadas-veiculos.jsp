@@ -370,10 +370,10 @@
             formData: { 
                 _csrf: $("#csrf").val() 
             },
-            done : function(e, data) {
-                preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
-            },
             stop: function (e, data) {
+                var erros = $("#alertArea .alert-danger").length;
+                if ( erros == null || erros == 0 )
+                    preencheAlertGeral( "alertArea", "Upload realizado com sucesso", "success" );
                 $("#table-chamadas-veiculos").bootstrapTable('refresh');
                 $('#progress .progress-bar').css(
                         'width',

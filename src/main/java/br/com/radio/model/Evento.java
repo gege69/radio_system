@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -86,7 +87,7 @@ public class Evento implements Serializable {
 	@Column( name = "repete_sabado", nullable = false, columnDefinition = " boolean default false " )
 	private boolean repeteSabado;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="evento")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="evento", cascade=CascadeType.REMOVE)
 	@OrderBy("hora, minuto")
     private List<EventoHorario> horarios;
 	

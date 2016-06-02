@@ -230,12 +230,14 @@ public class Bloco implements Serializable {
 		this.indexOpcionais = indexOpcionais;
 	}
 
+
 	@Override
 	public String toString()
 	{
-		return String.format(
-				"Bloco [idBloco=%s, ambiente=%s, posicaoVinheta=%s, qtdMusicas=%s, posicaoComercial=%s, qtdComerciais=%s, indexInstitucionais=%s, indexProgrametes=%s, indexOpcionais=%s]", idBloco,
-				ambiente, posicaoVinheta, qtdMusicas, posicaoComercial, qtdComerciais, indexInstitucionais, indexProgrametes, indexOpcionais );
+		return String
+				.format(
+						"Bloco [idBloco=%s, ambiente=%s, posicaoVinheta=%s, qtdMusicas=%s, posicaoComercial=%s, qtdComerciais=%s, indexInstitucionais=%s, indexProgrametes=%s, indexOpcionais=%s, opcionais=%s]",
+						idBloco, ambiente, posicaoVinheta, qtdMusicas, posicaoComercial, qtdComerciais, indexInstitucionais, indexProgrametes, indexOpcionais, opcionais );
 	}
 
 	public List<AudioOpcional> getOpcionais()

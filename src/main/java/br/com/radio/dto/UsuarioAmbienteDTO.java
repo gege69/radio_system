@@ -9,6 +9,10 @@ public class UsuarioAmbienteDTO {
 	
 	private Ambiente ambiente;
 	
+	private boolean gerenciador;	
+	
+	private boolean player;
+	
 	public Usuario getUsuario()
 	{
 		return usuario;
@@ -41,7 +45,35 @@ public class UsuarioAmbienteDTO {
 		this.usuario = usuario;
 		this.ambiente = ambiente;
 	}
-	
+
+	public UsuarioAmbienteDTO( Usuario usuario, Ambiente ambiente, boolean gerenciador, boolean player )
+	{
+		super();
+		this.usuario = usuario;
+		this.ambiente = ambiente;
+		this.gerenciador = gerenciador;
+		this.player = player;
+	}
+
+	public boolean isGerenciador()
+	{
+		return gerenciador;
+	}
+
+	public void setGerenciador( boolean gerenciador )
+	{
+		this.gerenciador = gerenciador;
+	}
+
+	public boolean isPlayer()
+	{
+		return player;
+	}
+
+	public void setPlayer( boolean player )
+	{
+		this.player = player;
+	}
 	
 
 }

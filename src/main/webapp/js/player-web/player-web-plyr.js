@@ -143,6 +143,9 @@ var play = function(){
                 $('#nome-musica').html( content.midia.nome );
             else
                 $('#nome-musica').html( content.midia.title );
+            
+            if ( content.midia.artist != null && content.midia.artist != '' )
+                $('#artista').html( ' - ' + content.midia.artist );
         }
         
         if ( content.link != null && content.link != '' )
@@ -417,7 +420,21 @@ $(document).ready(function() {
     });
     
     $("#btnFechar").click(function(){
-       $("#formLogout").submit();
+        $("#myModalSair").modal({
+            show:true, 
+            backdrop: 'static',              
+            keyboard: false
+        });
     });
+
+    $("#btnSairPlayer").click(function(){
+        
+        var simul = $("#simulacao").val();
+        if ("true" === simul )
+            window.close();
+        else
+            $("#formLogout").submit();
+    })
+
     
 });

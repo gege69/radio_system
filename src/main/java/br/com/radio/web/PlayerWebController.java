@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,6 +72,7 @@ public class PlayerWebController extends AbstractController {
 
 	
 	@RequestMapping( value = "/player/ambientes/{idAmbiente}/player/view" , method = RequestMethod.GET )
+	@PreAuthorize("hasAuthority('PLAYER')")
 	public String playerSimulador( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response, Principal principal )
 	{
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
@@ -85,6 +87,9 @@ public class PlayerWebController extends AbstractController {
 
 		model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 		model.addAttribute( "nome", ambiente.getNome() );
+
+		if ( usuAmb.isGerenciador() )
+			model.addAttribute( "simulacao", true );
 		
 		AmbienteConfiguracao configuracao = ambienteConfigRepo.findByAmbiente( ambiente );
 		

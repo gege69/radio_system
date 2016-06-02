@@ -494,7 +494,7 @@ public class UsuarioService {
 		if ( !ambiente.getCliente().getIdCliente().equals( usuario.getCliente().getIdCliente() ))
 			throw new RuntimeException( "Tentativa de autenticar em um player que não pertence ao seu login" );
 		
-		UsuarioAmbienteDTO dto = new UsuarioAmbienteDTO( usuario, ambiente );
+		UsuarioAmbienteDTO dto = new UsuarioAmbienteDTO( usuario, ambiente, isGerenciador, isPlayer );
 		
 		return dto;
 	}
