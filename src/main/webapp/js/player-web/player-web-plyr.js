@@ -126,6 +126,9 @@ var play = function(){
     if ( player2.media.paused == false )
         return;
     
+    if ( player.media.paused == false )
+        return;
+    
     var url = buildUrl( "/api/ambientes/{idAmbiente}/transmissoes/live", { 
         idAmbiente: idAmbiente
     });
@@ -380,16 +383,16 @@ $(document).ready(function() {
         ticks_snap_bounds: 3
     });
     
-    $('#botao-stop').click( function(){
+    $('#btnStop').click( function(){
         stop();
     });
     
-    $('#botao-play').click( function(){
+    $('#btnPlay').click( function(){
         desligaMicrofone();
         play();
     });
     
-    $('#botao-next').click( function(){
+    $('#btnNext').click( function(){
         desligaMicrofone();
         next();
     });

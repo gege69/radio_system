@@ -93,13 +93,35 @@ var validaForm = function(){
                       ];
     
     isOk = validaCampos( arrayCampos );
-    
+
     return isOk;
 };
 
+
+var validaDatas = function(){
+    
+    var dataInicioVal = $("#dataInicio").val();
+    var dataFimVal = $("#dataFim").val();
+
+    if ( dataInicioVal == null || dataInicioVal == '' ){
+        preencheAlertGeral("alertArea", "Data de Início é obrigatória");
+        return false;
+    }
+
+    if ( dataFimVal == null || dataFimVal == '' ){
+        preencheAlertGeral("alertArea", "Data Fim é obrigatória");
+        return false;
+    }
+    
+    return true;
+}
+
 var salvar = function()
 {
-    if ( validaForm() )
+    var formOk = validaForm();
+    var datasOk = validaDatas();
+
+    if ( formOk && datasOk )
     {
         var url = buildUrl( "/ambientes/{idAmbiente}/eventos", {
             idAmbiente : idAmbiente
@@ -116,6 +138,7 @@ var salvar = function()
         }).done( function(json){ 
 
             if (json.ok == 1){
+                limparForm();
                 preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
                 $table.bootstrapTable('refresh');
                 jump(''); // topo da pagina

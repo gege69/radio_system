@@ -361,6 +361,16 @@ public class AmbienteService {
 		
 		if ( ambiente != null )
 		{
+			if ( evento.getDataInicio() == null )
+				throw new RuntimeException("Data de Início é obrigatória");
+
+			if ( evento.getDataFim() == null )
+				throw new RuntimeException("Data de Fim é obrigatória");
+			
+			if ( evento.getDataFim().before( evento.getDataInicio() ) )
+				throw new RuntimeException("Data de Início não pode ser após a data de Fim.");
+			
+			
 			evento.setAmbiente( ambiente );
 			eventoRepo.save( evento );
 			
