@@ -27,6 +27,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.PosicaoComercial;
@@ -44,6 +45,7 @@ import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
 import br.com.radio.model.Transmissao;
+import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
@@ -533,9 +535,19 @@ public class ProgramacaoMusicalService {
 
 
 	@Transactional
-	public Transmissao getTransmissaoAoVivoSkipForward( Ambiente ambiente )
+	public Transmissao getTransmissaoAoVivoSkipForward( Long idTransmissaoAtual, UsuarioAmbienteDTO usuAmb )
 	{
-		Transmissao atual = getTransmissaoAtual( ambiente ); 
+		Ambiente ambiente = usuAmb.getAmbiente();
+		
+		Transmissao atual = null;
+		
+		if ( idTransmissaoAtual == null || idTransmissaoAtual.equals( 0L ) )
+			atual = getTransmissaoAtual( ambiente ); 
+		else
+			atual = transmissaoRepo.findOne( idTransmissaoAtual );
+		
+		if ( atual == null )
+			throw new RuntimeException("Transmissão atual não encontrada!");
 		
 		Transmissao result = getProximaTransmissaoPeloIdAtual( ambiente, atual );
 
@@ -546,7 +558,8 @@ public class ProgramacaoMusicalService {
 		else
 			idTransmissao = result.getIdTransmissao();
 
-		if ( idTransmissao != null )
+		// Só vai incrementar para música seguinte se for um player legítimo... simulação não vai mudar. Vai pegar pela posição
+		if ( idTransmissao != null && usuAmb.isPlayer() )
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, idTransmissao );
 		
 		//TODO: gerar nova midia incremental aqui

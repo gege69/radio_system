@@ -11,6 +11,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -50,7 +52,8 @@ import br.com.radio.service.UsuarioService;
 public class MidiaAPIController extends AbstractController {
 	
 	private static final Logger logger = Logger.getLogger(MidiaAPIController.class);
-
+	
+	private static final String TRANSMISSAO_ATUAL = "idTransmissaoAtual";
 	
 	// DAOs =====================
 	@Autowired
@@ -454,6 +457,9 @@ public class MidiaAPIController extends AbstractController {
 
 		if ( transmissao == null )
 			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
+
+		HttpSession session = request.getSession();
+		session.setAttribute( TRANSMISSAO_ATUAL, transmissao.getIdTransmissao() );
 		
 		return transmissao;
 	}
@@ -471,8 +477,10 @@ public class MidiaAPIController extends AbstractController {
 	public @ResponseBody Transmissao getLinkTransmissaoAoVivoNext(@PathVariable Long idAmbiente, Principal principal, HttpServletRequest request) {
 		
 		// TODO: pensar em uma maneira de dropar requests repetidos pra evitar ataque de DDOS
+
+		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		Ambiente ambiente = usuAmb.getAmbiente();
 		
 		if ( ambiente == null )
 			throw new RuntimeException( "Ambiente não encontrado" );
@@ -481,8 +489,11 @@ public class MidiaAPIController extends AbstractController {
 		
 		if ( configuracao == null )
 			throw new RuntimeException( "Não é possível avançar a transmissão." );
-
-		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( ambiente );
+		
+		HttpSession session = request.getSession();
+		Long idTransmissaoAtual = (Long) session.getAttribute( TRANSMISSAO_ATUAL );
+		
+		Transmissao transmissao = progMusicalService.getTransmissaoAoVivoSkipForward( idTransmissaoAtual, usuAmb );
 		
 		if ( transmissao == null){
 			progMusicalService.geraTransmissao( ambiente );
@@ -491,6 +502,8 @@ public class MidiaAPIController extends AbstractController {
 
 		if ( transmissao == null )
 			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
+		
+		session.setAttribute( TRANSMISSAO_ATUAL, transmissao.getIdTransmissao() );
 		
 		return transmissao;
 	}

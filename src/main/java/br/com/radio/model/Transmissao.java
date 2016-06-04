@@ -265,6 +265,14 @@ public class Transmissao implements Serializable {
 	}
 
 
+	public Transmissao( Long idTransmissao )
+	{
+		super();
+		this.idTransmissao = idTransmissao;
+		this.dataCriacao = new Date();
+	}
+
+
 	public Double getPosicaoplay()
 	{
 		return posicaoplay;
