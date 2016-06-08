@@ -51,7 +51,14 @@
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
                       <input type="checkbox" id="avancarRetornar" name="avancarRetornar" value="true"> 
-                        Permitir "avançar" músicas
+                        Permitir "avançar" músicas (botão <i class="fa fa-forward"></i> do player )
+                      </label>
+                    </div>
+
+                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                      <label>
+                      <input type="checkbox" id="botaoStop" name="botaoStop" value="true"> 
+                        Permitir "parar" músicas (botão <i class="fa fa-stop"></i> do player )
                       </label>
                     </div>
                     

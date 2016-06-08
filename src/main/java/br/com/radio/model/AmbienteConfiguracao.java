@@ -152,6 +152,9 @@ public class AmbienteConfiguracao implements Serializable {
 	@JoinColumn(name = "id_usuarioAlteracao" )
 	private Usuario usuarioAlteracao;
 
+	@Column(name="botaoStop", columnDefinition = "BOOL default false")
+	private boolean botaoStop;
+	
 
 	public Long getIdAmbConfig()
 	{
@@ -501,6 +504,16 @@ public class AmbienteConfiguracao implements Serializable {
 	public void setUsuarioAlteracao( Usuario usuarioAlteracao )
 	{
 		this.usuarioAlteracao = usuarioAlteracao;
+	}
+	
+	public boolean isBotaoStop()
+	{
+		return botaoStop;
+	}
+
+	public void setBotaoStop( boolean botaoStop )
+	{
+		this.botaoStop = botaoStop;
 	}
 
 	public AmbienteConfiguracao()

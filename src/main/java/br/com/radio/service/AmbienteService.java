@@ -232,6 +232,7 @@ public class AmbienteService {
 		config.setRelatoriosMidia( true );
 		config.setRodoviarias( true );
 		config.setSelecaoGenero( true );
+		config.setBotaoStop( true );
 		
 		config.setControleVolumeIndividual( false );
 		config.setVolumeChamadas( 100 );
@@ -387,7 +388,7 @@ public class AmbienteService {
 			horarios = horarios.stream().filter( h -> h != null ).collect( Collectors.toList() );
 			
 			horarios.sort( porHoraMinuto );
-			
+
 			for ( EventoHorario horario : horarios )
 			{
 				horario.setEvento( evento );

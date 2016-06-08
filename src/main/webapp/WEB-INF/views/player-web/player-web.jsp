@@ -196,11 +196,13 @@
       <div class="col-md-2 col-sm-2 col-xs-12 col-centered" >
         <table style=" margin: 0 auto;">
           <tr>
-            <td>
-              <a class="btn btn-default" href="#" id="btnStop" role="button">
-                <i class="fa fa-stop"></i>
-              </a>
-            </td>
+            <c:if test="${configuracao != null && configuracao.botaoStop}">
+              <td>
+                <a class="btn btn-default" href="#" id="btnStop" role="button">
+                  <i class="fa fa-stop"></i>
+                </a>
+              </td>
+            </c:if>
             
             <td>
               <a class="btn btn-default" href="#" id="btnPlay" role="button">

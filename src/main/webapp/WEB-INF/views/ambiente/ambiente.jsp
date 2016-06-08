@@ -15,7 +15,6 @@
           <div class="row">
             <div class="col-lg-6 col-md-6">
               <h3>${nome}<br/>
-                <small>URL Player : ${urlambiente}</small><br/>
                 <small>Login : ${login}</small><br/>
               </h3>
             </div>
