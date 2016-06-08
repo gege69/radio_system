@@ -553,14 +553,11 @@ public class UsuarioService {
 	}
 
 	
-	
 	private boolean isDonoSistema( Usuario usuario )
 	{
 		List<Perfil> perfis = usuario.getPerfis();
 
 		return ( perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS ) );
 	}
-	
-	
 	
 }

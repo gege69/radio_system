@@ -26,7 +26,7 @@ public class Parametro implements Serializable {
 	private Long idParametro;
 	
 	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn( name="id_cliente", nullable=false )
+	@JoinColumn( name="id_cliente", nullable=true )
 	private Cliente cliente;
 	
 	@NotNull( message = "O código do parâmetro é de preenchimento obrigatório" )

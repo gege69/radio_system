@@ -11,7 +11,20 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-heading">
-          Painel Gerencial <a href="${context}/clientes/view">${razaoSocial}</a>
+        
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              Painel Gerencial <a href="${context}/clientes/view">${razaoSocial}</a>
+            </div>
+            
+            <div class="col-lg-6 col-md-6">
+              <div class="pull-right">
+                <c:if test="${isDono}">
+                  <button class="btn btn-default" id="btnParametros"><i class="fa fa-lg fa-cog"></i> <i class="fa fa-caret-down"></i> </button>
+                </c:if>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div class="panel-body">
@@ -130,5 +143,157 @@
     </div>
       
   </div> <!-- /container -->
+
+
+  
+<div id="myModalParametros" class="modal fade" tabindex="-1" role="dialog" style="display : none;">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <h3>Parâmetros</h3>
+      </div>
+      <div class="modal-body">
+
+        <form action="#" class="form" id="formParametros" method="POST">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+          <div class="row row-centered">
+            <div class="radiobutton col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <label>
+              <input type="radio" id="temaDefault" name="tema" value="default"> 
+                <img alt="" src="${context}/images/themes/default.png" class="botaoImagemTema">
+              </label>
+            </div>
+            <div class="radiobutton col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <label>
+              <input type="radio" id="temaSuperhero" name="tema" value="superhero"> 
+                <img alt="" src="${context}/images/themes/superhero.png" class="botaoImagemTema">
+              </label>
+            </div>
+            <div class="radiobutton col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <label>
+              <input type="radio" id="temaUnited" name="tema" value="united"> 
+                <img alt="" src="${context}/images/themes/united.png" class="botaoImagemTema">
+              </label>
+            </div>
+            <div class="radiobutton col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <label>
+              <input type="radio" id="temaDarkly" name="tema" value="darkly"> 
+                <img alt="" src="${context}/images/themes/darkly.png" class="botaoImagemTema">
+              </label>
+            </div>
+            <div class="radiobutton col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <label>
+              <input type="radio" id="temaJournal" name="tema" value="journal"> 
+                <img alt="" src="${context}/images/themes/journal.png" class="botaoImagemTema">
+              </label>
+            </div>
+            <div class="radiobutton col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <label>
+              <input type="radio" id="temaReadable" name="tema" value="readable"> 
+                <img alt="" src="${context}/images/themes/readable.png" class="botaoImagemTema">
+              </label>
+            </div>
+            <div class="radiobutton col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <label>
+              <input type="radio" id="temaSlate" name="tema" value="slate"> 
+                <img alt="" src="${context}/images/themes/slate.png" class="botaoImagemTema">
+              </label>
+            </div>
+          </div>              
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
+        <button class="btn btn-primary" id="btnConfirmar">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="${context}/js/required/jquery.serializejson.js"></script>
+<script src="${context}/js/required/jquery.populate.js"></script>
+
+<script type="text/javascript">
+
+
+    var getDados = function()
+    {
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: '${context}/parametros',
+            dataType: 'json'
+        }).done( function(json) {
+            removeErros();
+            $('#formParametros').populate(json);
+
+            $("#myModalParametros").modal({
+                show:true, 
+                backdrop: 'static',              
+                keyboard: false
+            });
+        });
+    }
+
+
+    var salvarParametro = function()
+    {
+        var dados = $('#formParametros').serializeJSON();
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: '${context}/api/parametros',
+            dataType: 'json',
+            data : JSON.stringify( dados )
+        }).done( function(json){
+            if (json.ok != null){
+                location.reload();
+            }
+            else{
+                preencheErros( json.errors );
+            }
+        } );
+    }
+
+
+
+$(function(){
+
+    var token = $("input[name='_csrf']").val();
+    var header = "X-CSRF-TOKEN";
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+    
+    $("#btnParametros").click(function(){
+        getDados();
+    });
+    
+    $("#btnConfirmar").click(function(){
+        salvarParametro();
+    })
+
+});
+
+</script>
+
+
+<style type="text/css">
+
+.botaoImagemTema {
+  width : 280px;
+  border : solid 1px #ccc;
+}
+
+.modal-body {
+    height:auto;
+    overflow:auto;
+}
+
+</style>
+
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

@@ -83,9 +83,9 @@
                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-10 ">
                           <input type="text" class="form-control phone" id="numero0" name="telefones[][numero]" >
                         </div>
-                        <div class="col-sm-3 col-md-2 col-lg-2">
+                        <div class="col-sm-4 col-md-3 col-lg-2">
                           <div class="pull-right" style="height: 20px;">
-                            <a href="#" id="linkaddtelefone"><i class="fa fa-lg fa-plus-circle"></i> Adicionar Telefone</a>
+                            <button id="linkaddtelefone" class="btn btn-success"><i class="fa fa-lg fa-plus-circle"></i> Adicionar Telefone</button>
                           </div>
                         </div>
                       </div>
@@ -576,26 +576,12 @@
     </div>
     <div class="col-sm-3 col-md-2 col-lg-2">
       <div class="pull-right" style="height: 20px;">
-        <a href="javascript:;" style="color : #B23F3F;" class="removertelefone"><i class="fa fa-lg fa-minus-circle"></i> Remover</a>
+        <button id="linkaddtelefone" class="btn btn-warning removertelefone"><i class="fa fa-lg fa-minus-circle"></i> Remover</button>
       </div>
     </div>
   </div>
 </div>
 </script>
-
-
-
-<style type="text/css">
-
-#linkaddtelefone{
-    color: #326432;
-    margin: 2px;
-    display: block;
-    margin-top: 7px;
-    white-space: nowrap;
-}
-
-</style>
 
 
 <script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>

@@ -24,16 +24,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.dto.cliente.ClienteRelatorioDTO;
 import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
+import br.com.radio.dto.cliente.ParametroDTO;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
+import br.com.radio.model.Parametro;
 import br.com.radio.model.Telefone;
 import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
+import br.com.radio.repository.ParametroRepository;
 import br.com.radio.repository.TelefoneRepository;
 import br.com.radio.repository.TituloRepository;
 import br.com.radio.util.UtilsStr;
@@ -59,6 +62,12 @@ public class ClienteService {
 	@Autowired
 	private TituloRepository tituloRepo;
 
+	@Autowired
+	private ParametroRepository parametroRepo;
+
+
+
+	// EM 
 	@Autowired
 	private EntityManager entityManager;
 	
@@ -365,5 +374,23 @@ public class ClienteService {
 	}
 
 
+
+	public void saveParametro( ParametroDTO parametroDTO, Cliente cliente ){
+		
+	
+		if ( StringUtils.isNotBlank( parametroDTO.getTema() ) ){
+			
+			Parametro temaParam = parametroRepo.findByCodigoAndCliente( "TEMA", cliente );
+			
+			if ( temaParam != null ){
+				temaParam.setValor( parametroDTO.getTema() );
+				parametroRepo.save( temaParam );
+			}
+		}
+		
+		
+	}
+	
+	
 
 }

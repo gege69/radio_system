@@ -34,6 +34,7 @@ import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.EndPointDTO;
 import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
+import br.com.radio.dto.cliente.ParametroDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
@@ -57,6 +58,7 @@ import br.com.radio.repository.PerfilPermissaoRepository;
 import br.com.radio.repository.PerfilRepository;
 import br.com.radio.repository.PermissaoRepository;
 import br.com.radio.repository.UsuarioRepository;
+import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
 
 /**
@@ -94,6 +96,8 @@ public class GerenciadorController extends AbstractController {
 	private PerfilPermissaoRepository perfilPermissaoRepo;
 	@Autowired
 	private ParametroRepository parametroRepo;
+	@Autowired
+	private ClienteService clienteService;
 
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -154,12 +158,21 @@ public class GerenciadorController extends AbstractController {
 		if ( usuario == null || cliente == null )
 			return null;
 		
-		Parametro param = parametroRepo.findByCodigoAndCliente( "BACKGROUNDCOLOR", cliente );
+		Parametro color = parametroRepo.findByCodigoAndCliente( "BACKGROUNDCOLOR", cliente );
+		Parametro tema = parametroRepo.findByCodigoAndCliente( "TEMA", cliente );
 		
-		if ( param != null && StringUtils.isNotBlank( param.getValor() ) ){
-			request.getSession().setAttribute( "backgroundColor", param.getValor() );
+		if ( color != null && StringUtils.isNotBlank( color.getValor() ) ){
+			request.getSession().setAttribute( "backgroundColor", color.getValor() );
 		}
 		
+		if ( tema != null && StringUtils.isNotBlank( tema.getValor() ) ){
+			request.getSession().setAttribute( "tema", tema.getValor() );
+		}
+		
+		boolean isDono = verificaDono( usuario );
+
+		model.addAttribute( "isDono", isDono );
+
 		Long count = ambienteRepo.countByCliente( cliente );
 		
 		model.addAttribute( "razaoSocial", cliente.getRazaosocial() );
@@ -170,7 +183,62 @@ public class GerenciadorController extends AbstractController {
 		
 		return "gerenciador/principal";
 	}
+
+
+
 	
+	@RequestMapping( value = { "/parametros", "/api/parametros" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody ParametroDTO getParametro( HttpServletResponse response, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException("Cliente não encontrado.");
+
+		// Por enquanto só retorna o tema
+		Parametro parametro = parametroRepo.findByCodigoAndCliente( "TEMA", usuario.getCliente() );
+		
+		ParametroDTO parametroDTO = new ParametroDTO();
+		parametroDTO.setTema( parametro.getValor() );
+		
+		return parametroDTO;
+	}
+
+
+	
+
+	@RequestMapping( value = { "/parametros", "/api/parametros" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveParametro( @RequestBody ParametroDTO parametroDTO, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente() == null )
+					throw new RuntimeException("Cliente não encontrado.");
+
+				clienteService.saveParametro( parametroDTO, usuario.getCliente() );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+
 	
 	@RequestMapping(value="/fazer")
 	public String fazer( ModelMap model )
@@ -397,11 +465,11 @@ public class GerenciadorController extends AbstractController {
 		if ( usuario == null || usuario.getCliente() == null )
 			throw new RuntimeException("Cliente não encontrado.");
 
-		List<Perfil> perfis = usuario.getPerfis();
+		Page<Permissao> permissaoPage;
 
-		Page<Permissao> permissaoPage = null;
+		boolean isDono = verificaDono( usuario );
 
-		if ( perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS ) )
+		if ( isDono )
 			permissaoPage = permissaoRepo.findAll( pageable );
 		else 
 			permissaoPage = permissaoRepo.findByExclusivoFalse( pageable );
@@ -409,6 +477,16 @@ public class GerenciadorController extends AbstractController {
 		JSONBootstrapGridWrapper<Permissao> jsonList = new JSONBootstrapGridWrapper<Permissao>(permissaoPage.getContent(), permissaoPage.getTotalElements());
 
 		return jsonList;
+	}
+
+
+	private boolean verificaDono( Usuario usuario )
+	{
+		List<Perfil> perfis = usuario.getPerfis();
+
+		boolean isDono =  perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS );
+
+		return isDono;
 	}	
 	
 	

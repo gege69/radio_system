@@ -196,13 +196,48 @@ insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval
 
 
 insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'BASE_MIDIA_PATH', '/home/ubuntu/repositorioMusicas/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
+values ( nextval('parametro_id_parametro_seq'), null, 'BASE_MIDIA_PATH', '/home/ubuntu/repositorioMusicas/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
 
 insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'SERVER_REQUEST_PATH', '', 'A definir', null );
+values ( nextval('parametro_id_parametro_seq'), null, 'SERVER_REQUEST_PATH', '', 'A definir', null );
 
 insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'NEW_MIDIA_PATH', '/home/pazin/musicas/Exceto Sertanejas/AC-DC/', 'Pasta em disco onde estão as músicas novas que precisam ser importadas', null );
+values ( nextval('parametro_id_parametro_seq'), null, 'NEW_MIDIA_PATH', '/home/pazin/musicas/Exceto Sertanejas/AC-DC/', 'Pasta em disco onde estão as músicas novas que precisam ser importadas', null );
+
+
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'rdl' ), 'TEMA', '', 'Tema de CSS utilizado dentro do Gerenciador', null );
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'rdl' ), 'BACKGROUNDCOLOR', '', 'Cor de fundo utilizada dentro do Gerenciador. Não pode ser utilizada junto com tema.', null );
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'rdl' ), 'APARENCIA', 'TEMA', 'Configuração que determina se vai usar TEMA ou BACKGROUNDCOLOR', null );
+
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'TEMA', 'darkly', 'Tema de CSS utilizado dentro do Gerenciador', null );
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'BACKGROUNDCOLOR', '#54678b', 'Cor de fundo utilizada dentro do Gerenciador. Não pode ser utilizada junto com tema.', null );
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'Eterion' ), 'APARENCIA', 'TEMA', 'Configuração que determina se vai usar TEMA ou BACKGROUNDCOLOR', null );
+
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'ap3' ), 'TEMA', '', 'Tema de CSS utilizado dentro do Gerenciador', null );
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'ap3' ), 'BACKGROUNDCOLOR', '', 'Cor de fundo utilizada dentro do Gerenciador. Não pode ser utilizada junto com tema.', null );
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), ( SELECT ID_cliente FROM cliente WHERE CODIGO = 'ap3' ), 'APARENCIA', 'TEMA', 'Configuração que determina se vai usar TEMA ou BACKGROUNDCOLOR', null );
+
+
+
+
 
 
 insert into funcionalidade ( ordem, nome, url, icone, ativo, codigo ) values ( 1,  'Gêneros' ,              '/ambientes/%d/generos/view' ,                  'fa-music', true  , 'generos' );

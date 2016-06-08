@@ -100,9 +100,9 @@
     width: 30px;
 }
 
-.fixed-table-container tbody td {
-    border-left: 1px solid #dddddd;
-}
+/* .fixed-table-container tbody td { */
+/*     border-left: 1px solid #dddddd; */
+/* } */
 
 .fixed-table-container tbody tr:first-child td {
     border-top: none;
