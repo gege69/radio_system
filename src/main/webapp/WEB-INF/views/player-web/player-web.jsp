@@ -157,14 +157,10 @@
                 </div>
               </div>
 
-
-              
               <div class="spacer-vertical40"></div>
             
             </div>
-          
           </div>
-          
         </div>
       </div>
     </div>
@@ -191,6 +187,19 @@
           <span id="artista"></span>
           <div class="spacer-vertical20"></div>
         </div>
+      </div>
+
+      <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
+        <div id="divTempo" style="display : flex;" >
+          <span id="spanTempoCorrido">
+            00:00
+          </span>
+          &nbsp;/&nbsp;
+          <span id="spanTempoTotal">
+            00:00
+          </span>
+        </div>
+        <div class="spacer-vertical20"></div>
       </div>
       
       <div class="col-md-2 col-sm-2 col-xs-12 col-centered" >

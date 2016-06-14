@@ -16,7 +16,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
               <p>Usuário cadastrado com sucesso: ${username}</p>
-              <p>Será enviado um email para a validação do cadastro.</p>
+              <p>Foi enviado um email para validação do seu cadastro, para realizar o acesso, por favor, verifique seu email.</p>
             </div>
             <div class="panel-body">
               <a href="${context}/login">Clique aqui para realizar o login</a> 

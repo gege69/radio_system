@@ -296,4 +296,7 @@ $(function(){
 </style>
 
 
+
+<jsp:include page="/WEB-INF/views/versao.jsp" />
+
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

@@ -1,6 +1,6 @@
   </body>
   
-  <jsp:include page="/WEB-INF/views/versao.jsp" />
+<%--   <jsp:include page="/WEB-INF/views/versao.jsp" /> --%>
   
   
 </html>

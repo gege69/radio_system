@@ -167,6 +167,8 @@ var play = function(){
             
             player.source(fonte);
             player.play();
+            
+            registraTempos();
 
             player.media.addEventListener("ended", function() {
                 next();
@@ -175,6 +177,32 @@ var play = function(){
 
     });
 };
+
+
+
+var registraTempos = function(){
+
+    player.media.addEventListener("playing", function() {
+        $("#spanTempoTotal").empty();
+        $("#spanTempoTotal").html( processaTempo( player.media.duration ) ); 
+    });
+
+    player.media.addEventListener("timeupdate", function() {
+        if ( player.media.currentTime != null && player.media.currentTime > 0 ){
+            $("#spanTempoCorrido").empty();
+            $("#spanTempoCorrido").html( processaTempo(player.media.currentTime) );
+        }
+    });
+}
+
+var processaTempo = function( time ){
+    var duration = Math.round(time);
+    var minutes = padLeft( Math.floor(duration/60), 2, '0' );
+    var seconds = padLeft( (duration - minutes * 60), 2, '0');
+    
+    return ""+minutes+":"+seconds;
+}
+
 
 var next = function(){
     
@@ -220,6 +248,8 @@ var next = function(){
 
             player.source(fonte);
             player.play();
+
+            registraTempos();
 
             player.media.addEventListener("ended", function() {
                 next();

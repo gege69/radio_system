@@ -155,7 +155,7 @@
     }
     
     .logotipoimagem {
-      max-height: 300px;  
+      max-height: 210px;  
       max-width: 400px;
     }
     
@@ -181,7 +181,7 @@
     }
     
     .logotipoimagem {
-      max-width: 100%;  
+      max-height: 100px;  
       max-width: 100%;
     }
 }
