@@ -147,6 +147,7 @@ var play = function(){
             else
                 $('#nome-musica').html( content.midia.title );
             
+            $('#artista').empty();
             if ( content.midia.artist != null && content.midia.artist != '' )
                 $('#artista').html( ' - ' + content.midia.artist );
         }
