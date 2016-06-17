@@ -10,9 +10,17 @@
     <jsp:include page="/WEB-INF/views/metaAndIcon.jsp" />
   
     <title>RDCenter</title>
+
+    <c:choose>
+      <c:when test="${tema == null || tema eq '' || tema eq 'default' }">
+        <link href="${context}/css/bootstrap-themes/slate/bootstrap.css" rel="stylesheet">
+      </c:when>
+      <c:otherwise>
+        <link href="${context}/css/bootstrap-themes/${tema}/bootstrap.min.css" rel="stylesheet">
+      </c:otherwise>
+    </c:choose>
     
     <!-- O player-web TEM UM CSS DIFERENTE -->
-    <link href="${context}/css/bootstrap-themes/slate/bootstrap.css" rel="stylesheet">
 
     <jsp:include page="/WEB-INF/views/customStyles.jsp" />
 

@@ -43,8 +43,8 @@ public class GravaMidiaParameter {
 	}
 	
 	public void validar(){
-		if ( dataInicioValidade != null && dataFimValidade != null && dataInicioValidade.compareTo( dataFimValidade ) >= 0 )
-			throw new RuntimeException( "Data de Início da Validade não pode ser igual ou superior ao Fim da Validade." );
+		if ( dataInicioValidade != null && dataFimValidade != null && dataInicioValidade.compareTo( dataFimValidade ) > 0 )
+			throw new RuntimeException( "Data de Início da Validade não pode ser superior ao Fim da Validade." );
 	}
 
 	public String getOriginalName()
