@@ -1,50 +1,280 @@
 package br.com.radio.boot;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import net.objectlab.kit.datecalc.common.DateCalculator;
+import net.objectlab.kit.datecalc.common.DefaultHolidayCalendar;
+import net.objectlab.kit.datecalc.common.HolidayCalendar;
+import net.objectlab.kit.datecalc.common.HolidayHandlerType;
+import net.objectlab.kit.datecalc.jdk8.LocalDateKitCalculatorsFactory;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.threeten.extra.Interval;
 
+import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.Cliente;
+import br.com.radio.model.CondicaoComercial;
+import br.com.radio.model.HistoricoStatusAmbiente;
+import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
+import br.com.radio.model.fixture.FixtureAmbiente;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.ClienteRepository;
+import br.com.radio.repository.CondicaoComercialRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
-import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
+import br.com.radio.util.UtilsDates;
+import de.jollyday.Holiday;
+import de.jollyday.HolidayManager;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
 
 
-//@SpringBootApplication
-//@ComponentScan( basePackages = { "br.com.radio.*" } )
-//@EnableConfigurationProperties
-//@ActiveProfiles({"default"})
-//@EnableTransactionManagement
+
+
+
+
+@SpringBootApplication
+@ComponentScan( basePackages = { "br.com.radio.*" } )
+@EnableConfigurationProperties
+@ActiveProfiles({"default"})
+@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)
 	{
 		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
-//		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
-//		
-		MidiaService midiaService = ctx.getBean( MidiaService.class );
-		AmbienteRepository ambienteRepo = ctx.getBean( AmbienteRepository.class );
-//		
-		Environment env = ctx.getEnvironment();
+		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 		
-		String x = env.getProperty( "AbstractUserDetailsAuthenticationProvider.badCredentials" );
-		
-		System.out.println(x);
+		testeCobranca( ctx );
 	}
 
+
+	private static void testeCobranca( ApplicationContext ctx ){
+		
+		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
+		ClienteRepository cliRepo = ctx.getBean( ClienteRepository.class );
+		UsuarioRepository usuRepo = ctx.getBean( UsuarioRepository.class );
+		CondicaoComercialRepository condRepo = ctx.getBean( CondicaoComercialRepository.class );
+
+		Cliente cliente = cliRepo.findByCodigo( "eterion" );
+		Usuario usuario = usuRepo.findByLogin( "fpazin" );
+
+		// Verificar se está na hora de rodar a cobrança pelo dia vencimento do cliente
+		
+//		List<Ambiente> ambientes = ambRepo.findByCliente( cliente );
+		List<Ambiente> ambientes = new ArrayList<Ambiente>();
+		
+		Ambiente amb1 = FixtureAmbiente.criaAmbiente( cliente, "amb1" );
+		Ambiente amb2 = FixtureAmbiente.criaAmbiente( cliente, "amb2" );
+		Ambiente amb3 = FixtureAmbiente.criaAmbiente( cliente, "amb3" );
+		
+		ambientes.add( amb1 );
+		ambientes.add( amb2 );
+		ambientes.add( amb3 );
+		
+		List<HistoricoStatusAmbiente> historicos = new ArrayList<HistoricoStatusAmbiente>();
+		
+		amb1.setStatus( StatusAmbiente.INATIVO );
+
+		LocalDate x = LocalDate.of( 2016, 05, 15 ); 
+		LocalDate y = LocalDate.of( 2016, 6, 25 );
+	
+		Long dias = ChronoUnit.DAYS.between( x, y );
+		
+		historicos.add( new HistoricoStatusAmbiente( amb1, x, y, dias.intValue(), StatusAmbiente.ATIVO ) );
+		historicos.add( new HistoricoStatusAmbiente( amb1, LocalDate.of( 2016, 06, 26 ), StatusAmbiente.INATIVO ) );
+
+		historicos.add( new HistoricoStatusAmbiente( amb2, LocalDate.of( 2016, 05, 15 ), StatusAmbiente.ATIVO) );
+		historicos.add( new HistoricoStatusAmbiente( amb3, LocalDate.of( 2016, 06, 20 ), StatusAmbiente.ATIVO) );
+		
+		Map<Ambiente, List<HistoricoStatusAmbiente>> historicosPorAmbiente = historicos.stream().collect( Collectors.groupingBy( HistoricoStatusAmbiente::getAmbiente ) );
+		
+		List<CondicaoComercial> condicoesDoCliente = condRepo.findByCliente( cliente );
+		
+		List<CondicaoComercial> condicoesDosAmbientes = condicoesDoCliente.stream().filter( c -> c.getTipoTaxa().getPorambiente() ).collect( Collectors.toList() );
+		List<CondicaoComercial> condicoesGeral = condicoesDoCliente.stream().filter( c -> !c.getTipoTaxa().getPorambiente() ).collect( Collectors.toList() );
+
+		List<Ambiente> ambientesFull = ambientes.stream().filter( a -> isFull( a, historicosPorAmbiente.get( a ) ) ).collect( Collectors.toList() );
+		List<Ambiente> ambientesProporcionais = ambientes.stream().filter( a -> !isFull( a, historicosPorAmbiente.get( a ) ) ).collect( Collectors.toList() );
+		
+		final Map<CondicaoComercial, List<Ambiente>> mapAmbientesPorCondicao = new HashMap<CondicaoComercial, List<Ambiente>>();
+		
+		condicoesDosAmbientes.forEach( condicao -> {
+			mapAmbientesPorCondicao.put( condicao, ambientesFull );
+		});
+		
+		Titulo tit = new Titulo();
+		
+		final StringBuilder strBuild = new StringBuilder();
+		
+		BigDecimal valorAdicionalPorAmbiente = BigDecimal.ZERO;
+		
+		mapAmbientesPorCondicao.forEach( ( cond, ambList ) -> {
+			strBuild.append( String.format( "Cobrança de %.2f para os ambientes : ", cond.getValor().doubleValue() ) );
+
+			String separados = ambList.stream()
+				     .map(amb -> amb.getNome())
+				     .collect(Collectors.joining(", ", "[", "]"));	
+
+			strBuild.append( separados );
+			strBuild.append(System.lineSeparator());
+		});
+		
+		System.out.println(strBuild.toString());
+
+	}
+	
+	
+	private static boolean temPeriodoInativo( Ambiente ambiente, int mes, List<HistoricoStatusAmbiente> historicos ){
+		
+		boolean result = false;
+		
+		if ( ambiente.getStatus().equals( StatusAmbiente.INATIVO ) )
+			result = true;
+		else {
+			
+			final LocalDate inicioMes = LocalDate.now().withMonth( mes ).withDayOfMonth( 1 );
+			final LocalDate finalMes = inicioMes.withDayOfMonth( inicioMes.lengthOfMonth() );
+			
+			final Interval intervaloMes = Interval.of( Instant.from( inicioMes ), Instant.from( finalMes ) );
+			
+			List<HistoricoStatusAmbiente> periodosInativos = historicos.stream().filter( h -> h.getStatus().equals( StatusAmbiente.INATIVO ) ).collect( Collectors.toList() );
+			
+			periodosInativos.forEach( p -> {
+				if ( p.getDataFim() == null )
+					p.setDataFim( new Date() );
+				
+				LocalDate ini = p.getDataInicioAsLocalDate();
+				LocalDate fim = p.getDataFimAsLocalDate();
+	
+				Interval intervaloInativo = Interval.of( Instant.from( ini ), Instant.from( fim ) );
+				
+				if ( intervaloInativo.overlaps( intervaloMes ) ){
+					
+				}
+			});
+			
+		}
+		
+		return result;
+	}
+	  
+	private static boolean isFull( Ambiente ambiente, List<HistoricoStatusAmbiente> historicos ){
+		return true;
+	}
+	
+//	private static void diasAtivosNoMes( int mes, List<HistoricoStatusAmbiente> historicos ){
+//		
+//		historicos.stream().filter( h -> { 
+//
+//		});
+//		
+//	}
+	
+	
+	
+	private static void testeDiasUteis( ApplicationContext ctx ){
+		
+//		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
+//		ClienteRepository cliRepo = ctx.getBean( ClienteRepository.class );
+//		
+//		Cliente cliente = cliRepo.findByCodigo( "eterion" );
+//		
+//		List<Ambiente> ambientes = ambRepo.findByCliente( cliente );
+		
+		HolidayManager gerenciadorDeFeriados = HolidayManager.getInstance(de.jollyday.HolidayCalendar.BRAZIL);
+
+		Set<Holiday> feriados = gerenciadorDeFeriados.getHolidays(LocalDate.now().getYear());
+		Set<LocalDate> dataDosFeriados = new HashSet<LocalDate>();
+		for (Holiday h : feriados) {
+			dataDosFeriados.add(UtilsDates.asLocalDate( h.getDate().toDate() ));
+			System.out.println( h.getDate().toString( "dd/MM/yyyy" ) );
+		}	
+		
+		// popula com os feriados brasileiros
+		HolidayCalendar<LocalDate> calendarioDeFeriados = new DefaultHolidayCalendar<LocalDate>(dataDosFeriados);	
+
+		LocalDateKitCalculatorsFactory.getDefaultInstance().registerHolidays("BR", calendarioDeFeriados);
+
+		DateCalculator<LocalDate> calendario = LocalDateKitCalculatorsFactory.getDefaultInstance().getDateCalculator("BR", HolidayHandlerType.FORWARD);
+		
+		LocalDate dataInicial = LocalDate.of( 2016, 05, 15 );
+		LocalDate outraData = LocalDate.of( 2016, 12, 25 );
+		
+		System.out.println(calendario.isNonWorkingDay(LocalDate.now()));
+		System.out.println(calendario.isNonWorkingDay(dataInicial));
+		System.out.println(calendario.isNonWorkingDay(outraData));
+		
+		int result = getDiasNaoUteis( dataInicial, outraData, calendario );
+		
+		System.out.println(result);
+		 
+		result = getDiasUteis( dataInicial, outraData, calendario );
+		
+		System.out.println(result);
+	}
+	
+	public static int getDiasNaoUteis(LocalDate from, LocalDate to, DateCalculator<LocalDate> calendario){
+		
+		int diasNaoUteis = 0;
+		 
+		LocalDate dataInicialTemporaria = from;
+		LocalDate dataFinalTemporaria = to;
+		 
+		while (!dataInicialTemporaria.isAfter(dataFinalTemporaria)) {
+		    if (calendario.isNonWorkingDay(dataInicialTemporaria)) {
+		       diasNaoUteis++;
+		    }
+		    dataInicialTemporaria = dataInicialTemporaria.plusDays(1);
+		}	
+		
+		return diasNaoUteis;
+	}
 	
 
+	public static int getDiasUteis(LocalDate from, LocalDate to, DateCalculator<LocalDate> calendario){
+		
+		int diasUteis = 0;
+		 
+		LocalDate dataInicialTemporaria = from;
+		LocalDate dataFinalTemporaria = to;
+		 
+		while (!dataInicialTemporaria.isAfter(dataFinalTemporaria)) {
+		    if (!calendario.isNonWorkingDay(dataInicialTemporaria)) {
+		       diasUteis++;
+		    }
+		    dataInicialTemporaria = dataInicialTemporaria.plusDays(1);
+		}	
+		
+		return diasUteis;
+	}
+	
+	
+	
 	private static void criaProgramacaoVariosAmbientes( ApplicationContext ctx )
 	{
 //		UsuarioRepository usuRepo = ctx.getBean( UsuarioRepository.class );
