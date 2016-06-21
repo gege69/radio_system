@@ -113,6 +113,18 @@ function valorFormatter(index, row) {
 };
 
 
+function descricaoTaxaFormatter(index, row) {
+    
+    var descricao = row.tipoTaxa.descricao;
+ 
+    if ( row.tipoTaxa.ativo == false )
+        descricao = descricao + " (inativa)";
+
+    return descricao;
+};
+
+
+
 //Tabela de Titulos( pagamentos )
 var $tablePag = $('#tablePagamentosTitulos');
 
@@ -298,6 +310,9 @@ var getTipoTaxas = function()
                 descricao = tx.descricao + " (por ambiente)";
             else
                 descricao = tx.descricao;
+
+            if ( tx.ativo == false )
+                descricao = descricao +" (inativa)";
             
             $('#idTipoTaxa').append($('<option>', { 
                 value: tx.idTipotaxa,
@@ -345,21 +360,17 @@ var editCondicaoComercial = function( e, row, el )
 {
     var rowcopy = extend( row );
 
-    var tipoTaxa = rowcopy.tipoTaxa;
-    if ( tipoTaxa != null )
-        $('#idTipoTaxa').val( tipoTaxa.idTipotaxa );
-    
     formReset( $('#formCondicaoComercial') );
 
     $("#idClienteModal").val($("#idCliente").val());
-   
+    
     $('#formCondicaoComercial').populate(rowcopy);
+
 }
 
 
 var abreModalCondicaoComercial = function(){ 
-    
-    getTipoTaxas();
+   
   
     $("#idClienteModal").val($("#idCliente").val());
 
@@ -465,5 +476,5 @@ $(function(){
         }
     }); 
 
-
+    getTipoTaxas();
 });

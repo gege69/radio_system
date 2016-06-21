@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.service.ClienteService;
 import br.com.radio.service.EventoService;
 import br.com.radio.service.ProgramacaoMusicalService;
 
@@ -28,12 +29,14 @@ public class TarefasAgendadas {
     private EventoService eventoService;
     
     @Autowired
+    private ClienteService clienteService;
+    
+    @Autowired
     private AmbienteRepository ambienteRepo;
 	
 	@Scheduled(cron="0 0 8-9 * * *")
 	public void verificarProgramacaoAmbientes()
 	{
-		
 		List<Ambiente> ambientes = ambienteRepo.findByStatus( StatusAmbiente.ATIVO );
 		
 		ambientes.forEach( amb -> {
@@ -69,6 +72,17 @@ public class TarefasAgendadas {
 		});
 		
 		logger.info( "Fim tarefas..." );
+	}
+	
+	
+	@Scheduled(cron="0 0 6 * * *")
+	public void verificarCobrancas(){
+		
+		logger.info( "Rodando task de criação de cobranças..." );
+
+		clienteService.criarCobrancas();
+		
+		logger.info( "Fim task de criação de cobranças..." );
 	}
 	
 	

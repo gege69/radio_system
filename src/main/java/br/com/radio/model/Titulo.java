@@ -81,6 +81,11 @@ public class Titulo implements Serializable {
 	@Column( name = "datacancelamento")
 	private Date dataCancelamento;
 
+	@JsonIgnore
+	@OneToOne
+	@JoinColumn(name="id_usuario_cancel")
+	private Usuario usuarioCancelamento;
+
 	// Mesmo que exista uma data de emissão vou deixar a data de criação do regsitro aqui também
 	@JsonDeserialize(using=JSONDateDeserializer.class)
 	@JsonSerialize(using=JSONDateSerializer.class)
@@ -141,6 +146,14 @@ public class Titulo implements Serializable {
 	
 	@Column(name="historico", columnDefinition = "TEXT")
 	private String historico;
+	
+	/**
+	 * Determina se esse titulo foi gerado pelo sistema de acordo com a data de vencimento do Cliente.
+	 * Um cliente pode ter vários títulos... mas os fechamentos de cobrança no mês devem ser únicos (ativos).
+	 * Podem existir vários títulos de fechamento mensais desde que estejam cancelados.
+	 */
+	@Column(name="is_fechamento", columnDefinition = "BOOLEAN default false")
+	private boolean isFechamento;
 
 	public Long getIdTitulo()
 	{
@@ -398,7 +411,16 @@ public class Titulo implements Serializable {
 	{
 		this.dataAlteracao = dataAlteracao;
 	}
-	
+
+	public boolean isFechamento()
+	{
+		return isFechamento;
+	}
+
+	public void setFechamento( boolean isFechamento )
+	{
+		this.isFechamento = isFechamento;
+	}
 	
 	
 	

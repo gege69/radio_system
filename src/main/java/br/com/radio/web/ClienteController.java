@@ -1,6 +1,7 @@
 package br.com.radio.web;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -37,6 +38,7 @@ import br.com.radio.repository.TipoTaxaRepository;
 import br.com.radio.repository.TituloRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
+import br.com.radio.util.UtilsDates;
 import br.com.radio.util.UtilsStr;
 
 
@@ -505,7 +507,7 @@ public class ClienteController extends AbstractController {
 		{
 			Pageable pageable = getPageable( pageNumber, limit, "asc", "descricao" );
 
-			Page<TipoTaxa> tipotaxaPage = tipoTaxaRepo.findByAtivoTrue( pageable );
+			Page<TipoTaxa> tipotaxaPage = tipoTaxaRepo.findAll( pageable );
 			
 			JSONBootstrapGridWrapper<TipoTaxa> jsonList = new JSONBootstrapGridWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
 
@@ -540,6 +542,34 @@ public class ClienteController extends AbstractController {
 	}
 
 
+
+	@RequestMapping(value={ "/admin/clientes/{idCliente}/geracobranca", "/admin/clientes/{idCliente}/geracobranca" }, method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody Titulo geraCobranca( @PathVariable Long idCliente, ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return null;
+		
+		Cliente cliente = clienteRepo.findOne( idCliente );
+		
+		if ( cliente == null )
+			return null;
+		
+		Integer dia = usuario.getCliente().getDiaVencimento();
+		
+		LocalDate vencimento = LocalDate.now();
+		
+		if ( vencimento.getDayOfMonth() >= dia )
+			vencimento = vencimento.plusMonths( 1 );
+
+		vencimento.withDayOfMonth( dia );
+		
+		Titulo tit = clienteService.geraCobranca( usuario.getCliente(), UtilsDates.asUtilDate( vencimento ) );
+		
+		return tit;
+	}
 
 }
 

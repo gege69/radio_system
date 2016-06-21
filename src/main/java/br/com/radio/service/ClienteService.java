@@ -3,7 +3,11 @@ package br.com.radio.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
@@ -65,13 +69,12 @@ public class ClienteService {
 	@Autowired
 	private ParametroRepository parametroRepo;
 
-
+	@Autowired
+	private CondicaoComercialRepository condRepo;
 
 	// EM 
 	@Autowired
 	private EntityManager entityManager;
-	
-	
 	
 	
 	
@@ -387,8 +390,85 @@ public class ClienteService {
 				parametroRepo.save( temaParam );
 			}
 		}
+	}
+	
+
+
+	public void criarCobrancas(){
 		
 		
+	}
+	
+	
+	@Transactional
+	public Titulo geraCobranca( Cliente cliente, Date dataVencimento ){
+		
+		List<Ambiente> ambientes = ambienteRepo.findByCliente( cliente );
+		
+		List<CondicaoComercial> condicoesDoCliente = condRepo.findByCliente( cliente );
+		
+		List<CondicaoComercial> condicoesDosAmbientes = condicoesDoCliente.stream().filter( c -> c.getTipoTaxa().getPorambiente() ).collect( Collectors.toList() );
+		List<CondicaoComercial> condicoesGeral = condicoesDoCliente.stream().filter( c -> !c.getTipoTaxa().getPorambiente() ).collect( Collectors.toList() );
+
+		List<Ambiente> ambientesFull = ambientes;
+//		List<Ambiente> ambientesProporcionais = ambientes.stream().filter( a -> !isFull( a, historicosPorAmbiente.get( a ) ) ).collect( Collectors.toList() );
+		
+		final Map<CondicaoComercial, List<Ambiente>> mapAmbientesPorCondicao = new HashMap<CondicaoComercial, List<Ambiente>>();
+		
+		condicoesDosAmbientes.forEach( condicao -> {
+			mapAmbientesPorCondicao.put( condicao, ambientesFull );
+		});
+		
+		BigDecimal liquido = BigDecimal.ZERO;
+		
+		StringBuilder strBuild = new StringBuilder();
+		
+		for ( Entry<CondicaoComercial, List<Ambiente>> entry : mapAmbientesPorCondicao.entrySet() ){
+			
+			CondicaoComercial cond = entry.getKey();
+			List<Ambiente> ambList = entry.getValue();
+			
+			BigDecimal valorCobrancas =  cond.getValor().multiply( new BigDecimal( ambList.size() ) );
+			
+			strBuild.append( String.format( "Cobrança de %.2f da condição comercial '%s' para cada um dos ambientes : ", valorCobrancas, cond.getTipoTaxa().getDescricao() ) );
+
+			String separados = ambList.stream()
+				     .map(amb -> amb.getNome())
+				     .collect(Collectors.joining(", ", "[", "]"));	
+
+			strBuild.append( separados );
+			strBuild.append(System.lineSeparator());
+			
+			liquido = liquido.add( valorCobrancas );
+		}
+		
+		StringBuilder strBuildGeral = new StringBuilder();
+		
+		for ( CondicaoComercial condGeral : condicoesGeral ){
+			
+			strBuildGeral.append(System.lineSeparator());
+			strBuildGeral.append( String.format( "Cobrança de %.2f da condição comercial '%s' para o cliente.", condGeral.getValor().doubleValue(), condGeral.getTipoTaxa().getDescricao() ) );
+			
+			liquido = liquido.add( condGeral.getValor() );
+		}
+
+		Titulo tit = new Titulo();
+		
+		Date hoje = new Date();
+		
+		tit.setCliente( cliente );
+		tit.setDataCriacao( hoje );
+		tit.setDataEmissao( hoje );
+		tit.setDataVencimento( dataVencimento );
+		tit.setFechamento( true );
+		
+		tit.setHistorico( strBuild.toString() );
+		tit.setValorLiquido( liquido );
+		tit.setValorTotal( liquido );
+		
+		tituloRepo.save( tit );
+		
+		return tit;
 	}
 	
 	

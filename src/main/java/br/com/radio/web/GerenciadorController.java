@@ -117,7 +117,7 @@ public class GerenciadorController extends AbstractController {
 			
 			String path = info.getPatternsCondition().toString();
 			
-			path = path.replaceAll( "||", "<br/>" );
+//			path = path.replaceAll( "||", "<br/>" );
 			
 			dto.setPatternsCondition( path );
 			

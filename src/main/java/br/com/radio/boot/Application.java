@@ -3,7 +3,6 @@ package br.com.radio.boot;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -128,13 +128,18 @@ public class Application {
 		});
 		
 		Titulo tit = new Titulo();
+		BigDecimal liquido = BigDecimal.ZERO;
 		
-		final StringBuilder strBuild = new StringBuilder();
+		StringBuilder strBuild = new StringBuilder();
 		
-		BigDecimal valorAdicionalPorAmbiente = BigDecimal.ZERO;
-		
-		mapAmbientesPorCondicao.forEach( ( cond, ambList ) -> {
-			strBuild.append( String.format( "Cobrança de %.2f para os ambientes : ", cond.getValor().doubleValue() ) );
+		for ( Entry<CondicaoComercial, List<Ambiente>> entry : mapAmbientesPorCondicao.entrySet() ){
+			
+			CondicaoComercial cond = entry.getKey();
+			List<Ambiente> ambList = entry.getValue();
+			
+			BigDecimal valorCobrancas =  cond.getValor().multiply( new BigDecimal( ambList.size() ) );
+			
+			strBuild.append( String.format( "Cobrança de %.2f da condição comercial '%s' para cada um dos ambientes : ", valorCobrancas, cond.getTipoTaxa().getDescricao() ) );
 
 			String separados = ambList.stream()
 				     .map(amb -> amb.getNome())
@@ -142,10 +147,28 @@ public class Application {
 
 			strBuild.append( separados );
 			strBuild.append(System.lineSeparator());
-		});
+			
+			liquido = liquido.add( valorCobrancas );
+		}
 		
-		System.out.println(strBuild.toString());
+		StringBuilder strBuildGeral = new StringBuilder();
+		
+		for ( CondicaoComercial condGeral : condicoesGeral ){
+			
+			strBuildGeral.append(System.lineSeparator());
+			strBuildGeral.append( String.format( "Cobrança de %.2f da condição comercial '%s' para o cliente.", condGeral.getValor().doubleValue(), condGeral.getTipoTaxa().getDescricao() ) );
+			
+			liquido = liquido.add( condGeral.getValor() );
+		}
 
+		System.out.println(strBuild.toString());
+		System.out.println(strBuildGeral.toString());
+		System.out.println(liquido);
+		
+		tit.setHistorico( strBuild.toString() );
+		tit.setValorLiquido( liquido );
+		
+		System.out.println(tit);
 	}
 	
 	

@@ -210,7 +210,7 @@
                           <li><a data-toggle="tab" href="#divCondicoesComerciais">Condições Comerciais</a></li>
                         </c:if>
 
-                        <li><a data-toggle="tab" href="#divPagamentos">Pagamentos</a></li>
+                        <li><a data-toggle="tab" href="#divPagamentos">Títulos</a></li>
 
                         <c:if test="${isAdmin}">
                           <li><a data-toggle="tab" href="#divUsuarios">Usuários</a></li>
@@ -312,7 +312,7 @@
                              data-query-params="queryParamsCondicoesComerciais">
                             <thead>
                               <tr>
-                                  <th data-field="tipoTaxa.descricao">Descrição Taxa</th>
+                                  <th data-field="tipoTaxa.descricao" data-formatter="descricaoTaxaFormatter">Descrição Taxa</th>
                                   <th data-field="valor" data-formatter="valorFormatter">Valor</th>
                                   <th data-field="dataAlteracao">Data Alteração</th>
                               </tr>
@@ -457,7 +457,7 @@
                 <input type="hidden" id="idCondconModal" name="idCondcom" value="" >
                 
                 <div class="form-group">
-                  <label for="posicaoVinheta" class="control-label col-sm-2 col-md-2 col-lg-2">Tipo de Taxa</label>
+                  <label for="idTipoTaxa" class="control-label col-sm-2 col-md-2 col-lg-2">Tipo de Taxa</label>
                   <div class="col-lg-10 col-md-10 col-sm-10">
                     <select class="form-control" id="idTipoTaxa" name="tipoTaxa[idTipotaxa]">
                     </select>
