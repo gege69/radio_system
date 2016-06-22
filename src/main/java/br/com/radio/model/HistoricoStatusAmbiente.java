@@ -18,7 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.radio.enumeration.StatusAmbiente;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 import br.com.radio.util.UtilsDates;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -56,12 +56,12 @@ public class HistoricoStatusAmbiente implements Serializable {
 	@JoinColumn(name="id_ambiente")
 	private Ambiente ambiente;
 
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataInicio", nullable = false )
 	private Date dataInicio;
 
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataFim", nullable = false )
 	private Date dataFim;

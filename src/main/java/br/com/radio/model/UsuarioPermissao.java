@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -51,7 +51,7 @@ public class UsuarioPermissao implements Serializable {
 	private Permissao permissao;
 
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@NotNull( message = "A data de criação da permisão de usuário é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )

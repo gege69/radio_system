@@ -22,7 +22,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -89,7 +89,7 @@ public class Midia implements Serializable {
 
 	// Essa data tem mais a ver com a data do registro... quando o arquivo foi enviado ao servidor.
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataupload", nullable = false )
 	private Date dataUpload;
@@ -150,7 +150,7 @@ public class Midia implements Serializable {
 	 * Essa data marca o início da validade da mídia (quando ela poderá ser sorteada para ser tocada) (INCLUSIVO ex: 01/07/2016 indica que ela tocará nesse dia)
 	 */
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datainiciovalidade")
 	private Date dataInicioValidade;
@@ -159,7 +159,7 @@ public class Midia implements Serializable {
 	 * Essa data marca o fim da validade da mídia (quando ela deixará de ser sorteada para ser tocada) (INCLUSIVO ex: 09/07/2016 indica que ela tocará nesse dia... será o seu último dia)
 	 */
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datafimvalidade")
 	private Date dataFimValidade;

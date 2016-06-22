@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.Length;
 
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -124,7 +124,7 @@ public class Ambiente implements Serializable {
 	private Boolean download;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@NotNull( message = "A data de criação do Ambiente é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )
@@ -135,7 +135,7 @@ public class Ambiente implements Serializable {
 	private Usuario usuarioCriacao;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;

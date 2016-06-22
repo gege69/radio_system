@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -55,13 +55,13 @@ public class Evento implements Serializable {
 	private Midia midia;
 
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataInicio", nullable = false )
 	private Date dataInicio;
 
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataFim", nullable = false )
 	private Date dataFim;
@@ -91,7 +91,7 @@ public class Evento implements Serializable {
 	@OrderBy("hora, minuto")
     private List<EventoHorario> horarios;
 	
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@NotNull( message = "A data de criação do usuário é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )

@@ -15,7 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -50,7 +50,7 @@ public class MidiaAmbiente implements Serializable {
 	private Midia midia;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataassociacao" )
 	private Date dataAssociacao;

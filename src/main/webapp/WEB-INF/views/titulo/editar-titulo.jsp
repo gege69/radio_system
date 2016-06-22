@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="row">
-                      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                         <div class="form-group">
                           <label class="control-label" for="dataEmissao">Data Emissão</label>
                           <div class="input-group date" id="dataEmissaoDate">
@@ -79,10 +79,10 @@
                         </div>                  
                       </div>
 
-                      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                         <div class="form-group">
                           <label class="control-label" for="dataVencimento">Data Vencimento</label>
-                          <div class="input-group date">
+                          <div class="input-group date" id="dataVencimentoDate">
                             <input type="text" class="form-control" id="dataVencimento" name="dataVencimento">
                               <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
@@ -91,11 +91,22 @@
                         </div>                  
                       </div>
 
-                      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                         <div class="form-group">
                           <label class="control-label" for="dataPagamento">Data Pagamento</label>
-                          <div class="input-group date">
+                          <div class="input-group date" id="dataPagamentoDate">
                             <input type="text" class="form-control" id="dataPagamento" name="dataPagamento">
+                              <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                              </span>
+                          </div>
+                        </div>                  
+                      </div>
+                      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                          <label class="control-label" for="dataCancelamento">Data Cancelamento</label>
+                          <div class="input-group date" id="dataCancelamentoDate">
+                            <input type="text" class="form-control" id="dataCancelamento" name="dataCancelamento">
                               <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                               </span>
@@ -186,6 +197,13 @@
                 <div class="row">
                   <div class="col-lg-12 col-md-12">
                     <div class="pull-right">
+
+                      <c:if test="${idTitulo != null && idTitulo > 0}">
+                        <button type="button" class="btn btn-danger" id="btnCancelar">
+                          <i class="fa fa-close"></i>
+                          Cancelar Título
+                        </button>
+                      </c:if>
                       <button type="button" class="btn btn-primary" id="btnSalvar">
                         <i class="fa fa-floppy-o"></i>
                         Salvar Título
@@ -227,6 +245,34 @@
 
 
 
+<div class="modal fade" id="myDialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="titulo-modal">Cancelar Título</h4>
+      </div>
+      <div class="modal-body">
+        <form action="#" class="form-horizontal" id="dialogEspelhar">
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              Desenha realmente cancelar o Título ${idTitulo}?
+            </div> 
+          </div>
+          
+        </form>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" id="btnNaoDialog" data-dismiss="modal">Não</button>
+        <button type="button" class="btn btn-primary" id="btnConfirmarCancelar" data-dismiss="modal">Sim</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <style type="text/css">
 
 .explicacao{
@@ -244,11 +290,17 @@
 <script type="text/javascript" src="${context}/js/required/jquery.populate.js" async></script>
 <script type="text/javascript" src="${context}/js/required/jquery.mask.min.js" defer></script>
 <script type="text/javascript" src="${context}/js/required/jquery.maskMoney.min.js" defer></script>
+<script type="text/javascript" src="${context}/js/required/moment-with-locales.min.js" defer></script>
 
-<link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet">
+<%-- <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet"> --%>
 
-<script src="${context}/js/required/bootstrap-datepicker.min.js"></script>
-<script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+<%-- <script src="${context}/js/required/bootstrap-datepicker.min.js"></script> --%>
+<%-- <script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script> --%>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/locales/bootstrap-datepicker.pt-BR.min.js"></script>
 
 <script type="text/javascript" src="${context}/js/titulo/editar-titulo.js" async charset="UTF-8"></script>
 

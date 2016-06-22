@@ -33,7 +33,7 @@ import javax.validation.constraints.NotNull;
 
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -87,7 +87,7 @@ public class Programacao implements Serializable {
 	@NotNull( message = "A Data de Início é de preenchimento obrigatório" )
 	@Column(name="datetime_inicio", columnDefinition="TIMESTAMP WITHOUT TIME ZONE")
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateTimeInicio;
 	
@@ -106,7 +106,7 @@ public class Programacao implements Serializable {
 	@NotNull( message = "O Data de Fim é de preenchimento obrigatório" )
 	@Column(name="datetime_fim", columnDefinition="TIMESTAMP WITHOUT TIME ZONE")
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateTimeFim;
 
@@ -114,13 +114,13 @@ public class Programacao implements Serializable {
 	private Boolean ativo;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao" )
 	private Date dataCriacao;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datainativo" )
 	private Date dataInativo;

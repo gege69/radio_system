@@ -1,10 +1,13 @@
 
 
-var buildUrl = function( path , data )
+var buildUrl = function( path , data, search )
 {
-    var url = URI.expand( contextPath + path, data ).toString();
+    var url = URI.expand( contextPath + path, data );
+
+    if ( search != null && search != undefined )
+        url.addSearch(search);
     
-    return url;
+    return url.toString();
 }
 
 

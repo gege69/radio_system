@@ -313,6 +313,7 @@ public class ClienteService {
 
 
 	
+	@Transactional
 	public Titulo saveTitulo( Usuario usuario, Titulo tituloVO ){
 		
 		if ( tituloVO == null )
@@ -354,6 +355,27 @@ public class ClienteService {
 	}
 
 
+	
+	@Transactional
+	public void cancelarTitulo( Long idTitulo ){
+		
+		Titulo tit = tituloRepo.findOne( idTitulo );
+		
+		if ( tit == null )
+			throw new RuntimeException("Título não encontrado.");
+		
+		if ( tit.getDataPagamento() != null )
+			throw new RuntimeException("Título não pode ser cancelado pois já existe Data de Pagamento.");
+		
+		if ( tit.getDataCancelamento() != null )
+			throw new RuntimeException("Título não pode ser cancelado pois já está Cancelado.");
+		
+		Date hoje = new Date();
+		tit.setDataCancelamento(hoje);
+		tit.setDataAlteracao( hoje );
+		
+		tituloRepo.save( tit );
+	}
 
 
 	public Page<Ambiente> getAmbientesPorCliente( Pageable pageable, Long idCliente, String search ){

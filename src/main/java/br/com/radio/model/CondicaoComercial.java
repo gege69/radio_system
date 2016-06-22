@@ -26,7 +26,7 @@ import br.com.radio.enumeration.DefinicaoTaxa;
 import br.com.radio.json.JSONBigDecimalDeserializer;
 import br.com.radio.json.JSONBigDecimalSerializer;
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -69,7 +69,7 @@ public class CondicaoComercial implements Serializable {
 	private TipoTaxa tipoTaxa;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;

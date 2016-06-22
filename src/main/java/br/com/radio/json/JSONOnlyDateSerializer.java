@@ -9,11 +9,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-public class JSONDateSerializer extends JsonSerializer<Date> {
+public class JSONOnlyDateSerializer extends JsonSerializer<Date> {
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	
-	private SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	@Override
 	public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException, JsonProcessingException {
@@ -27,14 +25,7 @@ public class JSONDateSerializer extends JsonSerializer<Date> {
 			}
 			catch ( Exception e )
 			{
-				try
-				{
-					dateAsText = sdf2.format(date);
-				}
-				catch ( Exception e1 )
-				{
-					e1.printStackTrace();
-				}
+				e.printStackTrace();
 			}
 			
 			jsonGenerator.writeString(dateAsText);

@@ -89,6 +89,31 @@ public class TituloController extends AbstractController {
 
 		//  FALTA FAZER O EDITAR....
 
+	@RequestMapping(value={ "/titulos/{idTitulo}/view" }, method=RequestMethod.GET)
+	public String editarTitulo( 
+						@PathVariable Long idTitulo,
+						@RequestParam(value="idCliente", required=false) Long idCliente, 
+						ModelMap model, 
+						Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+
+		if ( idCliente != null ){
+			model.addAttribute( "urlVoltarCadastro", "/admin/clientes/"+idCliente+"/view" );
+			model.addAttribute( "idCliente", idCliente );
+			model.addAttribute( "nomeCliente", usuario.getCliente().getNomefantasia() );
+		}
+
+		model.addAttribute( "nomePainel", "Painel Gerencial" );
+		model.addAttribute( "urlVoltarPainel", "/principal" );
+		model.addAttribute( "idTitulo", idTitulo );
+		
+		return "titulo/editar-titulo";
+	}
+
 
 
 	@RequestMapping( value = { "/titulos/{idTitulo}", "/api/titulos/{idTitulo}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -149,5 +174,45 @@ public class TituloController extends AbstractController {
 	}
 	
 
+	@RequestMapping( value = { "/titulos", "/api/titulos" }, method = { RequestMethod.DELETE }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String cancelarTitulo( @RequestBody Titulo tituloVO, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+		
+		if ( result.hasErrors() ){
+			
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else
+		{
+			try
+			{
+				if ( tituloVO.getIdTitulo() == null || tituloVO.getIdTitulo() <= 0 )
+					throw new RuntimeException("Título não encontrado");
+				
+				Usuario usuario = usuarioService.getUserByPrincipal( principal );
+				
+				if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+					throw new RuntimeException("Usuário não encontrado");
+				
+				if ( isAutorizado( usuario, usuario.getCliente().getIdCliente() ) )
+				{
+					clienteService.saveTitulo( usuario, tituloVO );
+					
+					jsonResult = writeOkResponse();
+				}
+				else
+					throw new RuntimeException("Não autorizado a cancelar Títulos para esse Cliente");
+
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
 
 }

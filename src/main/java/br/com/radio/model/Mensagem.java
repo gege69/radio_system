@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 import br.com.radio.util.UtilsStr;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -52,7 +52,7 @@ public class Mensagem implements Serializable {
 	private Usuario usuario;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataenvio" )
 	private Date dataEnvio;

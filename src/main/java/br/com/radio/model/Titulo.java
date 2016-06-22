@@ -19,7 +19,8 @@ import javax.validation.constraints.NotNull;
 import br.com.radio.json.JSONBigDecimalDeserializer;
 import br.com.radio.json.JSONBigDecimalSerializer;
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
+import br.com.radio.json.JSONOnlyDateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -57,26 +58,26 @@ public class Titulo implements Serializable {
 	private Usuario usuario;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONOnlyDateSerializer.class)
 	@NotNull( message = "A data de criação do Título é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataemissao", nullable = false )
 	private Date dataEmissao;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONOnlyDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datavencimento", nullable = false )
 	private Date dataVencimento;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONOnlyDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datapagamento")
 	private Date dataPagamento;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONOnlyDateSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacancelamento")
 	private Date dataCancelamento;
@@ -88,14 +89,14 @@ public class Titulo implements Serializable {
 
 	// Mesmo que exista uma data de emissão vou deixar a data de criação do regsitro aqui também
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@NotNull( message = "A data de criação do Ambiente é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;	
 
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataalteracao")
 	private Date dataAlteracao;
@@ -105,39 +106,39 @@ public class Titulo implements Serializable {
 	
 
 	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
-	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+//	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@NotNull( message = "O valor líquido é de preenchimento obrigatório" )	
 	@Column(name="valor_liquido", columnDefinition = "numeric(12,2)", precision=2, scale=2, nullable = false)
 	private BigDecimal valorLiquido;
 	
 	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
-	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+//	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_taxas", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorTaxas;
 	
 	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
-	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+//	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_descontos", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorDescontos;
 
 	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
-	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+//	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_juros", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorJuros;
 	
 	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
-	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+//	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_acresc", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorAcresc;
 	
 	// LIQUIDO + TAXAS + JUROS + ACRESCIMOS - DESCONTOS
 	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
-	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+//	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_total", columnDefinition = "numeric(12,2)", precision=2, scale=2, nullable = false)
 	private BigDecimal valorTotal;
 	
 	@JsonDeserialize(using=JSONBigDecimalDeserializer.class)
-	@JsonSerialize(using=JSONBigDecimalSerializer.class)
+//	@JsonSerialize(using=JSONBigDecimalSerializer.class)
 	@Column(name="valor_pago", columnDefinition = "numeric(12,2)", precision=2, scale=2)
 	private BigDecimal valorPago;
 	

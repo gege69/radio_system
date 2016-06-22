@@ -134,6 +134,28 @@ function queryParamsPag(params) {
 };
 
 
+var editTitulo = function( e, row, el )
+{
+    if ( row == null ) 
+        return;
+    
+    if ( row.idTitulo == null || row.idTitulo == 0 )
+    {
+        preencheAlertGeral("alertArea", "Titulo não foi selecionado corretamente.", "danger");
+        return false;
+    }
+    else
+    {
+        var url = buildUrl( "/titulos/{idTitulo}/view", { 
+            idTitulo: row.idTitulo
+        }, {
+            idCliente: $("#idCliente").val()
+        });
+        window.location = url;
+    }
+}
+
+
 
 //Tabela de Usuários
 var $tableUsuarios = $('#tableUsuarios');
@@ -440,6 +462,10 @@ $(function(){
         editCondicaoComercial( e, row, el );
     });
     
+    $('#tablePagamentosTitulos').on('click-row.bs.table', function( e, row, el ){
+        editTitulo( e, row, el );
+    });
+
 
     $("#btnSalvarCondicao").click( function() {
         salvarCondicaoComercial();

@@ -25,7 +25,7 @@ import javax.persistence.Transient;
 
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 import br.com.radio.repository.UsuarioRepository;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -66,13 +66,13 @@ public class Conversa implements Serializable {
 	private List<Usuario> usuarios;
 
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datavigenciainicio" )
 	private Date dataVigenciaInicio;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datavigenciafim" )
 	private Date dataVigenciaFim;
@@ -86,13 +86,13 @@ public class Conversa implements Serializable {
     private List<Mensagem> mensagens;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao" )
 	private Date dataCriacao;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataatualizacao" )
 	private Date dataAtualizacao;

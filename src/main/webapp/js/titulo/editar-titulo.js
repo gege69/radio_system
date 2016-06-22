@@ -18,10 +18,43 @@ var getDados = function()
         dataType: 'json'
     }).done( function(json) {
         removeErros();
+
         $('#tituloform').populate(json);
+
+        $('#dataEmissaoDate').datepicker('update', data(json.dataEmissao));
+        $('#dataVencimentoDate').datepicker('update', data(json.dataVencimento));
+        $('#dataPagamentoDate').datepicker('update', data(json.dataPagamento));
+        $('#dataCancelamentoDate').datepicker('update', data(json.dataCancelamento));
+
+        $("#valorLiquido").maskMoney('mask', json.valorLiquido);
+        $("#valorTaxas").maskMoney('mask', json.valorTaxas);
+        $("#valorJuros").maskMoney('mask', json.valorJuros);
+        $("#valorAcresc").maskMoney('mask', json.valorAcresc);
+        $("#valorDescontos").maskMoney('mask', json.valorDescontos);
+        $("#valorTotal").maskMoney('mask', json.valorTotal);
+        $("#valorPago").maskMoney('mask', json.valorPago);
+        
+        var pago = ( json.valorPago != null && json.valorPago > 0 && json.dataPagamento != null );
+        var cancelado = ( json.dataCancelamento != null && json.dataCancelamento != "" );
+        
+        if ( pago || cancelado ) {
+            $("#btnCancelar").hide();
+            var arrayCampos = $("#tituloform").find(':input').not(':button, :submit, :reset, :checkbox, :hidden, :radio');
+
+            $.each( arrayCampos, function( index, value ){
+                $(value).attr("readOnly", true);
+            });
+        }
+        
+        getCliente();
         jump('ncmForm');
     });
 };
+
+var data = function( strData ){
+    var x = moment( strData, 'DD/MM/YYYY', true);
+    return x.toDate();
+}
 
 
 var getCliente = function()
@@ -145,6 +178,41 @@ function recalcularTudo(){
     $("#valorTotal").maskMoney( 'mask', result );
 };
 
+
+var openDialog = function(){ 
+    $('#myDialog').modal('show');
+}
+
+
+var cancelarTitulo = function(){
+    
+    var dados = JSON.stringify( $('#tituloform').serializeJSON() );
+    
+    var url = buildUrl( "/titulos" ); 
+
+    $.ajax({
+        type: 'DELETE',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data: dados 
+        
+    }).done( function(json){ 
+
+        if ( json.ok && json.ok > 0){
+            
+            preencheAlertGeral( "alertArea", "Registro cancelado com sucesso.", "success" );
+            jump(''); // topo da pagina
+        }
+        else{
+            preencheErros( json.errors );
+            jump(''); // topo da pagina
+        }
+    });
+
+}
+
+
 $(function(){
 
     var token = $("input[name='_csrf']").val();
@@ -156,11 +224,11 @@ $(function(){
     $('#btnSalvar').on('click', salvar);
 
     getDados();
-    getCliente();
 
     $(".cnpj").mask('00.000.000/0000-00'); 
 
-    $(".money").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+//    $(".money").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+    $(".money").maskMoney({prefix:'', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
     $(".money").on('blur', function(){
         recalcularTudo();
     });
@@ -168,6 +236,7 @@ $(function(){
     $("#valorTotal").maskMoney({ allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
 
     $('.input-group.date').datepicker({
+        enableOnReadonly : false,
         format: "dd/mm/yyyy",
         clearBtn: true,
         language: "pt-BR",
@@ -176,5 +245,13 @@ $(function(){
     });
 
     $('#dataEmissaoDate').datepicker('update', new Date());
+
+    $("#btnCancelar").click( function(){
+        openDialog();
+    });
+
+    $("#btnConfirmarCancelar").click( function(){
+        cancelarTitulo();
+    });
 
 });

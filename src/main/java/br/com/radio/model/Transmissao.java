@@ -20,7 +20,7 @@ import javax.persistence.TemporalType;
 
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -62,13 +62,13 @@ public class Transmissao implements Serializable {
 	private Double posicaoplay;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.DATE )
 	@Column( name = "diaplay" )
 	private Date diaPlay;        // Essa data não vai guardar a HORA... é só pra saber o dia/mes/ano
 
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataprevisaoplay" )
 	private Date dataPrevisaoPlay;
@@ -93,7 +93,7 @@ public class Transmissao implements Serializable {
 	
 	// Não é preenchida quando a música sofre skip...
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datafinishplay" )
 	private Date dataFinishPlay;

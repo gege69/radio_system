@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 
 import br.com.radio.enumeration.VozLocucao;
 import br.com.radio.json.JSONDateDeserializer;
-import br.com.radio.json.JSONDateSerializer;
+import br.com.radio.json.JSONDateTimeSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -130,7 +130,7 @@ public class AmbienteConfiguracao implements Serializable {
 	private Integer volumeGeral;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@NotNull( message = "A data de criação da Configuração do Ambiente é de preenchimento obrigatório" )	
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datacriacao", nullable = false )
@@ -142,7 +142,7 @@ public class AmbienteConfiguracao implements Serializable {
 	private Usuario usuarioCriacao;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)
-	@JsonSerialize(using=JSONDateSerializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataalteracao" )
 	private Date dataAlteracao;
