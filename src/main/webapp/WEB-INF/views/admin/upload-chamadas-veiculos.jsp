@@ -255,6 +255,7 @@
         var idMidia = element.attr("idMidia");
         
         if ( idMidia == idTocando && !player.media.paused ){
+            element.find('i').addClass('fa-play-circle').removeClass('fa-pause-circle');
             player.pause();
         }
         else
@@ -262,8 +263,9 @@
             idTocando = idMidia; 
             
             player.pause();
-            var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+            var url = buildUrl( "/admin/midias/{idMidia}", { idMidia: idMidia });
             
+            element.find('i').removeClass('fa-play-circle').addClass('fa-pause-circle');
             player.source( url );
             player.play();
         }

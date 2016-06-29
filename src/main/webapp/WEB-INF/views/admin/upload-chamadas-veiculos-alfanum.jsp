@@ -281,7 +281,7 @@
         
         var idMidia = element.attr("idMidia");
         
-        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+        var url = buildUrl( "/admin/midias/{idMidia}", { idMidia: idMidia });
         
 //         var source = { src: url, type : "audio/mp3" };
         

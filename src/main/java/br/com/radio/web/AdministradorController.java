@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.AudioOpcional;
@@ -626,12 +627,36 @@ public class AdministradorController extends AbstractController {
 		}
 
 		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
-
     }	
 
 	
 	
-	
+	@RequestMapping( value = { "/admin/midias/musicas", "/api/admin/midias/musicas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMusicas(
+																	@RequestParam(value="search", required = false) String search,  
+																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
+																	@RequestParam(value="limit", required = false) Integer limit )
+	{
+		Pageable pageable = getPageable( pageNumber, limit, "desc", "nome" ); 
+		
+		MidiaFilter filter = MidiaFilter.create()
+								.setCategoria( categoriaRepo.findByCodigo( Categoria.MUSICA ) )
+								.setSearch( search )
+								.setIncluiGeneros( true );
+
+		Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
+
+		List<Midia> midiasList = page.getContent();
+		
+		midiasList.forEach( midia -> {
+			String generos = midiaService.getResumoGenerosDaMidia( midia );
+			midia.getMidiaView().put( "generosResumo", generos );
+		});
+		
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midiasList, page.getTotalElements() );
+
+		return jsonList;
+	}
 	
 	
 	@RequestMapping( value = { "/admin/midias", "/api/admin/midias" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -676,7 +701,7 @@ public class AdministradorController extends AbstractController {
 		
 		midiasList.forEach( midia -> {
 			String generos = midiaService.getResumoGenerosDaMidia( midia );
-			midia.getMidiaView().put( "generos", generos );
+			midia.getMidiaView().put( "generosResumo", generos );
 		});
 		
 		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midiasList, page.getTotalElements() );
@@ -798,7 +823,6 @@ public class AdministradorController extends AbstractController {
 	
 	@RequestMapping( value = { "/admin/chamada-veiculos", 
 							   "/api/admin/chamada-veiculos",
-							   "/admin/midia",
 							   "/api/admin/midia" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody String saveNomeMidia( @RequestBody Midia midiaVO, BindingResult result, Principal principal )
@@ -825,6 +849,36 @@ public class AdministradorController extends AbstractController {
 		return jsonResult;
 	}
 	
+
+
+
+	@RequestMapping( value = { "/admin/midias/musicas" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String saveMusica( @RequestBody Midia midiaVO, BindingResult result, Principal principal )
+	{
+		String jsonResult = null;
+	
+		try
+		{
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+				throw new RuntimeException("Usuário não encontrado");
+			
+			midiaService.alteraMusica( midiaVO );
+			
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+
+		return jsonResult;
+	}
+
+
 	
 	@RequestMapping(value= { "/admin/chamada-veiculos/{idMidia}", "/api/admin/chamada-veiculos/{idMidia}" }, method=RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
@@ -855,7 +909,7 @@ public class AdministradorController extends AbstractController {
     }	
 
 
-	@RequestMapping(value = { "/admin/midia/{idMidia}", "/api/admin/midia/{idMidia}" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/admin/midias/{idMidia}", "/api/admin/midias/{idMidia}" }, method = RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody ResponseEntity<FileSystemResource> downloadMidia(@PathVariable Long idMidia, Principal principal) {
 		

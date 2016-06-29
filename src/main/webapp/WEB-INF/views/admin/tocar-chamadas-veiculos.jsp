@@ -180,7 +180,7 @@
         if ( musicaAtual == null || musicaAtual == undefined )
             return;
         
-        var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia: musicaAtual });
+        var url = buildUrl( "/api/admin/midias/{idMidia}", { idMidia: musicaAtual });
         
         player.source( url );
         player.play();

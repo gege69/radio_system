@@ -84,6 +84,12 @@
             
               <div class="spacer-vertical20"></div>
               
+              <div class="row">
+                <div class="col-lg-12 col-md-12">
+                  <p><span id="totalMusicas">0 músicas para essa pesquisa</span></p>
+                </div>
+              </div>
+              
               <table  
                  id="table-musicas"
                  data-toggle="table"
@@ -101,7 +107,7 @@
                   <tr>
                       <th data-field="idMidia" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">ID</th>
                       <th data-field="nome" class="col-lg-4 col-md-3 col-sm-3 col-xs-3">Nome do Arquivo</th>
-                      <th data-field="generos" class="col-lg-2 col-md-3 col-sm-3 col-xs-3">Gênero(s)</th>
+                      <th data-field="generosResumo" class="col-lg-2 col-md-3 col-sm-3 col-xs-3">Gênero(s)</th>
                       <th data-field="artist" class="col-lg-2 col-md-2 col-sm-2 col-sm-2">Artista</th>
                       <th data-field="idMidia" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Editar</th>
                       <th data-field="idMidia" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Remover</th>
@@ -180,6 +186,12 @@
                   <input type="text" class="form-control" id="artistaMidia" name="artist">
                 </div>
               </div>
+
+              <h4>Gêneros da música</h4>
+
+              <div class="container col-md-12" id="viewContainerModal">
+              </div>
+
             </div> 
           </div>
           
@@ -244,6 +256,7 @@
 <script src="${context}/js/required/jquery.fileupload.js"></script>
 
 <script src="${context}/js/required/jsrender.min.js"></script>
+<script src="${context}/js/required/reckon.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
@@ -258,6 +271,18 @@
       
 </script>  
 
+
+<script id="viewTmplModal" type="text/x-jsrender">
+    
+      <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <label>
+          <input type="checkbox" class="checkbox-genero-editar" id="genero-editar-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
+        </label>
+      </div>
+      
+</script>  
+
+
 <script type="text/javascript">
 
     var pagina = 0, limit = 6;
@@ -271,15 +296,15 @@
     };
 
     function editarFormatter(value, row) {
-        return '<a class="btn btn-link editar-class" id="btnEditarChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-font"></i><i class="fa fa-lg fa-pencil"></i></a>';
+        return '<a class="btn btn-link editar-class" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-font"></i><i class="fa fa-lg fa-pencil"></i></a>';
     }
     
     function removerFormatter(value, row) {
-        return '<a class="btn btn-link remover-class" id="btnRemoverChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-trash-o"></i></a>';
+        return '<a class="btn btn-link remover-class" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-trash-o"></i></a>';
     }
 
     function playFormatter(value, row) {
-        return '<a class="btn btn-link play-class" id="btnPlayChamada" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-play-circle"></i></a>';
+        return '<a class="btn btn-link play-class" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-play-circle"></i></a>';
     }
     
     var player = null;
@@ -289,8 +314,9 @@
     var playChamada = function( element )
     {
         var idMidia = element.attr("idMidia");
-        
+
         if ( idMidia == idTocando && !player.media.paused ){
+            element.find('i').addClass('fa-play-circle').removeClass('fa-pause-circle');
             player.pause();
         }
         else
@@ -298,8 +324,10 @@
             idTocando = idMidia; 
             
             player.pause();
-            var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+            var url = buildUrl( "/admin/midias/{idMidia}", { idMidia: idMidia });
             
+            element.find('i').removeClass('fa-play-circle').addClass('fa-pause-circle');
+
             player.source( url );
             player.play();
         }
@@ -348,7 +376,19 @@
             }
         });
     } 
-    
+
+
+    var marcaGenerosAssociados = function( midia ){
+        
+        $('.checkbox-genero-editar').prop('checked', false);
+
+        if ( midia == null || midia.generos == null )
+            return;
+        
+        $.each( midia.generos, function( idx, obj ){
+            $('#genero-editar-'+obj.idGenero).prop('checked', true);
+        });
+    }    
     
     var openPopup = function( element )
     {
@@ -361,24 +401,53 @@
         $('#descricaoMidia').val( row.descricao );
         $('#artistaMidia').val( row.artist );
         
+        marcaGenerosAssociados(row);
+
         $('#myModal').modal('show');
         $('#nomeMidia').focus();
     }
-
-
     
+    var makeListTmplModal = function(json){
+        
+        var tmpl = $.templates('#viewTmplModal');
+        
+        $('#viewContainerModal').empty();
+        
+        var content = tmpl.render(json.rows);
+        
+        $('#viewContainerModal').append(content);
+    };
+
+
+    var getGenerosSelecionadosEditar = function()
+    {
+        var array_values = [];
+        $('.checkbox-genero-editar').each( function() {
+            if( $(this).is(':checked') ) {
+                array_values.push( { idGenero : parseInt( $(this).val() ) } );
+            }
+        });
+        
+        return array_values;
+    }
+   
+
     // mudar o nome da midia
     var salvar = function()
     {
-        var url = buildUrl( "/admin/midia");
+        var url = buildUrl( "/admin/midias/musicas");
+
+        var array_values = getGenerosSelecionadosEditar();
         
+        var dadosForm = $('#altera-nome-midia-form').serializeJSON();
+        dadosForm.generos = array_values;
+
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
             url: url,
             dataType: 'json',
-            data:  JSON.stringify( $('#altera-nome-midia-form').serializeJSON() )
-            
+            data:  JSON.stringify(dadosForm)
         }).done( function(json){ 
 
             if (json.ok == 1){
@@ -393,6 +462,16 @@
         });
     } 
     
+    var makeListTmpl = function(json){
+        
+        var tmpl = $.templates('#viewTmpl');
+        
+        $('#view-container').empty();
+        
+        var content = tmpl.render(json.rows);
+        
+        $('#view-container').append(content);
+    };
 
     var getGenerosSelecionados = function()
     {
@@ -492,29 +571,42 @@
     }
 
     
-    var listaGeneros = function( doJump ){
+    var listaGeneros = function(){
         
-        $.ajax({
+        return $.ajax({
             type: 'GET',
             contentType: 'application/json',
             url: '${context}/generos',    // busca a lista de gêneros geral ( não restringe pelo ambiente )
             dataType: 'json'
-        }).done( function(json){
-            makeListTmpl(json);
-        } );
+        });
     }
     
-    var makeListTmpl = function(json){
-        
-        var tmpl = $.templates('#viewTmpl');
-        
-        $('#view-container').empty();
-        
-        var content = tmpl.render(json.rows);
-        
-        $('#view-container').append(content);
-    };
     
+    function detailFormatter(index, row) {
+        
+        var detalheFormatado = formatter( index, row );
+
+        var templateGeneros = '<p>Gêneros da música "{{nome}}" :</p>';
+        
+        templateGeneros = templateGeneros.reckon(row);
+        
+        return templateGeneros + detalheFormatado;
+    }
+
+
+    function formatter( index, row, short ) {
+        
+        var html = [];
+        var template = '<li>{{descricao}}</li>';
+        
+        $.each(row.generos, function(i, el){
+            html.push( template.reckon(el) );
+        });
+        
+        return "<ul>" + html.join('') + "</ul>";
+    }
+
+
     
     $(function(){
         
@@ -536,6 +628,21 @@
         configuraUploader();
         
         $("#table-musicas").on( 'load-success.bs.table', function( e, data ) {
+
+            var pesquisa = $('.bootstrap-table .search input').val();
+            
+            var texto = ""; 
+            
+            if ( pesquisa != "" )
+                texto = ' encontradas para a pesquisa : "' + pesquisa + '"';
+            else
+                texto = " no total";
+            
+            if ( data.total != null )
+                $("#totalMusicas").html(data.total + " música(s) " + texto );
+            else
+                $("#totalMusicas").html("Nenhuma música " + texto );
+
             $(".editar-class").click( function(){
                 openPopup($(this));
             });
@@ -564,6 +671,8 @@
                 playChamada($(this));
             });
         });
+
+
         
         $("#btnSalvar").click( function(){
             salvar();
@@ -581,7 +690,10 @@
             $('#btnNaoDialog').focus();
         });
         
-        listaGeneros(false);
+        listaGeneros().done( function(json){
+            makeListTmpl(json);
+            makeListTmplModal(json);
+        });
         
         $("#btnIniciar").click( function(){
             iniciarUpload();  

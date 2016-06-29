@@ -261,7 +261,7 @@
         
         var idMidia = element.attr("idMidia");
         
-        var url = buildUrl( "/admin/midia/{idMidia}", { idMidia: idMidia });
+        var url = buildUrl( "/admin/midias/{idMidia}", { idMidia: idMidia });
         
         player.source( url );
         player.play();

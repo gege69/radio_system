@@ -481,7 +481,7 @@ public class MidiaService {
 		
 		associaGenerosParaMusica( midia, arrayGeneros );
 		
-		associaMidiaParaTodosAmbientesDoCliente( cliente, midia );
+		associaMidiaParaTodosAmbientes( midia );
 		
 		return midia;
 	}	
@@ -814,6 +814,32 @@ public class MidiaService {
 
 
 
+
+	public Midia alteraMusica( Midia midiaVO )
+	{
+		Midia midia = midiaRepo.findOne( midiaVO.getIdMidia() );
+		
+		if ( midia == null )
+			throw new RuntimeException( "Mídia não encontrada");
+
+		if ( StringUtils.isBlank( midiaVO.getNome() ) )
+			throw new RuntimeException("Nome não pode ser branco");
+		
+		midia.setNome( midiaVO.getNome() );
+		
+		if ( StringUtils.isNotBlank( midiaVO.getDescricao() ) )
+			midia.setDescricao( midiaVO.getDescricao() );
+		
+		if ( midiaVO.getGeneros() != null )
+			midia.setGeneros( midiaVO.getGeneros() );
+		
+		midiaRepo.save( midia );
+
+		return midia;
+	}
+
+
+
 	private String getDefaultPath( String hash, String contentType )
 	{
 		String basePath = "";
@@ -1053,9 +1079,16 @@ public class MidiaService {
 			crit.add( Restrictions.eq( "a.idAmbiente", filter.getAmbiente().getIdAmbiente() ) );
 		}
 		crit.add( Restrictions.eq( "valido", true ) );
+
+//		if ( filter.isIncluiGeneros() )
+//			crit.createAlias( "generos", "g" );
 		
-		if ( filter.hasSearch() )
-			crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ) ) );
+		if ( filter.hasSearch() ){
+//			if ( filter.isIncluiGeneros() )
+//				crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ), Restrictions.ilike( "generos.nome", filter.getPreparedSearch() ) ) );
+//			else
+				crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ) ) );
+		}
 		
 		if ( filter.isVerificaValidade() ){
 			
