@@ -61,6 +61,8 @@ import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
 
+import com.google.common.collect.Lists;
+
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial. 
  * 

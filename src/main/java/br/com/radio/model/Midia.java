@@ -21,9 +21,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateTimeSerializer;
 
@@ -167,11 +164,10 @@ public class Midia implements Serializable {
 	@Column( name = "datafimvalidade")
 	private Date dataFimValidade;
 	
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(fetch=FetchType.LAZY)
 	   @JoinTable(name="midia_genero", joinColumns = { 
 	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_genero", nullable=false, updatable=false) })
-	@Fetch(FetchMode.SELECT)
     private List<Genero> generos;
 	
 	
@@ -402,15 +398,14 @@ public class Midia implements Serializable {
 	}
 
 
-
 	@Override
 	public String toString()
 	{
-//		return String.format( "Midia [idMidia=%s, nome=%s, artist=%s]", idMidia, nome, artist );
-//		return String.format( "Midia [idMidia=%s, artist=%s, posicaoShuffle=%10.8f]", idMidia, artist, posicaoShuffle );
-		return String.format( "Midia [idMidia=%s, categoria=%s]", idMidia, categorias );
+		return String.format( "Midia [idMidia=%s, nome=%s, categorias=%s, generos=%s]", idMidia, nome, categorias, generos );
+//		return String.format( "Midia [idMidia=%s, categoria=%s]", idMidia, categorias );
 	}
-
+	
+	
 	@Override
 	public int hashCode()
 	{

@@ -28,9 +28,11 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.hibernate.sql.JoinType;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -1002,6 +1004,90 @@ public class MidiaService {
 		return tags;
 	}
 	
+
+
+
+	@SuppressWarnings( "unchecked" )
+	@Transactional
+	public Page<Midia> filtraMusicas( Pageable pageable, MidiaFilter filter ){
+		
+		Session session = entityManager.unwrap( Session.class );
+		
+		Criteria critCount = createCriteriaMusicas( filter, session );
+		critCount.setProjection( Projections.rowCount() );
+		Long total = (Long)critCount.uniqueResult();
+
+		Criteria crit = createCriteriaMusicas( filter, session );
+		
+		if ( pageable != null ){
+			crit.setMaxResults( pageable.getPageSize() );
+			crit.setFirstResult( pageable.getPageNumber() );
+		}
+		
+		List<Midia> listMidia = crit.list();
+
+		buildMidiaViewCategoria( listMidia );
+		
+		PageImpl<Midia> paginaMidias = new PageImpl<Midia>( listMidia, pageable, total );
+		
+		return paginaMidias;
+	}
+	
+
+	
+	@SuppressWarnings( "unchecked" )
+	@Transactional
+	public List<Midia> findMusicas( MidiaFilter filter ){
+		
+		Session session = entityManager.unwrap( Session.class );
+		
+		Criteria crit = createCriteriaMusicas( filter, session );
+		
+		List<Midia> result = crit.list();
+		
+		return result;
+	}
+
+
+	private Criteria createCriteriaMusicas( MidiaFilter filter, Session session )
+	{
+		DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(Midia.class);
+		
+		idsOnlyCriteria.createAlias( "categorias", "c" );
+		idsOnlyCriteria.add( Restrictions.eq( "c.codigo", Categoria.MUSICA ) );
+
+		if ( filter.getAmbiente() != null ){
+			idsOnlyCriteria.createAlias( "ambientes", "a" );
+			idsOnlyCriteria.add( Restrictions.eq( "a.idAmbiente", filter.getAmbiente().getIdAmbiente() ) );
+		}
+		idsOnlyCriteria.add( Restrictions.eq( "valido", true ) );
+		
+		if ( filter.isIncluiGeneros() )
+			idsOnlyCriteria.createAlias( "generos", "g" );
+		
+		if ( filter.hasSearch() ){
+			if ( filter.isIncluiGeneros() )
+				idsOnlyCriteria.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "artist", filter.getPreparedSearch() ), Restrictions.ilike( "g.nome", filter.getPreparedSearch() ) ) );
+			else
+				idsOnlyCriteria.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "artist", filter.getPreparedSearch() ) ) );
+		}
+
+		idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
+
+		Criteria crit = session.createCriteria( Midia.class );
+		crit.add(Subqueries.propertyIn("id", idsOnlyCriteria));
+
+		return crit;
+	}
+
+
+
+
+
+
+
+
+
 	
 	
 	
@@ -1080,15 +1166,8 @@ public class MidiaService {
 		}
 		crit.add( Restrictions.eq( "valido", true ) );
 
-//		if ( filter.isIncluiGeneros() )
-//			crit.createAlias( "generos", "g" );
-		
-		if ( filter.hasSearch() ){
-//			if ( filter.isIncluiGeneros() )
-//				crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ), Restrictions.ilike( "generos.nome", filter.getPreparedSearch() ) ) );
-//			else
-				crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ) ) );
-		}
+		if ( filter.hasSearch() )
+			crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ) ) );
 		
 		if ( filter.isVerificaValidade() ){
 			

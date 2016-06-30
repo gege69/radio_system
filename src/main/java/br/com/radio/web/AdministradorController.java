@@ -637,14 +637,13 @@ public class AdministradorController extends AbstractController {
 																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
 																	@RequestParam(value="limit", required = false) Integer limit )
 	{
-		Pageable pageable = getPageable( pageNumber, limit, "desc", "nome" ); 
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" ); 
 		
 		MidiaFilter filter = MidiaFilter.create()
-								.setCategoria( categoriaRepo.findByCodigo( Categoria.MUSICA ) )
 								.setSearch( search )
 								.setIncluiGeneros( true );
 
-		Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
+		Page<Midia> page = midiaService.filtraMusicas( pageable, filter );
 
 		List<Midia> midiasList = page.getContent();
 		

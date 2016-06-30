@@ -28,23 +28,32 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.threeten.extra.Interval;
 
+import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.HistoricoStatusAmbiente;
+import br.com.radio.model.Midia;
 import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.fixture.FixtureAmbiente;
 import br.com.radio.repository.AmbienteRepository;
+import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
+import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.util.UtilsDates;
 import de.jollyday.Holiday;
@@ -57,11 +66,11 @@ import de.jollyday.HolidayManager;
 
 
 
-@SpringBootApplication
-@ComponentScan( basePackages = { "br.com.radio.*" } )
-@EnableConfigurationProperties
-@ActiveProfiles({"default"})
-@EnableTransactionManagement
+//@SpringBootApplication
+//@ComponentScan( basePackages = { "br.com.radio.*" } )
+//@EnableConfigurationProperties
+//@ActiveProfiles({"default"})
+//@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)
@@ -69,7 +78,30 @@ public class Application {
 		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 		
-		testeCobranca( ctx );
+//		testeCobranca( ctx );
+		
+		testaCriteriaListaMusica( ctx );
+	}
+	
+	
+	private static void testaCriteriaListaMusica( ApplicationContext ctx ){
+		
+		MidiaService m = ctx.getBean( MidiaService.class );
+		CategoriaRepository catRepo = ctx.getBean( CategoriaRepository.class );
+		
+		Pageable pageable = new PageRequest( 0, 99, Sort.Direction.fromStringOrNull( "asc" ), "nome" );
+		
+		MidiaFilter filter = MidiaFilter.create()
+								.setCategoria( catRepo.findByCodigo( Categoria.MUSICA ) )
+								.setSearch( "Forró" )
+								.setIncluiGeneros( true );
+
+		Page<Midia> pagina = m.filtraMusicas( pageable, filter );
+		
+		List<Midia> lista = pagina.getContent();
+		
+		lista.forEach( musica -> System.out.println(musica.toString()) );
+		
 	}
 
 

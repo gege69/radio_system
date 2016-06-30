@@ -59,6 +59,9 @@
                       <h4>Gêneros musicais</h4>
 
                       <div class="container col-md-12" id="view-container">
+<!--                       http://stackoverflow.com/questions/33699782/multi-column-lists-in-bootstrap-foundation -->
+                      
+                      
                       </div>
 
                       <div class="spacer-vertical10"></div>
@@ -93,7 +96,7 @@
               <table  
                  id="table-musicas"
                  data-toggle="table"
-                 data-url="${context}/admin/midias"
+                 data-url="${context}/admin/midias/musicas"
                  data-height="500"
                  data-side-pagination="server"
                  data-pagination="true"
@@ -156,7 +159,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="titulo-modal">Alterar nome da Música</h4>
+        <h4 class="modal-title" id="titulo-modal">Alterar dados da Música</h4>
       </div>
       <div class="modal-body">
         <form action="#" class="form-horizontal" id="altera-nome-midia-form" method="POST">
