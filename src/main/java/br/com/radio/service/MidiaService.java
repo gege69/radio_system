@@ -48,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.MusicTags;
 import br.com.radio.dto.midia.MidiaFilter;
+import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
@@ -1007,87 +1008,6 @@ public class MidiaService {
 
 
 
-	@SuppressWarnings( "unchecked" )
-	@Transactional
-	public Page<Midia> filtraMusicas( Pageable pageable, MidiaFilter filter ){
-		
-		Session session = entityManager.unwrap( Session.class );
-		
-		Criteria critCount = createCriteriaMusicas( filter, session );
-		critCount.setProjection( Projections.rowCount() );
-		Long total = (Long)critCount.uniqueResult();
-
-		Criteria crit = createCriteriaMusicas( filter, session );
-		
-		if ( pageable != null ){
-			crit.setMaxResults( pageable.getPageSize() );
-			crit.setFirstResult( pageable.getPageNumber() );
-		}
-		
-		List<Midia> listMidia = crit.list();
-
-		buildMidiaViewCategoria( listMidia );
-		
-		PageImpl<Midia> paginaMidias = new PageImpl<Midia>( listMidia, pageable, total );
-		
-		return paginaMidias;
-	}
-	
-
-	
-	@SuppressWarnings( "unchecked" )
-	@Transactional
-	public List<Midia> findMusicas( MidiaFilter filter ){
-		
-		Session session = entityManager.unwrap( Session.class );
-		
-		Criteria crit = createCriteriaMusicas( filter, session );
-		
-		List<Midia> result = crit.list();
-		
-		return result;
-	}
-
-
-	private Criteria createCriteriaMusicas( MidiaFilter filter, Session session )
-	{
-		DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(Midia.class);
-		
-		idsOnlyCriteria.createAlias( "categorias", "c" );
-		idsOnlyCriteria.add( Restrictions.eq( "c.codigo", Categoria.MUSICA ) );
-
-		if ( filter.getAmbiente() != null ){
-			idsOnlyCriteria.createAlias( "ambientes", "a" );
-			idsOnlyCriteria.add( Restrictions.eq( "a.idAmbiente", filter.getAmbiente().getIdAmbiente() ) );
-		}
-		idsOnlyCriteria.add( Restrictions.eq( "valido", true ) );
-		
-		if ( filter.isIncluiGeneros() )
-			idsOnlyCriteria.createAlias( "generos", "g" );
-		
-		if ( filter.hasSearch() ){
-			if ( filter.isIncluiGeneros() )
-				idsOnlyCriteria.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "artist", filter.getPreparedSearch() ), Restrictions.ilike( "g.nome", filter.getPreparedSearch() ) ) );
-			else
-				idsOnlyCriteria.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "artist", filter.getPreparedSearch() ) ) );
-		}
-
-		idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
-
-		Criteria crit = session.createCriteria( Midia.class );
-		crit.add(Subqueries.propertyIn("id", idsOnlyCriteria));
-
-		return crit;
-	}
-
-
-
-
-
-
-
-
-
 	
 	
 	
@@ -1410,6 +1330,11 @@ public class MidiaService {
 			crit.add( Restrictions.eq( "opcional", opcional ) );
 
 		return crit;
+	}
+
+	
+	public List<RelatorioMidiaGeneroVO> findRelatorioGeneros(){
+		return midiaGeneroRepo.findRelatorioGeneros();
 	}
 
 	

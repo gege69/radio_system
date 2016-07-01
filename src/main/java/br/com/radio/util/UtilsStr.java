@@ -1,7 +1,6 @@
 package br.com.radio.util;
 
 import java.text.Normalizer;
-import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -31,6 +30,8 @@ public class UtilsStr {
 			return Boolean.valueOf( str );
 		
 	}
+	
+	
 	
 	
 	/**
@@ -149,6 +150,10 @@ public class UtilsStr {
 	}
 	
 	
+	public static String ilike(String src ){
+		return "%"+ StringUtils.lowerCase( UtilsStr.notNull( src ) ) +"%";
+	}
+
 	
 	
 }

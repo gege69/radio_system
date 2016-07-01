@@ -22,6 +22,7 @@ import net.objectlab.kit.datecalc.common.HolidayCalendar;
 import net.objectlab.kit.datecalc.common.HolidayHandlerType;
 import net.objectlab.kit.datecalc.jdk8.LocalDateKitCalculatorsFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -36,10 +37,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.threeten.extra.Interval;
 
-import br.com.radio.dto.midia.MidiaFilter;
+import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
-import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.HistoricoStatusAmbiente;
@@ -51,6 +51,8 @@ import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
+import br.com.radio.repository.MidiaGeneroRepository;
+import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.MidiaService;
@@ -80,23 +82,37 @@ public class Application {
 		
 //		testeCobranca( ctx );
 		
-		testaCriteriaListaMusica( ctx );
+//		testaCriteriaListaMusica( ctx );
+		
+		testaRelatorioGeneros( ctx );
 	}
 	
+	private static void testaRelatorioGeneros( ApplicationContext ctx ){
+		
+		MidiaGeneroRepository mgr = ctx.getBean( MidiaGeneroRepository.class );
+		
+		List<RelatorioMidiaGeneroVO> x =  mgr.findRelatorioGeneros();
+		
+		x.forEach( r -> System.out.println(r) );
+		
+	}
 	
 	private static void testaCriteriaListaMusica( ApplicationContext ctx ){
 		
 		MidiaService m = ctx.getBean( MidiaService.class );
+		MidiaRepository mr = ctx.getBean( MidiaRepository.class );
 		CategoriaRepository catRepo = ctx.getBean( CategoriaRepository.class );
 		
 		Pageable pageable = new PageRequest( 0, 99, Sort.Direction.fromStringOrNull( "asc" ), "nome" );
 		
-		MidiaFilter filter = MidiaFilter.create()
-								.setCategoria( catRepo.findByCodigo( Categoria.MUSICA ) )
-								.setSearch( "Forró" )
-								.setIncluiGeneros( true );
-
-		Page<Midia> pagina = m.filtraMusicas( pageable, filter );
+//		MidiaFilter filter = MidiaFilter.create()
+//								.setCategoria( catRepo.findByCodigo( Categoria.MUSICA ) )
+//								.setSearch( "Forró" )
+//								.setIncluiGeneros( true );
+//
+//		Page<Midia> pagina = m.filtraMusicas( pageable, filter );
+		
+		Page<Midia> pagina = mr.findByCustomSearch( pageable, StringUtils.lowerCase( "%Joe%" ) );
 		
 		List<Midia> lista = pagina.getContent();
 		

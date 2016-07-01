@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.midia.MidiaFilter;
+import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.AudioOpcional;
@@ -127,6 +128,15 @@ public class AdministradorController extends AbstractController {
 	}
 	
 
+
+	@RequestMapping(value="/admin/generos/relatorio", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody List<RelatorioMidiaGeneroVO> generosRelatorio()
+	{
+		List<RelatorioMidiaGeneroVO> relatorio = midiaService.findRelatorioGeneros();
+		
+		return relatorio;
+	}	
 	
 	@RequestMapping( value = { 	"/admin/generos", "/api/admin/generos" }, 
 						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -278,6 +288,20 @@ public class AdministradorController extends AbstractController {
 		return "admin/upload-painel";
 	}
 	
+
+	@RequestMapping(value="/admin/musicas/relatorio/view", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public String relatorioMusicas( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		return "admin/relatorio-musica";
+	}
+
+
 	
 	@RequestMapping( value = { 	"/admin/opcionais", "/api/admin/opcionais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
@@ -635,15 +659,18 @@ public class AdministradorController extends AbstractController {
 	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMusicas(
 																	@RequestParam(value="search", required = false) String search,  
 																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
-																	@RequestParam(value="limit", required = false) Integer limit )
+																	@RequestParam(value="limit", required = false) Integer limit,
+																	@RequestParam(value="generoFixado", required = false) Long generoFixado 
+																	)
 	{
 		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" ); 
 		
-		MidiaFilter filter = MidiaFilter.create()
-								.setSearch( search )
-								.setIncluiGeneros( true );
-
-		Page<Midia> page = midiaService.filtraMusicas( pageable, filter );
+		Page<Midia> page = null;
+		
+		if ( generoFixado != null && generoFixado > 0 )
+			page = midiaRepo.findByCustomSearchByGenero( pageable, UtilsStr.ilike( search ), generoFixado);
+		else
+			page = midiaRepo.findByCustomSearch( pageable, UtilsStr.ilike( search ));
 
 		List<Midia> midiasList = page.getContent();
 		

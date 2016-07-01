@@ -14,7 +14,7 @@
         
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3>Upload de Músicas </h3>
+              <h3>Relatório de Músicas </h3>
             </div>
 
             <div class="col-lg-6 col-md-6" id="alertArea">
@@ -33,51 +33,18 @@
                     <div class="panel-body">
                       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
 
-                      <input type="file" id="fileupload" name="file" multiple style="display : none;">
 
-                      <div class="col-lg-2 col-md-3 col-sm-4">
-                        <span class="btn btn-primary btn-file">
-                            Escolha os arquivos<input type="file" id="outrofileupload" name="file2" multiple>
-                        </span>
+                      <div class="container col-md-10" id="view-container">
+                        <div id="chart_div" style="width:900; height:500"></div>
                       </div>
                       
-                      <div class="col-lg-offset-2 col-md-offset-3 col-sm-offset-4">          
-                        <p class="form-control-static" id="static-arquivos"></p>
+                      <div class="col-md-2">
+                        <button href="#" class="btn btn-success" id="btnRefresh">
+                          <i class="fa fa-refresh"></i>
+                          Atualizar Gráfico
+                        </button>
                       </div>
 
-                      <div class="spacer-vertical10"></div>
-
-                      <div id="resultados">
-                        <div id="progress" class="progress">
-                            <div class="progress-bar progress-bar-success"></div>
-                        </div>
-                        <div id="files" class="files"></div>            
-                      </div>
-
-                      <div class="spacer-vertical10"></div>
-
-                      <h4>Gêneros musicais</h4>
-
-                      <div class="container col-md-12" id="view-container">
-<!--                       http://stackoverflow.com/questions/33699782/multi-column-lists-in-bootstrap-foundation -->
-                      
-                      
-                      </div>
-
-                      <div class="spacer-vertical10"></div>
-
-                      <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                          <div class="pull-right">
-                            <button type="button" class="btn btn-success" id="btnIniciar">
-                              <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a> 
-                            </button>
-                          </div>          
-                        </div>
-                      </div>            
-                      
                     </div>
                   </div>
 
@@ -87,22 +54,32 @@
             
               <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
-                    <a class="btn btn-default" href="${context}/admin/upload-painel/view">
-                    <i class="fa fa-arrow-left"></i>
-                    Voltar para Upload de Mídias</a>    
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                   <div class="pull-right">
-                    <a class="btn btn-default" href="${context}/admin/musicas/relatorio/view">
-                    <i class="fa fa-pie-chart"></i>
-                    <i class="fa fa-music"></i>
-                    &nbsp;Relatório de Músicas</a>    
+                    <a class="btn btn-default" href="${context}/admin/upload-musica/view">
+                    <span class="fa-stack">
+                      <i class="fa fa-cloud fa-stack-2x"></i>
+                      <i class="fa fa-music fa-stack-1x fa-inverse"></i>
+                    </span>
+                    &nbsp; Upload de Músicas</a>    
                   </div>          
                 </div>
               </div>            
 
               <div class="spacer-vertical20"></div>
-              
+
+              <div class="row">
+                <div class="col-lg-12 col-md-12">
+                  <p><h4><span id="filtroGenero"></span></h4></p>
+
+                  <button type="button" class="btn btn-warning" style="display:none;" id="btnLimparFiltro">
+                    <i class="fa fa-refresh"></i>
+                    Limpar Filtro
+                  </button>
+                </div>
+              </div>
+
               <div class="row">
                 <div class="col-lg-12 col-md-12">
                   <p><span id="totalMusicas">0 músicas para essa pesquisa</span></p>
@@ -263,16 +240,11 @@
 </div><!-- /.modal -->
 
 
-
 <script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
 <script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
 
 <script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
-
-<script src="${context}/js/required/jquery-ui.min.js"></script>
-<script src="${context}/js/required/jquery.iframe-transport.js"></script>
-<script src="${context}/js/required/jquery.fileupload.js"></script>
 
 <script src="${context}/js/required/jsrender.min.js"></script>
 <script src="${context}/js/required/reckon.min.js"></script>
@@ -280,15 +252,6 @@
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
 
-<script id="viewTmpl" type="text/x-jsrender">
-    
-      <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <label>
-          <input type="checkbox" class="checkbox-genero" id="genero-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
-        </label>
-      </div>
-      
-</script>  
 
 
 <script id="viewTmplModal" type="text/x-jsrender">
@@ -301,8 +264,86 @@
       
 </script>  
 
-<script src="${context}/js/admin/upload-musica.js" charset="UTF-8"></script>
 <script src="${context}/js/admin/grid-musica.js" charset="UTF-8"></script>
 
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
 
-<jsp:include page="/WEB-INF/views/bottom.jsp" />
+google.load('visualization', '1.0', {'packages':['corechart']});
+
+google.setOnLoadCallback(drawChart);
+
+var listaGeneros = null;
+
+function drawChart() {
+
+    var url = buildUrl( "/admin/generos/relatorio" );
+
+    return $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: url,    
+        dataType: 'json'
+    }).done( function(result){
+      
+        listaGeneros = result;
+        
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Gênero');
+        data.addColumn('number', 'Músicas');
+        data.addColumn('number', 'id Gênero');
+
+        $.each(result, function(i, el){
+            data.addRow([el.genero, el.quantidadeMidias, el.idGenero ]);
+        });
+
+        var options = {'title':'Quantidade de Músicas por Gênero',
+                'width':900,
+                'height':400,
+                is3D: true};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+
+        google.visualization.events.addListener(chart, 'select', selectHandler);
+
+        function selectHandler(e) {
+            console.log( chart.getSelection() );
+
+            var item = chart.getSelection()[0];
+            if ( item != null ){
+                generoFixado = data.getFormattedValue(item.row, 2); 
+                generoStr = data.getFormattedValue(item.row, 0); 
+                
+                if ( generoFixado != null && generoFixado != 0){
+                    $("#table-musicas").bootstrapTable('refresh');
+                    $("#filtroGenero").html("Listagem mostrando apenas músicas do Gênero : " + generoStr);
+                    $("#btnLimparFiltro").show();
+                    jump("table-musicas");
+                }
+            }
+        }
+    });
+}
+
+
+$("#btnLimparFiltro").click(function(){
+    $("#filtroGenero").empty();
+    generoFixado = 0; 
+    jump("table-musicas");
+    $("#table-musicas").bootstrapTable('refresh');
+    $("#btnLimparFiltro").hide();
+});
+
+$("#btnRefresh").click(function(){
+    document.location.reload(true);
+});
+
+
+</script>
+
+
+
+  <jsp:include page="/WEB-INF/views/bottom.jsp" />
