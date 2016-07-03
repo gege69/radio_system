@@ -31,6 +31,13 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/musicas/gerencia/view">
+                      <i class="fa fa-2x icone-main fa-pie-chart"></i>
+                      <i class="fa fa-3x icone-main fa-music"></i>
+                      <span class="label-botao-main">Gerência de Músicas</span>
+                    </a>
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/opcionais/searches">
                       <i class="fa fa-3x icone-main fa-sitemap"></i>
                       <span class="label-botao-main">Cadastro Opcionais</span>
@@ -38,7 +45,7 @@
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/generos/searches">
-                      <i class="fa fa-3x icone-main fa-music"></i>
+                      <i class="material-icons icone-main md-48">library_music</i>
                       <span class="label-botao-main">Gêneros Musicais</span>
                     </a>
                   </div>
@@ -48,12 +55,6 @@
                       <span class="label-botao-main">Tipos de Taxa</span>
                     </a>
                   </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/monitoracao">
-                      <i class="fa fa-3x icone-main fa-eye"></i>
-                      <span class="label-botao-main">Monitorar Cliente</span>
-                    </a>
-                  </div>
                 </div>              
               </div>
 
@@ -61,6 +62,10 @@
               <div class="row row-centered">
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/monitoracao">
+                      <i class="fa fa-3x icone-main fa-eye"></i>
+                      <span class="label-botao-main">Monitorar Cliente</span>
+                    </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                   </div>

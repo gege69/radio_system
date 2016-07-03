@@ -14,9 +14,8 @@
         
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3><i class="fa ${icone }"></i> Definir Expediente<br/>
-                <small>Configure os horários de início e fim da transmissão em ${nome}</small>
-              </h3>
+              <h3><i class="${func.sizeSmall} ${func.classesIcone}">${func.icone}</i> Definir Expediente</h3>
+              <h4><small>Configure os horários de início e fim da transmissão em ${nome}</small></h4>
             </div>
 
             <div class="col-lg-6 col-md-6" id="alertArea">

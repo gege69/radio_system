@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -200,7 +198,8 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "expediente" ) );
+
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "expediente" ) );	
 
 			return "ambiente/expedientes";
 		}
@@ -218,7 +217,7 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "generos" ) );
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "generos" ) );	
 		
 			return "ambiente/generos";
 		}
@@ -236,7 +235,7 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "config" ) );
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "config" ) );	
 
 			return "ambiente/configuracoes";
 		}
@@ -254,7 +253,7 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "blocos" ) );
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "blocos" ) );	
 		
 			return "ambiente/blocos";
 		}
@@ -272,8 +271,8 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "prog_musical" ) );
-		
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "prog_musical" ) );	
+
 			return "ambiente/programacoes";
 		}
 		else
@@ -281,18 +280,6 @@ public class AmbienteController extends AbstractController {
 	}
 
 
-
-	private String getIcone( String chave )
-	{
-		String icone = "";
-		Funcionalidade func = funcionalidadeRepo.findByCodigo( chave );
-		icone = func.getIcone();
-		return icone;
-	}	
-	
-	
-	
-	
 	
 	@RequestMapping( value = "/ambientes/{idAmbiente}/logomarcas/view", method = RequestMethod.GET )
 	public String logomarcas( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
@@ -303,7 +290,7 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "logomarca" ) );	
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "logomarca" ) );	
 
 			return "ambiente/logomarcas";
 		}
@@ -322,7 +309,7 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "eventos" ) );	
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "eventos" ) );	
 
 			return "ambiente/eventos";
 		}
@@ -330,8 +317,6 @@ public class AmbienteController extends AbstractController {
 			return "HTTPerror/404";
 	}
 
-	
-	
 	
 	
 	@RequestMapping( value = { "/ambientes/{idAmbiente}", "/api/ambientes/{idAmbiente}" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -344,34 +329,21 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
+
+
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/funcionalidades/{modo}", 
 								"/api/ambientes/{idAmbiente}/funcionalidades/{modo}" }, 
 					 method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String getFuncionalidadesAmbiente( @PathVariable Long idAmbiente, @PathVariable String modo, HttpServletResponse response )
+	public @ResponseBody List<Funcionalidade> getFuncionalidadesAmbiente( @PathVariable Long idAmbiente, @PathVariable String modo, HttpServletResponse response )
 	{
 		// Dependendo do modo de operação vai entregar uma lista com mais ou menos opções para serem desenhadas...
 		List<Funcionalidade> funcionalidades = funcionalidadeRepo.findByAtivo( new Sort( Sort.Direction.ASC, "ordem" ) , true );
 		
-		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-
 		funcionalidades.stream().forEach( f -> {
-			
-			JsonObjectBuilder builder = Json.createObjectBuilder()
-			.add("url_funcionalidade", String.format( f.getUrl(), idAmbiente ) )
-			.add("nome_funcionalidade", f.getNome() )
-			.add("icone_funcionalidade", f.getIcone() );
-			
-			if ( StringUtils.isNotBlank( f.getExtrahtml() ) )
-				builder.add( "extra", f.getExtrahtml() );
-			
-			JsonObject obj = builder.build();
-			
-			jsonArrayBuilder.add(obj);
+			f.getFuncView().put( "url_funcionalidade", String.format( f.getUrl(), idAmbiente ) );
 		});
 		
-		JsonObject objreturn = Json.createObjectBuilder().add( "rows", jsonArrayBuilder.build() ).build();
-
-		return objreturn.toString();
+		return funcionalidades;
 	}
 	
 	
@@ -933,7 +905,8 @@ public class AmbienteController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "logomarca" ) );
+
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "logomarca" ) );	
 
 			boolean erro = false;
 			

@@ -1,6 +1,8 @@
 
 var pagina = 0, limit = 6;
 
+var callbackRefresh;
+
 var generoFixado = 0;
 
 function queryParams(params) {
@@ -73,7 +75,7 @@ var deletar = function()
     if ( idMidia == null || idMidia == 0 )
         preencheAlertGeral( "alertArea", "Mídia não encontrada" );
 
-    var url = buildUrl( "/admin/chamada-veiculos/{idMidia}", { idMidia : idMidia } );
+    var url = buildUrl( "/api/admin/midia/{idMidia}", { idMidia : idMidia } );
     
     $.ajax({
         type: 'DELETE',
@@ -97,13 +99,13 @@ var deletar = function()
 
 var marcaGenerosAssociados = function( midia ){
     
-    $('.checkbox-genero-editar').prop('checked', false);
+    $('#viewContainerModal .checkbox-genero').prop('checked', false);
 
     if ( midia == null || midia.generos == null )
         return;
     
     $.each( midia.generos, function( idx, obj ){
-        $('#genero-editar-'+obj.idGenero).prop('checked', true);
+        $('#viewContainerModal .checkbox-genero[idgenero='+obj.idGenero+']').prop('checked', true);
     });
 }    
 
@@ -124,22 +126,23 @@ var openPopup = function( element )
     $('#nomeMidia').focus();
 }
 
-var makeListTmplModal = function(json){
+
+var makeListTmplModal = function(container, json){
     
-    var tmpl = $.templates('#viewTmplModal');
+    var tmpl = $.templates('#viewTmpl');
     
-    $('#viewContainerModal').empty();
+    $(container).empty();
     
     var content = tmpl.render(json.rows);
     
-    $('#viewContainerModal').append(content);
+    $(container).append(content);
 };
 
 
 var getGenerosSelecionadosEditar = function()
 {
     var array_values = [];
-    $('.checkbox-genero-editar').each( function() {
+    $('#viewContainerModal .checkbox-genero').each( function() {
         if( $(this).is(':checked') ) {
             array_values.push( { idGenero : parseInt( $(this).val() ) } );
         }
@@ -171,6 +174,11 @@ var salvar = function()
             preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
             $("#table-musicas").bootstrapTable('refresh');
             $('#myModal').modal('toggle');
+            limpaFiltro();
+
+            if (typeof functionRefreshGrafico != 'undefined' && functionRefreshGrafico && typeof(functionRefreshGrafico) === "function"){
+                functionRefreshGrafico();
+            }
         }
         else{
             $('#myModal').modal('toggle');
@@ -178,7 +186,6 @@ var salvar = function()
         }
     });
 } 
-
 
 
 var listaGenerosModal = function(){
@@ -194,55 +201,70 @@ var listaGenerosModal = function(){
 }
 
 
-function detailFormatter(index, row) {
-    
-    var detalheFormatado = formatter( index, row );
-
-    var templateGeneros = '<p>Gêneros da música "{{nome}}" :</p>';
-    
-    templateGeneros = templateGeneros.reckon(row);
-    
-    return templateGeneros + detalheFormatado;
+var openDialogGenerosGeral = function( element )
+{
+    $('#viewContainerGenerosGeralModal .checkbox-genero').prop('checked', false);
+    $('#myModalGenerosGeral').modal('show');
 }
 
 
-function formatter( index, row, short ) {
-    
-    var html = [];
-    var template = '<li>{{descricao}}</li>';
-    
-    $.each(row.generos, function(i, el){
-        html.push( template.reckon(el) );
+var getGenerosSelecionadosGeral = function()
+{
+    var array_values = [];
+    $('#viewContainerGenerosGeralModal .checkbox-genero').each( function() {
+        if( $(this).is(':checked') ) {
+            array_values.push( parseInt( $(this).val() ) );
+        }
     });
     
-    return "<ul>" + html.join('') + "</ul>";
+    return array_values;
 }
 
 
-function detailFormatter(index, row) {
-    
-    var detalheFormatado = formatter( index, row );
+var salvarGenerosGeral = function()
+{
+    var url = buildUrl( "/admin/midias/musicas/generos");
 
-    var templateGeneros = '<p>Gêneros da música "{{nome}}" :</p>';
+    var array_values = getGenerosSelecionadosGeral();
     
-    templateGeneros = templateGeneros.reckon(row);
+    var options = $("#table-musicas").bootstrapTable('getOptions');
     
-    return templateGeneros + detalheFormatado;
-}
+    var dadosForm = { search : options.searchText,
+                      idGeneroPesquisa : generoFixado,
+                      idGenerosNovos : array_values };
 
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data:  JSON.stringify(dadosForm)
+    }).done( function(json){ 
 
-function formatter( index, row, short ) {
-    
-    var html = [];
-    var template = '<li>{{descricao}}</li>';
-    
-    $.each(row.generos, function(i, el){
-        html.push( template.reckon(el) );
+        if (json.ok == 1){
+            preencheAlertGeral( "alertArea", "Gêneros alterados com sucesso.", "success" );
+            generoFixado = 0;
+            $("#table-musicas").bootstrapTable('refresh');
+            $('#myModalGenerosGeral').modal('toggle');
+            limpaFiltro();
+            jump('');
+
+            if (typeof functionRefreshGrafico != 'undefined' && functionRefreshGrafico && typeof(functionRefreshGrafico) === "function"){
+                functionRefreshGrafico();
+            }
+        }
+        else{
+            preencheErros( json.errors, "alertAreaModal" );
+        }
     });
-    
-    return "<ul>" + html.join('') + "</ul>";
-}
+} 
 
+
+var limpaFiltro = function(){
+    $("#filtroGenero").hide();
+    $("#filtroGenero").empty();
+    generoFixado = 0; 
+}
 
 
 $(function(){
@@ -268,16 +290,22 @@ $(function(){
         else
             texto = " no total";
         
-        if ( data.total != null )
-            $("#totalMusicas").html(data.total + " música(s) " + texto );
-        else
-            $("#totalMusicas").html("Nenhuma música " + texto );
+        if ( data.total != null ){
+            $(".totalMusicas").html(data.total);
+            $("#totalMusicasTexto").html(" música(s) " + texto );
+        }
+        else {
+            $(".totalMusicas").empty();
+            $("#totalMusicasTexto").html("Nenhuma música " + texto );
+        }
 
-        $(".editar-class").click( function(){
+        $(".editar-class").click( function(e){
+            e.preventDefault();
             openPopup($(this));
         });
 
-        $(".remover-class").click( function(){
+        $(".remover-class").click( function(e){
+            e.preventDefault();
             openDialog($(this));
         });
         
@@ -288,11 +316,13 @@ $(function(){
     });
     
     $("#table-musicas").on( 'page-change.bs.table', function ( e, number, size ){
-        $(".editar-class").click( function(){
+        $(".editar-class").click( function(e){
+            e.preventDefault();
             openPopup($(this));
         });
         
-        $(".remover-class").click( function(){
+        $(".remover-class").click( function(e){
+            e.preventDefault();
             openDialog($(this));
         });
 
@@ -320,7 +350,26 @@ $(function(){
     });
     
     listaGenerosModal().done( function(json){
-        makeListTmplModal(json);
+        makeListTmplModal($("#viewContainerModal"), json);
+        makeListTmplModal($("#viewContainerGenerosGeralModal"), json);
+    });
+
+    $('#myModalGenerosGeral').on('shown.bs.modal', function() {
+        $("#divWarningGeneros").addClass('animated zoomIn');
+    });
+
+    $("#btnAlterarGenerosGeral").click( function(){
+        openDialogGenerosGeral();
     });
     
+    $("#btnSalvarGenerosGeral").click( function(){
+        salvarGenerosGeral();
+    });
+    
+    $("#btnLimparFiltro").click(function(){
+        limpaFiltro();
+        jump("table-musicas");
+        $("#table-musicas").bootstrapTable('resetSearch');
+    });
+
 });

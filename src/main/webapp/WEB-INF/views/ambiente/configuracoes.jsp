@@ -14,9 +14,8 @@
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3><i class="fa ${icone }"></i> Configurar Player do Ambiente<br/>
-                <small>Configure os recursos que deseja disponibilizar para o player do ${nome}</small>
-              </h3>
+              <h3><i class="${func.sizeSmall} ${func.classesIcone}">${func.icone}</i> Configurar Player do Ambiente</h3>
+              <h4><small>Configure os recursos que deseja disponibilizar para o player do ${nome}</small></h4>
             </div>
 
             <div class="col-lg-6 col-md-6" id="alertArea">

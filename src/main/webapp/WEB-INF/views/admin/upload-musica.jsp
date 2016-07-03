@@ -93,10 +93,10 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                   <div class="pull-right">
-                    <a class="btn btn-default" href="${context}/admin/musicas/relatorio/view">
+                    <a class="btn btn-default" href="${context}/admin/musicas/gerencia/view">
                     <i class="fa fa-pie-chart"></i>
                     <i class="fa fa-music"></i>
-                    &nbsp;Relatório de Músicas</a>    
+                    &nbsp;Gerência de Músicas</a>    
                   </div>          
                 </div>
               </div>            
@@ -105,10 +105,27 @@
               
               <div class="row">
                 <div class="col-lg-12 col-md-12">
-                  <p><span id="totalMusicas">0 músicas para essa pesquisa</span></p>
+                  <p><span class="totalMusicas">0</span> <span id="totalMusicasTexto"></span></p>
                 </div>
               </div>
               
+
+              <div id="toolbar">
+                <div class="form-inline" role="form">
+                  <button type="button" class="btn btn-default" id="btnLimparFiltro">
+                    <i class="fa fa-refresh"></i>
+                    Limpar Filtro
+                  </button>
+                  <button type="button" class="btn btn-default" id="btnAlterarGenerosGeral" title="Alterar Gêneros de TODAS as músicas que estão sendo listadas pela Grid" >
+                    <i class="material-icons md-18">library_music</i>
+                    Alterar Gêneros
+                  </button>
+                  <button type="button" class="btn btn-default" id="btnDeletar" title="Deletar TODAS as músicas que estão sendo listadas pela Grid">
+                    <i class="material-icons md-18">delete_forever</i>
+                    Deletar Músicas
+                  </button>
+                </div>
+              </div>
               <table  
                  id="table-musicas"
                  data-toggle="table"
@@ -118,6 +135,7 @@
                  data-pagination="true"
                  data-page-size=7
                  data-locale = "pt_BR"
+                 data-toolbar="#toolbar"
                  data-unique-id="idMidia"
                  data-search="true"
                  data-page-list = "[7,15,30]"
@@ -170,7 +188,7 @@
 
 
 
-<div class="modal fade" id="myModal">
+<div class="modal" id="myModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -227,7 +245,51 @@
 
 
 
-<div class="modal fade" id="myDialog">
+<div class="modal" id="myModalGenerosGeral">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="titulo-modal">Alterar Gêneros de <span class="qtdMusicasGeneros"></span> Música(s)</h4>
+      </div>
+      <div class="modal-body">
+        <form action="#" class="form-horizontal" id="altera-nome-midia-form" method="POST">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="alert alert-warning" id="divWarningGeneros" role="alert">
+                <strong>Atenção!</strong> Os gêneros escolhidos aqui serão atribuídos para TODAS as músicas selecionadas pela pesquisa atual.<br/>
+                <span class="totalMusicas"></span> música(s) listada(s).
+              </div>
+
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+
+              <h4>Atribuir Gêneros para <span class="totalMusicas"></span> música(s) listada(s)</h4>
+
+              <div class="container col-md-12" id="viewContainerGenerosGeralModal">
+              </div>
+
+            </div> 
+          </div>
+          
+        </form>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarGenerosGeral">Alterar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal" id="myDialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -280,22 +342,13 @@
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
 
+<link rel="stylesheet" href="http://s.mlcdn.co/animate.css">
+
 <script id="viewTmpl" type="text/x-jsrender">
     
       <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <label>
-          <input type="checkbox" class="checkbox-genero" id="genero-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
-        </label>
-      </div>
-      
-</script>  
-
-
-<script id="viewTmplModal" type="text/x-jsrender">
-    
-      <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <label>
-          <input type="checkbox" class="checkbox-genero-editar" id="genero-editar-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
+          <input type="checkbox" class="checkbox-genero" idGenero="{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
         </label>
       </div>
       
@@ -303,6 +356,17 @@
 
 <script src="${context}/js/admin/upload-musica.js" charset="UTF-8"></script>
 <script src="${context}/js/admin/grid-musica.js" charset="UTF-8"></script>
+
+<style type="text/css">
+.modal {
+  overflow-y: hidden;
+}
+body.modal-open {
+  margin-right: 0;
+}
+
+</style>
+
 
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />

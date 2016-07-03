@@ -21,4 +21,6 @@ public interface MidiaGeneroRepository extends JpaRepository<MidiaGenero, Long> 
 	@Query("SELECT new br.com.radio.dto.midia.RelatorioMidiaGeneroVO( count(mg.idMediagen), g.idGenero, g.nome ) FROM MidiaGenero mg JOIN mg.genero g GROUP BY g.idGenero, g.nome ")
 	List<RelatorioMidiaGeneroVO> findRelatorioGeneros();
 	
+	Long deleteByMidiaIn( List<Midia> midias );
+	
 }

@@ -32,12 +32,23 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	Page<Midia> findByCategoriasInAndValidoTrue( Pageable pageable, List<Categoria> categorias );
 
 	Page<Midia> findByCategoriasAndValidoTrue( Pageable pageable, Categoria categoria );
+
+	List<Midia> findByCategoriasAndValidoTrue( Categoria categoria );
 	
 	Long countByNome( String nome );
 
+	// Resultado Paginado
 	@Query("SELECT m FROM Midia m JOIN m.generos g JOIN m.categorias c WHERE m.valido = true AND c.codigo = 'musica' AND ( lower(m.nome) like ?1 OR lower(m.artist) like ?1 OR lower(g.nome) like ?1 )  GROUP BY m ")
 	Page<Midia> findByCustomSearch( Pageable pageable, String searchLowerCase );
-	
+
 	@Query("SELECT m FROM Midia m JOIN m.generos g JOIN m.categorias c WHERE m.valido = true AND c.codigo = 'musica' AND g.idGenero = ?2 AND ( lower(m.nome) like ?1 OR lower(m.artist) like ?1 ) GROUP BY m ")
 	Page<Midia> findByCustomSearchByGenero( Pageable pageable, String searchLowerCase, Long idGenero );
+
+	// Listas (principalmente para alterar os gêneros de todas as músicas da pesquisa)
+	@Query("SELECT m FROM Midia m JOIN m.generos g JOIN m.categorias c WHERE m.valido = true AND c.codigo = 'musica' AND ( lower(m.nome) like ?1 OR lower(m.artist) like ?1 OR lower(g.nome) like ?1 )  GROUP BY m ")
+	List<Midia> findByCustomSearch( String searchLowerCase );
+	
+	@Query("SELECT m FROM Midia m JOIN m.generos g JOIN m.categorias c WHERE m.valido = true AND c.codigo = 'musica' AND g.idGenero = ?2 AND ( lower(m.nome) like ?1 OR lower(m.artist) like ?1 ) GROUP BY m ")
+	List<Midia> findByCustomSearchByGenero( String searchLowerCase, Long idGenero );
+
 }

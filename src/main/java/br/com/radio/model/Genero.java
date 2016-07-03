@@ -44,6 +44,9 @@ public class Genero implements Serializable {
 	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )
 	private String descricao;
 	
+	@Column( name= "sucesso", columnDefinition = "BOOL default false")
+	private Boolean sucesso;
+
 	// No futuro adicionar algum tipo de hierarquia / árvore de subgêneros
 
 //	@JsonDeserialize(using=JSONDateDeserializer.class)
@@ -132,7 +135,16 @@ public class Genero implements Serializable {
 		super();
 		this.dataCriacao = new Date();
 	}
-	
+
+	public Boolean getSucesso()
+	{
+		return sucesso;
+	}
+
+	public void setSucesso( Boolean sucesso )
+	{
+		this.sucesso = sucesso;
+	}
 	
 
 }

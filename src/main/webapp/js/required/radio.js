@@ -137,7 +137,7 @@ var preencheErros = function( errors, forceField )
     if ( errors.length == 1 )
         erro = errors[0];
     
-    if ( errors.length == 1 && ( erro.field == "alertArea" || erro.field == "global" ) )
+    if ( errors.length == 1 && ( erro.field == "alertArea" || erro.field == "global" || ( forceField != null && forceField != "" ) ) )
     {
         if ( forceField != null && forceField != "" )
             preencheAlertGeral( forceField, erro.message );

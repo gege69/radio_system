@@ -235,7 +235,7 @@
                             <div class="col-lg-2 col-md-2">
                               <div class="">
                                 <a class="btn btn-default" href="${context}/admin/clientes/${idCliente}/ambientes" id="btnListagemAmbientes" >
-                                  <i class="fa fa-tasks"></i>
+                                  <i class="material-icons md-18">dvr</i> 
                                   Ambientes</a>
                               </div>            
                             </div>

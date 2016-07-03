@@ -21,7 +21,6 @@ import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
-import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
@@ -67,7 +66,7 @@ public class MidiaController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( codigo ) );
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo(codigo) );	
 			
 			Categoria categoria = categoriaRepo.findByCodigo( codigo );
 			
@@ -85,17 +84,6 @@ public class MidiaController extends AbstractController {
 	}
 
 
-	private String getIcone( String chave )
-	{
-		String icone = "";
-		Funcionalidade func = funcionalidadeRepo.findByCodigo( chave );
-		
-		if ( func != null && func.getIcone() != null )
-			icone = func.getIcone();
-
-		return icone;
-	}	
-	
 	
 	
 //	@RequestMapping( value = "/ambientes/{idAmbiente}/view-pesquisa-midia", method = RequestMethod.GET )
@@ -124,7 +112,7 @@ public class MidiaController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "chamada_func" ) );
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo("chamada_func") );	
 			
 			return "ambiente/chamada-funcionarios";
 		}
@@ -158,7 +146,7 @@ public class MidiaController extends AbstractController {
 		{
 			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
 			model.addAttribute( "nome", ambiente.getNome() );
-			model.addAttribute( "icone", getIcone( "chamada_func" ) );
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo("chamada_func"));	
 
 			if ( !file.isEmpty() )
 			{
@@ -290,26 +278,25 @@ public class MidiaController extends AbstractController {
 	
 	
 	
-	
-		@RequestMapping( value = { "/ambientes/{idAmbiente}/midias/{codigo}/validade", 
-								   "/api/ambientes/{idAmbiente}/midias/{codigo}/validade" }, 
-						 method = RequestMethod.GET, 
-						 produces = APPLICATION_JSON_CHARSET_UTF_8 )
-		public @ResponseBody JSONBootstrapGridWrapper<Midia> listChamadaInstValidade( @PathVariable Long idAmbiente, @PathVariable String codigo )
-		{
-			Pageable pageable = getPageable( 0, 1000, "asc", "descricao" ); 
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias/{codigo}/validade", 
+							   "/api/ambientes/{idAmbiente}/midias/{codigo}/validade" }, 
+					 method = RequestMethod.GET, 
+					 produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONBootstrapGridWrapper<Midia> listChamadaInstValidade( @PathVariable Long idAmbiente, @PathVariable String codigo )
+	{
+		Pageable pageable = getPageable( 0, 1000, "asc", "descricao" ); 
 
-			MidiaFilter filter = MidiaFilter.create()
-									.setIdAmbiente( idAmbiente )
-									.setCodigoCategoria(codigo)
-									.setVerificaValidade( true );
-			
-			Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
+		MidiaFilter filter = MidiaFilter.create()
+								.setIdAmbiente( idAmbiente )
+								.setCodigoCategoria(codigo)
+								.setVerificaValidade( true );
+		
+		Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
 
-			JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
 
-			return jsonList;
-		}
+		return jsonList;
+	}
 
 
 	

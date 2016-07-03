@@ -14,16 +14,15 @@
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3><i class="fa ${icone}"></i> Gêneros<br/>
-                <small>Selecione os gêneros musicais que serão reproduzidos em ${nome}</small>
-              </h3>
+              <h3><i class="${func.sizeSmall} ${func.classesIcone}">${func.icone}</i> Gêneros</h3>
+              <h4><small>Selecione os gêneros musicais que serão reproduzidos em ${nome}</small></h4>
             </div>
 
             <div class="col-lg-6 col-md-6" id="alertArea">
             </div>
           </div>
           
-          <div class="spacer-vertical40"></div>
+          <div class="spacer-vertical20"></div>
           
           <div class="row">
             <div class="col-lg-12 col-md-12">
@@ -49,7 +48,8 @@
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/programacoes/view" id="btnAvançado"><i class="fa fa-list-ol"></i> Configurar Programação Musical</a>
+                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/programacoes/view" id="btnAvançado">
+                  <i class="material-icons md-18">grid_on</i> Configurar Programação Musical</a>
               </div>            
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">

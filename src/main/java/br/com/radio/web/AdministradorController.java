@@ -31,8 +31,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.radio.dto.midia.MidiaFilter;
+import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
+import br.com.radio.dto.midia.UpdateGenerosMusicasVO;
 import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.AudioOpcional;
@@ -289,16 +290,22 @@ public class AdministradorController extends AbstractController {
 	}
 	
 
-	@RequestMapping(value="/admin/musicas/relatorio/view", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/musicas/gerencia/view", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public String relatorioMusicas( ModelMap model, Principal principal )
+	public String gerenciaMusicas( ModelMap model, Principal principal,
+									@RequestParam(value="sucessos", required=false) Boolean sucessos )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
 			return "HTTPerror/404";
 		
-		return "admin/relatorio-musica";
+		if ( sucessos == null )
+			sucessos = false;
+
+		model.addAttribute( "sucessos", sucessos );
+		
+		return "admin/gerencia-musica";
 	}
 
 
@@ -684,6 +691,61 @@ public class AdministradorController extends AbstractController {
 		return jsonList;
 	}
 	
+
+
+	@RequestMapping( value = { "/admin/midias/musicas/generos", "/api/admin/midias/musicas/generos" }, method = { RequestMethod.POST },  produces = APPLICATION_JSON_CHARSET_UTF_8  )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String updateGenerosGeral( @RequestBody UpdateGenerosMusicasVO generosMidiaVO, BindingResult result )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() )
+			jsonResult = writeErrorsAsJSONErroMessage( result );
+		else
+		{
+			try
+			{
+				midiaService.alteraGenerosGeral(generosMidiaVO);
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+
+
+	@RequestMapping( value = { "/admin/midias/musicas", "/api/admin/midias/musicas" }, method = { RequestMethod.DELETE },  produces = APPLICATION_JSON_CHARSET_UTF_8  )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String deleteMusicasSelecao( @RequestBody DeleteMusicasVO deleteMusicasVO, BindingResult result )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() )
+			jsonResult = writeErrorsAsJSONErroMessage( result );
+		else
+		{
+			try
+			{
+				midiaService.deleteMusicasSelecao(deleteMusicasVO);
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				e.printStackTrace();
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+
+
+
 	
 	@RequestMapping( value = { "/admin/midias", "/api/admin/midias" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
@@ -904,9 +966,9 @@ public class AdministradorController extends AbstractController {
 		return jsonResult;
 	}
 
-
-	
-	@RequestMapping(value= { "/admin/chamada-veiculos/{idMidia}", "/api/admin/chamada-veiculos/{idMidia}" }, method=RequestMethod.DELETE)
+	@RequestMapping(value= { "/admin/chamada-veiculos/{idMidia}", 
+							 "/api/admin/chamada-veiculos/{idMidia}",
+							 "/api/admin/midia/{idMidia}" }, method=RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public ResponseEntity<String> deleteChamadaVeiculo( @PathVariable Long idMidia, Principal principal, Model model )
 	{

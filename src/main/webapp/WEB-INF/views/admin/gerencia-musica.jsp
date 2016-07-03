@@ -14,11 +14,11 @@
         
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3>Relatório de Músicas </h3>
+              <h3>Gerência de Músicas </h3>
             </div>
 
-            <div class="col-lg-6 col-md-6" id="alertArea">
-            </div>
+<!--             <div class="col-lg-6 col-md-6" id="alertArea"> -->
+<!--             </div> -->
           </div>
 
           <div class="spacer-vertical20"></div>
@@ -32,14 +32,14 @@
                   <div class="panel panel-default">
                     <div class="panel-body">
                       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" id="csrf" />
-
+                      <input type="hidden" name="sucessos" value="${sucessos}" id="sucessos" />
 
                       <div class="container col-md-10" id="view-container">
                         <div id="chart_div" style="width:900; height:500"></div>
                       </div>
                       
                       <div class="col-md-2">
-                        <button href="#" class="btn btn-success" id="btnRefresh">
+                        <button href="#" class="btn btn-success" id="btnRefreshGrafico">
                           <i class="fa fa-refresh"></i>
                           Atualizar Gráfico
                         </button>
@@ -71,21 +71,34 @@
 
               <div class="row">
                 <div class="col-lg-12 col-md-12">
-                  <p><h4><span id="filtroGenero"></span></h4></p>
-
-                  <button type="button" class="btn btn-warning" style="display:none;" id="btnLimparFiltro">
-                    <i class="fa fa-refresh"></i>
-                    Limpar Filtro
-                  </button>
+                  <p>
+                      <div class="alert alert-info col-md-6" role="alert" style="display : none;" id="filtroGenero"></div>
+                  </p>
                 </div>
               </div>
 
               <div class="row">
                 <div class="col-lg-12 col-md-12">
-                  <p><span id="totalMusicas">0 músicas para essa pesquisa</span></p>
+                  <p><span class="totalMusicas">0</span> <span id="totalMusicasTexto"></span></p>
                 </div>
               </div>
               
+              <div id="toolbar">
+                <div class="form-inline" role="form">
+                  <button type="button" class="btn btn-info" id="btnLimparFiltro">
+                    <i class="fa fa-refresh"></i>
+                    Limpar Filtro
+                  </button>
+                  <button type="button" class="btn btn-primary" id="btnAlterarGenerosGeral" title="Alterar Gêneros de TODAS as músicas que estão sendo listadas pela Grid" >
+                    <i class="material-icons md-18">library_music</i>
+                    Alterar Gêneros
+                  </button>
+                  <button type="button" class="btn btn-danger" id="btnDeletar" title="Deletar TODAS as músicas que estão sendo listadas pela Grid">
+                    <i class="material-icons md-18">delete_forever</i>
+                    Deletar Músicas
+                  </button>
+                </div>
+              </div>
               <table  
                  id="table-musicas"
                  data-toggle="table"
@@ -95,6 +108,7 @@
                  data-pagination="true"
                  data-page-size=7
                  data-locale = "pt_BR"
+                 data-toolbar="#toolbar"
                  data-unique-id="idMidia"
                  data-search="true"
                  data-page-list = "[7,15,30]"
@@ -147,7 +161,9 @@
 
 
 
-<div class="modal fade" id="myModal">
+
+
+<div class="modal" id="myModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -204,7 +220,56 @@
 
 
 
-<div class="modal fade" id="myDialog">
+<div class="modal" id="myModalGenerosGeral">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="titulo-modal">Alterar Gêneros de <span class="qtdMusicasGeneros"></span> Música(s)</h4>
+      </div>
+      <div class="modal-body">
+        <form action="#" class="form-horizontal" id="altera-nome-midia-form" method="POST">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12" id="alertAreaModal">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="alert alert-warning" id="divWarningGeneros" role="alert">
+                <strong>Atenção!</strong> Os gêneros escolhidos aqui serão atribuídos para TODAS as músicas selecionadas pela pesquisa atual.<br/>
+                <span class="totalMusicas"></span> música(s) listada(s).
+              </div>
+
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+
+              <h4>Atribuir Gêneros para <span class="totalMusicas"></span> música(s) listada(s)</h4>
+
+              <div class="container col-md-12" id="viewContainerGenerosGeralModal">
+              </div>
+
+            </div> 
+          </div>
+          
+        </form>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarGenerosGeral">Alterar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal" id="myDialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -253,16 +318,17 @@
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
 
 
-
-<script id="viewTmplModal" type="text/x-jsrender">
+<script id="viewTmpl" type="text/x-jsrender">
     
       <div class="checkbox col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <label>
-          <input type="checkbox" class="checkbox-genero-editar" id="genero-editar-{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
+          <input type="checkbox" class="checkbox-genero" idGenero="{{:idGenero}}" name="genero[idGenero]" value="{{:idGenero}}"> {{:descricao}}
         </label>
       </div>
       
 </script>  
+
+<link rel="stylesheet" href="http://s.mlcdn.co/animate.css">
 
 <script src="${context}/js/admin/grid-musica.js" charset="UTF-8"></script>
 
@@ -271,12 +337,23 @@
 
 google.load('visualization', '1.0', {'packages':['corechart']});
 
-google.setOnLoadCallback(drawChart);
-
 var listaGeneros = null;
 
-function drawChart() {
+function fixarGenero( idGenero, nomeGenero ){
+    generoFixado = idGenero;
+    $("#table-musicas").bootstrapTable('refresh');
+    $("#filtroGenero").show();
+    $("#filtroGenero").html('Listagem mostrando apenas músicas do Gênero : <strong>' + nomeGenero + '</strong>' );
+    $("#btnLimparFiltro").show();
+    jump("table-musicas");
+}
 
+var options;
+var data;
+var chart;
+
+
+function getData() {
     var url = buildUrl( "/admin/generos/relatorio" );
 
     return $.ajax({
@@ -284,27 +361,39 @@ function drawChart() {
         contentType: 'application/json',
         url: url,    
         dataType: 'json'
-    }).done( function(result){
+    });
+}
+
+function prepareData(result){
+    
+    listaGeneros = result;
+    
+    // Create the data table.
+    data = new google.visualization.DataTable();
+    data.addColumn('string', 'Gênero');
+    data.addColumn('number', 'Músicas');
+    data.addColumn('number', 'id Gênero');
+
+    $.each(result, function(i, el){
+        data.addRow([el.genero, el.quantidadeMidias, el.idGenero ]);
+    });
+
+    return data;
+}
+
+function drawChart() {
+
+    getData().done( function(result){
       
-        listaGeneros = result;
-        
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Gênero');
-        data.addColumn('number', 'Músicas');
-        data.addColumn('number', 'id Gênero');
+        data = prepareData(result);
 
-        $.each(result, function(i, el){
-            data.addRow([el.genero, el.quantidadeMidias, el.idGenero ]);
-        });
-
-        var options = {'title':'Quantidade de Músicas por Gênero',
+        options = {'title':'Quantidade de Músicas por Gênero',
                 'width':900,
                 'height':400,
                 is3D: true};
 
         // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
 
         google.visualization.events.addListener(chart, 'select', selectHandler);
@@ -314,14 +403,11 @@ function drawChart() {
 
             var item = chart.getSelection()[0];
             if ( item != null ){
-                generoFixado = data.getFormattedValue(item.row, 2); 
-                generoStr = data.getFormattedValue(item.row, 0); 
+                var idGenero = data.getFormattedValue(item.row, 2); 
+                var nomeGenero = data.getFormattedValue(item.row, 0); 
                 
-                if ( generoFixado != null && generoFixado != 0){
-                    $("#table-musicas").bootstrapTable('refresh');
-                    $("#filtroGenero").html("Listagem mostrando apenas músicas do Gênero : " + generoStr);
-                    $("#btnLimparFiltro").show();
-                    jump("table-musicas");
+                if ( idGenero != null && idGenero != 0){
+                    fixarGenero(idGenero, nomeGenero);
                 }
             }
         }
@@ -329,21 +415,30 @@ function drawChart() {
 }
 
 
-$("#btnLimparFiltro").click(function(){
-    $("#filtroGenero").empty();
-    generoFixado = 0; 
-    jump("table-musicas");
-    $("#table-musicas").bootstrapTable('refresh');
-    $("#btnLimparFiltro").hide();
-});
+var functionRefreshGrafico = function(){
+    getData().done( function(result){
+        data = prepareData(result);
+        chart.draw(data, options);
+    });
+}
 
-$("#btnRefresh").click(function(){
-    document.location.reload(true);
+$("#btnRefreshGrafico").click( functionRefreshGrafico );
+
+$(document).ready(function(){
+    $(document).ready(drawChart); 
 });
 
 
 </script>
 
+
+<style type="text/css">
+
+body.modal-open {
+    overflow: visible;
+}
+
+</style>
 
 
   <jsp:include page="/WEB-INF/views/bottom.jsp" />

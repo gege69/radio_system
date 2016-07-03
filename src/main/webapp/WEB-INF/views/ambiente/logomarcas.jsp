@@ -14,7 +14,7 @@
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3><i class="fa ${icone }"></i> Logomarca<br/>
+              <h3><i class="${classes_icone}">${icone}</i> Logomarca<br/>
                 <small>Enviar logo marca do Ambiente ${nome}<br/>
                        Somente arquivos de imagem serão aceitos ( .PNG, .JPG, .JPEG, .GIF )</small>
               </h3>

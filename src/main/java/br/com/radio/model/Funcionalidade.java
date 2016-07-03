@@ -1,6 +1,8 @@
 package br.com.radio.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 @Entity
 @Table(name="funcionalidade")
@@ -34,12 +40,25 @@ public class Funcionalidade implements Serializable {
 
 	@Column( name = "icone", columnDefinition = "TEXT" )
 	private String icone;
+
+	@Column( name = "classes_icone", columnDefinition = "TEXT" )
+	private String classesIcone;
 	
 	@Column( name="extrahtml", columnDefinition = "TEXT" )
 	private String extrahtml;
 
+	@Column( name = "size_small", columnDefinition = "TEXT" )
+	private String sizeSmall;
+
+	@Column( name = "size_big", columnDefinition = "TEXT" )
+	private String sizeBig;
+
 	@Column( name = "ativo", columnDefinition = "BOOL default true")
 	private Boolean ativo;
+
+	@Transient
+	private Map<String, String> funcView = new HashMap<String,String>();
+	
 
 	public Long getIdFuncionalidade()
 	{
@@ -154,6 +173,48 @@ public class Funcionalidade implements Serializable {
 	public void setCodigo( String codigo )
 	{
 		this.codigo = codigo;
+	}
+
+	public String getClassesIcone()
+	{
+		return classesIcone;
+	}
+
+	public void setClassesIcone( String classesIcone )
+	{
+		this.classesIcone = classesIcone;
+	}
+
+	public String getSizeSmall()
+	{
+		return sizeSmall;
+	}
+
+	public void setSizeSmall( String sizeSmall )
+	{
+		this.sizeSmall = sizeSmall;
+	}
+
+	public String getSizeBig()
+	{
+		return sizeBig;
+	}
+
+	public void setSizeBig( String sizeBig )
+	{
+		this.sizeBig = sizeBig;
+	}
+
+	@JsonAnyGetter
+	public Map<String, String> getFuncView()
+	{
+		return funcView;
+	}
+
+	@JsonAnySetter
+	public void setFuncView( Map<String, String> funcView )
+	{
+		this.funcView = funcView;
 	}
 	
 }

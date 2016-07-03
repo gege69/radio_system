@@ -14,9 +14,8 @@
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3><i class="fa ${icone}"></i> Chamada de Funcionários<br/>
-                <small>Gerencie os nomes e chamadas para este ambiente</small>
-              </h3>
+              <h3><i class="${func.sizeSmall} ${func.classesIcone}">${func.icone}</i> Chamada de Funcionários</h3>
+              <h4><small>Gerencie os nomes e chamadas para este ambiente</small></h4>
             </div>
 
             <div class="col-lg-6 col-md-6" id="alertArea">

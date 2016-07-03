@@ -14,7 +14,8 @@
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
-                    <h3><i class="fa fa-tasks"></i> Administrar Ambientes<br/>
+                    <h3><i class="icone-main material-icons md-24">dvr</i> 
+                      Administrar Ambientes<br/>
                       <small>Você possui ${qtdAmbientes} ambiente(es) cadastrado(s)</small>
                     </h3>
             </div>

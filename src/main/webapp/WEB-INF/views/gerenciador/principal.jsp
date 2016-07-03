@@ -35,20 +35,20 @@
                 <div class="container">
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}/ambientes/new">
-                      <i class="fa fa-2x icone-main fa-plus"></i>
-                      <i class="fa fa-3x icone-main fa-tasks"></i>
+                      <i class="icone-main material-icons md-24">add</i> 
+                      <i class="icone-main material-icons md-48">dvr</i> 
                       <span class="label-botao-main">Incluir Ambiente</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/ambientes/searches">
-                      <i class="fa fa-3x icone-main fa-tasks"></i>
+                       <i class="icone-main material-icons md-48">dvr</i> 
                       <span class="label-botao-main">Administar Ambientes</span>
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/senha/edit">
-                      <i class="fa fa-3x icone-main fa-lock"></i>
+                      <i class="fa icone-main fa-lock fa-3x"></i>
                       <span class="label-botao-main">Alterar Senha</span>
                     </a>
                   </div>
@@ -83,7 +83,11 @@
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/clientes/view">
-                      <i class="fa fa-3x icone-main fa-street-view"></i>
+
+                       <i class="icone-main material-icons md-48">account_box</i> 
+<!--                       <i class="mdi btn-lg mdi-comment-account-outline" aria-hidden="true"></i>  -->
+                    
+<!--                       <i class="fa fa-3x icone-main fa-street-view"></i> -->
                       <span class="label-botao-main">Dados de Cliente</span>
                     </a> 
                   </div>

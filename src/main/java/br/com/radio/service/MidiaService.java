@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 
 import net.openhft.hashing.LongHashFunction;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,11 +29,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.hibernate.sql.JoinType;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -47,8 +46,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.MusicTags;
+import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
+import br.com.radio.dto.midia.UpdateGenerosMusicasVO;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
@@ -76,6 +77,7 @@ import br.com.radio.repository.MidiaOpcionalRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
 import br.com.radio.service.vo.GravaMidiaParameter;
+import br.com.radio.util.UtilsStr;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -1335,6 +1337,51 @@ public class MidiaService {
 	
 	public List<RelatorioMidiaGeneroVO> findRelatorioGeneros(){
 		return midiaGeneroRepo.findRelatorioGeneros();
+	}
+	
+	
+	
+	
+	@Transactional
+	public void alteraGenerosGeral(UpdateGenerosMusicasVO generosMidiaVO){
+		
+		List<Midia> musicas = null;
+
+		if ( generosMidiaVO.getIdGeneroPesquisa() != null && generosMidiaVO.getIdGeneroPesquisa() > 0 )
+			musicas = midiaRepo.findByCustomSearchByGenero( UtilsStr.ilike( generosMidiaVO.getSearch() ), generosMidiaVO.getIdGeneroPesquisa());
+		else
+			musicas = midiaRepo.findByCustomSearch( UtilsStr.ilike( generosMidiaVO.getSearch() ));
+		
+		List<List<Midia>> listas = ListUtils.partition( musicas, 990 );
+		
+		listas.forEach( l -> {
+			midiaGeneroRepo.deleteByMidiaIn( l );
+		});
+		
+		List<Genero> generos = generoRepo.findByIdGeneroIn( Arrays.asList( generosMidiaVO.getIdGenerosNovos() ) );
+		
+		for ( Midia m : musicas ){
+			for ( Genero g : generos ){
+				MidiaGenero md = new MidiaGenero( g, m );
+				midiaGeneroRepo.save( md );
+			}
+		}
+	}
+
+	
+	@Transactional
+	public void deleteMusicasSelecao(DeleteMusicasVO generosMidiaVO){
+		
+		List<Midia> musicas = null;
+
+		if ( generosMidiaVO.getIdGeneroPesquisa() != null && generosMidiaVO.getIdGeneroPesquisa() > 0 )
+			musicas = midiaRepo.findByCustomSearchByGenero( UtilsStr.ilike( generosMidiaVO.getSearch() ), generosMidiaVO.getIdGeneroPesquisa());
+		else
+			musicas = midiaRepo.findByCustomSearch( UtilsStr.ilike( generosMidiaVO.getSearch() ));
+		
+		List<List<Midia>> listas = ListUtils.partition( musicas, 990 );
+		
+		
 	}
 
 	

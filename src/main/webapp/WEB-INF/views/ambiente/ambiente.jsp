@@ -81,12 +81,12 @@
 
 
 <script id="viewTmpl" type="text/x-jsrender">
-  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+<div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
   <a class="btn btn-default btn-block btn-md btn-md botao-main" href="${context}{{:url_funcionalidade}}" {{:extra}}>
-    <i class="fa fa-3x icone-main {{:icone_funcionalidade}}"></i>
-    <span class="label-botao-main">{{:nome_funcionalidade}}</span>
+    <i class="icone-main {{:sizeBig}} {{:classesIcone}}">{{:icone}}</i>
+    <span class="label-botao-main">{{:nome}}</span>
   </a>
-  </div>
+</div>
 </script>  
 
 
@@ -118,7 +118,7 @@
         
         $('#view-container').empty();
         
-        var content = tmpl.render(json.rows);
+        var content = tmpl.render(json);
         
         $('#view-container').append(content);
     };

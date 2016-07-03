@@ -14,9 +14,8 @@
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3><i class="fa ${icone}"></i> Programação Musical<br/><br/>
-                <small>Você pode escolher o horário em que os Gêneros irão tocar no ambiente ${nome}</small>
-              </h3>
+              <h3><i class="${func.sizeSmall} ${func.classesIcone}">${func.icone}</i> Programação Musical</h3>
+              <h4><small>Você pode escolher o horário em que os Gêneros irão tocar no ambiente ${nome}</small></h4>
             </div>
 
             <div class="col-lg-6 col-md-6" id="alertArea">
@@ -38,7 +37,7 @@
               <div class="pull-right">
                 <a class="btn btn-default" id="btnGeraTransmissao" href="#">
                   <i class="fa fa-mail-forward"></i>
-                  <i class="fa fa-list-ol"></i>
+                  <i class="material-icons md-18">grid_on</i> 
                 Aplicar mudanças agora</a>
               </div>
             </div>

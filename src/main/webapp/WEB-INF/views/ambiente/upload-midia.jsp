@@ -14,9 +14,8 @@
 
           <div class="row">
             <div class="col-lg-6 col-md-6">
-              <h3><i class="fa ${icone}"></i> Gerenciar ${nomeCategoria}<br/>
-                <small>Espaço para armazenamento: 0 MB em uso, 500 MB disponíveis </small>
-              </h3>
+              <h3><i class="${func.sizeSmall} ${func.classesIcone}">${func.icone}</i> Gerenciar ${nomeCategoria}</h3>
+              <h4><small>Espaço para armazenamento: 0 MB em uso, 500 MB disponíveis </small></h4>
             </div>
 
             <div class="col-lg-6 col-md-6" id="alertArea">
