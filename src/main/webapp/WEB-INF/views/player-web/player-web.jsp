@@ -77,7 +77,7 @@
             <ul class="dropdown-menu" role="menu">
               
               <c:if test="${configuracao != null && configuracao.selecaoGenero}">
-                <li><a href="#"  id="btn-generos">Gêneros</a></li>
+                <li><a href="#"  id="btn-generos">Programação Musical</a></li>
               </c:if>
 
               <c:if test="${configuracao != null && configuracao.controleBlocos}">              
@@ -240,8 +240,8 @@
       </div>
       
       <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 pull-right">
-        <i class="fa fa-2x fa-volume-up" style="margin-right: 15px;"></i>
-        <input id="slider2" class="campo-slider" data-slider-id='ex2Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/>
+<!--         <i class="fa fa-2x fa-volume-up" style="margin-right: 15px;"></i> -->
+<!--         <input id="slider2" class="campo-slider" data-slider-id='ex2Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/> -->
         
       </div>
     </div>
@@ -583,7 +583,7 @@
         <button type="button" class="close" data-dismiss="modal">x</button>
         <div class="row">
           <div class="col-lg-6 col-md-6">
-            <h3>Gêneros</h3>
+            <h3>Programação Musical</h3>
           </div>
 
           <div class="col-lg-6 col-md-6" id="alertArea">

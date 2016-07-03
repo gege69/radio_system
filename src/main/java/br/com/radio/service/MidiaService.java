@@ -77,7 +77,6 @@ import br.com.radio.repository.MidiaOpcionalRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
 import br.com.radio.service.vo.GravaMidiaParameter;
-import br.com.radio.util.UtilsStr;
 
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
@@ -1126,13 +1125,18 @@ public class MidiaService {
 	}
 
 	
+	public boolean deleteMidiaSePossivel( Long idMidia ){
+
+		Midia midia = midiaRepo.findOne( idMidia );
+		
+		return deleteMidiaSePossivel( midia );
+	}
+	
 
 	@Transactional
-	public boolean deleteMidiaSePossivel( Long idMidia )
+	public boolean deleteMidiaSePossivel( Midia midia )
 	{
 		boolean result = false;
-		
-		Midia midia = midiaRepo.findOne( idMidia );
 		
 		if ( midia == null )
 			throw new RuntimeException( "Mídia não encontrada" );
@@ -1144,8 +1148,6 @@ public class MidiaService {
 			midiaAmbienteRepo.delete( ma );
 			midiaAmbienteRepo.flush();
 		}
-		
-		midia = midiaRepo.findOne( idMidia );
 
 		String filePath = midia.getFilepath();
 
@@ -1345,12 +1347,12 @@ public class MidiaService {
 	@Transactional
 	public void alteraGenerosGeral(UpdateGenerosMusicasVO generosMidiaVO){
 		
-		List<Midia> musicas = null;
+		List<Midia> musicas = midiaRepo.findByIdMidiaIn( Arrays.asList( generosMidiaVO.getIdMidias() ) );
 
-		if ( generosMidiaVO.getIdGeneroPesquisa() != null && generosMidiaVO.getIdGeneroPesquisa() > 0 )
-			musicas = midiaRepo.findByCustomSearchByGenero( UtilsStr.ilike( generosMidiaVO.getSearch() ), generosMidiaVO.getIdGeneroPesquisa());
-		else
-			musicas = midiaRepo.findByCustomSearch( UtilsStr.ilike( generosMidiaVO.getSearch() ));
+//		if ( generosMidiaVO.getIdGeneroPesquisa() != null && generosMidiaVO.getIdGeneroPesquisa() > 0 )
+//			musicas = midiaRepo.findByCustomSearchByGenero( UtilsStr.ilike( generosMidiaVO.getSearch() ), generosMidiaVO.getIdGeneroPesquisa());
+//		else
+//			musicas = midiaRepo.findByCustomSearch( UtilsStr.ilike( generosMidiaVO.getSearch() ));
 		
 		List<List<Midia>> listas = ListUtils.partition( musicas, 990 );
 		
@@ -1372,16 +1374,22 @@ public class MidiaService {
 	@Transactional
 	public void deleteMusicasSelecao(DeleteMusicasVO generosMidiaVO){
 		
-		List<Midia> musicas = null;
+		List<Midia> musicas = midiaRepo.findByIdMidiaIn( Arrays.asList( generosMidiaVO.getIdMidias() ) );
 
-		if ( generosMidiaVO.getIdGeneroPesquisa() != null && generosMidiaVO.getIdGeneroPesquisa() > 0 )
-			musicas = midiaRepo.findByCustomSearchByGenero( UtilsStr.ilike( generosMidiaVO.getSearch() ), generosMidiaVO.getIdGeneroPesquisa());
-		else
-			musicas = midiaRepo.findByCustomSearch( UtilsStr.ilike( generosMidiaVO.getSearch() ));
+		int count = 0;
 		
-		List<List<Midia>> listas = ListUtils.partition( musicas, 990 );
-		
-		
+		try
+		{
+			for ( Midia m : musicas ){
+				deleteMidiaSePossivel( m.getIdMidia() );
+				count++;
+			}
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			throw new RuntimeException(String.format("Não foi possível remover todas as músicas da seleção. Músicas deletadas : %d .", count));
+		}
 	}
 
 	

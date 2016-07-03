@@ -1,8 +1,5 @@
 package br.com.radio.dto.midia;
 
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 public class DeleteMusicasVO {
 	
@@ -10,9 +7,7 @@ public class DeleteMusicasVO {
 	
 	private Long idGeneroPesquisa;
 	
-	@NotNull
-	@NotEmpty
-	private Long[] idGenerosNovos;
+	private Long[] idMidias;
 
 	public String getSearch()
 	{
@@ -34,15 +29,14 @@ public class DeleteMusicasVO {
 		this.idGeneroPesquisa = idGeneroPesquisa;
 	}
 
-	public Long[] getIdGenerosNovos()
+	public Long[] getIdMidias()
 	{
-		return idGenerosNovos;
+		return idMidias;
 	}
 
-	public void setIdGenerosNovos( Long[] idGenerosNovos )
+	public void setIdMidias( Long[] idMidias )
 	{
-		this.idGenerosNovos = idGenerosNovos;
+		this.idMidias = idMidias;
 	}
-	
-	
+
 }

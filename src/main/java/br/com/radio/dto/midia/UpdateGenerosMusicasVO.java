@@ -6,9 +6,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class UpdateGenerosMusicasVO {
 	
-	private String search;
-	
+	private String search; 
+
 	private Long idGeneroPesquisa;
+
+	@NotNull
+	@NotEmpty
+	private Long[] idMidias;
 	
 	@NotNull
 	@NotEmpty
@@ -43,6 +47,15 @@ public class UpdateGenerosMusicasVO {
 	{
 		this.idGenerosNovos = idGenerosNovos;
 	}
-	
+
+	public Long[] getIdMidias()
+	{
+		return idMidias;
+	}
+
+	public void setIdMidias( Long[] idMidias )
+	{
+		this.idMidias = idMidias;
+	}
 	
 }

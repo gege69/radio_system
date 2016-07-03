@@ -37,7 +37,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	
 	Long countByNome( String nome );
 
-	// Resultado Paginado
+	// Resultado Paginado ( Utilizado para as Grids de Música no Upload e Gerenciamento )
 	@Query("SELECT m FROM Midia m JOIN m.generos g JOIN m.categorias c WHERE m.valido = true AND c.codigo = 'musica' AND ( lower(m.nome) like ?1 OR lower(m.artist) like ?1 OR lower(g.nome) like ?1 )  GROUP BY m ")
 	Page<Midia> findByCustomSearch( Pageable pageable, String searchLowerCase );
 
@@ -51,4 +51,6 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	@Query("SELECT m FROM Midia m JOIN m.generos g JOIN m.categorias c WHERE m.valido = true AND c.codigo = 'musica' AND g.idGenero = ?2 AND ( lower(m.nome) like ?1 OR lower(m.artist) like ?1 ) GROUP BY m ")
 	List<Midia> findByCustomSearchByGenero( String searchLowerCase, Long idGenero );
 
+	List<Midia> findByIdMidiaIn( List<Long> idMidia );
+	
 }

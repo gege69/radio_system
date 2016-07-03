@@ -28,6 +28,16 @@
             <div class="col-lg-12 col-md-12">
               <div class="panel panel-default">
                 <div class="panel-body">
+
+                  <div class="row">
+                    <div class="checkbox col-lg-12 col-md-12" style="margin-left: 15px;">
+                      <label>
+                        <input type="checkbox" class="checkbox-all" id="genero-select-all" name="Todos" value=""> Todos
+                      </label>
+                    </div>                
+                  </div>
+
+                  <div class="spacer-vertical20"></div>
                    
                   <div class="row">
                     <form action="#" id="ambiente-generos-form" method="POST">
@@ -169,7 +179,17 @@
         var content = tmpl.render(json.rows);
         
         $('#view-container').append(content);
+
     };
+
+
+    var toggleAll = function(){
+        
+        var marcado = $("#genero-select-all").is(":checked");
+
+        $('.checkbox-genero').prop('checked', marcado);
+    }
+
 
     $(function(){
 
@@ -185,6 +205,9 @@
             salvarGeneros();
         });
         
+        $("#genero-select-all").on("change", function(){
+            toggleAll();
+        });
     });
 
 </script>

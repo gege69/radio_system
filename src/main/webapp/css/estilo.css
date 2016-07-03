@@ -111,7 +111,9 @@
 }
 
 .divschedsel {
-  background-color: #A1FFFF;
+  padding: initial;
+  margin-bottom: initial;
+/*   background-color: #A1FFFF; */
 }
 
 .linkcelula {

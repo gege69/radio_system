@@ -131,7 +131,7 @@
   </div> <!-- /container -->
 
 
-<div class="modal fade" id="myModal">
+<div class="modal" id="myModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -139,6 +139,17 @@
         <h4 class="modal-title" id="titulo-modal"></h4>
       </div>
       <div class="modal-body">
+
+        <div class="row">
+          <div class="checkbox col-lg-8 col-md-8" style="margin-left: 15px;" >
+            <label>
+              <input type="checkbox" class="checkbox-all" id="genero-select-all" name="all" value=""> Todos
+            </label>
+          </div>                
+        </div>
+
+        <div class="spacer-vertical20"></div>
+
         <form action="#" id="programacao-generos-form" method="POST">
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
           <input type="hidden" id="idAmbiente" value="${idAmbiente}">
@@ -147,8 +158,7 @@
           <input type="hidden" id="diaform" name="diaSemana" value="">
           
           <div class="row">
-            <div class="container col-md-12" id="container-generos">
-            </div>
+            <div class="container col-md-12" id="container-generos"> </div>
           </div>
         </form>
         
@@ -484,7 +494,9 @@
 //                 var link = "<a href='#' id='linkcelula-" + obj.horaInicio+"-"+obj.diaSemana + "' hora='"+obj.horaInicio+"' dia='"+obj.diaSemana+"' class='btn btn-link linkcelula'>"+conteudo+"</a>";
                 
                 $celula.html( conteudo );
-                $celula.addClass('divschedsel');
+                $celula.addClass('alert'); 
+                $celula.addClass('alert-info');
+                $celula.addClass('divschedsel'); 
                 
                 $celula.attr("idprogramacao", obj.idProgramacao );
 
@@ -492,6 +504,12 @@
         });
     }
 
+    var toggleAll = function(){
+        
+        var marcado = $("#genero-select-all").is(":checked");
+
+        $('.checkbox-genero').prop('checked', marcado);
+    }
     
     
     $(function(){
@@ -517,11 +535,24 @@
         $('#btnGeraTransmissao').click(function(){
             geraTransmissaoAgora();
         });
+
+        $("#genero-select-all").on("change", function(){
+            toggleAll();
+        });
         
     });
 
 </script>
 
+<style type="text/css">
+
+.modal-body {
+    position: relative;
+    overflow-y: auto;
+    max-height: 400px;
+    padding: 15px;
+}
+</style>
 
 
 <jsp:include page="/WEB-INF/views/bottom.jsp" />
