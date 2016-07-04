@@ -17,12 +17,12 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
 	Midia findByFilehash( String filehash );
 	
-	// Procurando por midias desse ambiente, na categoria indicada, nos generos indicados, sem repetição
-	@Query("SELECT m FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE m.valido = true AND a = ?1 AND c = ?2 AND g IN ?3 group by m ")
+	// Procurando por midias desse ambiente, na categoria indicada, nos generos indicados, sem repetição ( ARTISTA NOT NULL MELHORAR ISSO )
+	@Query("SELECT m FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE m.valido = true AND a = ?1 AND c = ?2 AND g IN ?3 AND m.artist is not null group by m ")
 	List<Midia> findByAmbientesAndCategoriasAndGenerosInGroupBy( Ambiente ambiente, Categoria categoria, Set<Genero> genero );
 	
-	// Procurando por midias desse ambiente, na categoria indicada, nos generos indicados, COM EXCEÇÃO DAS JÁ TOCADAS, sem repetição
-	@Query("SELECT m FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE m.valido = true AND a = ?1 AND c = ?2 AND g IN ?3 AND m NOT IN ?4 group by m ")
+	// Procurando por midias desse ambiente, na categoria indicada, nos generos indicados, COM EXCEÇÃO DAS JÁ TOCADAS, sem repetição ( ARTISTA NOT NULL MELHORAR ISSO )
+	@Query("SELECT m FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE m.valido = true AND a = ?1 AND c = ?2 AND g IN ?3 AND m NOT IN ?4 AND m.artist is not null group by m ")
 	List<Midia> findByAmbientesAndCategoriasAndGenerosInAndMidiaNotInGroupBy( Ambiente ambiente, Categoria categoria, Set<Genero> genero, Set<Midia> midiasJaTocadas );
 
 	// Admin

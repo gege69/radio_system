@@ -45,7 +45,6 @@ import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
 import br.com.radio.model.Transmissao;
-import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
@@ -595,22 +594,25 @@ public class ProgramacaoMusicalService {
 	private void geraTransmissaoComMusica( Ambiente ambiente )
 	{
 		Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = selecaoMusicas( ambiente );
-		
+
 		musicasPorGenero.forEach( ( generosSet, dto ) -> {
 			
-//				printaInformacoes( generosSet, dto );
+//			printaInformacoes( generosSet, dto );
 
 			// algoritmo do spotify
-			applySpotifyShuffle( dto );
-
-			validaClusters( dto );
+			applySpotifyShufflePorArtista( dto );
+			
+			// Essa foi uma tentativa de melhorar o espalhamento dos gêneros... melhor que isso só se o carregamento for equivalente ( trazer mais ou menos a mesma quantidade de músicas )
+			applySpotifyShufflePorGeneros( dto );
 
 			applyMergeBlocos( ambiente, dto );
 
 			// imprimindo
-//				dto.getMidias().forEach( m -> {
-//					System.out.println( m.toString() );
-//				});
+//			dto.getMidias().forEach( m -> {
+//				logger.info( m.toString() );
+//			});
+			
+//			validaClusters( dto );
 
 			// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
 			consomeMidias( ambiente, dto );
@@ -664,7 +666,7 @@ public class ProgramacaoMusicalService {
 
 	private void validaClusters( ProgramacaoListMidiaListDTO dto )
 	{
-		List<Midia> midias = dto.getMidias();
+		List<Midia> midias = dto.getMidias().stream().filter( m -> StringUtils.isNotBlank( m.getArtist() ) ).collect( Collectors.toList() );
 		
 		for ( int i = 0; i < midias.size(); i++ )
 		{
@@ -679,10 +681,13 @@ public class ProgramacaoMusicalService {
 			
 			if ( i+2 < midias.size() )
 				nextnext = midias.get( i+2 );
+
+			if ( next != null && StringUtils.equals( atual.getGeneros().get( 0 ).getNome(), next.getGeneros().get( 0 ).getNome() ) )
+				System.out.println( String.format( "Gênero %s está próximo em ids ( %d , %d ) ", atual.getGeneros().get( 0 ).getNome(), atual.getIdMidia(), next.getIdMidia()) );
 			
 //			if ( next != null && StringUtils.equals( atual.getArtist(), next.getArtist() ) )
 //				System.out.println( String.format( "Artista %s está próximo em ids ( %d , %d ) ", atual.getArtist(), atual.getIdMidia(), next.getIdMidia()) );
-//			
+////			
 //			if ( nextnext != null && StringUtils.equals( atual.getArtist(), nextnext.getArtist() ) )
 //				System.out.println( String.format( "Artista %s está próximo (2) em ids ( %d , %d ) ", atual.getArtist(), atual.getIdMidia(), nextnext.getIdMidia()) );
 				
@@ -693,16 +698,28 @@ public class ProgramacaoMusicalService {
 
 	private void printaInformacoes( Set<Genero> generosSet, ProgramacaoListMidiaListDTO dto )
 	{
-		System.out.println( "_______________" );
+//		System.out.println( "_______________" );
+//		
+//		Integer duracaoTotal = dto.getMidias().stream().mapToInt( Midia::getDuracao ).sum();
+//
+//		System.out.println( generosSet.toString() );
+//		System.out.println( dto.getMidias().size() );
+//		System.out.println( duracaoTotal + " segundos " );
+//		System.out.println( ( duracaoTotal / 60 ) + " minutos " );
+//		System.out.println( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
+//		System.out.println( dto.getProgramacoes().size() + " progamacoes (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
+
+		logger.info( "_______________" );
 		
 		Integer duracaoTotal = dto.getMidias().stream().mapToInt( Midia::getDuracao ).sum();
 
-		System.out.println( generosSet.toString() );
-		System.out.println( dto.getMidias().size() );
-		System.out.println( duracaoTotal + " segundos " );
-		System.out.println( ( duracaoTotal / 60 ) + " minutos " );
-		System.out.println( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
-		System.out.println( dto.getProgramacoes().size() + " progamacoes (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
+		logger.info( generosSet.toString() );
+		logger.info( dto.getMidias().size() );
+		logger.info( duracaoTotal + " segundos " );
+		logger.info( ( duracaoTotal / 60 ) + " minutos " );
+		logger.info( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
+		logger.info( dto.getProgramacoes().size() + " progamacoes (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
+
 	}
 	
 	
@@ -1168,31 +1185,88 @@ public class ProgramacaoMusicalService {
 	
 	
 	
-	private void applySpotifyShuffle( ProgramacaoListMidiaListDTO dto )
+	private void applySpotifyShufflePorArtista( ProgramacaoListMidiaListDTO dto )
 	{
-		// hack para ignorar musicas sem artistas...
-		dto.setMidias( dto.getMidias().stream().filter( m -> StringUtils.isNotBlank( m.getArtist() ) ).collect( Collectors.toList() ) );
+		Double tamanhoLista = Integer.valueOf( dto.getMidias().size() ).doubleValue();
 
-		List<Midia> musicas = dto.getMidias();
+		Map<String, List<Midia>> musicasPorArtista = dto.getMidias().stream().collect( Collectors.groupingBy( Midia::getArtist ) );
 		
-		Double tamanhoLista = Integer.valueOf( musicas.size() ).doubleValue();
+		espalhaPosicaoShuffle( dto.getMusicaCategoria(), musicasPorArtista, tamanhoLista );
 		
-		Map<String, List<Midia>> musicasPorArtista = musicas.stream().collect( Collectors.groupingBy( Midia::getArtist ) );
+		Comparator<Midia> pelaPosicaoShuffle = ( m1, m2 ) -> m1.getPosicaoShuffle().compareTo( m2.getPosicaoShuffle() );
 		
+		dto.getMidias().sort( pelaPosicaoShuffle );
+	}
+
+
+
+	/**
+	 * Vai selecionar apenas o primeiro gênero.
+	 * Caso esteja em mais de um gênero não vai ser ponderado.
+	 * 
+	 * @param dto
+	 */
+	private void applySpotifyShufflePorGeneros( ProgramacaoListMidiaListDTO dto )
+	{
+		Double tamanhoLista = Integer.valueOf( dto.getMidias().size() ).doubleValue();
+
+		Map<Genero, List<Midia>> musicasPorGeneros = new HashMap<Genero, List<Midia>>();
+		
+		for ( Midia m : dto.getMidias() ){
+			
+			Genero primeiroGenero = null;
+			
+			if ( m.getGeneros() != null && m.getGeneros().size() > 0 )
+				primeiroGenero = m.getGeneros().get( 0 );
+			
+			List<Midia> subLista = musicasPorGeneros.get( primeiroGenero );
+			
+			if ( subLista == null ){
+				subLista = new ArrayList<Midia>();
+				musicasPorGeneros.put( primeiroGenero, subLista );
+			}
+			
+			subLista.add( m );
+		}
+		
+		espalhaPosicaoShuffle( dto.getMusicaCategoria(), musicasPorGeneros, tamanhoLista );
+		
+		Comparator<Midia> pelaPosicaoShuffle = ( m1, m2 ) -> m1.getPosicaoShuffle().compareTo( m2.getPosicaoShuffle() );
+		
+		dto.getMidias().sort( pelaPosicaoShuffle );
+	}
+
+
+
+	/**
+	 * Básico do algorítmo
+	 * 
+	 * <ul>
+	 *   <li>Precisa do tamanho da lista total
+	 *   <li>Agrupa músicas por alguma "coisa" ( Artista, Gênero )
+	 *   <li>Para cada "coisa" vai distanciar as músicas igualmente com um random número que não supera o tamanho total da lista
+	 *   <li>"Projeta" cada uma das listas distanciadas em uma lista resultado. Como se estivesse combinando baralhos com espaçamentos diferentes.
+	 * </ul>
+	 * 
+	 * 
+	 * @param dto
+	 */
+	private <T> void espalhaPosicaoShuffle( Categoria categoria, Map<T, List<Midia>> musicasPorGrupo, Double tamanhoLista )
+	{
 		ThreadLocalRandom rnd = ThreadLocalRandom.current();
 
-		musicasPorArtista.forEach( ( artista, musicasArtista ) -> {
+		musicasPorGrupo.forEach( ( grupo, subListaMusicas ) -> {
 
-			double tamanhoListaLocal = Integer.valueOf( musicasArtista.size() ).doubleValue();
+			double tamanhoListaLocal = Integer.valueOf( subListaMusicas.size() ).doubleValue();
 			double distancia = tamanhoLista / tamanhoListaLocal;
 			double limitePadding = tamanhoLista - ( distancia * tamanhoListaLocal );  
 			double initialPadding = 1 + (limitePadding - 1) * rnd.nextDouble();
 			double posicao = initialPadding;
 			
-			for ( Midia musica : musicasArtista )
+			for ( Midia musica : subListaMusicas )
 			{
 				// Marcando a mídia como música... faço isso nesse ponto para não ter que fazer OUTRO for... estou aproveitando esse LOOP
-				musica.setCategoriaSelecionada( dto.getMusicaCategoria() );
+				musica.setCategoriaSelecionada( categoria );
 				
 				musica.setPosicaoShuffle( Double.valueOf( posicao ) );
 				
@@ -1206,13 +1280,8 @@ public class ProgramacaoMusicalService {
 					posicao += ( distancia - ( distancia * randomAmount ) );
 			};
 		});
-		
-		
-		Comparator<Midia> pelaPosicaoShuffle = ( m1, m2 ) -> m1.getPosicaoShuffle().compareTo( m2.getPosicaoShuffle() );
-		
-		musicas.sort( pelaPosicaoShuffle );
- 
 	}
+	
 	
 	
 	public void consomeMidias( Ambiente ambiente, ProgramacaoListMidiaListDTO dto )

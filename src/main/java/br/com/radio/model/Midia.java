@@ -401,7 +401,8 @@ public class Midia implements Serializable {
 	@Override
 	public String toString()
 	{
-		return String.format( "Midia [idMidia=%s, nome=%s, categorias=%s, generos=%s]", idMidia, nome, categorias, generos );
+		return String.format( "Midia [idMidia=%s, generos=%s]", idMidia, generos );
+//		return String.format( "Midia [idMidia=%s, nome=%s, categorias=%s, generos=%s]", idMidia, nome, categorias, generos );
 //		return String.format( "Midia [idMidia=%s, categoria=%s]", idMidia, categorias );
 	}
 	

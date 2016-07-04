@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
+import br.com.radio.model.Genero;
 import br.com.radio.model.HistoricoStatusAmbiente;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Titulo;
@@ -57,6 +59,7 @@ import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
+import br.com.radio.service.programacaomusical.ProgramacaoListMidiaListDTO;
 import br.com.radio.util.UtilsDates;
 import de.jollyday.Holiday;
 import de.jollyday.HolidayManager;
@@ -68,11 +71,12 @@ import de.jollyday.HolidayManager;
 
 
 
-//@SpringBootApplication
-//@ComponentScan( basePackages = { "br.com.radio.*" } )
-//@EnableConfigurationProperties
-//@ActiveProfiles({"default"})
-//@EnableTransactionManagement
+
+@SpringBootApplication
+@ComponentScan( basePackages = { "br.com.radio.*" } )
+@ActiveProfiles({"default"})
+@EnableConfigurationProperties
+@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)
@@ -84,8 +88,72 @@ public class Application {
 		
 //		testaCriteriaListaMusica( ctx );
 		
-		testaRelatorioGeneros( ctx );
+//		testaRelatorioGeneros( ctx );
+		
+		testeAlternanciaGeneros( ctx );
 	}
+
+
+	private static void testeAlternanciaGeneros( ApplicationContext ctx ){
+		
+		ProgramacaoMusicalService pms = ctx.getBean( ProgramacaoMusicalService.class );
+		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
+		
+		Ambiente ambiente = ambRepo.findOne( 1L );
+		
+//		Map<Set<Genero>, ProgramacaoListMidiaListDTO> musicasPorGenero = pms.selecaoMusicas( ambiente );
+////		
+//		for ( ProgramacaoListMidiaListDTO dto : musicasPorGenero.values() ){
+//
+//			dto.getMidias().forEach( m -> {
+//				if ( m.getNome().equals("091 Candy Dulfer - Funkyness.mp3") )
+//					System.out.println(m);
+//			});
+//			
+//			Map<Set<Genero>, AtomicLong> totaisPorGeneros = new HashMap<Set<Genero>, AtomicLong>();
+//			
+//			for ( Midia m : dto.getMidias() ){
+//				
+//				Set<Genero> s = new HashSet<>(m.getGeneros());
+//				
+//				AtomicLong total = totaisPorGeneros.get( s );
+//				
+//				if ( total == null ){
+//					total = new AtomicLong(0);
+//					totaisPorGeneros.put( s, total );
+//				}
+//				total.incrementAndGet();
+//			}
+//			
+//			totaisPorGeneros.forEach( ( s, l ) -> {
+//				System.out.println( ""+l+" | " + s);
+//			});
+//		}
+
+
+		pms.geraTransmissao( ambiente );
+
+		
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	private static void testaRelatorioGeneros( ApplicationContext ctx ){
 		

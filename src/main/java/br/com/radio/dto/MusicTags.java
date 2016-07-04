@@ -21,7 +21,7 @@ public class MusicTags {
 		midia.setDuracao( trackLength );
 
 		midia.setTitle( title );
-		midia.setArtist( artist );
+		midia.setArtist( artist == null ? "" : artist );
 		midia.setAlbum( album );
 		midia.setComment( comment );
 		midia.setDatetag( date );
