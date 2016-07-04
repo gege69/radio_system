@@ -207,7 +207,7 @@
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
 
-<link rel="stylesheet" href="http://s.mlcdn.co/animate.css">
+<link href="${context}/css/animate.min.css" rel="stylesheet">
 
 <script id="viewTmpl" type="text/x-jsrender">
     

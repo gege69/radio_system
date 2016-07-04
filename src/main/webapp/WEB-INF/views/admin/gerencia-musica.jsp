@@ -187,7 +187,7 @@
       
 </script>  
 
-<link rel="stylesheet" href="http://s.mlcdn.co/animate.css">
+<link href="${context}/css/animate.min.css" rel="stylesheet">
 
 <script src="${context}/js/required/jquery.spinner.min.js"></script>
 
