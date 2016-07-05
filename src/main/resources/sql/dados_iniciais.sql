@@ -259,6 +259,27 @@ insert into funcionalidade ( ordem, nome, url, icone, extrahtml, ativo, codigo )
 insert into funcionalidade ( ordem, nome, url, icone, ativo, codigo ) values ( 17, 'SendVoice' ,            '/ambientes/%d/sendvoices/view' ,           'fa-microphone', false  , 'sendvoice' );
 
 
+-- MELHORAR ISSO AQUI PARA FICAR TUDO NO INSERT
+
+update funcionalidade set size_big = 'md-48', size_small = 'md-18', classes_icone = 'material-icons', icone = 'library_music'	where codigo = 'generos';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-file-audio-o', icone = ''  			where codigo = 'vinheta';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-headphones', icone = ''  			where codigo = 'inst';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-film', icone = ''  					where codigo = 'comercial';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-bullhorn', icone = ''  				where codigo = 'programete';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-bolt', icone = ''  					where codigo = 'chamada_inst';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-users', icone = ''  					where codigo = 'chamada_func';
+update funcionalidade set size_big = 'md-48', size_small = 'md-18', classes_icone = 'material-icons', icone = 'view_comfy'  	where codigo = 'blocos';
+update funcionalidade set size_big = 'md-48', size_small = 'md-18', classes_icone = 'material-icons', icone = 'watch_later'  	where codigo = 'expediente';
+update funcionalidade set size_big = 'md-48', size_small = 'md-18', classes_icone = 'material-icons', icone = 'alarm'  			where codigo = 'eventos';
+update funcionalidade set size_big = 'md-48', size_small = 'md-18', classes_icone = 'material-icons', icone = 'grid_on'  		where codigo = 'prog_musical';
+update funcionalidade set size_big = 'md-48', size_small = 'md-18', classes_icone = 'material-icons', icone = 'settings' 		where codigo = 'config';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-files-o', icone = ''  				where codigo = 'relatorios';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-floppy-o', icone = ''  				where codigo = 'downloads';
+update funcionalidade set size_big = 'md-48', size_small = 'md-18', classes_icone = 'material-icons', icone = 'wallpaper'	  	where codigo = 'logomarca';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-play', icone = ''  					where codigo = 'simular';
+update funcionalidade set size_big = 'fa-3x', size_small = '', 		classes_icone = 'fa fa-microphone', icone = ''  			where codigo = 'sendvoice';
+
+
 
 
 

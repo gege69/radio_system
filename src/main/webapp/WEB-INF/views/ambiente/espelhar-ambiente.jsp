@@ -120,6 +120,18 @@
         <h4 class="modal-title" id="titulo-modal">Espelhar ambiente</h4>
       </div>
       <div class="modal-body">
+
+        <div class="row">
+          <div class="col-lg-12 col-md-12" id="alertAreaModal">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="loader" id="ajaxload" style="display : none;"></div>
+        </div>
+
+        <div class="spacer-vertical10"></div>
+
         <form action="#" class="form-horizontal" id="dialogEspelhar">
           
           <div class="row">
@@ -150,7 +162,7 @@
 
 </style>
 
-
+<script src="${context}/js/required/jquery.spinner.min.js" defer></script>
 <script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
 
 <script type="text/javascript">
@@ -178,8 +190,8 @@
                     }));
                 }
             });
-            
             jump('ncmForm');
+
         });
     };
 
@@ -190,6 +202,8 @@
         
         var formData =  $('#formEspelhar').serializeJSON();
         
+        $("#btnConfirmarEspelhar").prop("disabled",true);
+        $('#ajaxload').show();
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
@@ -200,12 +214,20 @@
 
             if (json.ok == 1){
                 preencheAlertGeral( "alertArea", "Ambiente espelhado com sucesso", "success" );
-                $('#myDialog').modal('toggle');
+                $('#myDialog').modal('hide');
+                jump('ncmForm');
             }
             else{
-                preencheErros( json.errors );
+                preencheErros( json.errors, "alertAreaModal" );
                 $('#myDialog').modal('toggle');
             }
+
+            $('#ajaxload').hide();
+            $("#btnConfirmarEspelhar").prop("disabled",false);
+
+        }).fail( function(){
+            $('#ajaxload').hide();
+            $("#btnConfirmarEspelhar").prop("disabled",false);
         });
     };
 

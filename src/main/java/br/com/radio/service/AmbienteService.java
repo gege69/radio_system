@@ -1,6 +1,8 @@
 package br.com.radio.service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
@@ -81,6 +83,9 @@ public class AmbienteService {
 	
 	@Autowired
 	private EventoHorarioRepository eventoHorarioRepo;
+	
+	@Autowired
+	private ProgramacaoMusicalService progMusicalService;
 	
 	@Autowired
 	private EntityManager entityManager;
@@ -419,6 +424,8 @@ public class AmbienteService {
 	
 	@Transactional
 	public void espelharAmbiente( EspelharAmbienteDTO espelharDTO ){
+
+		LocalDateTime inicio = LocalDateTime.now();
 		
 		if ( espelharDTO.getIdAmbienteTemplate() == null || espelharDTO.getIdAmbienteTemplate() == 0 )
 			throw new RuntimeException("Ambiente modelo não foi selecionado");
@@ -435,13 +442,19 @@ public class AmbienteService {
 		if ( ambienteAlvo == null )
 			throw new RuntimeException("Ambiente alvo não encontrado");
 		
+		// Logomarca
+		ambienteAlvo.setLogomarca( ambienteOrigem.getLogomarca() );
+		ambienteAlvo.setLogomimetype( ambienteOrigem.getLogomimetype() );
+
 		// Primeiro limpando o ambiente alvo
 		midiaAmbienteRepository.deleteByAmbiente( ambienteAlvo );
 		ambienteGeneroRepo.deleteByAmbiente( ambienteAlvo );
 		ambienteConfigRepo.deleteByAmbiente( ambienteAlvo );
 		
+		// Blocos
 		espelharBlocos( ambienteOrigem, ambienteAlvo );
 		
+		// Eventos
 		espelharEventos( ambienteOrigem, ambienteAlvo );
 		
 		List<MidiaAmbiente> midiaAmbienteList = midiaAmbienteRepository.findByAmbiente( ambienteOrigem );
@@ -449,21 +462,31 @@ public class AmbienteService {
 		
 		Date hoje = new Date();
 		
+		// Associação de Mídias
 		midiaAmbienteList.forEach( ma -> {
 			MidiaAmbiente novoMa = new MidiaAmbiente( ambienteAlvo, ma.getMidia(), hoje );
 			midiaAmbienteRepository.save( novoMa );
 		});
 		
+		// Associação de Gêneros
 		ambienteGeneroList.forEach( ag -> {
 			AmbienteGenero novoAg = new AmbienteGenero( ambienteAlvo, ag.getGenero() );
 			ambienteGeneroRepo.save( novoAg );
 		});
 		
+		// Expediente
 		ambienteAlvo.setHoraIniExpediente( ambienteOrigem.getHoraIniExpediente() );
 		ambienteAlvo.setMinutoIniExpediente( ambienteOrigem.getMinutoIniExpediente() );
 		ambienteAlvo.setHoraFimExpediente( ambienteOrigem.getHoraFimExpediente() );
 		ambienteAlvo.setMinutoFimExpediente( ambienteOrigem.getMinutoFimExpediente() );
 
+		// Programação Musical
+		progMusicalService.espelharProgramacaoMusical(ambienteOrigem, ambienteAlvo); 
+		
+		// Gerando a transmissão a partir da programação 
+		progMusicalService.geraTransmissao( ambienteOrigem );
+		
+		// Configuração
 		AmbienteConfiguracao configuracaoOrigem = ambienteConfigRepo.findByAmbiente( ambienteOrigem );
 		AmbienteConfiguracao configuracaoAlvo = new AmbienteConfiguracao(); 
 		
@@ -473,7 +496,14 @@ public class AmbienteService {
 		configuracaoAlvo.setDataCriacao( new Date() );
 		
 		ambienteConfigRepo.save( configuracaoAlvo );
+
+		LocalDateTime fim = LocalDateTime.now();
+		
+		long dif = ChronoUnit.SECONDS.between(inicio, fim);
+		
+		System.out.println(":) "+dif);
 	}
+
 
 
 

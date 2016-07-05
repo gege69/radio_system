@@ -171,7 +171,6 @@
 <link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 
 <script src="${context}/js/required/jsrender.min.js"></script>
-<script src="${context}/js/required/reckon.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>
@@ -187,9 +186,9 @@
       
 </script>  
 
-<link href="${context}/css/animate.min.css" rel="stylesheet">
+<link href="${context}/css/animate.min.css" rel="stylesheet" defer>
 
-<script src="${context}/js/required/jquery.spinner.min.js"></script>
+<script src="${context}/js/required/jquery.spinner.min.js" defer></script>
 
 <script src="${context}/js/admin/grid-musica.js" charset="UTF-8"></script>
 

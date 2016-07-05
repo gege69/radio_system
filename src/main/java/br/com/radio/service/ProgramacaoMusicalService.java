@@ -209,6 +209,38 @@ public class ProgramacaoMusicalService {
 		
 		return gravaGenerosProgramacaoDiaInteiro( ambiente, dia, generos );
 	}
+
+
+
+
+	@Transactional
+	public void espelharProgramacaoMusical( Ambiente ambienteOrigem, Ambiente ambienteAlvo ){
+		
+		// Inativando as velhas
+		List<Programacao> programacoesVelhas = programacaoRepo.findByAmbienteAndAtivoTrue( ambienteAlvo );
+
+		programacoesVelhas.forEach( prog -> {
+			prog.setAtivo( false );
+			prog.setDataInativo( new Date() );
+		});
+		
+		programacaoRepo.save( programacoesVelhas );
+
+
+		// Copiando as novas
+		List<Programacao> programacoesOrigem = programacaoRepo.findByAmbienteAndAtivoTrue( ambienteOrigem );
+
+		Map<DiaSemana, List<Programacao>> programacaoOrigemPorDia = programacoesOrigem.stream().collect( Collectors.groupingBy( Programacao::getDiaSemana ) );
+		
+		programacaoOrigemPorDia.forEach( ( dia, list ) -> {
+			list.forEach( original -> {
+				Programacao nova = gravaNovaProgramacao( ambienteAlvo, new Programacao( ambienteAlvo, original.getDiaSemana(), original.getHoraInicio() ), false);
+				gravaGeneros( original.getGeneros(), nova);
+			});
+		});
+		
+	}
+
 	
 	
 	
@@ -738,8 +770,6 @@ public class ProgramacaoMusicalService {
 			novaListaMidias.add( midia );
 	}
 
-
-	
 
 
 	private ListaInesgotavelRandomAlternada getListaInesgotavelOpcionais( Bloco bloco ){

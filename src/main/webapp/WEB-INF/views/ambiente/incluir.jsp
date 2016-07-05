@@ -13,6 +13,10 @@
         <div class="panel-body">
 
           <div class="row">
+            <div class="loader" id="ajaxload" style="display : none;"></div>
+          </div>
+
+          <div class="row">
             <div class="col-lg-6 col-md-6">
               <h3>Incluir Ambiente<br/>
                 <small>Preencha as informações</small>
@@ -40,7 +44,7 @@
             <div class="form-group">
               <label for="login" class="control-label col-sm-2 col-md-3">Login:</label>
               <div class="col-sm-5 col-md-4">
-                <input type="email" class="form-control" id="login_amb" placeholder="Login" name="login" >
+                <input type="email" class="form-control" id="login_amb" placeholder="Login" name="login" style="text-transform: lowercase;" >
               </div>
             </div>
             
@@ -121,24 +125,33 @@
         
         if ( validaForm() ){
             
+            $("#btnAdicionar").prop("disabled",true);
+            $('#ajaxload').show();
+
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
                 url: '${context}/ambientes',
                 dataType: 'json',
-                data: JSON.stringify( $('#ambiente-form').serializeJSON() ),
-                success: function(json){
+                data: JSON.stringify( $('#ambiente-form').serializeJSON() )
+            }).done( function(json){ 
                   
-                    if (json.ok != null ){
-                       
-                        preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
-                          
-                        jump(''); // topo da pagina
-                    }
-                    else{
-                        preencheErros( json.errors );
-                    }
+                if (json.ok != null ){
+                   
+                    preencheAlertGeral( "alertArea", "Registro salvo com sucesso.", "success" );
+                      
+                    jump(''); // topo da pagina
                 }
+                else{
+                    preencheErros( json.errors );
+                }
+
+                $('#ajaxload').hide();
+                $("#btnAdicionar").prop("disabled",false);
+                
+            }).fail( function(){
+                $('#ajaxload').hide();
+                $("#btnAdicionar").prop("disabled",false);
             });
         }
         

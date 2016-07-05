@@ -465,6 +465,7 @@ $(function(){
     $("#btnLimparFiltro").click(function(){
         limpaFiltro();
         jump("table-musicas");
+        $("#table-musicas").bootstrapTable('uncheckAll');
         $("#table-musicas").bootstrapTable('resetSearch');
     });
 

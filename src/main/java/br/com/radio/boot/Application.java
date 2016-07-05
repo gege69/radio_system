@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.threeten.extra.Interval;
 
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
+import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
@@ -46,6 +47,7 @@ import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.Genero;
 import br.com.radio.model.HistoricoStatusAmbiente;
 import br.com.radio.model.Midia;
+import br.com.radio.model.Programacao;
 import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.fixture.FixtureAmbiente;
@@ -55,6 +57,8 @@ import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.CondicaoComercialRepository;
 import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaRepository;
+import br.com.radio.repository.ProgramacaoGeneroRepository;
+import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.MidiaService;
@@ -65,7 +69,6 @@ import de.jollyday.Holiday;
 import de.jollyday.HolidayManager;
 
 /* LEMBRAR DE COMMENTAR ISSO AQUI POIS ALGUMAS TELAS DÃO CONFLITO COM O BOOT.... DESCOBRIR DEPOIS */
-
 
 
 
@@ -92,6 +95,42 @@ public class Application {
 		
 		testeAlternanciaGeneros( ctx );
 	}
+
+
+
+
+	private static void testeEspelhar( ApplicationContext ctx ){
+		
+		ProgramacaoMusicalService pms = ctx.getBean( ProgramacaoMusicalService.class );
+		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
+		ProgramacaoRepository programacaoRepo = ctx.getBean( ProgramacaoRepository.class );
+		ProgramacaoGeneroRepository progGenRepo = ctx.getBean( ProgramacaoGeneroRepository.class );
+		
+		Ambiente ambiente = ambRepo.findOne( 1L );
+
+		Ambiente ambienteTestePazin = ambRepo.findOne( 9L );
+
+		for ( DiaSemana dia : DiaSemana.values() ) {
+			
+			List<Programacao> programacoesDoDia = programacaoRepo.findByAmbienteAndDiaSemanaAndAtivoTrue( ambiente, dia );
+			
+			programacoesDoDia.forEach( prog -> {
+				prog.setAtivo( false );
+				prog.setDataInativo( new Date() );
+			});
+			
+		}
+
+		
+//		programacaoRepo.save( programacoesDoDia );
+		
+
+
+
+		
+	}
+
+
 
 
 	private static void testeAlternanciaGeneros( ApplicationContext ctx ){
@@ -135,16 +174,6 @@ public class Application {
 
 		
 	}
-
-
-
-
-
-
-
-
-
-
 
 
 

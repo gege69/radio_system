@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
 import br.com.radio.enumeration.StatusAmbiente;
@@ -337,12 +338,16 @@ public class Ambiente implements Serializable {
 
 	public String getLogin()
 	{
+		if ( login != null )
+			login = StringUtils.lowerCase( login );
 		return login;
 	}
 
 
 	public void setLogin( String login )
 	{
+		if ( login != null )
+			login = StringUtils.lowerCase( login );
 		this.login = login;
 	}
 
