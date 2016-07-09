@@ -237,15 +237,15 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
-<script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js" defer></script>
 
-<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
-<link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-pt-BR.min.js" charset="UTF-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css" rel="stylesheet">
 
-<script src="${context}/js/required/jquery-ui.min.js"></script>
-<script src="${context}/js/required/jquery.iframe-transport.js"></script>
-<script src="${context}/js/required/jquery.fileupload.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.12.5/js/jquery.iframe-transport.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.12.5/js/jquery.fileupload.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.plyr.io/1.3.7/plyr.css" defer>
 <script src="https://cdn.plyr.io/1.3.7/plyr.js" defer></script>

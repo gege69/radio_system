@@ -163,7 +163,7 @@
 </style>
 
 <script src="${context}/js/required/jquery.spinner.min.js" defer></script>
-<script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js" defer></script>
 
 <script type="text/javascript">
 

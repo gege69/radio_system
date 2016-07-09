@@ -44,7 +44,7 @@
 <link href="${pageContext.request.contextPath}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath}/css/bootstrap-datepicker3.css" rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.6.2/jquery.serializejson.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
 <script src="${pageContext.request.contextPath}/js/required/bootstrap-table/bootstrap-table.js" async></script>

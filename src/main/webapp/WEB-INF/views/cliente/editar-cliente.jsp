@@ -584,19 +584,19 @@
 </script>
 
 
-<script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
-<script type="text/javascript" src="${context}/js/required/jquery.populate.js" async></script>
-<script type="text/javascript" src="${context}/js/required/jsrender.min.js" defer></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js" defer></script>
+<script type="text/javascript" src="${context}/js/required/jquery.populate.min.js" async></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.78/jsrender.min.js" defer></script>
 <script type="text/javascript" src="${context}/js/required/jquery.mask.min.js" defer></script>
 
-<link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css" rel="stylesheet">
 
 <script type="text/javascript" src="${context}/js/required/zxcvbn.js" async></script>
 
 <script type="text/javascript" src="${context}/js/cliente/editar-cliente.js" async charset="UTF-8"></script>
 
-<script src="${context}/js/required/bootstrap-table/bootstrap-table.js" ></script>
-<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8" r></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-pt-BR.min.js" charset="UTF-8" r></script>
 
 <style type="text/css">
 

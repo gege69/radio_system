@@ -258,11 +258,9 @@
   </div> <!-- /container -->
 
 
-<script src="${context}/js/required/jsrender.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.78/jsrender.min.js"></script>
 
 <script id="viewTmplOpcionais" type="text/x-jsrender"  charset="UTF-8">
-
-
   <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-12">
     <label>
       <input type="checkbox" class="checkbox-opcional checkBloco" id="opcional-{{:idOpcional}}" name="opcionais[][idOpcional]" value="{{:idOpcional}}"> {{:nome}}
@@ -271,8 +269,8 @@
 </script>
 
 
-<script src="${context}/js/required/jquery.serializejson.js"></script>
-<script src="${context}/js/required/jquery.populate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js"></script>
+<script src="${context}/js/required/jquery.populate.min.js"></script>
 
 <script src="${context}/js/ambiente/blocos.js"  charset="UTF-8"></script>
 

@@ -185,11 +185,12 @@
   </div> <!-- /container -->
 
 
-<script src="${context}/js/required/jsrender.min.js"></script>
-<script src="${context}/js/required/bootstrap-table/bootstrap-table.js"></script>
-<script src="${context}/js/required/bootstrap-table/locale/bootstrap-table-pt-BR.js" charset="UTF-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.78/jsrender.min.js"></script>
 
-<link href="${context}/css/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-pt-BR.min.js" charset="UTF-8"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css" rel="stylesheet">
 
 
 <script id="viewTmpl" type="text/x-jsrender">

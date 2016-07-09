@@ -186,8 +186,8 @@
 </div><!-- /.modal -->
 
 
-<script src="${context}/js/required/jsrender.min.js"></script>
-<script src="${context}/js/required/jquery.serializejson.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.78/jsrender.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js"></script>
 
 <script id="viewTmpl" type="text/x-jsrender">
 <tr>

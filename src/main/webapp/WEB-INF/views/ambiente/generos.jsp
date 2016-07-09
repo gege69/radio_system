@@ -94,7 +94,7 @@
       
   </div> <!-- /container -->
 
-<script src="${context}/js/required/jsrender.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.78/jsrender.min.js"></script>
 
 <script id="viewTmpl" type="text/x-jsrender">
     

@@ -272,10 +272,10 @@
   </div> <!-- /container -->
   
   
-<script src="${context}/js/required/jquery.serializejson.js"></script>
-<script src="${context}/js/required/jquery.populate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js"></script>
+<script src="${context}/js/required/jquery.populate.min.js"></script>
 
-<script src="${context}/js/required/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script src="${context}/js/required/bootstrap-slider.min.js" charset="UTF-8"></script>
 
 <link href="${context}/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet">

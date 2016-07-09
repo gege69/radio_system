@@ -286,18 +286,18 @@
 
 
 
-<script type="text/javascript" src="${context}/js/required/jquery.serializejson.js" defer></script>
-<script type="text/javascript" src="${context}/js/required/jquery.populate.js" async></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js" defer></script>
+<script type="text/javascript" src="${context}/js/required/jquery.populate.min.js" async></script>
 <script type="text/javascript" src="${context}/js/required/jquery.mask.min.js" defer></script>
 <script type="text/javascript" src="${context}/js/required/jquery.maskMoney.min.js" defer></script>
 <script type="text/javascript" src="${context}/js/required/moment-with-locales.min.js" defer></script>
 
-<%-- <link href="${context}/css/bootstrap-datepicker3.css" rel="stylesheet"> --%>
+<%-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker3.min.css" rel="stylesheet"> --%>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.min.css" rel="stylesheet">
 
-<%-- <script src="${context}/js/required/bootstrap-datepicker.min.js"></script> --%>
-<%-- <script src="${context}/js/required/bootstrap-datepicker.pt-BR.min.js"></script> --%>
+<%-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"></script> --%>
+<%-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/locales/bootstrap-datepicker.pt-BR.min.js"></script> --%>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/locales/bootstrap-datepicker.pt-BR.min.js"></script>

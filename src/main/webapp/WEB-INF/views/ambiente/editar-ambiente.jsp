@@ -193,8 +193,8 @@
   </div> <!-- /container -->
 
 
-<script type="text/javascript" src="${context}/js/required/jquery.serializejson.js"></script>
-<script type="text/javascript" src="${context}/js/required/jquery.populate.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js"></script>
+<script type="text/javascript" src="${context}/js/required/jquery.populate.min.js"></script>
 <script type="text/javascript" src="${context}/js/required/zxcvbn.js"></script>
 
 <script type="text/javascript">

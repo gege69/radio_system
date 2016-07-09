@@ -12,8 +12,8 @@
   
     <c:choose>
       <c:when test="${tema == null || tema eq '' || tema eq 'default' }">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-<%--     <link href="${context}/css/bootstrap.css" rel="stylesheet"> --%>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
       </c:when>
       <c:otherwise>
         <link href="${context}/css/bootstrap-themes/${tema}/bootstrap.min.css" rel="stylesheet">

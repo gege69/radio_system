@@ -216,8 +216,8 @@
   </div>
 </div>
 
-<script src="${context}/js/required/jquery.serializejson.js"></script>
-<script src="${context}/js/required/jquery.populate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.7.2/jquery.serializejson.min.js"></script>
+<script src="${context}/js/required/jquery.populate.min.js"></script>
 
 <script type="text/javascript">
 
