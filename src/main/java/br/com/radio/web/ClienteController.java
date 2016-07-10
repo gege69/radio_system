@@ -4,9 +4,11 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +47,8 @@ import br.com.radio.util.UtilsStr;
 @Controller
 public class ClienteController extends AbstractController {
 	
+	private final Logger logger = Logger.getLogger( ClienteController.class );
+
 	@Autowired
 	private UsuarioService usuarioService;
 	
@@ -64,24 +68,12 @@ public class ClienteController extends AbstractController {
 	private TipoTaxaRepository tipoTaxaRepo;
 	
 
-//	@RequestMapping(value="/admin/clientes/searches", method=RequestMethod.GET)
-//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-//	public String cadastro( ModelMap model, Principal principal )
-//	{
-//		Usuario usuario = usuarioService.getUserByPrincipal( principal );
-//		
-//		if ( usuario == null || usuario.getCliente() == null )
-//			return "HTTPerror/404";
-//		
-//		Long quantidade = clienteRepo.count();
-//		
-//		model.addAttribute( "qtdClientes", quantidade.intValue() );
-//
-//		
-//		return "admin/cadastro-clientes";
-//	}
-	
-	
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
+	}
+
 	@RequestMapping(value={ "/admin/clientes/new" }, method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String novoClienteAdmin( ModelMap model, Principal principal )
@@ -243,7 +235,7 @@ public class ClienteController extends AbstractController {
 	
 	@RequestMapping( value = { "/clientes", "/api/clientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('DADOS_CLIENTE')")
-	public @ResponseBody String saveCliente( @RequestBody @Valid Cliente cliente, BindingResult result, Principal principal )
+	public @ResponseBody String saveCliente( @RequestBody @Valid Cliente cliente, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -269,7 +261,7 @@ public class ClienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Cliente", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -302,7 +294,6 @@ public class ClienteController extends AbstractController {
 		
 		List<CondicaoComercial> list = ccPage.getContent();
 		
-		
 		JSONBootstrapGridWrapper<CondicaoComercial> jsonList = new JSONBootstrapGridWrapper<CondicaoComercial>( list, ccPage.getTotalElements() );
 
 		return jsonList;
@@ -312,7 +303,7 @@ public class ClienteController extends AbstractController {
 	
 	@RequestMapping( value = { "/clientes/{idCliente}/condicoescomerciais", "/api/clientes/{idCliente}/condicoescomerciais" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveCondicaoComercial( @RequestBody @Valid CondicaoComercial condicaoComercialVO, BindingResult result, Principal principal )
+	public @ResponseBody String saveCondicaoComercial( @RequestBody @Valid CondicaoComercial condicaoComercialVO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -335,7 +326,7 @@ public class ClienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Condição Comercial", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -400,7 +391,6 @@ public class ClienteController extends AbstractController {
 		
 		if ( usuario == null || usuario.getCliente().getIdCliente() == null )
 			return null;
-		
 		
 		// isso nem funciona direito
 		
@@ -515,7 +505,6 @@ public class ClienteController extends AbstractController {
 		}
 		else
 			return null;
-
 	}
 
 

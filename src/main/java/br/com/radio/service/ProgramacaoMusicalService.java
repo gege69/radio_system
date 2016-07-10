@@ -629,7 +629,7 @@ public class ProgramacaoMusicalService {
 
 		musicasPorGenero.forEach( ( generosSet, dto ) -> {
 			
-//			printaInformacoes( generosSet, dto );
+			printaInformacoes( generosSet, dto );
 
 			// algoritmo do spotify
 			applySpotifyShufflePorArtista( dto );
@@ -644,7 +644,7 @@ public class ProgramacaoMusicalService {
 //				logger.info( m.toString() );
 //			});
 			
-//			validaClusters( dto );
+			validaClusters( dto );
 
 			// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
 			consomeMidias( ambiente, dto );
@@ -714,8 +714,10 @@ public class ProgramacaoMusicalService {
 			if ( i+2 < midias.size() )
 				nextnext = midias.get( i+2 );
 
-			if ( next != null && StringUtils.equals( atual.getGeneros().get( 0 ).getNome(), next.getGeneros().get( 0 ).getNome() ) )
+			if ( next != null && StringUtils.equals( atual.getGeneros().get( 0 ).getNome(), next.getGeneros().get( 0 ).getNome() ) ){
 				System.out.println( String.format( "Gênero %s está próximo em ids ( %d , %d ) ", atual.getGeneros().get( 0 ).getNome(), atual.getIdMidia(), next.getIdMidia()) );
+				logger.info( String.format( "Gênero %s está próximo em ids ( %d , %d ) ", atual.getGeneros().get( 0 ).getNome(), atual.getIdMidia(), next.getIdMidia()) );
+			}
 			
 //			if ( next != null && StringUtils.equals( atual.getArtist(), next.getArtist() ) )
 //				System.out.println( String.format( "Artista %s está próximo em ids ( %d , %d ) ", atual.getArtist(), atual.getIdMidia(), next.getIdMidia()) );
@@ -730,27 +732,26 @@ public class ProgramacaoMusicalService {
 
 	private void printaInformacoes( Set<Genero> generosSet, ProgramacaoListMidiaListDTO dto )
 	{
-//		System.out.println( "_______________" );
-//		
-//		Integer duracaoTotal = dto.getMidias().stream().mapToInt( Midia::getDuracao ).sum();
-//
-//		System.out.println( generosSet.toString() );
-//		System.out.println( dto.getMidias().size() );
-//		System.out.println( duracaoTotal + " segundos " );
-//		System.out.println( ( duracaoTotal / 60 ) + " minutos " );
-//		System.out.println( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
-//		System.out.println( dto.getProgramacoes().size() + " progamacoes (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
+		System.out.println( "_______________" );
+		
+		Integer duracaoTotal = dto.getMidias().stream().mapToInt( Midia::getDuracao ).sum();
+
+		System.out.println( generosSet.toString() );
+		System.out.println( dto.getMidias().size() );
+		System.out.println( duracaoTotal + " segundos " );
+		System.out.println( ( duracaoTotal / 60 ) + " minutos " );
+		System.out.println( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
+		System.out.println( dto.getProgramacoes().size() + " progamacoes (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
 
 		logger.info( "_______________" );
 		
-		Integer duracaoTotal = dto.getMidias().stream().mapToInt( Midia::getDuracao ).sum();
 
 		logger.info( generosSet.toString() );
 		logger.info( dto.getMidias().size() );
 		logger.info( duracaoTotal + " segundos " );
 		logger.info( ( duracaoTotal / 60 ) + " minutos " );
-		logger.info( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
-		logger.info( dto.getProgramacoes().size() + " progamacoes (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
+		logger.error( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
+		logger.warn( dto.getProgramacoes().size() + " programações é (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
 
 	}
 	

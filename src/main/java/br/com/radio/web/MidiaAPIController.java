@@ -1,7 +1,6 @@
 package br.com.radio.web;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,7 +49,7 @@ import br.com.radio.service.UsuarioService;
 @Controller
 public class MidiaAPIController extends AbstractController {
 	
-	private static final Logger logger = Logger.getLogger(MidiaAPIController.class);
+	private final Logger logger = Logger.getLogger(MidiaAPIController.class);
 	
 	private static final String TRANSMISSAO_ATUAL = "idTransmissaoAtual";
 	
@@ -79,26 +77,13 @@ public class MidiaAPIController extends AbstractController {
 	// Services =================
 	
 	
-	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleError(HttpServletRequest req, Exception exception) {
-		
-		// TODO: lembrar de tirar esse stacktrace
-		exception.printStackTrace();
-		
-		if ( exception.getCause() != null && exception.getCause().getClass().equals( IOException.class ) )
-			System.out.println("yeah!");
-			
-		logger.error("Request: " + req.getRequestURL() + " raised " + exception);
-
-		String jsonResult = writeSingleErrorAsJSONErroMessage( "erro", exception.getMessage() );
-		
-		return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
-		
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
 	}
 	
-	
-	
+
 	/**
 	 *  Como esse método não envolve tela ele é exclusivo da API
 	 *  
@@ -117,14 +102,15 @@ public class MidiaAPIController extends AbstractController {
     		@RequestParam("file") MultipartFile file, 
     		@RequestParam(name="descricao", required=false) String descricao,
     		Principal principal, 
-    		Model model )
+    		Model model,
+    		HttpServletRequest request )
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException( "Usuário não encontrado ou Cliente não encontrada."  );
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -140,20 +126,20 @@ public class MidiaAPIController extends AbstractController {
 				}
 				catch ( Exception e )
 				{
-					e.printStackTrace();
+					imprimeLogErroAmbiente( ambiente, request, e );
 
 					jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-					return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+					return respondeErro500( jsonResult );
 				}
 			}
 			else
 			{
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
-				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+				return respondeErro500( jsonResult );
 			}
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+		return respondeOk200( jsonResult );
     }	
 
 
@@ -166,14 +152,15 @@ public class MidiaAPIController extends AbstractController {
     		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") Date inicioValidade,
     		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") Date fimValidade,
     		Principal principal, 
-    		Model model )
+    		Model model,
+    		HttpServletRequest request)
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		if ( file != null && !file.isEmpty() )
 		{
@@ -185,20 +172,19 @@ public class MidiaAPIController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "", request, e );
 				
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+				return respondeErro500( jsonResult );
 			}
 		}
 		else
 		{
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+		return respondeOk200( jsonResult );
     }
 
 
@@ -212,14 +198,15 @@ public class MidiaAPIController extends AbstractController {
     		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") Date inicioValidade,
     		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") Date fimValidade,
     		Principal principal, 
-    		Model model )
+    		Model model,
+    		HttpServletRequest request)
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -235,23 +222,21 @@ public class MidiaAPIController extends AbstractController {
 				}
 				catch ( Exception e )
 				{
-					e.printStackTrace();
+					imprimeLogErroAmbiente( ambiente, request, e );
 
 					jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-					return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+					return respondeErro500( jsonResult );
 				}
 			}
 			else
 			{
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
-				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+				return respondeErro500( jsonResult );
 			}
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+		return respondeOk200( jsonResult );
     }
-
-
 
 
 
@@ -264,7 +249,8 @@ public class MidiaAPIController extends AbstractController {
     		@RequestParam(name="descricao", required=false) String descricao,
     		@RequestParam("generos[]") Long[] generos,
     		Principal principal, 
-    		Model model )
+    		Model model,
+    		HttpServletRequest request)
 	{
 		String jsonResult = "";
 
@@ -282,23 +268,22 @@ public class MidiaAPIController extends AbstractController {
 				JsonObjectBuilder builder = Json.createObjectBuilder();
 				JsonObjectBuilder builder2 = Json.createObjectBuilder();
 				jsonResult = builder.add("files", builder2.add( "name", midia.getNome() ) ).build().toString();
-//				jsonResult = writeOkResponse();
 			}
 			catch ( Exception e )
 			{
-				//e.printStackTrace();
+				imprimeLogErro( null, request, e );
 
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+				return respondeErro500( jsonResult );
 			}
 		}
 		else
 		{
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+		return respondeOk200( jsonResult );
     }	
 
 
@@ -481,7 +466,7 @@ public class MidiaAPIController extends AbstractController {
 		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
 		Ambiente ambiente = usuAmb.getAmbiente();
-		
+
 		if ( ambiente == null )
 			throw new RuntimeException( "Ambiente não encontrado" );
 		
@@ -512,14 +497,14 @@ public class MidiaAPIController extends AbstractController {
 	
 	
 	@RequestMapping(value="/ambientes/{idAmbiente}/midia/{idMidia}", method=RequestMethod.DELETE)
-	public ResponseEntity<String> deleteMidia( @PathVariable Long idAmbiente, @PathVariable Long idMidia, Principal principal, Model model )
+	public ResponseEntity<String> deleteMidia( @PathVariable Long idAmbiente, @PathVariable Long idMidia, Principal principal, Model model, HttpServletRequest request )
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
@@ -532,14 +517,14 @@ public class MidiaAPIController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( ambiente, request, e );
 
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+				return respondeErro500( jsonResult );
 			}
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+		return respondeOk200( jsonResult );
     }	
 
 	

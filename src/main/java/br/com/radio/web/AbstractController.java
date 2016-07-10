@@ -8,18 +8,25 @@ import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.HandlerMapping;
 
+import br.com.radio.model.Ambiente;
 import br.com.radio.model.Usuario;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +44,21 @@ public abstract class AbstractController {
 		mimeImagensSet.add( "image/png" );
 		mimeImagensSet.add( "image/jpg" );
 	}
+
+	protected abstract Logger getLogger();
 	
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String> handleError(HttpServletRequest req, Exception exception) {
+		
+		imprimeLogErro( "", req, exception );
+
+		String jsonResult = writeSingleErrorAsJSONErroMessage( "erro", exception.getMessage() );
+		
+		return respondeErro500( jsonResult );
+	}
+
+
 	protected int qtd = 6;
 	
 	public int getStartByPage(int page){
@@ -207,5 +228,43 @@ public abstract class AbstractController {
 		return !( clienteDiferente && !podeEditarOutrosClientes );
 	}
 	
+	protected void imprimeLogErroAmbiente( Long idAmbiente, HttpServletRequest request, Throwable e ){
+		this.imprimeLogErroAmbiente( "", idAmbiente, request, e );
+	}
+
+	protected void imprimeLogErroAmbiente( String mensagem, Long idAmbiente, HttpServletRequest request, Throwable e ){
+
+		if ( idAmbiente != null && idAmbiente != null)
+			mensagem = mensagem + String.format(" Id Ambiente %d", idAmbiente);
+
+		this.imprimeLogErro( mensagem, request, e );
+	}
+
+	protected void imprimeLogErroAmbiente( Ambiente ambiente, HttpServletRequest request, Throwable e ){
+		this.imprimeLogErroAmbiente( "", ambiente, request, e );
+	}
+
+	protected void imprimeLogErroAmbiente( String mensagem, Ambiente ambiente, HttpServletRequest request, Throwable e ){
+
+		if ( ambiente != null && ambiente.getNome() != null)
+			mensagem = mensagem + String.format(" Ambiente %s", ambiente.getNome());
+
+		this.imprimeLogErro( mensagem, request, e );
+	}
 	
+	protected void imprimeLogErro( String mensagem, HttpServletRequest request, Throwable e ){
+		String pattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+		Logger logger = getLogger();
+		logger.error( String.format( "Erro %s | %s", pattern, mensagem ), e );
+	}
+
+
+	protected <T> ResponseEntity<T> respondeErro500( T resultado ){
+		return new ResponseEntity<T>(resultado, HttpStatus.INTERNAL_SERVER_ERROR );
+	}
+
+	protected <T> ResponseEntity<T> respondeOk200( T resultado ){
+		return ResponseEntity.ok(resultado);
+	}
+
 }

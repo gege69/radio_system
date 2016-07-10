@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,6 +78,8 @@ import com.google.common.collect.Lists;
 @Controller
 public class GerenciadorController extends AbstractController {
 
+	private final Logger logger = Logger.getLogger( GerenciadorController.class );
+	
 	@Autowired
 	private GeneroRepository generoRepo;
 	@Autowired
@@ -103,6 +107,14 @@ public class GerenciadorController extends AbstractController {
 
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
+	
+
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
+	}
+
 
 	@RequestMapping( value = "endpoints", method = RequestMethod.GET )
 	public String getEndPointsInView( Model model )
@@ -210,7 +222,7 @@ public class GerenciadorController extends AbstractController {
 	
 
 	@RequestMapping( value = { "/parametros", "/api/parametros" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveParametro( @RequestBody ParametroDTO parametroDTO, BindingResult result, Principal principal )
+	public @ResponseBody String saveParametro( @RequestBody ParametroDTO parametroDTO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -233,7 +245,7 @@ public class GerenciadorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Parâmetros", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -326,14 +338,12 @@ public class GerenciadorController extends AbstractController {
 		
 		Pageable pageable = getPageable( pageNumber, limit, "asc", sort );
 		
-		
 		Page<Usuario> usuarioPage = null;
 		
 		if ( all != null && all )
 			usuarioPage = usuarioRepo.findByCliente( pageable, usuario.getCliente() );
 		else
 			usuarioPage = usuarioRepo.findByClienteAndUsuarioTipo( pageable, usuario.getCliente(), UsuarioTipo.GERENCIADOR );
-
 		
 		JSONListWrapper<Usuario> jsonList = new JSONListWrapper<Usuario>(usuarioPage.getContent(), usuarioPage.getTotalElements() );
 
@@ -353,7 +363,7 @@ public class GerenciadorController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/usuarios", "/api/usuarios" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveUsuario( @RequestBody @Valid UsuarioGerenciadorDTO usuarioGerenciadorDTO, BindingResult result, Principal principal )
+	public @ResponseBody String saveUsuario( @RequestBody @Valid UsuarioGerenciadorDTO usuarioGerenciadorDTO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -376,7 +386,7 @@ public class GerenciadorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Usuário", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -388,7 +398,7 @@ public class GerenciadorController extends AbstractController {
 
 	@RequestMapping( value = { "/usuarios/{idUsuario}/senha", "/api/usuarios/{idUsuario}/senha" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String alteraSenhaUsuarioGerenciador( @RequestBody @Valid AlterarSenhaAdminDTO alteraSenhaAdminDTO, BindingResult result, Principal principal )
+	public @ResponseBody String alteraSenhaUsuarioGerenciador( @RequestBody @Valid AlterarSenhaAdminDTO alteraSenhaAdminDTO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -411,7 +421,7 @@ public class GerenciadorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Senha Usuario", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -516,7 +526,7 @@ public class GerenciadorController extends AbstractController {
 
 
 	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes", "/api/perfis/{idPerfil}/permissoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String savePerfilPermissao( @PathVariable Long idPerfil, @RequestBody @Valid PerfilPermissaoDTO permissoesDTO, BindingResult result, Principal principal )
+	public @ResponseBody String savePerfilPermissao( @PathVariable Long idPerfil, @RequestBody @Valid PerfilPermissaoDTO permissoesDTO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -538,7 +548,7 @@ public class GerenciadorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Perfil Permissão", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -619,7 +629,7 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping(value="/senha", method=RequestMethod.POST, produces=APPLICATION_JSON_CHARSET_UTF_8)
 	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
-	public @ResponseBody String gravaNovaSenha( @RequestBody @Valid AlterarSenhaDTO senhaDTO, BindingResult result, Principal principal )
+	public @ResponseBody String gravaNovaSenha( @RequestBody @Valid AlterarSenhaDTO senhaDTO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = "";
 
@@ -637,6 +647,7 @@ public class GerenciadorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
+				imprimeLogErro( "Grava Nova Senha", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}

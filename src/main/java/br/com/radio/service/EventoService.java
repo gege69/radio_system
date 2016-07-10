@@ -128,6 +128,11 @@ public class EventoService {
 	{
 		List<Evento> eventos = getEventosHojePorAmbiente( ambiente );
 		
+		boolean temEventos = eventos != null && eventos.size() > 0;
+		
+		if ( temEventos )
+			logger.info( String.format( "Tarefas de eventos do ambiente %s ", ambiente.getNome() ) );
+
 		LocalTime agora = LocalTime.now().withSecond( 0 ).withNano( 0 );
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
@@ -157,6 +162,10 @@ public class EventoService {
 			});
 			
 		});
+
+
+		if ( temEventos )
+			logger.info( String.format( "FIM - Tarefas de eventos do ambiente %s ", ambiente.getNome() ) );
 	}
 	
 	

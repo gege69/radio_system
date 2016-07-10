@@ -3,8 +3,10 @@ package br.com.radio.web;
 import java.security.Principal;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,7 @@ import br.com.radio.service.UsuarioService;
 @Controller
 public class MensagemController extends AbstractController {
 	
+	private final Logger logger = Logger.getLogger( MensagemController.class );
 	
 	@Autowired
 	private ConversaRepository conversaRepo;
@@ -49,6 +52,12 @@ public class MensagemController extends AbstractController {
 	
 	@Autowired
 	private ConversaService conversaService;
+
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
+	}
 
 
 	@RequestMapping(value="/conversas/view", method=RequestMethod.GET)
@@ -93,7 +102,7 @@ public class MensagemController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/conversas", "/api/conversas" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveConversa( @RequestBody @Valid Conversa conversa, BindingResult result, Principal principal )
+	public @ResponseBody String saveConversa( @RequestBody @Valid Conversa conversa, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 
@@ -111,7 +120,7 @@ public class MensagemController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Conversa", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -188,7 +197,7 @@ public class MensagemController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/conversas/{idConversa}/mensagens", "/api/conversas/{idConversa}/mensagens" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveMensagem( @RequestBody @Valid Mensagem mensagem, BindingResult result, Principal principal )
+	public @ResponseBody String saveMensagem( @RequestBody @Valid Mensagem mensagem, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 
@@ -206,7 +215,7 @@ public class MensagemController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Mensagem", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}

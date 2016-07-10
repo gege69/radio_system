@@ -25,5 +25,11 @@ public class EspelharAmbienteDTO {
 	{
 		this.idAmbienteAtual = idAmbienteAtual;
 	}
+
+	@Override
+	public String toString()
+	{
+		return String.format( "idAmbienteTemplate=%s -> idAmbienteAtual=%s", idAmbienteTemplate, idAmbienteAtual );
+	}
 	
 }

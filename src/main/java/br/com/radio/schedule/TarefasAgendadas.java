@@ -62,16 +62,9 @@ public class TarefasAgendadas {
 	public void verificarEventos()
 	{
 		List<Ambiente> ambientes = ambienteRepo.findByStatus( StatusAmbiente.ATIVO );
-		
-		logger.info( "Rodando tarefas de eventos..." );
-		
 		ambientes.forEach( amb -> {
-			
 			eventoService.criaTransmissaoDosEventos( amb );
-			
 		});
-		
-		logger.info( "Fim tarefas..." );
 	}
 	
 	

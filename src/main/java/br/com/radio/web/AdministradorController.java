@@ -8,14 +8,15 @@ import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +61,8 @@ import br.com.radio.util.UtilsStr;
 @Controller
 public class AdministradorController extends AbstractController {
 	
+	private final Logger logger = Logger.getLogger( AdministradorController.class );
+	
 	@Autowired
 	private UsuarioService usuarioService;
 	
@@ -89,7 +93,14 @@ public class AdministradorController extends AbstractController {
 	@Autowired
 	private ClienteRepository clienteRepo;
 	
-	
+
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
+	}
+
+
 	@RequestMapping(value="/admin/painel", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public String principal( ModelMap model, Principal principal )
@@ -167,7 +178,7 @@ public class AdministradorController extends AbstractController {
 	
 	@RequestMapping( value = { "/admin/generos", "/api/admin/generos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveGenero( @RequestBody @Valid Genero genero, BindingResult result, Principal principal )
+	public @ResponseBody String saveGenero( @RequestBody @Valid Genero genero, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -190,7 +201,7 @@ public class AdministradorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Gêneros", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -232,14 +243,14 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping(value= { "/admin/generos/{idGenero}", "/api/admin/generos/{idGenero}" }, method=RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public ResponseEntity<String> deleteGenero( @PathVariable Long idGenero, Principal principal, Model model )
+	public ResponseEntity<String> deleteGenero( @PathVariable Long idGenero, Principal principal, Model model, HttpServletRequest request )
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		try
 		{
@@ -248,14 +259,13 @@ public class AdministradorController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErro( "Deletar Gêneros", request, e );
 
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
-
+		return respondeOk200( jsonResult );
     }	
 
 
@@ -346,7 +356,7 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping( value = { "/admin/opcionais", "/api/admin/opcionais" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveOpcional( @RequestBody @Valid AudioOpcional opcional, BindingResult result, Principal principal )
+	public @ResponseBody String saveOpcional( @RequestBody @Valid AudioOpcional opcional, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 
@@ -372,7 +382,7 @@ public class AdministradorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Erro ao salvar Opcional", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -414,14 +424,14 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping(value= { "/admin/opcionais/{idOpcional}", "/api/admin/opcionais/{idOpcional}" }, method=RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public ResponseEntity<String> inativarOpcional( @PathVariable Long idOpcional, Principal principal, Model model )
+	public ResponseEntity<String> inativarOpcional( @PathVariable Long idOpcional, Principal principal, Model model, HttpServletRequest request )
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 
 		try
 		{
@@ -438,14 +448,13 @@ public class AdministradorController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErro( "Erro ao inativar Opcional", request, e );
 
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
-
+		return respondeOk200( jsonResult );
 	}	
 
 
@@ -564,7 +573,7 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping( value = { "/admin/tipotaxas", "/api/admin/tipotaxas" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveTipoTaxa( @RequestBody @Valid TipoTaxa tipoTaxa, BindingResult result, Principal principal )
+	public @ResponseBody String saveTipoTaxa( @RequestBody @Valid TipoTaxa tipoTaxa, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -587,7 +596,7 @@ public class AdministradorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Erro ao salvar Tipo Taxa", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -627,14 +636,14 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping(value= { "/admin/tipotaxas/{idTipotaxa}", "/api/admin/tipotaxas/{idTipotaxa}" }, method=RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public ResponseEntity<String> deleteTipoTaxa( @PathVariable Long idTipotaxa, Principal principal, Model model )
+	public ResponseEntity<String> deleteTipoTaxa( @PathVariable Long idTipotaxa, Principal principal, Model model, HttpServletRequest request )
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		try
 		{
@@ -651,13 +660,13 @@ public class AdministradorController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErro( "Erro ao deletar tipo Taxa", request, e );
 
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+		return respondeOk200( jsonResult );
     }	
 
 	
@@ -695,7 +704,7 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping( value = { "/admin/midias/musicas/generos", "/api/admin/midias/musicas/generos" }, method = { RequestMethod.POST },  produces = APPLICATION_JSON_CHARSET_UTF_8  )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String updateGenerosGeral( @RequestBody UpdateGenerosMusicasVO generosMidiaVO, BindingResult result )
+	public @ResponseBody String updateGenerosGeral( @RequestBody UpdateGenerosMusicasVO generosMidiaVO, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
@@ -710,7 +719,7 @@ public class AdministradorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Altera Generos varias músicas", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -721,7 +730,7 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping( value = { "/admin/midias/musicas", "/api/admin/midias/musicas" }, method = { RequestMethod.DELETE },  produces = APPLICATION_JSON_CHARSET_UTF_8  )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String deleteMusicasSelecao( @RequestBody DeleteMusicasVO deleteMusicasVO, BindingResult result )
+	public @ResponseBody String deleteMusicasSelecao( @RequestBody DeleteMusicasVO deleteMusicasVO, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
@@ -736,7 +745,7 @@ public class AdministradorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Erro ao deletar uma seleção de músicas", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -838,14 +847,14 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping(value= { "/admin/midias/opcionais/{idMidia}", "/api/admin/midias/opcionais/{idMidia}" }, method=RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public ResponseEntity<String> deleteMidiaOpcional( @PathVariable Long idMidia, Principal principal, Model model )
+	public ResponseEntity<String> deleteMidiaOpcional( @PathVariable Long idMidia, Principal principal, Model model, HttpServletRequest request )
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		try
 		{
@@ -854,14 +863,13 @@ public class AdministradorController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErro( "Deletar Opcional", request, e );
 
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
-
+		return respondeOk200( jsonResult );
     }	
 	
 	
@@ -871,7 +879,8 @@ public class AdministradorController extends AbstractController {
 	public ResponseEntity<String> saveUploadChamadasVeiculos( @RequestParam("file") MultipartFile file, 
 															@RequestParam("codigo") String codigo, 
 															@RequestParam(value="descricao", required=false) String descricao,
-															Principal principal )
+															Principal principal,
+															HttpServletRequest request)
 	{
 		String jsonResult = null;
 		
@@ -892,19 +901,19 @@ public class AdministradorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				//e.printStackTrace();
+				imprimeLogErro( "Upload Chamada Veículos", request, e );
 
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+				return respondeErro500( jsonResult );
 			}
 		}
 		else
 		{
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+		return respondeOk200( jsonResult );
 	}	
 	
 	
@@ -913,7 +922,7 @@ public class AdministradorController extends AbstractController {
 							   "/api/admin/chamada-veiculos",
 							   "/api/admin/midia" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveNomeMidia( @RequestBody Midia midiaVO, BindingResult result, Principal principal )
+	public @ResponseBody String saveNomeMidia( @RequestBody Midia midiaVO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 	
@@ -930,7 +939,7 @@ public class AdministradorController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErro( "Salvar nome Mídia", request, e );
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 		}
 
@@ -942,7 +951,7 @@ public class AdministradorController extends AbstractController {
 
 	@RequestMapping( value = { "/admin/midias/musicas" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveMusica( @RequestBody Midia midiaVO, BindingResult result, Principal principal )
+	public @ResponseBody String saveMusica( @RequestBody Midia midiaVO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 	
@@ -959,7 +968,7 @@ public class AdministradorController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErro( "Salvar dados Música", request, e );
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 		}
 
@@ -970,14 +979,14 @@ public class AdministradorController extends AbstractController {
 							 "/api/admin/chamada-veiculos/{idMidia}",
 							 "/api/admin/midia/{idMidia}" }, method=RequestMethod.DELETE)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public ResponseEntity<String> deleteChamadaVeiculo( @PathVariable Long idMidia, Principal principal, Model model )
+	public ResponseEntity<String> deleteChamadaVeiculo( @PathVariable Long idMidia, Principal principal, Model model, HttpServletRequest request )
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		try
 		{
@@ -986,14 +995,13 @@ public class AdministradorController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErro( "Deletar Chamada Veículo", request, e );
 
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
-
+		return respondeOk200( jsonResult );
     }	
 
 
@@ -1041,14 +1049,15 @@ public class AdministradorController extends AbstractController {
     		@RequestParam("idOpcional") Long idOpcional,
     		@RequestParam(name="descricao", required=false) String descricao,
     		Principal principal, 
-    		Model model )
+    		Model model,
+    		HttpServletRequest request)
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			return new ResponseEntity<String>( writeSingleErrorAsJSONErroMessage( "alertArea", "Usuário não encontrado ou Cliente não encontrada." ), HttpStatus.INTERNAL_SERVER_ERROR );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		if ( file != null && !file.isEmpty() )
 		{
@@ -1060,17 +1069,19 @@ public class AdministradorController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
+				imprimeLogErro( "Upload de Opcional", request, e );
+
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
-				return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+				return respondeErro500( jsonResult );
 			}
 		}
 		else
 		{
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
-			return new ResponseEntity<String>( jsonResult, HttpStatus.INTERNAL_SERVER_ERROR );
+			return respondeErro500( jsonResult );
 		}
 
-		return new ResponseEntity<String>( jsonResult, HttpStatus.OK );
+		return respondeOk200( jsonResult );
     }		
 	
 	

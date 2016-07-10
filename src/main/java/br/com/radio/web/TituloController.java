@@ -2,8 +2,10 @@ package br.com.radio.web;
 
 import java.security.Principal;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,8 @@ import br.com.radio.service.UsuarioService;
 
 @Controller
 public class TituloController extends AbstractController {
+	
+	private Logger logger = Logger.getLogger( TituloController.class );
 
 	@Autowired
 	private UsuarioService usuarioService;
@@ -36,6 +40,11 @@ public class TituloController extends AbstractController {
 	@Autowired
 	private ClienteService clienteService;
 
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
+	}
 
 	@RequestMapping(value={ "/admin/titulos/new" }, method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
@@ -136,7 +145,7 @@ public class TituloController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/titulos", "/api/titulos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveTitulo( @RequestBody @Valid Titulo tituloVO, BindingResult result, Principal principal )
+	public @ResponseBody String saveTitulo( @RequestBody @Valid Titulo tituloVO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -165,7 +174,7 @@ public class TituloController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Salvar Título", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -175,7 +184,7 @@ public class TituloController extends AbstractController {
 	
 
 	@RequestMapping( value = { "/titulos", "/api/titulos" }, method = { RequestMethod.DELETE }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String cancelarTitulo( @RequestBody Titulo tituloVO, BindingResult result, Principal principal )
+	public @ResponseBody String cancelarTitulo( @RequestBody Titulo tituloVO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -207,7 +216,7 @@ public class TituloController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( "Cancelar Título", request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}

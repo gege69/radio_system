@@ -2,8 +2,10 @@ package br.com.radio.web;
 
 import java.security.Principal;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,8 @@ import br.com.radio.service.UsuarioService;
 
 @Controller
 public class MidiaController extends AbstractController {
+	
+	private final Logger logger = Logger.getLogger( MidiaController.class );
 
 	// DAOs =====================
 	@Autowired
@@ -55,7 +59,6 @@ public class MidiaController extends AbstractController {
 	@Autowired
 	private UsuarioService usuarioService;
 	// Services =================
-	
 	
 	@RequestMapping( value = "/ambientes/{idAmbiente}/view-upload-midia/{codigo}", method = RequestMethod.GET )
 	public String viewUpload( @PathVariable Long idAmbiente, @PathVariable String codigo, ModelMap model, HttpServletResponse response )
@@ -84,25 +87,13 @@ public class MidiaController extends AbstractController {
 	}
 
 
-	
-	
-//	@RequestMapping( value = "/ambientes/{idAmbiente}/view-pesquisa-midia", method = RequestMethod.GET )
-//	public String viewPesquisaMidia( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
-//	{
-//		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-//
-//		if ( ambiente != null )
-//		{
-//			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
-//			model.addAttribute( "nome", ambiente.getNome() );
-//			
-//			return "ambiente/pesquisa-midia";
-//		}
-//		else
-//			return "HTTPerror/404";
-//	}
-	
-	
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
+	}
+
+
 	@RequestMapping( value = "/ambientes/{idAmbiente}/view-chamada-funcionarios", method = RequestMethod.GET )
 	public String viewChamadaFuncionarios( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
 	{
@@ -120,10 +111,7 @@ public class MidiaController extends AbstractController {
 			return "HTTPerror/404";
 	}
 	
-	
-	
-	
-	
+
 	
 	@RequestMapping(value="/ambientes/{idAmbiente}/view-chamada-funcionarios", method=RequestMethod.POST)
     public String uploadChamadaFuncionarioTela(
@@ -132,7 +120,8 @@ public class MidiaController extends AbstractController {
     		@RequestParam("file") MultipartFile file, 
     		@RequestParam("descricao") String descricao,
     		Principal principal, 
-    		Model model )
+    		Model model,
+    		HttpServletRequest request)
 	{
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
@@ -158,8 +147,7 @@ public class MidiaController extends AbstractController {
 				}
 				catch ( Exception e )
 				{
-					e.printStackTrace();
-					
+					imprimeLogErroAmbiente( "Upload Chamada Veículo", ambiente, request, e );
 					model.addAttribute( "error", e.getMessage() );
 				}
 			}

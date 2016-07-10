@@ -3,6 +3,7 @@ package br.com.radio.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -21,12 +22,19 @@ import br.com.radio.service.UsuarioService;
 
 @Controller
 public class AuthenticationController extends AbstractController {
+	
+	private final Logger logger = Logger.getLogger( AuthenticationController.class );
 
 	@Autowired
 	private UsuarioService userService;
 	
-//	private static final Logger logger = Logger.getLogger(AuthenticationController.class);
-	
+
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
+	}
+
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String home( HttpServletRequest request, ModelMap model )
 	{

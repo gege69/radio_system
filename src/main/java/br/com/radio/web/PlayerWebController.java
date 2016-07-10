@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +24,7 @@ import br.com.radio.service.UsuarioService;
 @Controller
 public class PlayerWebController extends AbstractController {
 	
-	private static final Logger logger = Logger.getLogger(PlayerWebController.class);
+	private final Logger logger = Logger.getLogger(PlayerWebController.class);
 	
 	@Autowired
 	private AmbienteRepository ambienteRepo;
@@ -35,15 +34,11 @@ public class PlayerWebController extends AbstractController {
 	@Autowired
 	private UsuarioService usuarioService;
 
-	
-	@ExceptionHandler(Exception.class)
-	public String handleError(HttpServletRequest req, Exception exception) {
-		
-		logger.error("Request: " + req.getRequestURL() + " raised " + exception);
-		
-		return "HTTPerror/500";
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
 	}
-	
 
 	
 	@RequestMapping(value = "/player", method = RequestMethod.GET )

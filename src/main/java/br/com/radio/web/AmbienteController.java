@@ -9,11 +9,13 @@ import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,6 +67,7 @@ import br.com.radio.service.UsuarioService;
 @Controller
 public class AmbienteController extends AbstractController {
 
+	private final Logger logger = Logger.getLogger( AmbienteController.class );
 		
 	// DAOs ==================
 	@Autowired
@@ -98,8 +101,13 @@ public class AmbienteController extends AbstractController {
 	// Services ==============
 
 	
-	
-	
+	@Override
+	protected Logger getLogger()
+	{
+		return this.logger;
+	}
+
+
 	@RequestMapping( value = "/ambientes/{idAmbiente}/view", method = RequestMethod.GET )
 	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
 	public String viewAmbiente( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
@@ -381,7 +389,7 @@ public class AmbienteController extends AbstractController {
 
 	
 	@RequestMapping( value = { "/ambientes", "/api/ambientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result, Principal principal )
+	public @ResponseBody String saveAmbiente( @RequestBody @Valid Ambiente ambiente, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -408,7 +416,8 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( "Erro ao salvar ambiente", ambiente, request, e );
+
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -419,7 +428,7 @@ public class AmbienteController extends AbstractController {
 
 	@RequestMapping(value="/ambientes/{idAmbiente}/senha", method=RequestMethod.POST, produces=APPLICATION_JSON_CHARSET_UTF_8)
 	@PreAuthorize("hasAuthority('ALTERAR_SENHA')")
-	public @ResponseBody String saveNovaSenhaAmbiente( @PathVariable Long idAmbiente, @RequestBody @Valid AlterarSenhaAmbienteDTO senhaDTO, BindingResult result, Principal principal )
+	public @ResponseBody String saveNovaSenhaAmbiente( @PathVariable Long idAmbiente, @RequestBody @Valid AlterarSenhaAmbienteDTO senhaDTO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = "";
 
@@ -437,6 +446,7 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
+				imprimeLogErroAmbiente( "Salvar Nova Senha", idAmbiente, request, e);
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -447,7 +457,7 @@ public class AmbienteController extends AbstractController {
 
 
 	@RequestMapping(value="/ambientes/espelhar", method=RequestMethod.POST, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String espelhar( @RequestBody EspelharAmbienteDTO espelharDTO, BindingResult result, Principal principal )
+	public @ResponseBody String espelhar( @RequestBody EspelharAmbienteDTO espelharDTO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -470,7 +480,7 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErro( String.format("Erro ao espelhar ambientes (%s)", espelharDTO.toString() ), request, e );
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -479,7 +489,7 @@ public class AmbienteController extends AbstractController {
 	}	
 
 	@RequestMapping( value = { "/ambientes/inativar", "/api/ambientes/inativar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String inativarAmbiente( @RequestBody Ambiente ambienteVO, BindingResult result, Principal principal )
+	public @ResponseBody String inativarAmbiente( @RequestBody Ambiente ambienteVO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -514,7 +524,8 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( "Inativar", ambienteVO.getIdAmbiente(), request, e );
+
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -525,7 +536,7 @@ public class AmbienteController extends AbstractController {
 
 	@RequestMapping( value = { "/ambientes/ativar", "/api/ambientes/ativar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
-	public @ResponseBody String ativarAmbiente( @RequestBody Ambiente ambienteVO, BindingResult result, Principal principal )
+	public @ResponseBody String ativarAmbiente( @RequestBody Ambiente ambienteVO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 		
@@ -559,7 +570,8 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( "Ativar", ambienteVO.getIdAmbiente(), request, e );
+
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -597,7 +609,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/generos", "/api/ambientes/{idAmbiente}/generos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveGeneros( @PathVariable Long idAmbiente, @RequestBody GeneroListDTO generoList, BindingResult result )
+	public @ResponseBody String saveGeneros( @PathVariable Long idAmbiente, @RequestBody GeneroListDTO generoList, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
@@ -612,7 +624,7 @@ public class AmbienteController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErroAmbiente( "Associar Gêneros ao ambiente", idAmbiente, request, e );
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 		}
 		
@@ -623,14 +635,15 @@ public class AmbienteController extends AbstractController {
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/{idProgramacao}/generos", "/api/ambientes/{idAmbiente}/programacoes/{idProgramacao}/generos" }, 
 				method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveProgramacoesGeneros( @PathVariable Long idAmbiente, @PathVariable Long idProgramacao, @RequestBody GeneroListDTO generoList, BindingResult result )
+	public @ResponseBody String saveProgramacoesGeneros( @PathVariable Long idAmbiente, @PathVariable Long idProgramacao, @RequestBody GeneroListDTO generoList, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
+		Ambiente ambiente = null;
 		try
 		{
-			Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-			
+			ambiente = ambienteRepo.findOne( idAmbiente );
+
 			Programacao programacao = programacaoRepo.findOne( idProgramacao );
 
 			programacaoMusicalService.gravaGenerosProgramacao( ambiente, programacao, generoList.getLista() );
@@ -639,7 +652,8 @@ public class AmbienteController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErroAmbiente( "Gravar Gêneros da Programação", ambiente, request, e );
+
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 		}
 		
@@ -651,14 +665,15 @@ public class AmbienteController extends AbstractController {
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/generos/{dia}", "/api/ambientes/{idAmbiente}/programacoes/generos/{dia}" }, 
 			method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveProgramacoesGenerosDiaInteiro( @PathVariable Long idAmbiente, @PathVariable String dia, @RequestBody GeneroListDTO generoList, BindingResult result )
+	public @ResponseBody String saveProgramacoesGenerosDiaInteiro( @PathVariable Long idAmbiente, @PathVariable String dia, @RequestBody GeneroListDTO generoList, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
+		Ambiente ambiente = null;
 		try
 		{
-			Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-			
+			ambiente = ambienteRepo.findOne( idAmbiente );
+
 			DiaSemana diaSemana = DiaSemana.valueOf( dia );
 			
 			programacaoMusicalService.gravaGenerosProgramacaoDiaInteiro( ambiente, diaSemana, generoList.getLista() );
@@ -667,7 +682,8 @@ public class AmbienteController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErroAmbiente( "Gravar Gêneros Programção Dia", ambiente, request, e );
+
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 		}
 		
@@ -698,7 +714,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes", "/api/ambientes/{idAmbiente}/programacoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveProgramacao( @PathVariable Long idAmbiente, @RequestBody Programacao programacaoDTO, BindingResult result )
+	public @ResponseBody String saveProgramacao( @PathVariable Long idAmbiente, @RequestBody Programacao programacaoDTO, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
@@ -706,17 +722,18 @@ public class AmbienteController extends AbstractController {
 			jsonResult = writeErrorsAsJSONErroMessage( result );
 		else
 		{
+			Ambiente ambiente = null;
 			try
 			{
-				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-				
+				ambiente = ambienteRepo.findOne( idAmbiente );
 				Programacao prog = programacaoMusicalService.gravaNovaProgramacao( ambiente, programacaoDTO );
 					
 				jsonResult = writeObjectAsString( prog );
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( "Gravar Programação", ambiente, request, e );
+
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -761,14 +778,14 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/configuracoes", "/api/ambientes/{idAmbiente}/configuracoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveConfiguracoes( @PathVariable Long idAmbiente, @RequestBody AmbienteConfiguracao ambienteConfiguracao, Principal principal )
+	public @ResponseBody String saveConfiguracoes( @PathVariable Long idAmbiente, @RequestBody AmbienteConfiguracao ambienteConfiguracao, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
+		Ambiente ambiente = null;
 		try
 		{
-			Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-			
+			ambiente = ambienteRepo.findOne( idAmbiente );
 			if ( ambiente == null )
 				throw new RuntimeException("Ambiente não encontrado");
 
@@ -802,7 +819,8 @@ public class AmbienteController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErroAmbiente( "Configurações", ambiente, request, e );
+
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Não foi possível gravar : " + e.getMessage() );
 		}
 		
@@ -812,7 +830,7 @@ public class AmbienteController extends AbstractController {
 	
 
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/expedientes", "/api/ambientes/{idAmbiente}/expedientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveExpediente( @PathVariable Long idAmbiente, @RequestBody Ambiente ambienteDTO, BindingResult result )
+	public @ResponseBody String saveExpediente( @PathVariable Long idAmbiente, @RequestBody Ambiente ambienteDTO, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
@@ -831,7 +849,8 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( "Salvar Expediente", idAmbiente, request, e );
+
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -854,7 +873,7 @@ public class AmbienteController extends AbstractController {
 	
 
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/blocos", "/api/ambientes/{idAmbiente}/blocos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveBloco( @PathVariable Long idAmbiente, @RequestBody Bloco bloco, BindingResult result )
+	public @ResponseBody String saveBloco( @PathVariable Long idAmbiente, @RequestBody Bloco bloco, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
@@ -862,10 +881,11 @@ public class AmbienteController extends AbstractController {
 			jsonResult = writeErrorsAsJSONErroMessage( result );
 		else
 		{
+			Ambiente ambiente = null;
 			try
 			{
-				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-				
+				ambiente = ambienteRepo.findOne( idAmbiente );
+
 				if ( ambiente == null )
 					throw new RuntimeException( "Ambiente não encontrado.");
 
@@ -875,7 +895,8 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( "Salvar Bloco", ambiente, request, e );
+
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -892,7 +913,7 @@ public class AmbienteController extends AbstractController {
 	
 	// ALTERAR PARA A API NÃO CHAMAR MÉTODO CHAMADOS VIEW
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/view-logomarca" }, method = { RequestMethod.POST } )
-	public String uploadLogomarca( @PathVariable Long idAmbiente, @RequestParam("file") MultipartFile file, Principal principal, Model model )
+	public String uploadLogomarca( @PathVariable Long idAmbiente, @RequestParam("file") MultipartFile file, Principal principal, Model model, HttpServletRequest request )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -938,7 +959,7 @@ public class AmbienteController extends AbstractController {
 				}
 				catch ( Exception e )
 				{
-					e.printStackTrace();
+					imprimeLogErroAmbiente("Upload de Marca", ambiente, request, e);
 
 					model.addAttribute( "error", e.getMessage() );
 				}
@@ -951,7 +972,7 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/logomarca", "/api/ambientes/{idAmbiente}/logomarca" }, method = { RequestMethod.GET } )
-	public void getLogomarca( @PathVariable Long idAmbiente, Principal principal, HttpServletResponse response )
+	public void getLogomarca( @PathVariable Long idAmbiente, Principal principal, HttpServletResponse response, HttpServletRequest request )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -971,7 +992,8 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( IOException e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( "Obter Logo", ambiente, request, e );
+
 				throw new ResourceNotFoundException();
 			}
 			finally
@@ -1012,7 +1034,7 @@ public class AmbienteController extends AbstractController {
 
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/eventos", "/api/ambientes/{idAmbiente}/eventos" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String saveEvento( @PathVariable Long idAmbiente, @RequestBody Evento eventoDTO, BindingResult result )
+	public @ResponseBody String saveEvento( @PathVariable Long idAmbiente, @RequestBody Evento eventoDTO, BindingResult result, HttpServletRequest request )
 	{
 		String jsonResult = "";
 		
@@ -1031,7 +1053,8 @@ public class AmbienteController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				e.printStackTrace();
+				imprimeLogErroAmbiente( "Salvar Evento", idAmbiente, request, e );
+
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 			}
 		}
@@ -1065,13 +1088,14 @@ public class AmbienteController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/ambientes/{idAmbiente}/blocos/exemplo" }, method = RequestMethod.POST, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody String getExemploBloco( @PathVariable Long idAmbiente, @RequestBody Bloco bloco ){
+	public @ResponseBody String getExemploBloco( @PathVariable Long idAmbiente, @RequestBody Bloco bloco, HttpServletRequest request ){
 		
 		String jsonResult = "";
 		
+		Ambiente ambiente = null;
 		try
 		{
-			Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+			ambiente = ambienteRepo.findOne( idAmbiente );
 			
 			if ( ambiente == null )
 				throw new RuntimeException("Ambiente não encontrado");
@@ -1091,7 +1115,7 @@ public class AmbienteController extends AbstractController {
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			imprimeLogErroAmbiente( "Exemplo Bloco", ambiente, request, e );
 			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 		}
 		
