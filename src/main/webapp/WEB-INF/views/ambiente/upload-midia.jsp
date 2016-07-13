@@ -96,7 +96,39 @@
                             </div>
                           </div>
                         </div>
-                        
+ 
+
+                        <div class="col-lg-7 col-md-9 col-sm-12">
+                          <div class="form-group">
+                            <label for="file">Executar apenas nos dias:</label>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                              <div class="form-group" id="">
+                                <label class="checkbox-inline"> 
+                                  <input type="checkbox" class="check-dias" id="tocaSegunda" name="tocaSegunda" value="1"> Segunda
+                                </label>
+                                <label class="checkbox-inline">
+                                  <input type="checkbox" class="check-dias" id="tocaTerca" name="tocaTerca" value="2"> Terça
+                                </label>
+                                <label class="checkbox-inline"> 
+                                  <input type="checkbox" class="check-dias" id="tocaQuarta" name="tocaQuarta" value="3"> Quarta
+                                </label>
+                                <label class="checkbox-inline"> 
+                                  <input type="checkbox" class="check-dias" id="tocaQuinta" name="tocaQuinta" value="4"> Quinta
+                                </label>
+                                <label class="checkbox-inline"> 
+                                  <input type="checkbox" class="check-dias" id="tocaSexta" name="tocaSexta" value="5"> Sexta
+                                </label>
+                                <label class="checkbox-inline"> 
+                                  <input type="checkbox" class="check-dias" id="tocaSabado" name="tocaSabado" value="6"> Sábado
+                                </label>
+                                <label class="checkbox-inline">                                  
+                                  <input type="checkbox" class="check-dias" id="tocaDomingo" name="tocaDomingo" value="7"> Domingo
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
 
                         <div class="col-lg-7 col-md-9 col-sm-12">
                           <div class="form-group">
@@ -146,16 +178,12 @@
                          data-query-params="queryParams" >
                         <thead>
                           <tr>
-<!--                               <th data-field="idMidia">ID</th> -->
                               <th data-field="nome">Nome</th>
                               <th data-field="descricao">Descrição</th>
                               <th data-field="dataInicioValidade">Início Validade</th>
                               <th data-field="dataFimValidade">Fim Validade</th>
-                              <th data-field="vinheta" data-formatter="catFormatter" data-align="center">Vinheta</th>
-                              <th data-field="inst" data-formatter="catFormatter" data-align="center">Institucional</th>
-                              <th data-field="comercial" data-formatter="catFormatter" data-align="center">Comercial</th>
-                              <th data-field="programete" data-formatter="catFormatter" data-align="center">Programete</th>
-                              <th data-field="chamada_inst" data-formatter="catFormatter" data-align="center">Cham. Inst</th>
+                              <th data-field="categoria" data-formatter="catFormatter" data-align="center">Categorias</th>
+                              <th data-field="dias" data-formatter="diasFormatter" data-align="center">Dias</th>
                               <th data-field="idMidia" data-formatter="deleteFormatter" data-align="center">Deletar</th>
                           </tr>
                         </thead>

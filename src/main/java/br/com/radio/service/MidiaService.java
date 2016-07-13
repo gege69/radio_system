@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
@@ -50,6 +51,7 @@ import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.dto.midia.UpdateGenerosMusicasVO;
+import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
@@ -57,9 +59,11 @@ import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
+import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.MidiaAmbiente;
+import br.com.radio.model.MidiaDiaExecucao;
 import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.MidiaOpcional;
 import br.com.radio.model.Parametro;
@@ -69,9 +73,11 @@ import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
+import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
 import br.com.radio.repository.MidiaCategoriaRepository;
+import br.com.radio.repository.MidiaDiaExecucaoRepository;
 import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaOpcionalRepository;
 import br.com.radio.repository.MidiaRepository;
@@ -127,6 +133,12 @@ public class MidiaService {
 	
 	@Autowired
 	private MidiaOpcionalRepository midiaOpcionalRepo;
+
+	@Autowired
+	private MidiaDiaExecucaoRepository midiaDiaRepo;
+
+	@Autowired
+	private FuncionalidadeRepository funcRepo;
 
 	@Autowired
 	private EntityManager entityManager;
@@ -680,13 +692,12 @@ public class MidiaService {
 		if ( categoria == null )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
-		return saveUpload( multiPartFile, new Long[] { categoria.getIdCategoria() }, cliente, ambiente, descricao, null, null );
+		return saveUpload( multiPartFile, new Long[] { categoria.getIdCategoria() }, cliente, ambiente, descricao, null, null, null );
 	}
 	
 
 	@Transactional
-	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente, String descricao, Date dataInicioValidade, Date dataFimValidade ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
-	{
+	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente, String descricao, Date dataInicioValidade, Date dataFimValidade, Long[] dias ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException {
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		
@@ -700,6 +711,10 @@ public class MidiaService {
 		Midia midia = gravaMidia( multiPartFile.getInputStream(), parametros );
 		
 		associaMidiaEAmbiente( ambiente, midia );
+		
+		if ( dias != null && dias.length > 0 ){
+			associaDiasExecucao(midia, dias);
+		}
 		
 		return midia;
 	}
@@ -878,6 +893,24 @@ public class MidiaService {
 		if ( tags != null )
 			tags.copyToMidia( midia );
 	}
+
+
+	
+
+	@Transactional
+	public void associaDiasExecucao( Midia midia, Long[] dias ){
+		
+		List<DiaSemana> listaDias = DiaSemana.getListByIndex( dias );
+		
+		midiaDiaRepo.deleteByMidia( midia );
+		
+		listaDias.forEach( d -> {
+			MidiaDiaExecucao diaExec = new MidiaDiaExecucao( d, midia );
+			
+			midiaDiaRepo.save( diaExec );
+		});
+	}
+
 
 
 	public Integer associaTodasMidiasParaAmbiente( Ambiente ambiente )
@@ -1115,12 +1148,41 @@ public class MidiaService {
 
 
 
+	public Map<String, Funcionalidade> getFuncionalidadesDasCategoriasMidias(){
+		
+		List<Categoria> categoriasMidias = categoriaRepo.findBySimpleUpload( true );
+		
+		List<String> codigos = categoriasMidias.stream().map( c -> c.getCodigo() ).collect( Collectors.toList() );
+		
+		List<Funcionalidade> funcList = funcRepo.findByCodigoIn( codigos );
+		
+		Map<String, Funcionalidade> mapFunc = funcList.stream().collect( Collectors.toMap( Funcionalidade::getCodigo, f -> f ) );
+		
+		return mapFunc;
+	}
+
+
+	private Map<Midia, List<MidiaDiaExecucao>> getDiasExecucaoMidias( List<Midia> midiaList ){
+
+		List<MidiaDiaExecucao> dias = midiaDiaRepo.findByMidiaIn( midiaList );
+		
+		Map<Midia, List<MidiaDiaExecucao>> result = dias.stream().collect( Collectors.groupingBy( MidiaDiaExecucao::getMidia ) );
+
+		return result;
+	}
+
+
 	private void buildMidiaViewCategoria( List<Midia> midiaList )
 	{
+		Map<Midia, List<MidiaDiaExecucao>> diasPorMidia = getDiasExecucaoMidias( midiaList );
+
 		midiaList.stream().forEach( m -> {
-			m.getCategorias().forEach( cat -> {
-				m.getMidiaView().put( cat.getCodigo(), "true" );
-			});
+			
+			m.getMidiaView().put( "dias", diasPorMidia.get(m) );
+			
+//			m.getCategorias().forEach( cat -> {
+//				m.getMidiaView().put( cat.getCodigo(), "true" );
+//			});
 		});
 	}
 

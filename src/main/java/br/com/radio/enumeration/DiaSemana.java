@@ -1,6 +1,8 @@
 package br.com.radio.enumeration;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Index começando em 1 
@@ -44,6 +46,20 @@ public enum DiaSemana {
 		}
 		
 		return dia;
+	}
+	
+	public static List<DiaSemana> getListByIndex( Long[] arrayDias ){
+		
+		List<DiaSemana> result = new ArrayList<DiaSemana>();
+
+		for ( Long idx : arrayDias ){
+			DiaSemana dia = DiaSemana.getByIndex( idx.intValue() );
+			
+			if ( dia != null )
+				result.add( dia );
+		}
+		
+		return result;
 	}
 	
 

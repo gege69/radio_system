@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -44,7 +43,7 @@ import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
-import br.com.radio.model.Genero;
+import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.HistoricoStatusAmbiente;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
@@ -63,7 +62,6 @@ import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
-import br.com.radio.service.programacaomusical.ProgramacaoListMidiaListDTO;
 import br.com.radio.util.UtilsDates;
 import de.jollyday.Holiday;
 import de.jollyday.HolidayManager;
@@ -93,9 +91,25 @@ public class Application {
 		
 //		testaRelatorioGeneros( ctx );
 		
-		testeAlternanciaGeneros( ctx );
+//		testeAlternanciaGeneros( ctx );
+		
+		testeFuncionalidades( ctx );
+		
 	}
 
+	
+	private static void testeFuncionalidades( ApplicationContext ctx ){
+		
+		MidiaService pms = ctx.getBean( MidiaService.class );
+		
+		Map<String, Funcionalidade> map = pms.getFuncionalidadesDasCategoriasMidias();
+		
+		map.forEach( ( s, f ) -> { 
+			System.out.println(s);
+			System.out.println(f);
+		} );
+		
+	}
 
 
 
@@ -125,6 +139,7 @@ public class Application {
 //		programacaoRepo.save( programacoesDoDia );
 		
 
+		List<String> xxx = new ArrayList<String>();
 
 
 		

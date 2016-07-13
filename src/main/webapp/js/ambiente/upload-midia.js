@@ -4,19 +4,58 @@ var idAmbiente = $('#idAmbiente').val();
  
 var idCategoria = $('#idCategoria').val();
 
-var $table = $('#tabelaMidiaUpload');
+var $table = null;
+
+var funcionalidades = {};
+
+var diasMap = { 
+    SEGUNDA: "Seg",
+    TERCA: "Ter",
+    QUARTA: "Qua",
+    QUINTA: "Qui",
+    SEXTA: "Sex",
+    SABADO: "Sáb",
+    DOMINGO: "Dom"
+};
 
 function catFormatter(value, row) {
     
-    var icon = value === "true" ? 'fa-check' : 'fa-circle-thin';
+    var cats = row.categorias;
+    
+    var html_array = [];
+    
+    $.each(cats, function(i, el){
+        
+        var func = funcionalidades[el.codigo];
+        
+        if ( func ){
+            html_array.push('<i class="'+func.sizeSmall +' '+ func.classesIcone+'" title="'+el.descricao+'" style="cursor: help;">'+func.icone+'</i>&nbsp;');
+        }
+    });
 
-    return '<i class="fa '+ icon + '"></i>';
+    return html_array.join('');
 }
 
 function deleteFormatter(value, row) {
 
     return '<a href="#" class="btnDeletar" idMidia="'+ value +'"><i class="fa fa-lg fa-trash" style="color : red;"></i></a>';
 }
+
+
+function diasFormatter(value, row) {
+    
+    var dias = row.dias;
+    
+    var html_array = [];
+    
+    $.each(dias, function(i, el){
+        var dia_bonito = diasMap[el.diaSemana];
+        html_array.push(dia_bonito);
+    });
+    
+    return html_array.join(', ');
+}
+
 
 
 function queryParams(params) {
@@ -98,6 +137,19 @@ var getCategoriasSelecionadas = function()
 }
 
 
+var getDiasSelecionados = function()
+{
+    var array_values = [];
+    $('.check-dias').each( function() {
+        if( $(this).is(':checked') ) {
+            array_values.push( parseInt( $(this).val() ) );
+        }
+    });
+    
+    return array_values;
+}
+
+
 var configuraUploader = function() 
 {
     var _url = buildUrl( "/api/ambientes/{idAmbiente}/upload-midia-categorias", {
@@ -113,10 +165,12 @@ var configuraUploader = function()
         add: function (e, data) {
             
             var array_values = getCategoriasSelecionadas();
+            var array_values_dias = getDiasSelecionados();
             
             data.formData = { 
                               _csrf: $("#csrf").val(), 
                               "categorias[]" : array_values,
+                              "dias[]" : array_values_dias,
                               iniciovalidade : $("#dataInicio").val(),
                               fimvalidade : $("#dataFim").val(),
                               descricao : $("#descricao").val()
@@ -223,6 +277,19 @@ var aplicarProgramacao = function(){
 }
 
 
+
+var listaFuncionalidadesCategorias = function(){
+    return $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: buildUrl( "/ambientes/funcionalidades/midias" ),
+        dataType: 'json'
+    });
+}
+
+
+
+
 $(function(){
     
     jQuery.fn.extend({
@@ -247,17 +314,25 @@ $(function(){
         xhr.setRequestHeader(header, token);
     });
     
-    listaCategorias();
-    
-    $table.on('load-success.bs.table', function( data ){
-        $('.btnDeletar').click( function(){
-            var idMidia = $(this).attr("idMidia"); 
-            bootbox.confirm( "Tem certeza que deseja excluir essa mídia?", function( result ){
-                if ( result )
-                    deletaMidia( idMidia );
+    listaFuncionalidadesCategorias().done( function(json){
+        funcionalidades = json;
+
+        $table = $('#tabelaMidiaUpload').bootstrapTable({
+            queryParams : queryParams
+        });
+
+        $table.on('load-success.bs.table', function( data ){
+            $('.btnDeletar').click( function(){
+                var idMidia = $(this).attr("idMidia"); 
+                bootbox.confirm( "Tem certeza que deseja excluir essa mídia?", function( result ){
+                    if ( result )
+                        deletaMidia( idMidia );
+                });
             });
         });
     });
+
+    listaCategorias();
     
     $('.input-group.date').datepicker({
         format: "dd/mm/yyyy",
@@ -290,5 +365,7 @@ $(function(){
     $("#btnIniciar").click( function(){
         iniciarUpload();  
     });
+
+
 });
 

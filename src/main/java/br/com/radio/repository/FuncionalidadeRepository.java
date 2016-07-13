@@ -12,4 +12,7 @@ public interface FuncionalidadeRepository extends JpaRepository<Funcionalidade, 
 	List<Funcionalidade> findByAtivo( Sort sort, Boolean ativo );
 
 	Funcionalidade findByCodigo( String codigo );
+
+	List<Funcionalidade> findByCodigoIn( List<String> codigos );
+
 }

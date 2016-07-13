@@ -195,6 +195,7 @@ public class MidiaAPIController extends AbstractController {
     		@RequestParam("file") MultipartFile file,
     		@RequestParam(value="descricao", required = false) String descricao,
     		@RequestParam("categorias[]") Long[] categorias,
+    		@RequestParam(value="dias[]", required=false) Long[] dias,
     		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") Date inicioValidade,
     		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") Date fimValidade,
     		Principal principal, 
@@ -216,7 +217,7 @@ public class MidiaAPIController extends AbstractController {
 			{
 				try
 				{
-					midiaService.saveUpload( file, categorias, usuario.getCliente(), ambiente, descricao, inicioValidade, fimValidade );
+					midiaService.saveUpload( file, categorias, usuario.getCliente(), ambiente, descricao, inicioValidade, fimValidade, dias );
 					
 					jsonResult = writeOkResponse();
 				}
@@ -271,7 +272,7 @@ public class MidiaAPIController extends AbstractController {
 			}
 			catch ( Exception e )
 			{
-				imprimeLogErro( null, request, e );
+				imprimeLogErro( "Upload Música", request, e );
 
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 				return respondeErro500( jsonResult );

@@ -63,7 +63,7 @@ public class Midia implements Serializable {
 	@Column( name = "descricao", nullable = true, columnDefinition = "TEXT" )
 	private String descricao;
 
-	@JsonIgnore
+//	@JsonIgnore
 	@ManyToMany(fetch=FetchType.LAZY)
 	   @JoinTable(name="midia_categoria", joinColumns = { 
 	        @JoinColumn(name="id_midia", nullable=false, updatable=false) }, inverseJoinColumns = { 
@@ -176,7 +176,7 @@ public class Midia implements Serializable {
 	private Double posicaoShuffle;
 	
 	@Transient
-	private Map<String, String> midiaView = new HashMap<String,String>();
+	private Map<String, Object> midiaView = new HashMap<String,Object>();
 	
 	
 	
@@ -475,13 +475,13 @@ public class Midia implements Serializable {
 	}
 
 	@JsonAnyGetter
-	public Map<String, String> getMidiaView()
+	public Map<String, Object> getMidiaView()
 	{
 		return midiaView;
 	}
 
 	@JsonAnySetter
-	public void setMidiaView( Map<String, String> midiaView )
+	public void setMidiaView( Map<String, Object> midiaView )
 	{
 		this.midiaView = midiaView;
 	}

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -61,6 +62,7 @@ import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.ClienteService;
+import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.service.UsuarioService;
 
@@ -96,6 +98,8 @@ public class AmbienteController extends AbstractController {
 	private UsuarioService usuarioService;
 	@Autowired
 	private ClienteService clienteService;
+	@Autowired
+	private MidiaService midiaService;
 	@Autowired
 	private ProgramacaoMusicalService programacaoMusicalService;
 	// Services ==============
@@ -1123,5 +1127,15 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
+	@RequestMapping( value = { "/ambientes/funcionalidades/midias", 
+							   "/api/ambientes/funcionalidades/midias" }, 
+					 method = RequestMethod.GET, 
+					 produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody Map<String, Funcionalidade> listFuncionalidadesCategoriasMidias(){
+		
+		 Map<String, Funcionalidade> result = midiaService.getFuncionalidadesDasCategoriasMidias();
+		 
+		 return result;
+	}
 	
 }

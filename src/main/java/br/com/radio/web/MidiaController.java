@@ -1,6 +1,7 @@
 package br.com.radio.web;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -183,11 +184,15 @@ public class MidiaController extends AbstractController {
 								.setSearch( search );
 		
 		Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
-
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
+		
+		List<Midia> midias = page.getContent();
+		
+		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midias, page.getTotalElements() );
 
 		return jsonList;
 	}
+
+
 
 	
 	
