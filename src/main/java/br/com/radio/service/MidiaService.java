@@ -6,9 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
@@ -1122,7 +1125,20 @@ public class MidiaService {
 
 		if ( filter.hasSearch() )
 			crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ) ) );
-		
+
+		if ( filter.isVerificaDiaAtual() ){
+			
+			LocalDateTime hoje = LocalDateTime.now();
+			DiaSemana diaSemanaHoje = DiaSemana.getByIndex( hoje.getDayOfWeek().getValue() );
+			
+			crit.setFetchMode("diasExecucao", FetchMode.JOIN);
+			crit.createAlias( "diasExecucao", "dias" );
+
+			crit.add( Restrictions.eq( "dias.diaSemana", diaSemanaHoje ) );
+//			crit.add( Restrictions.disjunction( Restrictions.eq( "dias.diaSemana", diaSemanaHoje ), Restrictions.isNull( "dias.diaSemana" ) ) );
+		}
+
+
 		if ( filter.isVerificaValidade() ){
 			
 			Conjunction conj = Restrictions.conjunction();
@@ -1166,7 +1182,7 @@ public class MidiaService {
 
 		List<MidiaDiaExecucao> dias = midiaDiaRepo.findByMidiaIn( midiaList );
 		
-		Map<Midia, List<MidiaDiaExecucao>> result = dias.stream().collect( Collectors.groupingBy( MidiaDiaExecucao::getMidia ) );
+		Map<Midia, List<MidiaDiaExecucao>> result = dias.stream().sorted( MidiaDiaExecucao.ORDER_BY_DIA ).collect( Collectors.groupingBy( MidiaDiaExecucao::getMidia ) );
 
 		return result;
 	}

@@ -1,6 +1,7 @@
 package br.com.radio.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,9 +15,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import br.com.radio.enumeration.DiaSemana;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 
@@ -33,6 +34,8 @@ import br.com.radio.enumeration.DiaSemana;
 public class MidiaDiaExecucao implements Serializable {
 	
 	private static final long serialVersionUID = -7404421157947787150L;
+
+    public static final Comparator<MidiaDiaExecucao> ORDER_BY_DIA = ( left, right ) -> left.getDiaSemana().getIndex().compareTo( right.getDiaSemana().getIndex() );
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

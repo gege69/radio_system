@@ -37,10 +37,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.threeten.extra.Interval;
 
+import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.CondicaoComercial;
 import br.com.radio.model.Funcionalidade;
@@ -93,7 +95,37 @@ public class Application {
 		
 //		testeAlternanciaGeneros( ctx );
 		
-		testeFuncionalidades( ctx );
+//		testeFuncionalidades( ctx );
+
+		testeFiltraMidiasDiasExecucao( ctx );
+		
+	}
+	
+	
+	
+	private static void testeFiltraMidiasDiasExecucao( ApplicationContext ctx ){
+		
+		MidiaService midiaService = ctx.getBean( MidiaService.class );
+
+		AmbienteRepository ambRepo = ctx.getBean( AmbienteRepository.class );
+		CategoriaRepository categoriaRepo = ctx.getBean( CategoriaRepository.class );
+//		ProgramacaoGeneroRepository progGenRepo = ctx.getBean( ProgramacaoGeneroRepository.class );
+		
+		Ambiente ambiente = ambRepo.findOne( 1L );
+		
+		Categoria vinheta = categoriaRepo.findByCodigo( Categoria.VINHETA );	
+
+		MidiaFilter filter = MidiaFilter.create()
+								.setAmbiente( ambiente )
+								.setCategoria( vinheta )
+								.setVerificaValidade( true )
+								.setVerificaDiaAtual( true );
+
+		List<Midia> midias = midiaService.findMidiasCategorias( filter );
+		
+		for ( Midia m : midias ){
+			System.out.println(m);
+		}
 		
 	}
 

@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -170,6 +171,9 @@ public class Midia implements Serializable {
 	        @JoinColumn(name="id_genero", nullable=false, updatable=false) })
     private List<Genero> generos;
 	
+
+	@OneToMany( fetch = FetchType.LAZY, mappedBy="midia" )
+    private List<MidiaDiaExecucao> diasExecucao;
 	
 	@JsonIgnore
 	@Transient

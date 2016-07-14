@@ -53,6 +53,9 @@ function diasFormatter(value, row) {
         html_array.push(dia_bonito);
     });
     
+    if ( html_array.length == 0 )
+        html_array.push('Nenhum');
+    
     return html_array.join(', ');
 }
 

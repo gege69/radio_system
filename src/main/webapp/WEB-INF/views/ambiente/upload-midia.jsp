@@ -100,29 +100,29 @@
 
                         <div class="col-lg-7 col-md-9 col-sm-12">
                           <div class="form-group">
-                            <label for="file">Executar apenas nos dias:</label>
+                            <label for="file">Pode entrar na programação dos dias:</label>
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                               <div class="form-group" id="">
                                 <label class="checkbox-inline"> 
-                                  <input type="checkbox" class="check-dias" id="tocaSegunda" name="tocaSegunda" value="1"> Segunda
+                                  <input type="checkbox" class="check-dias" id="tocaSegunda" name="tocaSegunda" value="1" checked="checked"> Segunda
                                 </label>
                                 <label class="checkbox-inline">
-                                  <input type="checkbox" class="check-dias" id="tocaTerca" name="tocaTerca" value="2"> Terça
+                                  <input type="checkbox" class="check-dias" id="tocaTerca" name="tocaTerca" value="2" checked="checked"> Terça
                                 </label>
                                 <label class="checkbox-inline"> 
-                                  <input type="checkbox" class="check-dias" id="tocaQuarta" name="tocaQuarta" value="3"> Quarta
+                                  <input type="checkbox" class="check-dias" id="tocaQuarta" name="tocaQuarta" value="3" checked="checked"> Quarta
                                 </label>
                                 <label class="checkbox-inline"> 
-                                  <input type="checkbox" class="check-dias" id="tocaQuinta" name="tocaQuinta" value="4"> Quinta
+                                  <input type="checkbox" class="check-dias" id="tocaQuinta" name="tocaQuinta" value="4" checked="checked"> Quinta
                                 </label>
                                 <label class="checkbox-inline"> 
-                                  <input type="checkbox" class="check-dias" id="tocaSexta" name="tocaSexta" value="5"> Sexta
+                                  <input type="checkbox" class="check-dias" id="tocaSexta" name="tocaSexta" value="5" checked="checked"> Sexta
                                 </label>
                                 <label class="checkbox-inline"> 
-                                  <input type="checkbox" class="check-dias" id="tocaSabado" name="tocaSabado" value="6"> Sábado
+                                  <input type="checkbox" class="check-dias" id="tocaSabado" name="tocaSabado" value="6" checked="checked"> Sábado
                                 </label>
                                 <label class="checkbox-inline">                                  
-                                  <input type="checkbox" class="check-dias" id="tocaDomingo" name="tocaDomingo" value="7"> Domingo
+                                  <input type="checkbox" class="check-dias" id="tocaDomingo" name="tocaDomingo" value="7" checked="checked"> Domingo
                                 </label>
                               </div>
                             </div>
@@ -183,7 +183,7 @@
                               <th data-field="dataInicioValidade">Início Validade</th>
                               <th data-field="dataFimValidade">Fim Validade</th>
                               <th data-field="categoria" data-formatter="catFormatter" data-align="center">Categorias</th>
-                              <th data-field="dias" data-formatter="diasFormatter" data-align="center">Dias</th>
+                              <th data-field="dias" data-formatter="diasFormatter" data-align="center">Toca nos dias</th>
                               <th data-field="idMidia" data-formatter="deleteFormatter" data-align="center">Deletar</th>
                           </tr>
                         </thead>

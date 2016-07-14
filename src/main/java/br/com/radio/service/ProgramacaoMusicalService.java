@@ -644,7 +644,7 @@ public class ProgramacaoMusicalService {
 //				logger.info( m.toString() );
 //			});
 			
-			validaClusters( dto );
+//			validaClusters( dto );
 
 			// caso tenha alguma parametrização o URL request fazer antes... o método de consumir não precisa saber só gravar.
 			consomeMidias( ambiente, dto );
@@ -714,10 +714,10 @@ public class ProgramacaoMusicalService {
 			if ( i+2 < midias.size() )
 				nextnext = midias.get( i+2 );
 
-			if ( next != null && StringUtils.equals( atual.getGeneros().get( 0 ).getNome(), next.getGeneros().get( 0 ).getNome() ) ){
-				System.out.println( String.format( "Gênero %s está próximo em ids ( %d , %d ) ", atual.getGeneros().get( 0 ).getNome(), atual.getIdMidia(), next.getIdMidia()) );
-				logger.info( String.format( "Gênero %s está próximo em ids ( %d , %d ) ", atual.getGeneros().get( 0 ).getNome(), atual.getIdMidia(), next.getIdMidia()) );
-			}
+//			if ( next != null && atual.getGeneros() != null && StringUtils.equals( atual.getGeneros().get( 0 ).getNome(), next.getGeneros().get( 0 ).getNome() ) ){
+//				System.out.println( String.format( "Gênero %s está próximo em ids ( %d , %d ) ", atual.getGeneros().get( 0 ).getNome(), atual.getIdMidia(), next.getIdMidia()) );
+//				logger.info( String.format( "Gênero %s está próximo em ids ( %d , %d ) ", atual.getGeneros().get( 0 ).getNome(), atual.getIdMidia(), next.getIdMidia()) );
+//			}
 			
 //			if ( next != null && StringUtils.equals( atual.getArtist(), next.getArtist() ) )
 //				System.out.println( String.format( "Artista %s está próximo em ids ( %d , %d ) ", atual.getArtist(), atual.getIdMidia(), next.getIdMidia()) );
@@ -732,16 +732,7 @@ public class ProgramacaoMusicalService {
 
 	private void printaInformacoes( Set<Genero> generosSet, ProgramacaoListMidiaListDTO dto )
 	{
-		System.out.println( "_______________" );
-		
 		Integer duracaoTotal = dto.getMidias().stream().mapToInt( Midia::getDuracao ).sum();
-
-		System.out.println( generosSet.toString() );
-		System.out.println( dto.getMidias().size() );
-		System.out.println( duracaoTotal + " segundos " );
-		System.out.println( ( duracaoTotal / 60 ) + " minutos " );
-		System.out.println( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
-		System.out.println( dto.getProgramacoes().size() + " progamacoes (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
 
 		logger.info( "_______________" );
 		
@@ -1060,7 +1051,8 @@ public class ProgramacaoMusicalService {
 		MidiaFilter filter = MidiaFilter.create()
 								.setAmbiente( ambiente )
 								.setCategoria( categoria )
-								.setVerificaValidade( true );
+								.setVerificaValidade( true )
+								.setVerificaDiaAtual( true );
 
 		List<Midia> midias = midiaService.findMidiasCategorias( filter );
 

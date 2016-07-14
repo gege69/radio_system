@@ -15,6 +15,7 @@ public class MidiaFilter {
 	private List<Long> categoriaIds;
 	private String search;
 	private boolean verificaValidade;
+	private boolean verificaDiaAtual;
 	private boolean incluiGeneros;
 	
 	public static MidiaFilter create(){
@@ -131,6 +132,19 @@ public class MidiaFilter {
 	public MidiaFilter setIncluiGeneros( boolean incluiGeneros )
 	{
 		this.incluiGeneros = incluiGeneros;
+		return this;
+	}
+
+
+	public boolean isVerificaDiaAtual()
+	{
+		return verificaDiaAtual;
+	}
+
+
+	public MidiaFilter setVerificaDiaAtual( boolean verificaDiaAtual )
+	{
+		this.verificaDiaAtual = verificaDiaAtual;
 		return this;
 	}
 	
