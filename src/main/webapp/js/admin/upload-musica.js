@@ -11,6 +11,20 @@ var makeListTmpl = function(json){
     $('#view-container').append(content);
 };
 
+
+var listaGeneros = function(){
+    
+    var url = buildUrl( "/generos" );
+
+    return $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: url,    
+        dataType: 'json'
+    });
+}
+
+
 var getGenerosSelecionados = function()
 {
     var array_values = [];
@@ -106,19 +120,6 @@ var mostrarArquivos = function()
     if ( filesList && filesList.length > 0 )
       $("#static-arquivos").html( filesList.length + " arquivo(s) selecionado(s)" );
     
-}
-
-
-var listaGeneros = function(){
-    
-    var url = buildUrl( "/generos" );
-
-    return $.ajax({
-        type: 'GET',
-        contentType: 'application/json',
-        url: url,    
-        dataType: 'json'
-    });
 }
 
 

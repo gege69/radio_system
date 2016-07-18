@@ -530,7 +530,6 @@ public class MidiaAPIController extends AbstractController {
 
 	
 	
-	
 	@RequestMapping( value = "/api/syncfilesystem", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String sync()
 	{
@@ -538,8 +537,6 @@ public class MidiaAPIController extends AbstractController {
 		
 		return writeOkResponse();
 	}
-		
-	
 		
 	
 }

@@ -145,11 +145,13 @@
                   <tr>
                       <th data-field="state" data-checkbox="true" style="width: 36px;"></th>
                       <th data-field="nome">Nome do Arquivo</th>
-                      <th data-field="generosResumo">Gênero(s)</th>
+<!--                       <th data-field="generosResumo">Gênero(s)</th> -->
                       <th data-field="artist">Artista</th>
                       <th data-field="idMidia" data-click-to-select="false" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Editar</th>
                       <th data-field="idMidia" data-click-to-select="false" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Remover</th>
                       <th data-field="idMidia" data-click-to-select="false" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Tocar</th>
+                      <th data-field="extensao" data-formatter="extensaoFormatter" data-align="center">Arquivo</th>
+                      <th data-field="idMidia" data-click-to-select="false" data-formatter="converterFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Converter</th>
                   </tr>
                 </thead>
               </table>

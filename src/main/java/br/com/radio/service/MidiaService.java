@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +48,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.conversao.ConverterParameters;
+import br.com.radio.conversao.WrapperLAME_MP3toOGG;
 import br.com.radio.dto.MusicTags;
 import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.dto.midia.MidiaFilter;
@@ -1469,6 +1470,32 @@ public class MidiaService {
 			throw new RuntimeException(String.format("Não foi possível remover todas as músicas da seleção. Músicas deletadas : %d .", count));
 		}
 	}
+
+
+
+	public void converteMusica(ConverterParameters params){
+		
+		Midia midia = midiaRepo.findOne( params.getIdMidia() );
+		
+		if ( midia == null )
+			throw new RuntimeException("Mídia não encontrada");
+		
+		converteMP3paraOGG( midia, params );
+	}
+
+
+	
+	@Transactional
+	public void converteMP3paraOGG(Midia midia, ConverterParameters params ){
+		
+		WrapperLAME_MP3toOGG converter = new WrapperLAME_MP3toOGG();
+		
+		boolean ok = converter.converte( midia, params );
+		
+		if ( !ok )
+			throw new RuntimeException("Não foi possível converter a mídia");
+	}
+
 
 	
 }

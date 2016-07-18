@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javassist.compiler.ast.Variable;
+
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.radio.conversao.ConverterParameters;
+import br.com.radio.conversao.VariableBitRateOption;
 import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.dto.midia.UpdateGenerosMusicasVO;
@@ -1028,6 +1032,57 @@ public class AdministradorController extends AbstractController {
 	}
 
 	
+
+	@RequestMapping(value="/api/midias/converter", method=RequestMethod.POST)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public ResponseEntity<String> converteMidia(
+			@RequestBody ConverterParameters parameters,
+			BindingResult result,
+    		Principal principal, 
+    		Model model,
+    		HttpServletRequest request )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException( "Usuário não encontrado ou Cliente não encontrada."  );
+		
+		if ( result.hasErrors() ){
+			jsonResult = writeErrorsAsJSONErroMessage(result);	
+		}
+		else { 
+				
+			try
+			{
+				midiaService.converteMusica( parameters );
+						
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				imprimeLogErro( "Conversão de Mídia", request, e );
+
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				return respondeErro500( jsonResult );
+			}
+		}
+
+		return respondeOk200( jsonResult );
+    }	
+		
+
+
+	@RequestMapping(value="/admin/midias/bitrates", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody List<VariableBitRateOption> listVariableBitRate()
+	{
+		List<VariableBitRateOption> variables = Arrays.asList(VariableBitRateOption.values());
+		
+		return variables;
+	}	
+
 	
 	@RequestMapping(value={ "/admin/tocar-chamadas-veiculos/view" }, method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")

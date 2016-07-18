@@ -26,6 +26,20 @@ function playFormatter(value, row) {
     return '<a class="btn btn-link play-class" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-play-circle"></i></a>';
 }
 
+function extensaoFormatter(value, row) {
+    if ( row.extensao === "ogg" )
+        return '<div class="divsched divschedsel alert alert-info">ogg</div>';
+    else
+        return '<div class="divsched divschedsel alert alert-warning">'+row.extensao+'</div>';
+}
+
+function converterFormatter(value, row) {
+    if ( row.extensao === "mp3" )
+        return '<a class="btn btn-link converter-class" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-arrow-right"></i> <b>OGG</b></a>';
+    else
+        return "";
+}
+
 var player = null;
 
 var idTocando = null;
@@ -50,6 +64,27 @@ var playChamada = function( element )
         player.source( url );
         player.play();
     }
+    
+}
+
+
+var openDialogConverter = function( element )
+{
+    var idMidia = element.attr("idMidia");
+    
+    var row = $('#table-musicas').bootstrapTable('getRowByUniqueId', idMidia);
+    
+    $('#idMidiaConveterDialog').val( idMidia );
+    
+    $('#nomeMusicaConverter').html( idMidia + " - " + row.nome )
+    
+    $('#dialogConverter').modal('show');
+}
+
+
+var converter = function( ){
+    
+    
     
 }
 
@@ -363,6 +398,28 @@ var deletarSelecao = function()
 } 
 
 
+var listaVariableBitRate = function(){
+    
+    var url = buildUrl( "/admin/midias/bitrates" );
+
+    return $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: url,    
+        dataType: 'json'
+    }).done(function(){
+        $.each( json.rows , function (i, option){
+            $("#valorBitRate").append($('<option>', { 
+                value: option.value,
+                text : option.descricao  
+            }));
+        });
+    });
+}
+
+
+
+
 $(function(){
     
     var token = $("input[name='_csrf']").val();
@@ -409,6 +466,11 @@ $(function(){
             e.preventDefault();
             playChamada($(this));
         });
+
+        $(".converter-class").click( function(e){
+            e.preventDefault();
+            openDialogConverter($(this));
+        });
     });
     
     $("#table-musicas").on( 'page-change.bs.table', function ( e, number, size ){
@@ -425,6 +487,11 @@ $(function(){
         $(".play-class").click( function(e){
             e.preventDefault();
             playChamada($(this));
+        });
+
+        $(".converter-class").click( function(e){
+            e.preventDefault();
+            openDialogConverter($(this));
         });
     });
 
@@ -476,5 +543,19 @@ $(function(){
     $("#btnConfirmarDeleteSelecao").click( function(){
         deletarSelecao();
     });
+    
+    // Converter
+    $("#bitRate").on("change", function(){
+        var valor = $("#bitRate").val();
+        
+        if ( valor === "VARIABLE"){
+            $("#divVariableBR").show();
+            $("#divBR").hide();
+        } else {
+            $("#divVariableBR").hide();
+            $("#divBR").show();
+        }
+    });
+    listaVariableBitRate();
 
 });

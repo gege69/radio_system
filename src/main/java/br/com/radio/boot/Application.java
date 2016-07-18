@@ -1,5 +1,8 @@
 package br.com.radio.boot;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -11,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,11 +79,11 @@ import de.jollyday.HolidayManager;
 
 
 
-//@SpringBootApplication
-//@ComponentScan( basePackages = { "br.com.radio.*" } )
-//@ActiveProfiles({"default"})
-//@EnableConfigurationProperties
-//@EnableTransactionManagement
+@SpringBootApplication
+@ComponentScan( basePackages = { "br.com.radio.*" } )
+@ActiveProfiles({"default"})
+@EnableConfigurationProperties
+@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)
@@ -97,11 +101,101 @@ public class Application {
 		
 //		testeFuncionalidades( ctx );
 
-		testeFiltraMidiasDiasExecucao( ctx );
+//		testeFiltraMidiasDiasExecucao( ctx );
 		
+		testeConverteMidia( ctx );
 	}
 	
-	
+	public static Scanner s = null;
+
+	private static void testeConverteMidia( ApplicationContext ctx ){
+		
+//		MidiaService midiaService = ctx.getBean( MidiaService.class );
+		
+		MidiaRepository midiaRepo = ctx.getBean( MidiaRepository.class );
+		
+		Midia m = midiaRepo.findOne( 18L );
+		
+//		ExecuteShellComand obj = new ExecuteShellComand();
+		
+
+		while (true){
+			try
+			{
+				String command = String.format("/usr/bin/lame --mp3input -S --cbr %s %s %s.ogg", "%s", m.getFilepath(), m.getFilepath() );
+//				String command = "ls";
+				System.out.println(command);
+				
+				s = new Scanner(System.in);
+				System.out.println("Digite o BitRate ( 96, 128 )");
+				System.out.print("$ ");
+				String cmd = s.nextLine();
+
+			    command = String.format(command, cmd);
+
+				final Process p = Runtime.getRuntime().exec(command);
+
+				new Thread(new Runnable() {
+					public void run() {
+						BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+						String line = null; 
+
+						try {
+							while ((line = input.readLine()) != null) {
+								System.out.println(line);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+
+				p.waitFor();
+				System.out.print("rodou");
+			}
+			catch ( IOException e )
+			{
+				e.printStackTrace();
+			}
+			catch ( InterruptedException e )
+			{
+				e.printStackTrace();
+			}
+		}
+
+
+
+//		String output = obj.executeCommand(command);
+
+//		System.out.println(output);	
+	}
+
+	public static class ExecuteShellComand {
+
+		private String executeCommand(String command) {
+
+			StringBuffer output = new StringBuffer();
+
+			Process p;
+			try {
+				p = Runtime.getRuntime().exec(command);
+				p.waitFor();
+				BufferedReader reader = 
+	                            new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+	                        String line = "";			
+				while ((line = reader.readLine())!= null) {
+					output.append(line + "\n");
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return output.toString();
+		}
+	}
+
 	
 	private static void testeFiltraMidiasDiasExecucao( ApplicationContext ctx ){
 		

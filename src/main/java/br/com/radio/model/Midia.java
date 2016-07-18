@@ -174,6 +174,16 @@ public class Midia implements Serializable {
 
 	@OneToMany( fetch = FetchType.LAZY, mappedBy="midia" )
     private List<MidiaDiaExecucao> diasExecucao;
+
+
+	@JsonIgnore
+	@Column( name = "filesize_converted", nullable = true )
+	private Integer filesize_converted;
+	
+	@JsonIgnore
+	@Column( name = "filepath_converted", nullable = true, columnDefinition = "TEXT" )
+	private String filepath_converted;
+	
 	
 	@JsonIgnore
 	@Transient
@@ -509,8 +519,36 @@ public class Midia implements Serializable {
 	{
 		this.dataFimValidade = dataFimValidade;
 	}
+
+	public List<MidiaDiaExecucao> getDiasExecucao()
+	{
+		return diasExecucao;
+	}
+
+	public void setDiasExecucao( List<MidiaDiaExecucao> diasExecucao )
+	{
+		this.diasExecucao = diasExecucao;
+	}
+
+	public Integer getFilesize_converted()
+	{
+		return filesize_converted;
+	}
+
+	public void setFilesize_converted( Integer filesize_converted )
+	{
+		this.filesize_converted = filesize_converted;
+	}
+
+	public String getFilepath_converted()
+	{
+		return filepath_converted;
+	}
+
+	public void setFilepath_converted( String filepath_converted )
+	{
+		this.filepath_converted = filepath_converted;
+	}
 	
-
-
 
 }
