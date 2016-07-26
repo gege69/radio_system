@@ -15,8 +15,8 @@ public class VariableBitRateOptionSerializer extends JsonSerializer<VariableBitR
 	public void serialize( VariableBitRateOption value, JsonGenerator gen, SerializerProvider serializers ) throws IOException, JsonProcessingException
 	{
 		gen.writeStartObject();
-        gen.writeFieldName("value");
-        gen.writeString(value.name());
+        gen.writeFieldName("valor");
+        gen.writeString(value.getValor());
         gen.writeFieldName("descricao");
         gen.writeString(value.getDescricao());
         gen.writeEndObject();

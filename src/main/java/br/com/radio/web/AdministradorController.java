@@ -5,10 +5,10 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javassist.compiler.ast.Variable;
+import java.util.Map;
 
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -26,7 +26,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -694,9 +693,12 @@ public class AdministradorController extends AbstractController {
 
 		List<Midia> midiasList = page.getContent();
 		
+		Map<Midia, Boolean> mapFilaConversao = midiaService.verificaMusicasNaFilaConversao( midiasList );
+		
 		midiasList.forEach( midia -> {
 			String generos = midiaService.getResumoGenerosDaMidia( midia );
 			midia.getMidiaView().put( "generosResumo", generos );
+			midia.getMidiaView().put( "conversao", mapFilaConversao.get(midia) );
 		});
 		
 		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midiasList, page.getTotalElements() );
@@ -1033,36 +1035,117 @@ public class AdministradorController extends AbstractController {
 
 	
 
-	@RequestMapping(value="/api/midias/converter", method=RequestMethod.POST)
+//	@RequestMapping(value="/api/midias/converter", method=RequestMethod.POST)
+//	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+//	public ResponseEntity<String> converteMidia(
+//			@RequestBody ConverterParameters parameters,
+//			BindingResult result,
+//    		Principal principal, 
+//    		Model model,
+//    		HttpServletRequest request )
+//	{
+//		String jsonResult = "";
+//
+//		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+//		
+//		if ( usuario == null || usuario.getCliente() == null )
+//			throw new RuntimeException( "Usuário não encontrado ou Cliente não encontrada."  );
+//		
+//		if ( result.hasErrors() ){
+//			jsonResult = writeErrorsAsJSONErroMessage(result);	
+//		}
+//		else { 
+//				
+//			try
+//			{
+//				midiaService.converteMusica( parameters );
+//						
+//				jsonResult = writeOkResponse();
+//			}
+//			catch ( Exception e )
+//			{
+//				imprimeLogErro( "Conversão de Mídia", request, e );
+//
+//				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+//				return respondeErro500( jsonResult );
+//			}
+//		}
+//
+//		return respondeOk200( jsonResult );
+//    }	
+		
+
+
+	@RequestMapping(value={ "/admin/conversao-config/view" }, method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public ResponseEntity<String> converteMidia(
-			@RequestBody ConverterParameters parameters,
+	public String conversao( ModelMap model, Principal principal )
+	{
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			return "HTTPerror/404";
+		
+		return "admin/conversao-config";
+	}	
+
+	
+	@RequestMapping(value="/admin/conversao-config", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody ConverterParameters getConversaoParametros()
+	{
+		ConverterParameters converterParameters = midiaService.getConverterParameters();
+		
+		return converterParameters;
+	}	
+
+
+
+	@RequestMapping(value="/admin/conversao-config/quantidade-mp3", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String getQuantidadeMP3()
+	{
+		Long qtdMP3 = midiaRepo.countByExtensao( "mp3" );
+		
+		JsonObject obj = Json.createObjectBuilder()
+				.add("qtd", qtdMP3)
+				.build();
+				
+		String json = obj.toString();
+				
+		return json;
+	}	
+
+	@RequestMapping(value="/admin/conversao-config", method=RequestMethod.POST)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public ResponseEntity<String> saveConversaoParametros(
+			@RequestBody @Valid ConverterParameters params,
 			BindingResult result,
     		Principal principal, 
     		Model model,
-    		HttpServletRequest request )
+    		HttpServletRequest request)
 	{
 		String jsonResult = "";
 
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
 		if ( usuario == null || usuario.getCliente() == null )
-			throw new RuntimeException( "Usuário não encontrado ou Cliente não encontrada."  );
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
 		
 		if ( result.hasErrors() ){
+			
 			jsonResult = writeErrorsAsJSONErroMessage(result);	
 		}
-		else { 
-				
+		else
+		{
 			try
 			{
-				midiaService.converteMusica( parameters );
+				midiaService.saveConfiguracoesConversao( params );
 						
 				jsonResult = writeOkResponse();
 			}
 			catch ( Exception e )
 			{
-				imprimeLogErro( "Conversão de Mídia", request, e );
+				imprimeLogErro( "Salvar Parâmetros de Conversão", request, e );
 
 				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
 				return respondeErro500( jsonResult );
@@ -1070,15 +1153,48 @@ public class AdministradorController extends AbstractController {
 		}
 
 		return respondeOk200( jsonResult );
-    }	
+    }		
+
+
+
+	@RequestMapping(value="/admin/conversao-config/tudo", method=RequestMethod.POST)
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public ResponseEntity<String> converterTudo(
+    		Principal principal, 
+    		Model model,
+    		HttpServletRequest request)
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
+		
+		try
+		{
+			midiaService.converterTudo();
+					
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			imprimeLogErro( "Conversão Total", request, e );
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			return respondeErro500( jsonResult );
+		}
+
+		return respondeOk200( jsonResult );
+    }		
 
 
-	@RequestMapping(value="/admin/midias/bitrates", method=RequestMethod.GET)
+
+	@RequestMapping(value="/admin/bitrates", method=RequestMethod.GET)
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
 	public @ResponseBody List<VariableBitRateOption> listVariableBitRate()
 	{
-		List<VariableBitRateOption> variables = Arrays.asList(VariableBitRateOption.values());
+		List<VariableBitRateOption> variables = VariableBitRateOption.listaExibicao();
 		
 		return variables;
 	}	

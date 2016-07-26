@@ -195,14 +195,22 @@ insert into genero (id_genero, datacriacao, descricao, genero ) values ( nextval
 
 
 
+/*
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), null, 'NEW_MIDIA_PATH', '/home/pazin/musicas/Exceto Sertanejas/AC-DC/', 'Pasta em disco onde estão as músicas novas que precisam ser importadas', null );
+*/
+
+
 insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
 values ( nextval('parametro_id_parametro_seq'), null, 'BASE_MIDIA_PATH', '/home/ubuntu/repositorioMusicas/', 'Pasta em disco onde serão armazenadas as músicas EX: C:\Temp\Musicas', null );
 
-insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), null, 'SERVER_REQUEST_PATH', '', 'A definir', null );
 
 insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
-values ( nextval('parametro_id_parametro_seq'), null, 'NEW_MIDIA_PATH', '/home/pazin/musicas/Exceto Sertanejas/AC-DC/', 'Pasta em disco onde estão as músicas novas que precisam ser importadas', null );
+values ( nextval('parametro_id_parametro_seq'), null, 'BITRATE_TYPE', 'VARIABLE', 'Tipo de BitRate utilizado na Conversão de MP3 (Médio, Constante ou Variável)', null );
+
+insert into  PARAMETRO ( id_parametro, id_cliente, codigo, valor, descricao, type )
+values ( nextval('parametro_id_parametro_seq'), null, 'VALOR_BITRATE', '5', 'Valor padrão do BitRate utilizado na Conversão de MP3 (Ex: 96, 128 para constante e médio ou 4, 5 no caso de variável)', null );
+
 
 
 

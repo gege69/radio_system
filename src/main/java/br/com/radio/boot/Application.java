@@ -41,6 +41,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.threeten.extra.Interval;
 
+import br.com.radio.conversao.BitRateType;
+import br.com.radio.conversao.ConverterParameters;
+import br.com.radio.conversao.VariableBitRateOption;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.enumeration.DiaSemana;
@@ -66,6 +69,7 @@ import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
+import br.com.radio.service.ConverterMidiaComponent;
 import br.com.radio.service.MidiaService;
 import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.util.UtilsDates;
@@ -103,10 +107,61 @@ public class Application {
 
 //		testeFiltraMidiasDiasExecucao( ctx );
 		
-		testeConverteMidia( ctx );
+//		testeConverteMidia( ctx );
+		
+		testeComponentConverte( ctx );
+
+		ctx.close();
 	}
 	
 	public static Scanner s = null;
+
+	private static void testeComponentConverte( ApplicationContext ctx ) {
+		
+		ConverterMidiaComponent comp = ctx.getBean( ConverterMidiaComponent.class );
+		
+		MidiaRepository midiaRepo = ctx.getBean( MidiaRepository.class );
+		CategoriaRepository catRepo = ctx.getBean( CategoriaRepository.class );
+		
+		ConverterParameters params = new ConverterParameters();
+		params.setBitRate( BitRateType.VARIABLE );
+//		params.setVariableBitRate( VariableBitRateOption.CINCO );
+		
+		comp.setParametros( params );
+		
+		Categoria categoria = catRepo.findByCodigo( Categoria.MUSICA );
+		
+		List<Midia> musicas = midiaRepo.findByCategoriasAndValidoTrue( categoria );
+		
+		comp.addMidiasFila( musicas );
+		
+		comp.processaFila();
+		
+		while (true){
+			s = new Scanner(System.in);
+			System.out.println("Digite o IdMidia");
+			System.out.print("$ ");
+			String cmd = s.nextLine();
+			
+			if ( "exit".equals( cmd ))
+				break;
+			
+			Long idMidia = Long.parseLong( cmd );
+			Midia m = midiaRepo.findOne( idMidia );
+			
+			comp.processaFila();
+
+			if ( m != null )
+//				System.out.println(m);
+				comp.addMidiaFila( m );
+
+			System.out.print("rodou");
+		}
+
+	}
+
+
+
 
 	private static void testeConverteMidia( ApplicationContext ctx ){
 		

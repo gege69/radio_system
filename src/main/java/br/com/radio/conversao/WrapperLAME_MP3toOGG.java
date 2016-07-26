@@ -1,5 +1,6 @@
 package br.com.radio.conversao;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
@@ -14,14 +15,22 @@ public class WrapperLAME_MP3toOGG {
 
 	public boolean converte(Midia midia, ConverterParameters params ) {
 		
-		String comando = String.format( commandTemplate, params.getBitRate().getCommand(), midia.getFilepath(), midia.getFilepath() );
+		String commandBitRate = params.getBitRate().getCommand();
+		String valor = params.getValorBitRate();
+		String filePath = midia.getFilepath();
+		
+		String comando = String.format( commandTemplate, commandBitRate, valor, filePath, filePath );
 		
 		int result;
 		try
 		{
+			logger.info( comando );
+
 			final Process p = Runtime.getRuntime().exec(comando);
 
 			result = p.waitFor();
+			
+			logger.info("Processado. Result : " + result);
 		}
 		catch ( IOException e )
 		{

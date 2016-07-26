@@ -265,6 +265,9 @@ public class MidiaAPIController extends AbstractController {
 			try
 			{
 				Midia midia = midiaService.saveUploadMusica( file, "musica", usuario.getCliente(), descricao, generos );
+				
+				// Coloca na fila para conversão
+				midiaService.converteMusica(midia);
 						
 				JsonObjectBuilder builder = Json.createObjectBuilder();
 				JsonObjectBuilder builder2 = Json.createObjectBuilder();

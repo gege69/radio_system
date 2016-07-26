@@ -3,8 +3,8 @@ package br.com.radio.conversao;
 public enum BitRateType {
 
 	AVERAGE("--abr", "BitRate Médio"),
-	CONSTANT("--cbr", "BitRate Constante"),
-	VARIABLE("V", "BitRate Variável");
+	CONSTANT("-b", "BitRate Constante"),
+	VARIABLE("-V", "BitRate Variável");
 	
 	private String command;
 	

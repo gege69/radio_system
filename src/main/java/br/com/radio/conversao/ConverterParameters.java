@@ -2,32 +2,27 @@ package br.com.radio.conversao;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class ConverterParameters {
-	
-	@NotNull
-	private Long idMidia;
 	
 	@NotNull
 	private BitRateType bitRate = BitRateType.AVERAGE;   // Default
 
 	@NotNull
+	@NotEmpty
 	private String valorBitRate;
 	
-	private VariableBitRateOption variableBitRate;
-
 	public ConverterParameters()
 	{
 		super();
 	}
 
-	public ConverterParameters( BitRateType bitRate, String valorBitRate, VariableBitRateOption variableBitRate )
+	public ConverterParameters( BitRateType bitRate, String valorBitRate )
 	{
 		super();
 		this.bitRate = bitRate;
 		this.valorBitRate = valorBitRate;
-		this.variableBitRate = variableBitRate;
-		if ( variableBitRate != null )
-			this.valorBitRate = variableBitRate.getCommandValue();
 	}
 
 	public BitRateType getBitRate()
@@ -44,14 +39,7 @@ public class ConverterParameters {
 
 	public String getValorBitRate()
 	{
-		if ( variableBitRate != null && bitRate.equals( BitRateType.VARIABLE ) )
-			return variableBitRate.getCommandValue();
-		else {
-			if ( valorBitRate == null )
-				valorBitRate = "96";
-		
-			return valorBitRate;
-		}
+		return valorBitRate;
 	}
 
 	public void setValorBitRate( String valorBitRate )
@@ -61,25 +49,10 @@ public class ConverterParameters {
 
 	public VariableBitRateOption getVariableBitRate()
 	{
-		return variableBitRate;
+		if ( bitRate.equals( BitRateType.VARIABLE ) && valorBitRate != null )
+			return VariableBitRateOption.getByValue( this.valorBitRate );
+		else
+			return null;
 	}
 
-	public void setVariableBitRate( VariableBitRateOption variableBitRate )
-	{
-		this.variableBitRate = variableBitRate;
-		this.valorBitRate = variableBitRate.getCommandValue();
-	}
-
-	public Long getIdMidia()
-	{
-		return idMidia;
-	}
-
-	public void setIdMidia( Long idMidia )
-	{
-		this.idMidia = idMidia;
-	}
-	
-
-	
 }

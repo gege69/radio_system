@@ -100,16 +100,24 @@ public class Midia implements Serializable {
 	@NotNull( message = "O hash do arquivo é de preenchimento obrigatório" )
 	@Column( name = "filehash", nullable = false, columnDefinition = "TEXT" )
 	private String filehash;
+
+	// Esse hash é o da MP3 original antes da conversão para OGG
+	@JsonIgnore
+	@Column( name = "filehash_original",  columnDefinition = "TEXT" )
+	private String filehashOriginal;
 	
 	@JsonIgnore
 	@NotNull( message = "O caminho do arquivo no servidor é de preenchimento obrigatório" )
 	@Column( name = "filepath", nullable = false, columnDefinition = "TEXT" )
 	private String filepath;
 
-	@JsonIgnore
 	@NotNull( message = "O tamanho ao arquivo é de preenchimento obrigatório" )
 	@Column( name = "filesize", nullable = false )
 	private Integer filesize;
+
+	// Esse é o tamanho do arquivo original da MP3 para fazer estatística de quanto diminuiu depois da conversão para OGG
+	@Column( name = "filesize_original")
+	private Integer filesizeOriginal;
 	
 	// Se o registro existe no filesystem (e pode ser acessado pelo servidor de aplicação) então está válido.
 	@JsonIgnore
@@ -176,14 +184,6 @@ public class Midia implements Serializable {
     private List<MidiaDiaExecucao> diasExecucao;
 
 
-	@JsonIgnore
-	@Column( name = "filesize_converted", nullable = true )
-	private Integer filesize_converted;
-	
-	@JsonIgnore
-	@Column( name = "filepath_converted", nullable = true, columnDefinition = "TEXT" )
-	private String filepath_converted;
-	
 	
 	@JsonIgnore
 	@Transient
@@ -530,24 +530,24 @@ public class Midia implements Serializable {
 		this.diasExecucao = diasExecucao;
 	}
 
-	public Integer getFilesize_converted()
+	public String getFilehashOriginal()
 	{
-		return filesize_converted;
+		return filehashOriginal;
 	}
 
-	public void setFilesize_converted( Integer filesize_converted )
+	public void setFilehashOriginal( String filehashOriginal )
 	{
-		this.filesize_converted = filesize_converted;
+		this.filehashOriginal = filehashOriginal;
 	}
 
-	public String getFilepath_converted()
+	public Integer getFilesizeOriginal()
 	{
-		return filepath_converted;
+		return filesizeOriginal;
 	}
 
-	public void setFilepath_converted( String filepath_converted )
+	public void setFilesizeOriginal( Integer filesizeOriginal )
 	{
-		this.filepath_converted = filepath_converted;
+		this.filesizeOriginal = filesizeOriginal;
 	}
 	
 

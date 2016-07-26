@@ -133,7 +133,10 @@
                  data-height="555"
                  data-side-pagination="server"
                  data-pagination="true"
+                 data-detail-view="true"
+                 data-detail-formatter="detailFormatter"
                  data-page-size=7
+                 data-icons="dataIcons"
                  data-locale = "pt_BR"
                  data-toolbar="#toolbar"
                  data-unique-id="idMidia"
@@ -145,13 +148,12 @@
                   <tr>
                       <th data-field="state" data-checkbox="true" style="width: 36px;"></th>
                       <th data-field="nome">Nome do Arquivo</th>
-<!--                       <th data-field="generosResumo">Gênero(s)</th> -->
                       <th data-field="artist">Artista</th>
                       <th data-field="idMidia" data-click-to-select="false" data-formatter="editarFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Editar</th>
                       <th data-field="idMidia" data-click-to-select="false" data-formatter="removerFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Remover</th>
                       <th data-field="idMidia" data-click-to-select="false" data-formatter="playFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Tocar</th>
                       <th data-field="extensao" data-formatter="extensaoFormatter" data-align="center">Arquivo</th>
-                      <th data-field="idMidia" data-click-to-select="false" data-formatter="converterFormatter" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Converter</th>
+                      <th data-field="idMidia" data-click-to-select="false" data-formatter="converterFormatter" data-align="center" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">Conversão</th>
                   </tr>
                 </thead>
               </table>
@@ -162,14 +164,13 @@
           <div class="spacer-vertical10"></div>
 
           <div class="player" id="player1" style="display:none;" >
-              <audio controls>
-                  <source src="" type="audio/ogg">
-              </audio>
+            <audio controls>
+              <source src="" type="audio/ogg">
+            </audio>
           </div>
           
-          
           <div class="spacer-vertical40"></div>
-          
+
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
                 <a class="btn btn-default" href="${context}/admin/upload-painel/view">
@@ -220,6 +221,27 @@
       </div>
       
 </script>  
+
+<script id="viewTemplateDetalhe" type="text/x-jsrender">
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6">          
+              <p>Tamanho original: <span class="text-warning">{{:tamanhoOriginal}}</span></p>
+              <p>Tamanho convertido: <span class="text-success">{{:tamanhoConvertido}}</span></p>
+            </div>
+            <div class="col-lg-6 col-md-6">          
+              <div class="">
+                <p>Gêneros:</p>
+                {{for generos}}
+                  <li class="list-group-item">{{:nome}}</li>
+                {{/for}}
+              </div>
+            </div>
+          </div>
+      
+</script>  
+
+<script src="${context}/js/required/filesize.min.js" charset="UTF-8"></script>
 
 <script src="${context}/js/admin/upload-musica.js" charset="UTF-8"></script>
 <script src="${context}/js/admin/grid-musica.js" charset="UTF-8"></script>

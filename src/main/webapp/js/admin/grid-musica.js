@@ -34,10 +34,36 @@ function extensaoFormatter(value, row) {
 }
 
 function converterFormatter(value, row) {
-    if ( row.extensao === "mp3" )
-        return '<a class="btn btn-link converter-class" idMidia="'+ row.idMidia +'" href="#"> <i class="fa fa-lg fa-arrow-right"></i> <b>OGG</b></a>';
+    if ( row.conversao == true || row.conversao === "true" )
+        return '<i class="material-icons md-24 animated tada infinite">cached</i> <small>Convertendo...</small>';
     else
         return "";
+}
+
+var dataIcons = { detailOpen: 'fa fa-lg fa-plus',
+        detailClose: 'fa fa-lg fa-minus'};
+
+function detailFormatter(index, row){
+    
+    var tamanho = "";
+    var tamanhoConvertido = "";
+    if ( row.filesizeOriginal != null && row.filesizeOriginal != undefined )
+        tamanho = row.filesizeOriginal;
+    else
+        tamanho = row.filesize;
+    
+    if ( row.extensao === "ogg" )
+        tamanhoConvertido = row.filesize;
+
+    var tmpl = $.templates('#viewTemplateDetalhe');
+    
+    var dados = { tamanhoOriginal : filesize(tamanho),
+                  tamanhoConvertido : filesize(tamanhoConvertido),
+                  generos : row.generos };
+
+    var content = tmpl.render(dados);
+    
+    return content;
 }
 
 var player = null;
@@ -64,28 +90,6 @@ var playChamada = function( element )
         player.source( url );
         player.play();
     }
-    
-}
-
-
-var openDialogConverter = function( element )
-{
-    var idMidia = element.attr("idMidia");
-    
-    var row = $('#table-musicas').bootstrapTable('getRowByUniqueId', idMidia);
-    
-    $('#idMidiaConveterDialog').val( idMidia );
-    
-    $('#nomeMusicaConverter').html( idMidia + " - " + row.nome )
-    
-    $('#dialogConverter').modal('show');
-}
-
-
-var converter = function( ){
-    
-    
-    
 }
 
 
@@ -398,27 +402,6 @@ var deletarSelecao = function()
 } 
 
 
-var listaVariableBitRate = function(){
-    
-    var url = buildUrl( "/admin/midias/bitrates" );
-
-    return $.ajax({
-        type: 'GET',
-        contentType: 'application/json',
-        url: url,    
-        dataType: 'json'
-    }).done(function(){
-        $.each( json.rows , function (i, option){
-            $("#valorBitRate").append($('<option>', { 
-                value: option.value,
-                text : option.descricao  
-            }));
-        });
-    });
-}
-
-
-
 
 $(function(){
     
@@ -466,11 +449,6 @@ $(function(){
             e.preventDefault();
             playChamada($(this));
         });
-
-        $(".converter-class").click( function(e){
-            e.preventDefault();
-            openDialogConverter($(this));
-        });
     });
     
     $("#table-musicas").on( 'page-change.bs.table', function ( e, number, size ){
@@ -487,11 +465,6 @@ $(function(){
         $(".play-class").click( function(e){
             e.preventDefault();
             playChamada($(this));
-        });
-
-        $(".converter-class").click( function(e){
-            e.preventDefault();
-            openDialogConverter($(this));
         });
     });
 
@@ -544,18 +517,5 @@ $(function(){
         deletarSelecao();
     });
     
-    // Converter
-    $("#bitRate").on("change", function(){
-        var valor = $("#bitRate").val();
-        
-        if ( valor === "VARIABLE"){
-            $("#divVariableBR").show();
-            $("#divBR").hide();
-        } else {
-            $("#divVariableBR").hide();
-            $("#divBR").show();
-        }
-    });
-    listaVariableBitRate();
 
 });

@@ -15,7 +15,9 @@ import br.com.radio.model.Midia;
 
 public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
-	Midia findByFilehash( String filehash );
+	// Procura tanto pelo Hash Original da MP3 quanto pelo atual
+	@Query("SELECT m FROM Midia m WHERE ( m.filehash = ?1 OR m.filehashOriginal = ?1 ) ")
+	Midia findByHashes( String filehash );
 	
 	// Procurando por midias desse ambiente, na categoria indicada, nos generos indicados, sem repetição ( ARTISTA NOT NULL MELHORAR ISSO )
 	@Query("SELECT m FROM Midia m JOIN m.ambientes a JOIN m.categorias c JOIN m.generos g WHERE m.valido = true AND a = ?1 AND c = ?2 AND g IN ?3 AND m.artist is not null group by m ")
@@ -53,4 +55,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
 	List<Midia> findByIdMidiaIn( List<Long> idMidia );
 	
+	Long countByExtensao( String extensao );
+
+	List<Midia> findByExtensao( String extensao );
 }

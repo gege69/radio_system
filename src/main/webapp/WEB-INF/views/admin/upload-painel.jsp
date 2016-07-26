@@ -55,6 +55,14 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/conversao-config/view">
+                      <i class="fa fa-2x icone-main fa-refresh"></i>
+                      <i class="fa fa-3x icone-main fa-music"></i>
+                      <br/>
+                      <span class="label-botao-main">Conversão de<br/>Músicas</span>
+                    </a>
+                  </div>
+                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">  
                     <a class="btn btn-default btn-block btn-md botao-main" href="${context}/admin/upload-opcional/view">
                       <span class="fa-stack fa-2x" style=" margin: 3px auto 12px;">
                         <i class="fa fa-cloud fa-stack-2x"></i>
@@ -63,9 +71,6 @@
                       <br/>
                       <span class="label-botao-main">Opcionais</span>
                     </a>
-                  </div>
-                  <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-
                   </div>
                 </div>              
               </div>

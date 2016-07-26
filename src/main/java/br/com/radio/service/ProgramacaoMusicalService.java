@@ -165,14 +165,6 @@ public class ProgramacaoMusicalService {
 	
 	
 	
-	public void verificaECriaProgramacaoDefault( Long idAmbiente )
-	{
-		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-		
-		verificaECriaProgramacaoDefault( ambiente );
-	}
-	
-	
 	
 //	@Async
 	@Transactional

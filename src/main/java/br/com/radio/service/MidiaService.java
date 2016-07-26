@@ -17,9 +17,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
-
-import net.openhft.hashing.LongHashFunction;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
@@ -49,13 +48,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.conversao.ConverterParameters;
-import br.com.radio.conversao.WrapperLAME_MP3toOGG;
 import br.com.radio.dto.MusicTags;
 import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.dto.midia.UpdateGenerosMusicasVO;
 import br.com.radio.enumeration.DiaSemana;
+import br.com.radio.enumeration.ParametrosType;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.AlfanumericoMidia;
 import br.com.radio.model.Ambiente;
@@ -143,28 +142,21 @@ public class MidiaService {
 
 	@Autowired
 	private FuncionalidadeRepository funcRepo;
+	
+	@Autowired
+	private ConverterMidiaComponent converterMidiaComponent;
 
 	@Autowired
 	private EntityManager entityManager;
 	
-	private Map<String,String> mapExtToMimeType = new HashMap<String,String>();
-	private Map<String,String> mapMimeTypeToExt = new HashMap<String,String>();
-
-	public MidiaService()
-	{
-		super();
-		this.mapExtToMimeType.put( "ogg", "audio/ogg" );
-		this.mapExtToMimeType.put( "mp3", "audio/mpeg" );
-
-		this.mapMimeTypeToExt.put( "audio/ogg", "ogg" );
-		this.mapMimeTypeToExt.put( "audio/mpeg", "mp3" );
-		this.mapMimeTypeToExt.put( "audio/mp3", "mp3" );
-		this.mapMimeTypeToExt.put( "audio/mpeg3", "mp3" );
+	
+	
+	@PostConstruct
+	private void init(){
+		
+		// Async method
+		converterMidiaComponent.processaFila();
 	}
-
-
-	
-	
 	
 	
 	@Transactional
@@ -172,7 +164,7 @@ public class MidiaService {
 	{
 		try
 		{
-			Parametro parametro = parametroRepo.findByCodigo( "NEW_MIDIA_PATH" );
+			Parametro parametro = parametroRepo.findByCodigo( ParametrosType.BASE_MIDIA_PATH.name() );
 			String newPath = parametro.getValor();
 
 			File diretorio = new File(newPath);
@@ -214,7 +206,7 @@ public class MidiaService {
 
 				String hash = "";
 				
-				String contentType = mapExtToMimeType.get( FilenameUtils.getExtension( f.getName() ) );
+				String contentType = converterMidiaComponent.getMapExtToMimeType().get( FilenameUtils.getExtension( f.getName() ) );
 				
 				FileInputStream fis = null;
 				try
@@ -223,7 +215,7 @@ public class MidiaService {
 					
 					byte[] bytes = IOUtils.toByteArray( fis );
 					
-					hash = geraHashDoArquivo( bytes );
+					hash = converterMidiaComponent.geraHashDoArquivo( bytes );
 					
 					fis.close();
 				}
@@ -311,7 +303,7 @@ public class MidiaService {
 			mapasMimeType.put( "mp3", "audio/mpeg" );
 			mapasMimeType.put( "", "audio/mpeg" );
 			
-			Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
+			Parametro parametro = parametroRepo.findByCodigo( ParametrosType.BASE_MIDIA_PATH.name() );
 			String basePath = parametro.getValor();
 			
 			logger.info( basePath );
@@ -362,7 +354,7 @@ public class MidiaService {
 					
 					byte[] bytes = IOUtils.toByteArray( fis );
 					
-					hash = geraHashDoArquivo( bytes );
+					hash = converterMidiaComponent.geraHashDoArquivo( bytes );
 					
 					fis.close();
 				}
@@ -445,7 +437,7 @@ public class MidiaService {
 		
 		byte[] bytes = multiPartFile.getBytes(); 
 		
-		String hash = geraHashDoArquivo( bytes );
+		String hash = converterMidiaComponent.geraHashDoArquivo( bytes );
 
 		GravaMidiaParameter parametros = new GravaMidiaParameter( multiPartFile.getOriginalFilename(), cliente, categorias, hash, multiPartFile.getContentType(), null, null, dataInicioValidade, dataFimValidade );
 		parametros.validar();
@@ -493,7 +485,7 @@ public class MidiaService {
 		
 		byte[] bytes = multiPartFile.getBytes();
 		
-		String hash = geraHashDoArquivo( bytes );
+		String hash = converterMidiaComponent.geraHashDoArquivo( bytes );
 		
 		GravaMidiaParameter parametros = new GravaMidiaParameter( multiPartFile.getOriginalFilename(), cliente, new Long[] { categoria.getIdCategoria() }, hash, multiPartFile.getContentType(), descricao, null );
 		
@@ -502,6 +494,8 @@ public class MidiaService {
 		associaGenerosParaMusica( midia, arrayGeneros );
 		
 		associaMidiaParaTodosAmbientes( midia );
+		
+		midiaRepo.saveAndFlush( midia );
 		
 		return midia;
 	}	
@@ -539,9 +533,9 @@ public class MidiaService {
 		String descricao = saveUploadParametros.getDescricao();
 		byte[] bytes = saveUploadParametros.getMultiPartFile().getBytes();
 		
-		String hash = geraHashDoArquivo( bytes );
+		String hash = converterMidiaComponent.geraHashDoArquivo( bytes );
 		
-		Midia midia = midiaRepo.findByFilehash( hash );
+		Midia midia = midiaRepo.findByHashes( hash );
 		
 //		if ( midia != null )
 //		{ 
@@ -602,7 +596,7 @@ public class MidiaService {
 		
 		byte[] bytes = saveUploadParametros.getMultiPartFile().getBytes();
 		
-		String hash = geraHashDoArquivo( bytes );
+		String hash = converterMidiaComponent.geraHashDoArquivo( bytes );
 
 		GravaMidiaParameter parametros = new GravaMidiaParameter( saveUploadParametros.getMultiPartFile().getOriginalFilename(), saveUploadParametros.getCliente(), new Long[] { categoria.getIdCategoria() }, hash, saveUploadParametros.getMultiPartFile().getContentType(), alfanumerico, null );
 		
@@ -651,7 +645,7 @@ public class MidiaService {
 		
 		byte[] bytes = multiPartFile.getBytes();
 		
-		String hash = geraHashDoArquivo( bytes );
+		String hash = converterMidiaComponent.geraHashDoArquivo( bytes );
 
 		GravaMidiaParameter parametros = new GravaMidiaParameter( multiPartFile.getOriginalFilename(), cliente, new Long[] {categoria.getIdCategoria()}, hash, multiPartFile.getContentType(), descricao, null );
 		parametros.validar();
@@ -678,13 +672,15 @@ public class MidiaService {
 		
 		if ( generos == null || generos.size() == 0 )
 			throw new RuntimeException("Nenhum gênero passado corresponde aos gêneros cadastrados no banco de dados" );
+
+		midia.setGeneros( generos );
 		
-		for ( Genero genero : generos )
-		{
-			MidiaGenero md = new MidiaGenero( genero, midia );
-			
-			midiaGeneroRepo.save( md );
-		}
+//		for ( Genero genero : generos )
+//		{
+//			MidiaGenero md = new MidiaGenero( genero, midia );
+//			
+//			midiaGeneroRepo.save( md );
+//		}
 	}
 	
 
@@ -707,7 +703,7 @@ public class MidiaService {
 		
 		byte[] bytes = multiPartFile.getBytes();
 		
-		String hash = geraHashDoArquivo( bytes );
+		String hash = converterMidiaComponent.geraHashDoArquivo( bytes );
 		
 		GravaMidiaParameter parametros = new GravaMidiaParameter( multiPartFile.getOriginalFilename(), cliente, categorias, hash, multiPartFile.getContentType(), descricao, null, dataInicioValidade, dataFimValidade );
 		parametros.validar();
@@ -730,22 +726,29 @@ public class MidiaService {
 		File arquivo = null;
 		Integer size = 0;
 		
-		String extensao = this.mapMimeTypeToExt.get( parametros.getContentType() );
+		String extensao = converterMidiaComponent.getMapMimeTypeToExt().get( parametros.getContentType() );
 		
 		if ( extensao == null )
 			throw new RuntimeException( "Tipo de arquivo inválido. Só são aceitos arquivos de Música MP3 ou OGG." );
-		
 		
 		Midia midia = null;
 		try
 		{
 			String path = getDefaultPath( parametros.getHash(), parametros.getContentType() );
 
-			midia = midiaRepo.findByFilehash( parametros.getHash() );
+			midia = midiaRepo.findByHashes( parametros.getHash() );
 		
 			boolean preencher = false;
+			
+			if ( midia != null && ( !midia.getFilehash().equals( parametros.getHash() ) && StringUtils.isNotBlank( midia.getFilehashOriginal() ) ) ){
+				// Significa que é uma MP3 que foi convertida para OGG. Tenho que eliminar o OGG e botar na fila novamente
+				preencher = true;
 
-			if (  midia == null || ( midia != null && midia.getValido() == false ) )
+				File arquivoOgg = new File( midia.getFilepath() );
+				arquivoOgg.delete();
+			}
+
+			if (  midia == null || (midia != null && midia.getValido() == false) )
 			{
 				preencher = true;
 				
@@ -757,7 +760,7 @@ public class MidiaService {
 			{
 				arquivo = new File( path );
 				
-				// Talvez não precise mover o arquivo... se o filesize estiver preenchido é um sinal disso
+				// Talvez não precise mover o arquivo... se o filesize estiver preenchido é um sinal disso (apenas no caso do Sync)
 				if ( is != null )
 					size = IOUtils.copy( is, new FileOutputStream( arquivo ) );
 				else
@@ -867,7 +870,7 @@ public class MidiaService {
 	{
 		String basePath = "";
 		
-		Parametro parametro = parametroRepo.findByCodigo( "BASE_MIDIA_PATH" );
+		Parametro parametro = parametroRepo.findByCodigo( ParametrosType.BASE_MIDIA_PATH.name() );
 		basePath = parametro.getValor();
 
 		String path = basePath + "md_" + hash;
@@ -878,11 +881,6 @@ public class MidiaService {
 	}
 
 
-
-	private void validaContentType( String contentType ){
-		
-		
-	}
 
 
 	private void preencheTags( String contentType, File arquivo, Midia midia ) throws IOException, UnsupportedTagException, InvalidDataException
@@ -934,18 +932,19 @@ public class MidiaService {
 	}
 
 
-	private void associaMidiaParaTodosAmbientesDoCliente( Cliente cliente, Midia midia )
-	{
-		List<Ambiente> ambientes = ambienteRepo.findByCliente( cliente );
-		
-		for ( Ambiente ambiente : ambientes )
-		{
-			Long qtd = midiaAmbienteRepo.countByAmbienteAndMidia( ambiente, midia );
+//	private void associaMidiaParaTodosAmbientesDoCliente( Cliente cliente, Midia midia )
+//	{
+//		List<Ambiente> ambientes = ambienteRepo.findByCliente( cliente );
+//		
+//		for ( Ambiente ambiente : ambientes )
+//		{
+//			Long qtd = midiaAmbienteRepo.countByAmbienteAndMidia( ambiente, midia );
+//
+//			if ( qtd == null || qtd == 0 )
+//				midiaAmbienteRepo.saveAndFlush( new MidiaAmbiente( ambiente, midia, new Date() ) );
+//		}
+//	}
 
-			if ( qtd == null || qtd == 0 )
-				midiaAmbienteRepo.saveAndFlush( new MidiaAmbiente( ambiente, midia, new Date() ) );
-		}
-	}
 
 	private void associaMidiaParaTodosAmbientes( Midia midia )
 	{
@@ -958,16 +957,6 @@ public class MidiaService {
 			if ( qtd == null || qtd == 0 )
 				midiaAmbienteRepo.saveAndFlush( new MidiaAmbiente( ambiente, midia, new Date() ) );
 		}
-	}
-
-	private String geraHashDoArquivo( byte[] bytes ) throws IOException
-	{
-		LongHashFunction l = LongHashFunction.xx_r39();
-		long hashXX = l.hashBytes( bytes, 0, bytes.length );
-
-		String hash = Long.toString( hashXX );
-
-		return hash;
 	}
 
 	
@@ -1220,6 +1209,9 @@ public class MidiaService {
 		if ( midia == null )
 			throw new RuntimeException( "Mídia não encontrada" );
 		
+		if ( converterMidiaComponent.estaNaFila( midia ) )
+			throw new RuntimeException( "Não é possível remover. Essa mídia está em processo de Conversão");
+		
 		List<MidiaAmbiente> associacoesAmbientes = midiaAmbienteRepo.findByMidia( midia );
 
 		for ( MidiaAmbiente ma : associacoesAmbientes )
@@ -1471,31 +1463,79 @@ public class MidiaService {
 		}
 	}
 
-
-
-	public void converteMusica(ConverterParameters params){
-		
-		Midia midia = midiaRepo.findOne( params.getIdMidia() );
-		
-		if ( midia == null )
-			throw new RuntimeException("Mídia não encontrada");
-		
-		converteMP3paraOGG( midia, params );
+	
+	public void converteMusica(Midia midia){
+		// testar para ver se é MP3
+		if ( "mp3".equals( midia.getExtensao() ) ){
+			
+			converterMidiaComponent.addMidiaFila( midia );
+			
+			if ( !converterMidiaComponent.isProcessando() )
+				converterMidiaComponent.processaFila();
+		}
 	}
+	
 
+	public void converterTudo(){
+		
+		List<Midia> musicasMP3 = midiaRepo.findByExtensao( "mp3" );
+		
+		if ( musicasMP3.size() == 0 )
+			throw new RuntimeException("Nenhuma música MP3 no servidor.");
+		
+		converterMidiaComponent.refreshConverterParameters();
+		
+		converterMidiaComponent.addMidiasFila( musicasMP3 );
 
+		if ( !converterMidiaComponent.isProcessando() )
+			converterMidiaComponent.processaFila();
+	}
+	
+	
+	public ConverterParameters getConverterParameters(){
+
+		ConverterParameters params = converterMidiaComponent.getConverterParameters();
+
+		return params;
+	}
+	
 	
 	@Transactional
-	public void converteMP3paraOGG(Midia midia, ConverterParameters params ){
+	public void saveConfiguracoesConversao(ConverterParameters params){
 		
-		WrapperLAME_MP3toOGG converter = new WrapperLAME_MP3toOGG();
+		Parametro bitrate = parametroRepo.findByCodigo( ParametrosType.BITRATE_TYPE.name() );
+		Parametro bitrateValor = parametroRepo.findByCodigo( ParametrosType.VALOR_BITRATE.name() );
 		
-		boolean ok = converter.converte( midia, params );
+		if ( bitrate == null ){
+			bitrate = new Parametro();
+			bitrate.setCodigo( ParametrosType.BITRATE_TYPE.name() );
+			bitrate.setDescricao( ParametrosType.BITRATE_TYPE.getDescricao() );
+		}
+		bitrate.setValor( params.getBitRate().name() );
 		
-		if ( !ok )
-			throw new RuntimeException("Não foi possível converter a mídia");
+		if ( bitrateValor == null ){
+			bitrateValor = new Parametro();
+			bitrateValor.setCodigo( ParametrosType.VALOR_BITRATE.name() );
+			bitrateValor.setDescricao( ParametrosType.VALOR_BITRATE.getDescricao() );
+		}
+		bitrateValor.setValor( params.getValorBitRate() );
+
+		parametroRepo.save( bitrate );
+		parametroRepo.save( bitrateValor );
+
+		converterMidiaComponent.setParametros( params );
+
+
+	}
+	
+	
+	public Map<Midia, Boolean> verificaMusicasNaFilaConversao(List<Midia> musicas){
+
+		Map<Midia, Boolean> result = new HashMap<Midia, Boolean>();
+
+		result = converterMidiaComponent.estaoNaFila( musicas );
+		
+		return result;
 	}
 
-
-	
 }

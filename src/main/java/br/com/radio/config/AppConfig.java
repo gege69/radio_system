@@ -2,6 +2,7 @@ package br.com.radio.config;
 
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -24,6 +25,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import br.com.radio.security.config.SecurityConfigMulti;
+import br.com.radio.service.ConverterMidiaComponent;
 import br.com.radio.web.config.WebAppConfig;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -41,7 +43,6 @@ public class AppConfig {
 	
 	@Autowired
 	private Environment env;
-
 	
 	@Bean( destroyMethod = "close" )
 	@Profile("default")
