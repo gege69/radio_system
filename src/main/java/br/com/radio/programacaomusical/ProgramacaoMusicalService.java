@@ -872,39 +872,14 @@ public class ProgramacaoMusicalService {
 
 				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_MUSICAS ) ) {
 					
-					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-					
-					if ( posicaoSilencio.equals( PosicaoSilencio.ANTES_BLOCO_COMERCIAL ) )
-						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
-					
-					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
-					
-					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-
-					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
-						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+					insereExemploComercial( bloco, result, posicaoVinheta, posicaoSilencio, qtdComerciaisSequencia );
 				}
 			}
 				
 			if ( stepInstitucionais > 0 && countMusicasInseridas % stepInstitucionais == 0 )  // Depois de n músicas
 			{
-				if ( posicaoComercial.equals( PosicaoComercial.ANTES_INSTITUCIONAL ) ){
-					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-					
-					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
-						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
-					
-					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
-					
-					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-
-					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
-						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
-				}
+				if ( posicaoComercial.equals( PosicaoComercial.ANTES_INSTITUCIONAL ) )
+					insereExemploComercial( bloco, result, posicaoVinheta, posicaoSilencio, qtdComerciaisSequencia );
 
 				if ( posicaoSilencio.equals( PosicaoSilencio.ANTES_INSTITUCIONAL ))
 					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
@@ -914,40 +889,14 @@ public class ProgramacaoMusicalService {
 				if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_INSTITUCIONAL ))
 					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				
-				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_INSTITUCIONAL ) ){
-					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-					
-					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
-						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
-
-					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
-					
-					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-
-					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
-						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
-				}
+				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_INSTITUCIONAL ) )
+					insereExemploComercial( bloco, result, posicaoVinheta, posicaoSilencio, qtdComerciaisSequencia );
 			}
 			
 			if ( stepProgrametes > 0 && countMusicasInseridas % stepProgrametes == 0 )  // Depois de n músicas
 			{
-				if ( posicaoComercial.equals( PosicaoComercial.ANTES_PROGRAMETE ) ){
-					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-					
-					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
-						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
-
-					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
-					
-					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-
-					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
-						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
-				}
+				if ( posicaoComercial.equals( PosicaoComercial.ANTES_PROGRAMETE ) )
+					insereExemploComercial( bloco, result, posicaoVinheta, posicaoSilencio, qtdComerciaisSequencia );
 				
 				if ( posicaoSilencio.equals( PosicaoSilencio.ANTES_PROGRAMETE ))
 					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
@@ -957,15 +906,8 @@ public class ProgramacaoMusicalService {
 				if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_PROGRAMETE ))
 					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				
-				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_PROGRAMETE ) ){
-					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );
-					
-					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
-					
-					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
-						result.add( "Vinheta" );				
-				}
+				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_PROGRAMETE ) )
+					insereExemploComercial( bloco, result, posicaoVinheta, posicaoSilencio, qtdComerciaisSequencia );
 			}
 				
 			if ( stepOpcionais > 0 && countMusicasInseridas % stepOpcionais == 0 ) 
@@ -984,6 +926,26 @@ public class ProgramacaoMusicalService {
 		result.add( "...etc" );
 		
 		return result;
+	}
+
+
+
+
+	private void insereExemploComercial( Bloco bloco, List<String> result, PosicaoVinheta posicaoVinheta, PosicaoSilencio posicaoSilencio, int qtdComerciaisSequencia )
+	{
+		if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
+			result.add( "Vinheta" );
+		
+		if ( posicaoSilencio.equals( PosicaoSilencio.ANTES_BLOCO_COMERCIAL ))
+			result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+		
+		result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
+		
+		if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
+			result.add( "Vinheta" );
+
+		if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+			result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 	}
 	
 
