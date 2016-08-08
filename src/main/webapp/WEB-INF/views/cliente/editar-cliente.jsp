@@ -84,7 +84,7 @@
                           <input type="text" class="form-control phone" id="numero0" name="telefones[][numero]" >
                         </div>
                         <div class="col-sm-4 col-md-3 col-lg-2">
-                          <div class="pull-right" style="height: 20px;">
+                          <div class="pull-right-not-xs" style="height: 20px;">
                             <button id="linkaddtelefone" class="btn btn-success"><i class="fa fa-lg fa-plus-circle"></i> Adicionar Telefone</button>
                           </div>
                         </div>
@@ -183,7 +183,7 @@
                 
                 <div class="row">
                   <div class="col-lg-12 col-md-12">
-                    <div class="pull-right">
+                    <div class="pull-right-not-xs">
                       <button type="button" class="btn btn-primary" id="btnSalvar">
                         <i class="fa fa-floppy-o"></i>
                         Salvar Alterações
@@ -409,7 +409,7 @@
           <div class="spacer-vertical20"></div> 
 
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
                 <c:if test="${urlVoltarCadastro != null}">
                   <a class="btn btn-default" href="${context}${urlVoltarCadastro}" >
@@ -418,8 +418,8 @@
                 </c:if>
               </div>            
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
                 <a class="btn btn-default" href="${context}${urlVoltarPainel}">${nomePainel}</a>
               </div>
             </div>
@@ -575,7 +575,7 @@
       <input type="text" class="form-control phone" id="telefone0" name="telefones[{{:id}}][numero]" value="{{:numero}}" >
     </div>
     <div class="col-sm-3 col-md-2 col-lg-2">
-      <div class="pull-right" style="height: 20px;">
+      <div class="pull-right-not-xs" style="height: 20px;">
         <button id="linkaddtelefone" class="btn btn-warning removertelefone"><i class="fa fa-lg fa-minus-circle"></i> Remover</button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-package br.com.radio.service.programacaomusical;
+package br.com.radio.programacaomusical;
 
 import java.util.Iterator;
 import java.util.List;

@@ -35,7 +35,7 @@ var salvar = function(){
     
 };
 
-var makeListTmpl = function(json){
+var makeListTmplOpcionais = function(json){
     
     var tmpl = $.templates('#viewTmplOpcionais');
     
@@ -57,7 +57,7 @@ var listaOpcionais = function( opcionaisList ){
         url: url,    
         dataType: 'json'
     }).done( function(json){
-        makeListTmpl(json);
+        makeListTmplOpcionais(json);
         
         $.each( opcionaisList, function( idx, obj ){
             $('#opcional-'+obj.idOpcional).prop('checked', true);
@@ -188,12 +188,25 @@ var configuraMultiplosMusica = function()
     constroiCombo( $('#indexInstitucionais'), "Institucionais" );
     constroiCombo( $('#indexProgrametes'), "Programetes" );
     constroiCombo( $('#indexOpcionais'), "Opcionais" );
+    
+    resetCombosSilencio();
 }
 
 
+var resetCombosSilencio = function(){
+    
+    $('#posicaoSilencio').val("NAO_INCLUIR");
+    $('#tamanhoSilencio').val("");
+}
+
 
 var getExemplo = function( bloco, salvo ){
-    
+
+    var existe = $( "#containerExemplo" ).length;
+
+    if ( !existe )    
+        return;
+
     var url = buildUrl( "/ambientes/{idAmbiente}/blocos/exemplo", {
         idAmbiente : idAmbiente
     });

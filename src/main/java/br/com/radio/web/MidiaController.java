@@ -30,8 +30,8 @@ import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.MidiaRepository;
-import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
+import br.com.radio.service.midia.MidiaService;
 
 @Controller
 public class MidiaController extends AbstractController {

@@ -31,8 +31,8 @@
                  data-query-params="queryParams" >
                 <thead>
                   <tr>
-                      <th data-field="nome" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" data-formatter="nomeFormatter">Usuário</th>
-                      <th data-field="perfis" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" data-formatter="perfisFormatter">Perfis</th>
+                      <th data-field="nome" class="col-lg-6 col-md-6 col-sm-6" data-formatter="nomeFormatter">Usuário</th>
+                      <th data-field="perfis" class="col-lg-6 col-md-6 col-sm-6" data-formatter="perfisFormatter">Perfis</th>
                       <th data-field="editar" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="editarFormatter" data-halign="center" data-align="center">Editar</th>
                       <th data-field="remover" class="col-lg-2 col-md-2 col-sm-2 col-xs-6" data-formatter="removeFormatter" data-halign="center" data-align="center">Remover</th>
                   </tr>
@@ -45,13 +45,13 @@
           <div class="spacer-vertical20"></div>
 
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
                 <a class="btn btn-primary" href="${context}/usuarios/view">Adicionar Novo Usuário</a>
               </div>            
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
                 <a class="btn btn-default" href="${context}/perfis/view">
                   <i class="fa fa-legal"></i>
                   Administrar Perfis</a>
@@ -62,10 +62,10 @@
           <div class="spacer-vertical20"></div>
 
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+            <div class="col-lg-6 col-md-6 col-sm-6">          
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
                 <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>    
               </div>          
             </div>

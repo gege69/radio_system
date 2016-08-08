@@ -18,7 +18,7 @@
             </div>
             
             <div class="col-lg-6 col-md-6">
-              <div class="pull-right">
+              <div class="pull-right-not-xs">
                 <c:if test="${isDono}">
                   <button class="btn btn-default" id="btnParametros"><i class="fa fa-lg fa-cog"></i> <i class="fa fa-caret-down"></i> </button>
                 </c:if>
@@ -128,11 +128,11 @@
           </div>
           
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               Você possui ${qtdAmbientes} ambientes cadastrados
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
                 <c:url var="logoutUrl" value="/logout"/>
                 <form action="${logoutUrl}" method="post">
                   <input type="submit" class="btn btn-link" value="Log out" />

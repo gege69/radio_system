@@ -56,8 +56,8 @@ import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.TipoTaxaRepository;
 import br.com.radio.service.ClienteService;
-import br.com.radio.service.MidiaService;
 import br.com.radio.service.UsuarioService;
+import br.com.radio.service.midia.MidiaService;
 import br.com.radio.util.UtilsStr;
 
 

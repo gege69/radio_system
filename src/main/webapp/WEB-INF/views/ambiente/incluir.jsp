@@ -76,15 +76,15 @@
           <div class="spacer-vertical80"></div>
           
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
                 <a class="btn btn-default" href="${context}/ambientes/searches" >
                   <i class="fa fa-arrow-left"></i>
                   Voltar para Administrar Ambientes</a>
               </div>            
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
                 <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
               </div>            
             </div>

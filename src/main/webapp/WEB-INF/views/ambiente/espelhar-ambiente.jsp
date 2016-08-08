@@ -103,7 +103,7 @@
     </div>
     
     <div class="row">
-      <div class="pull-right">
+      <div class="pull-right-not-xs">
         <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
       </div>
     </div>

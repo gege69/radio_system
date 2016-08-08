@@ -20,8 +20,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import br.com.radio.enumeration.PosicaoComercial;
-import br.com.radio.enumeration.PosicaoVinheta;
+import br.com.radio.programacaomusical.PosicaoComercial;
+import br.com.radio.programacaomusical.PosicaoSilencio;
+import br.com.radio.programacaomusical.PosicaoVinheta;
+import br.com.radio.programacaomusical.TamanhoSilencioMidia;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -100,7 +102,22 @@ public class Bloco implements Serializable {
 	 */
 	@Column( name = "indexOpcionais")
 	private Integer indexOpcionais; 
+
+	/**
+	 * O número gravado aqui é a o tamanho do silêncio em segundos ( 30, 60, 90, 120, 150, 180 )
+	 */
+	@Enumerated(EnumType.STRING)
+	@Column( name= "tamanhoSilencio")
+	private TamanhoSilencioMidia tamanhoSilencio;
 	
+	/**
+	 * Posição do silêncio na programação
+	 */
+	@Enumerated(EnumType.STRING)
+	@Column( name = "posicaoSilencio" )
+	private PosicaoSilencio posicaoSilencio;
+
+
 	/**
 	 * Quais opcionais foram selecionados para esse Bloco
 	 */
@@ -247,6 +264,26 @@ public class Bloco implements Serializable {
 	public void setOpcionais( List<AudioOpcional> opcionais )
 	{
 		this.opcionais = opcionais;
+	}
+
+	public TamanhoSilencioMidia getTamanhoSilencio()
+	{
+		return tamanhoSilencio;
+	}
+
+	public void setTamanhoSilencio( TamanhoSilencioMidia tamanhoSilencio )
+	{
+		this.tamanhoSilencio = tamanhoSilencio;
+	}
+
+	public PosicaoSilencio getPosicaoSilencio()
+	{
+		return posicaoSilencio;
+	}
+
+	public void setPosicaoSilencio( PosicaoSilencio posicaoSilencio )
+	{
+		this.posicaoSilencio = posicaoSilencio;
 	}
 
 }

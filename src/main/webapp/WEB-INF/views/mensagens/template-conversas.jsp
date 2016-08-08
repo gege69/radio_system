@@ -8,7 +8,7 @@
 
               <div class="row">
                 <div class="col-lg-12">
-                  <div class="pull-right">
+                  <div class="pull-right-not-xs">
                     <a class="btn btn-primary" href="#" id="btnNovaMensagem"><i class="fa fa-envelope-o"></i> Nova Mensagem</a>
                   </div>
                 </div>  
@@ -110,7 +110,7 @@
                   
                   <div class="row spacer-vertical10">
                     <div class="col-lg-12">
-                      <div class="pull-right">
+                      <div class="pull-right-not-xs">
                         <a class="btn btn-primary" href="#" id="btnIniciar">Iniciar <i class="fa fa-arrow-right"></i></a>
                       </div>
                     </div>  

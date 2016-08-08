@@ -1,4 +1,4 @@
-package br.com.radio.service;
+package br.com.radio.service.midia;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -85,6 +85,7 @@ import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaOpcionalRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
+import br.com.radio.service.SaveUploadParameter;
 import br.com.radio.service.vo.GravaMidiaParameter;
 
 import com.mpatric.mp3agic.ID3v1;

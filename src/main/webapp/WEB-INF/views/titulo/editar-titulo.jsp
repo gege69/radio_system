@@ -196,7 +196,7 @@
                 
                 <div class="row">
                   <div class="col-lg-12 col-md-12">
-                    <div class="pull-right">
+                    <div class="pull-right-not-xs">
 
                       <c:if test="${idTitulo != null && idTitulo > 0}">
                         <button type="button" class="btn btn-danger" id="btnCancelar">
@@ -220,7 +220,7 @@
           <div class="spacer-vertical40"></div> 
 
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
                 <c:if test="${urlVoltarCadastro != null}">
                   <a class="btn btn-default" href="${context}${urlVoltarCadastro}" >
@@ -229,8 +229,8 @@
                 </c:if>
               </div>            
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
                 <a class="btn btn-default" href="${context}${urlVoltarPainel}">${nomePainel}</a>
               </div>
             </div>

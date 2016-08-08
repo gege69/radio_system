@@ -59,6 +59,7 @@ import br.com.radio.model.Programacao;
 import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.fixture.FixtureAmbiente;
+import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
@@ -69,9 +70,8 @@ import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
-import br.com.radio.service.ConverterMidiaComponent;
-import br.com.radio.service.MidiaService;
-import br.com.radio.service.ProgramacaoMusicalService;
+import br.com.radio.service.midia.ConverterMidiaComponent;
+import br.com.radio.service.midia.MidiaService;
 import br.com.radio.util.UtilsDates;
 import de.jollyday.Holiday;
 import de.jollyday.HolidayManager;
@@ -83,11 +83,11 @@ import de.jollyday.HolidayManager;
 
 
 
-@SpringBootApplication
-@ComponentScan( basePackages = { "br.com.radio.*" } )
-@ActiveProfiles({"default"})
-@EnableConfigurationProperties
-@EnableTransactionManagement
+//@SpringBootApplication
+//@ComponentScan( basePackages = { "br.com.radio.*" } )
+//@ActiveProfiles({"default"})
+//@EnableConfigurationProperties
+//@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)

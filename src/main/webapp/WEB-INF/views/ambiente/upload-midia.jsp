@@ -141,10 +141,10 @@
                         </div>
 
                         <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                          <div class="col-lg-6 col-md-6 col-sm-6">          
                           </div>
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <div class="pull-right">
+                          <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="pull-right-not-xs">
                               <button type="button" class="btn btn-success" id="btnIniciar">
                                 <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a> 
                               </button>
@@ -194,7 +194,7 @@
                   
                   
                   <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
                       <div class="">
                         <a class="btn btn-default" href="#" id="aplicar-programacao" >
                           <i class="fa fa-refresh"></i>
@@ -211,7 +211,7 @@
           </div>
           
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
                 <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >
                   <i class="fa fa-arrow-left"></i>

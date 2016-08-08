@@ -33,6 +33,8 @@ var playSequence = function( array ){
 
 var schedulePlay = function()
 {
+    pararEventosSilencio();
+
     var musicaAtual = playlist[0];
     
     if ( musicaAtual == null || musicaAtual == undefined )
@@ -73,6 +75,9 @@ var schedulePlay = function()
 }
 
 var stop = function(){
+
+    pararEventosSilencio();
+
     player.pause();
 };
 
@@ -128,6 +133,8 @@ var play = function(){
     
     if ( player.media.paused == false )
         return;
+
+    pararEventosSilencio();
     
     var url = buildUrl( "/api/ambientes/{idAmbiente}/transmissoes/live", { 
         idAmbiente: idAmbiente
@@ -147,12 +154,12 @@ var play = function(){
             else
                 $('#nome-musica').html( content.midia.title );
             
-            $('#artista').empty();
+            $('#artista').html("");
             if ( content.midia.artist != null && content.midia.artist != '' )
                 $('#artista').html( ' - ' + content.midia.artist );
         }
         
-        if ( content.link != null && content.link != '' )
+        if ( content.link != null && content.link != '' && content.midia != null )
         {
             determinaVolume( content );
 
@@ -175,10 +182,67 @@ var play = function(){
                 next();
             });
         }
-
+        else {
+            console.log("silencio!" + content.idTransmissao );
+            stop();
+            tocaSilencio( content.duracao );
+        }
     });
 };
 
+
+function pararEventosSilencio(){
+    if (myInterval)
+        window.clearInterval(myInterval);
+
+    if (clockInterval)
+        window.clearInterval(clockInterval);
+    
+    secs = 0;
+    duracaoSilencio = 0;
+}
+
+var secs = 0;
+var duracaoSilencio = 0;
+
+function increment() {
+
+    var currentSeconds = 0;
+    var currentMinutes = 0;
+
+    currentMinutes = Math.floor(secs / 60);
+    currentSeconds = secs % 60;
+    if(currentSeconds <= 9) currentSeconds = "0" + currentSeconds;
+    secs++;
+    document.getElementById("spanTempoCorrido").innerHTML = currentMinutes + ":" + currentSeconds; //Set the element id you need the time put into.
+    if(secs < duracaoSilencio) 
+        clockInterval = setTimeout(increment,1000);
+}
+
+var myInterval;
+
+var clockInterval;
+
+var tocaSilencio = function( duracao ){
+    
+    console.log(duracao);
+    
+    pararEventosSilencio();
+
+    myInterval = setTimeout(next, duracao * 1000);
+
+    $('#nome-musica').html('Silêncio');
+    $('#artista').empty();
+
+    $("#spanTempoTotal").html("");
+    $("#spanTempoTotal").html( processaTempo( duracao ) ); 
+
+    $("#spanTempoCorrido").html("");
+
+    secs = 1;
+    duracaoSilencio = duracao;
+    clockInterval = setTimeout(increment,1000); 
+}
 
 
 var registraTempos = function(){
@@ -211,6 +275,8 @@ var next = function(){
         console.log('player2-paused');
         return;
     }
+
+    pararEventosSilencio();
     
     var url = buildUrl( "/api/ambientes/{idAmbiente}/transmissoes/live/next", { 
         idAmbiente: idAmbiente
@@ -235,7 +301,7 @@ var next = function(){
                 $('#artista').html( ' - ' + content.midia.artist );
         }
         
-        if ( content.link != null && content.link != '' )
+        if ( content.link != null && content.link != '' && content.midia != null )
         {
             console.log(content.link);
             
@@ -260,7 +326,11 @@ var next = function(){
                 next();
             });
         }
-
+        else {
+            console.log("silencio!" + content.idTransmissao );
+            stop();
+            tocaSilencio( content.duracao );
+        }
     });
     
 };
@@ -332,7 +402,7 @@ var registraModal = function( element, url ){
 
 var retornaMusica = function()
 {
-    if ( micRetorna != null && micRetorna != undefined )
+    if ( micRetorna != null && micRetorna != undefined && duracaoSilencio === 0 )
     {
         micRetorna.play();
     }

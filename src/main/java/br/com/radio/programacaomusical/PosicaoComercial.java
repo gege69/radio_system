@@ -1,4 +1,4 @@
-package br.com.radio.enumeration;
+package br.com.radio.programacaomusical;
 
 public enum PosicaoComercial {
 	

@@ -1,4 +1,4 @@
-package br.com.radio.service;
+package br.com.radio.programacaomusical;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,8 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.enumeration.DiaSemana;
-import br.com.radio.enumeration.PosicaoComercial;
-import br.com.radio.enumeration.PosicaoVinheta;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteGenero;
@@ -55,10 +53,8 @@ import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.repository.TransmissaoRepository;
-import br.com.radio.service.programacaomusical.ListaInesgotavel;
-import br.com.radio.service.programacaomusical.ListaInesgotavelRandom;
-import br.com.radio.service.programacaomusical.ListaInesgotavelRandomAlternada;
-import br.com.radio.service.programacaomusical.ProgramacaoListMidiaListDTO;
+import br.com.radio.service.AmbienteService;
+import br.com.radio.service.midia.MidiaService;
 import br.com.radio.util.UtilsDates;
 
 import com.google.common.collect.Iterators;
@@ -110,6 +106,7 @@ public class ProgramacaoMusicalService {
 	private AudioOpcionalRepository opcionalRepo;
 	
 	private static final Logger logger = Logger.getLogger(ProgramacaoMusicalService.class);
+	
 	
 	/**
 	 * Esse método vai obter os registros de programação do banco de dados e validar se existe colisão.
@@ -448,7 +445,7 @@ public class ProgramacaoMusicalService {
 
 		
 		// só verificar se já a música foi tocada durante o dia.
-		List<Transmissao> transmissoesTocadas = transmissaoRepo.findByAmbienteAndStatusPlaybackAndDiaPlayBetween( ambiente, StatusPlayback.FIM, UtilsDates.asUtilMidnightDate( hoje ), UtilsDates.asUtilLastSecondDate( hoje ) );
+		List<Transmissao> transmissoesTocadas = transmissaoRepo.findByAmbienteAndStatusPlaybackAndDiaPlayBetweenAndMidiaNotNull( ambiente, StatusPlayback.FIM, UtilsDates.asUtilMidnightDate( hoje ), UtilsDates.asUtilLastSecondDate( hoje ) );
 		
 		Set<Midia> musicasJaTocadas = transmissoesTocadas.stream().map( Transmissao::getMidia ).collect( Collectors.toCollection( HashSet::new ) );
 		
@@ -797,6 +794,14 @@ public class ProgramacaoMusicalService {
 		else
 			return "Comercial";
 	}
+	
+	
+	private String fmtSilencio(TamanhoSilencioMidia tamanho){
+		if ( tamanho == null || tamanho.equals( TamanhoSilencioMidia.NENHUM ) )
+			return "";
+		else 
+			return String.format( "Silêncio (%s)", tamanho.getDescricao() );
+	}
 
 
 	public List<String> getExemploSequenciaBlocoComMusicas( Bloco bloco ){
@@ -805,12 +810,21 @@ public class ProgramacaoMusicalService {
 		
 		PosicaoVinheta posicaoVinheta = bloco.getPosicaoVinheta();
 		PosicaoComercial posicaoComercial = bloco.getPosicaoComercial();
+		PosicaoSilencio posicaoSilencio = bloco.getPosicaoSilencio();
+		
+		TamanhoSilencioMidia tamanhoSilencio = bloco.getTamanhoSilencio();
 		
 		if ( posicaoVinheta == null || posicaoComercial == null )
 			return null;
 		
 		if ( bloco.getQtdMusicas() == null || bloco.getQtdComerciais() == null )
 			return null;
+		
+		if ( posicaoSilencio == null )
+			posicaoSilencio = PosicaoSilencio.NAO_INCLUIR;
+		
+		if ( tamanhoSilencio == null || tamanhoSilencio.equals( TamanhoSilencioMidia.NENHUM ))
+			posicaoSilencio = PosicaoSilencio.NAO_INCLUIR;
 		
 		if ( bloco.getIndexInstitucionais() == null )
 			bloco.setIndexInstitucionais( 0 );
@@ -842,7 +856,7 @@ public class ProgramacaoMusicalService {
 		int stepInstitucionais = bloco.getIndexInstitucionais();
 		int stepProgrametes = bloco.getIndexProgrametes();
 		int stepOpcionais = bloco.getIndexOpcionais();
-
+		
 		int countMusicasInseridas = 0;
 
 		for ( int i = 0; i <= 4; i++ ){
@@ -861,10 +875,16 @@ public class ProgramacaoMusicalService {
 					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
 						result.add( "Vinheta" );
 					
+					if ( posicaoSilencio.equals( PosicaoSilencio.ANTES_BLOCO_COMERCIAL ) )
+						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+					
 					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
 					
 					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
 						result.add( "Vinheta" );
+
+					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				}
 			}
 				
@@ -874,22 +894,40 @@ public class ProgramacaoMusicalService {
 					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
 						result.add( "Vinheta" );
 					
+					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+					
 					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
 					
 					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
 						result.add( "Vinheta" );
+
+					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				}
+
+				if ( posicaoSilencio.equals( PosicaoSilencio.ANTES_INSTITUCIONAL ))
+					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				
 				result.add("Institucional");
 
+				if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_INSTITUCIONAL ))
+					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+				
 				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_INSTITUCIONAL ) ){
 					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
 						result.add( "Vinheta" );
 					
+					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+
 					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
 					
 					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
 						result.add( "Vinheta" );
+
+					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				}
 			}
 			
@@ -899,13 +937,25 @@ public class ProgramacaoMusicalService {
 					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
 						result.add( "Vinheta" );
 					
+					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+
 					result.add( geraStringExemploComercial( qtdComerciaisSequencia ) );
 					
 					if ( posicaoVinheta.equals( PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL ) )
 						result.add( "Vinheta" );
+
+					if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+						result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				}
 				
+				if ( posicaoSilencio.equals( PosicaoSilencio.ANTES_PROGRAMETE ))
+					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+
 				result.add( "Programete");
+
+				if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_PROGRAMETE ))
+					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				
 				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_PROGRAMETE ) ){
 					if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_BLOCO_COMERCIAL ) )
@@ -944,6 +994,7 @@ public class ProgramacaoMusicalService {
 		
 		PosicaoVinheta posicaoVinheta = bloco.getPosicaoVinheta();
 		PosicaoComercial posicaoComercial = bloco.getPosicaoComercial();
+		PosicaoSilencio posicaoSilencio = bloco.getPosicaoSilencio();
 		
 		ThreadLocalRandom rnd = ThreadLocalRandom.current();
 		
@@ -951,6 +1002,7 @@ public class ProgramacaoMusicalService {
 		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
 		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
 		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
+		Categoria silencio = categoriaRepo.findByCodigo( Categoria.SILENCIO );
 		
 		ListaInesgotavelRandom liVinhetas = getListasRandomPorCategoria( ambiente, vinheta );
 		ListaInesgotavelRandom liComerciais = getListasRandomPorCategoria( ambiente, comercial );
@@ -962,6 +1014,18 @@ public class ProgramacaoMusicalService {
 		int stepInstitucionais = bloco.getIndexInstitucionais();
 		int stepProgrametes = bloco.getIndexProgrametes();
 		int stepOpcionais = bloco.getIndexOpcionais();
+		
+		TamanhoSilencioMidia tamanhoSilencio = bloco.getTamanhoSilencio();
+
+		Midia midiaSilencio = null;
+		
+		if ( tamanhoSilencio != null && !tamanhoSilencio.equals( TamanhoSilencioMidia.NENHUM ) ){
+			midiaSilencio = tamanhoSilencio.getMidia();
+			midiaSilencio.setCategoriaSelecionada( silencio );
+		} else {
+			// Se o tamanho estiver abaixo do ideal vou roubar e não deixar incluir
+			posicaoSilencio = PosicaoSilencio.NAO_INCLUIR;
+		}
 		
 		LinkedList<Midia> result = new LinkedList<Midia>();
 		
@@ -979,25 +1043,37 @@ public class ProgramacaoMusicalService {
 			if ( stepInstitucionais > 0 ) 
 			{
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.ANTES_INSTITUCIONAL, liComerciais ) )
-					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+					adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+				
+				if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.ANTES_INSTITUCIONAL ))
+					addIfNotNull( novaListaMidias, midiaSilencio);
 				
 				// INSTITUCIONAL
 				addIfNotNull( novaListaMidias, liInstitucionais.getNextRandom( rnd ) );
 				
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_INSTITUCIONAL, liComerciais ) )
-					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+					adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+
+				if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.DEPOIS_INSTITUCIONAL ))
+					addIfNotNull( novaListaMidias, midiaSilencio);
 			}
 			
 			if ( stepProgrametes > 0 ) 
 			{
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.ANTES_PROGRAMETE, liComerciais ) )
-					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+					adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
 				
+				if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.ANTES_PROGRAMETE ))
+					addIfNotNull( novaListaMidias, midiaSilencio);
+
 				// PROGRAMETE
 				addIfNotNull( novaListaMidias, liProgrametes.getNextRandom( rnd ) );
 				
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_PROGRAMETE, liComerciais ) )
-					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+					adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+
+				if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.DEPOIS_PROGRAMETE ))
+					addIfNotNull( novaListaMidias, midiaSilencio);
 			}
 			
 			if ( stepOpcionais > 0 ) 
@@ -1037,6 +1113,11 @@ public class ProgramacaoMusicalService {
 	}
 	
 
+	private boolean verificaMomentoSilencioMerge( PosicaoSilencio posicaoSilencioConfigurado, PosicaoSilencio posicaoSilencioVerificar )  
+	{
+		return ( posicaoSilencioConfigurado.equals( posicaoSilencioVerificar ) );
+	}
+	
 
 	private ListaInesgotavelRandom getListasRandomPorCategoria( Ambiente ambiente, Categoria categoria ){
 
@@ -1062,6 +1143,7 @@ public class ProgramacaoMusicalService {
 		
 		PosicaoVinheta posicaoVinheta = bloco.getPosicaoVinheta();
 		PosicaoComercial posicaoComercial = bloco.getPosicaoComercial();
+		PosicaoSilencio posicaoSilencio = bloco.getPosicaoSilencio();
 		
 		ThreadLocalRandom rnd = ThreadLocalRandom.current();
 		
@@ -1069,6 +1151,7 @@ public class ProgramacaoMusicalService {
 		Categoria comercial = categoriaRepo.findByCodigo( Categoria.COMERCIAL );
 		Categoria institucional = categoriaRepo.findByCodigo( Categoria.INSTITUCIONAL );
 		Categoria programete = categoriaRepo.findByCodigo( Categoria.PROGRAMETE );
+		Categoria silencio = categoriaRepo.findByCodigo( Categoria.SILENCIO );
 		
 		ListaInesgotavelRandom liVinhetas = getListasRandomPorCategoria( ambiente, vinheta );
 		ListaInesgotavelRandom liComerciais = getListasRandomPorCategoria( ambiente, comercial );
@@ -1083,6 +1166,19 @@ public class ProgramacaoMusicalService {
 		int stepProgrametes = bloco.getIndexProgrametes();
 		int stepOpcionais = bloco.getIndexOpcionais();
 		
+		TamanhoSilencioMidia tamanhoSilencio = bloco.getTamanhoSilencio();
+
+		Midia midiaSilencio = null;
+		
+		if ( tamanhoSilencio != null && !tamanhoSilencio.equals( TamanhoSilencioMidia.NENHUM ) ){
+			midiaSilencio = tamanhoSilencio.getMidia();
+			midiaSilencio.setCategoriaSelecionada( silencio );
+		} else {
+			// Se o tamanho estiver abaixo do ideal vou roubar e não deixar incluir
+			posicaoSilencio = PosicaoSilencio.NAO_INCLUIR;
+		}
+			
+
 		LinkedList<Midia> novaListaMidias = new LinkedList<Midia>();
 		
 		int countMusicasInseridas = 0;
@@ -1108,32 +1204,44 @@ public class ProgramacaoMusicalService {
 			}
 				
 			if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_MUSICAS, liComerciais ) )
-				adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+				adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
 
 			
 			if ( stepInstitucionais > 0 && countMusicasInseridas % stepInstitucionais == 0 )  // Depois de n músicas
 			{
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.ANTES_INSTITUCIONAL, liComerciais ) )
-					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+					adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
 				
+				if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.ANTES_INSTITUCIONAL ))
+					addIfNotNull( novaListaMidias, midiaSilencio);
+
 				// INSTITUCIONAL
 				addIfNotNull( novaListaMidias, liInstitucionais.getNextRandom( rnd ) );
 				
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_INSTITUCIONAL, liComerciais ) )
-					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+					adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+
+				if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.DEPOIS_INSTITUCIONAL ))
+					addIfNotNull( novaListaMidias, midiaSilencio);
 			}
 			
 			
 			if ( stepProgrametes > 0 && countMusicasInseridas % stepProgrametes == 0 )  // Depois de n músicas
 			{
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.ANTES_PROGRAMETE, liComerciais ) )
-					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+					adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
 				
+				if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.ANTES_PROGRAMETE ))
+					addIfNotNull( novaListaMidias, midiaSilencio);
+
 				// PROGRAMETE
 				addIfNotNull( novaListaMidias, liProgrametes.getNextRandom( rnd ) );
 				
 				if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_PROGRAMETE, liComerciais ) )
-					adicionaComercialMerge( posicaoVinheta, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+					adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );
+
+				if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.DEPOIS_PROGRAMETE ))
+					addIfNotNull( novaListaMidias, midiaSilencio);
 			}
 				
 			if ( stepOpcionais > 0 && countMusicasInseridas % stepOpcionais == 0 ) 
@@ -1148,15 +1256,21 @@ public class ProgramacaoMusicalService {
 
 
 
-	private void adicionaComercialMerge( PosicaoVinheta posicaoVinheta, ThreadLocalRandom rnd, ListaInesgotavelRandom blocoVinhetas, ListaInesgotavelRandom blocoComerciais, int qtdComerciaisSequencia, LinkedList<Midia> novaListaMidias )
+	private void adicionaComercialMerge( PosicaoVinheta posicaoVinheta, PosicaoSilencio posicaoSilencio, Midia midiaSilencio, ThreadLocalRandom rnd, ListaInesgotavelRandom blocoVinhetas, ListaInesgotavelRandom blocoComerciais, int qtdComerciaisSequencia, LinkedList<Midia> novaListaMidias )
 	{
 		if ( verificaMomentoVinhetaMerge( posicaoVinheta, PosicaoVinheta.ANTES_BLOCO_COMERCIAL, blocoVinhetas ) )
 			addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+
+		if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.ANTES_BLOCO_COMERCIAL ))
+			addIfNotNull( novaListaMidias, midiaSilencio);
 		
 		novaListaMidias.addAll( consomeNFromListaInesgotavel( blocoComerciais, qtdComerciaisSequencia, rnd ) );
 		
 		if ( verificaMomentoVinhetaMerge( posicaoVinheta, PosicaoVinheta.DEPOIS_BLOCO_COMERCIAL, blocoVinhetas ) )
 			addIfNotNull( novaListaMidias, blocoVinhetas.getNextRandom( rnd ) );
+
+		if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.DEPOIS_BLOCO_COMERCIAL ))
+			addIfNotNull( novaListaMidias, midiaSilencio);
 	}
 	
 	
@@ -1358,7 +1472,10 @@ public class ProgramacaoMusicalService {
 				inicio = inicio.plusSeconds( midia.getDuracao() );
 				
 				transmissao.setLinkativo( true );
-				transmissao.setMidia( midia );
+
+				if ( !Categoria.SILENCIO.equals( midia.getCategoriaSelecionada().getCodigo() ) )
+					transmissao.setMidia( midia );
+
 				transmissao.setProgramacao( prog );
 				transmissao.setStatusPlayback( StatusPlayback.GERADA );
 				transmissao.setPosicaoplay( posicaoplay++ );
@@ -1424,6 +1541,7 @@ public class ProgramacaoMusicalService {
 			
 			if ( m == null || m.getDuracao() == null || m.getDuracao().equals( 0 ) )
 			{
+				// Mesmo que seja um silêncio a midia não pode ser nula.... pelo menos não nesse passo
 				logger.error( "Mídia está nula ou com duração nula" );
 				continue;
 			}
@@ -1513,7 +1631,6 @@ public class ProgramacaoMusicalService {
 		
 		logger.info( String.format( "Transmissao de evento inserida (%d)", transmissao.getIdTransmissao() ) );
 	}
-	
 	
 	
 }

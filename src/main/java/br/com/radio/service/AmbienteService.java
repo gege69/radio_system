@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.radio.dto.AlterarSenhaAmbienteDTO;
 import br.com.radio.dto.EspelharAmbienteDTO;
 import br.com.radio.dto.GeneroListDTO;
-import br.com.radio.enumeration.PosicaoComercial;
-import br.com.radio.enumeration.PosicaoVinheta;
 import br.com.radio.enumeration.VozLocucao;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -34,6 +32,11 @@ import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Genero;
 import br.com.radio.model.MidiaAmbiente;
 import br.com.radio.model.Usuario;
+import br.com.radio.programacaomusical.PosicaoComercial;
+import br.com.radio.programacaomusical.PosicaoSilencio;
+import br.com.radio.programacaomusical.PosicaoVinheta;
+import br.com.radio.programacaomusical.ProgramacaoMusicalService;
+import br.com.radio.programacaomusical.TamanhoSilencioMidia;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
@@ -43,6 +46,7 @@ import br.com.radio.repository.EventoHorarioRepository;
 import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
+import br.com.radio.service.midia.MidiaService;
 import br.com.radio.util.Constantes;
 import br.com.radio.util.UtilsStr;
 
@@ -262,6 +266,8 @@ public class AmbienteService {
 		bloco.setQtdMusicas( 3 );
 		bloco.setQtdComerciais( 2 );
 		bloco.setIndexOpcionais( 0 );
+		bloco.setTamanhoSilencio( TamanhoSilencioMidia.NENHUM );
+		bloco.setPosicaoSilencio( PosicaoSilencio.NAO_INCLUIR );
 
 		blocoRepo.saveAndFlush( bloco );
 	}

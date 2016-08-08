@@ -22,7 +22,7 @@ INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_plac
 INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'veic_frase_fim', 'Frase Final Chamada Veículo', 'Frase Final Chamada Veículo', false );
 
 INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'opcional', 'Opcional', 'Opcional', false );
-
+INSERT INTO CATEGORIA values ( nextval('categoria_id_categoria_seq'), 'silencio', 'Silêncio', 'Silêncio', false );
 
 
 INSERT INTO FUSO_HORARIO (id_fusohorario, offsetfuso, canonid, alias, ordercomum ) VALUES ( nextval('fuso_horario_id_fusohorario_seq'), '-05:00', 'America/Lima'    , 'Acre', 2 );

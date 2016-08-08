@@ -51,7 +51,9 @@ import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Programacao;
+import br.com.radio.model.Transmissao;
 import br.com.radio.model.Usuario;
+import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
@@ -62,9 +64,8 @@ import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.ClienteService;
-import br.com.radio.service.MidiaService;
-import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.service.UsuarioService;
+import br.com.radio.service.midia.MidiaService;
 
 @Controller
 public class AmbienteController extends AbstractController {
@@ -715,6 +716,34 @@ public class AmbienteController extends AbstractController {
 		
 		return jsonList;
 	}
+
+
+
+//	/**
+//	 * Retorna a lista com as programações do ambiente.
+//	 * 
+//	 * @param idAmbiente
+//	 * @param response
+//	 * @return
+//	 */
+//	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/atual", "/api/ambientes/{idAmbiente}/programacoes/atual" }, 
+//						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+//	public @ResponseBody Programacao getProgramacaoEmExecucao( @PathVariable Long idAmbiente, HttpServletResponse response )
+//	{
+//		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+//
+//		List<Programacao> result = programacaoMusicalService.getProgramacaoAtivaByAmbiente( ambiente );
+//
+//		Transmissao transmissao = programacaoMusicalService.getTransmissaoAoVivo( ambiente );
+//		
+//		Programacao programacao = transmissao.getProgramacao();
+//		
+////		JSONListWrapper<Programacao> jsonList = new JSONListWrapper<Programacao>( result, result.size() );
+//		
+//		return jsonList;
+//	}
+
+
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes", "/api/ambientes/{idAmbiente}/programacoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -745,6 +774,10 @@ public class AmbienteController extends AbstractController {
 		return jsonResult;
 	}	
 	
+	
+	
+
+
 	
 	
 	

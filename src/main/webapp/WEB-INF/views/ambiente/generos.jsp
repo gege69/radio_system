@@ -56,14 +56,14 @@
           </div>
           
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
                 <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/programacoes/view" id="btnAvançado">
                   <i class="material-icons md-18">grid_on</i> Configurar Programação Musical</a>
               </div>            
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs pull-left-xs">
                 <a class="btn btn-primary" href="#" id="btnSalvarGeneros">Salvar alterações</a>
               </div>            
             </div>            
@@ -72,7 +72,7 @@
           <div class="spacer-vertical80"></div>
 
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
                 <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >
                   <i class="fa fa-arrow-left"></i>
@@ -80,8 +80,8 @@
                 </a>
               </div>            
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs pull-left-xs">
                 <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
               </div>
             </div>

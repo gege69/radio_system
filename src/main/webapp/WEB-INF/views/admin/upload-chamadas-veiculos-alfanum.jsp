@@ -72,10 +72,10 @@
                         </div>
                         
                         <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+                          <div class="col-lg-6 col-md-6 col-sm-6">          
                           </div>
-                          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <div class="pull-right">
+                          <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="pull-right-not-xs">
                               <a class="btn btn-success" id="btnIniciar" href="#"> <i class="fa fa-lg fa-cloud-upload"></i> Iniciar Upload</a>    
                             </div>          
                           </div>
@@ -144,13 +144,13 @@
           <div class="spacer-vertical40"></div>
           
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">          
+            <div class="col-lg-6 col-md-6 col-sm-6">          
                 <a class="btn btn-default" href="${context}/admin/upload-painel/view">
                 <i class="fa fa-arrow-left"></i>
                 Voltar para Upload de Mídias</a>    
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
                 <a class="btn btn-default" href="${context}/admin/painel">Painel de Admin</a>    
               </div>          
             </div>

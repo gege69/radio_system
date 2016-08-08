@@ -390,6 +390,15 @@ public class Midia implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
+
+	public static Midia createSilencio(Integer duracao){
+		
+		Midia result = new Midia();
+		result.setDuracao( duracao );
+		
+		return result;
+	}
+
 	public List<Ambiente> getAmbientes()
 	{
 		return ambientes;

@@ -102,7 +102,7 @@
           </div>
           
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
                 <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >Administrar Ambiente</a>
               </div>            
@@ -117,7 +117,7 @@
     
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div class="pull-right">
+        <div class="pull-right-not-xs">
           <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
         </div>
       </div>

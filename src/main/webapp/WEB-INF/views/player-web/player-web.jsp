@@ -262,152 +262,9 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-lg-12">
-            <form action="#" 
-                  id="ambiente-bloco-form" 
-                  class="form-horizontal"
-                  method="POST">
-                  
-              <input type="hidden" id="idAmbienteBloco" name="idAmbiente" value="${idAmbiente}">
-              <input type="hidden" id="idBloco" name="idBloco" value="${idBloco}">
-              
-              <div class="form-group">
-                <label for="posicaoVinheta" class="control-label col-sm-4 col-md-3">Posicao Vinheta:</label>
-                <div class="col-sm-6 col-md-8">
-                  <select class="form-control" id="posicaoVinheta" name="posicaoVinheta">
-                    <option value="ANTES_CADA_MUSICA">Antes de cada música</option>
-                    <option value="ANTES_BLOCO_COMERCIAL">Antes do bloco Comercial</option>
-                    <option value="DEPOIS_BLOCO_COMERCIAL">Depois do bloco Comercial</option>
-                    <option value="NAO_INCLUIR">Não incluir vinhetas</option> 
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="qtdMusicas" class="control-label col-sm-4 col-md-3">Músicas em sequência:</label>
-                <div class="col-sm-6 col-md-8">
-                  <select class="form-control" id="qtdMusicas" name="qtdMusicas">
-                    <option value="0" >Nenhuma Música</option>
-                    <option value="1" >1</option>
-                    <option value="2" >2</option>
-                    <option value="3" >3</option>
-                    <option value="4" >4</option>
-                    <option value="5" >5</option>
-                    <option value="6" >6</option>
-                    <option value="7" >7</option>
-                    <option value="8" >8</option>
-                    <option value="9" >9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                    <option value="25">25</option>
-                    <option value="26">26</option>
-                    <option value="27">27</option>
-                    <option value="28">28</option>
-                    <option value="29">29</option>
-                    <option value="30">30</option>
-                  </select>
-                </div>
-              </div>
-              
-
-              <div class="form-group">
-                <label for="posicaoComercial" class="control-label col-sm-4 col-md-3">Posicao Comercial:</label>
-                <div class="col-sm-6 col-md-8">
-                  <select class="form-control" id="posicaoComercial" name="posicaoComercial">
-                    <option value="DEPOIS_MUSICAS">Depois das Músicas</option>
-                    <option value="ANTES_INSTITUCIONAL">Antes do Institucional</option>
-                    <option value="DEPOIS_INSTITUCIONAL">Depois do Institucional</option>
-                    <option value="ANTES_PROGRAMETE">Antes do Programete</option>
-                    <option value="DEPOIS_PROGRAMETE">Depois do Programete</option>
-                    <option value="NAO_INCLUIR">Não incluir comerciais</option>
-                  </select>
-                </div>
-              </div>
-              
-              
-              <div class="form-group">
-                <label for="qtdComerciais" class="control-label col-sm-4 col-md-3">Comerciais em sequência:</label>
-                <div class="col-sm-6 col-md-8">
-                  <select class="form-control" id="qtdComerciais" name="qtdComerciais">
-                    <option value="1" >1</option>
-                    <option value="2" >2</option>
-                    <option value="3" >3</option>
-                    <option value="4" >4</option>
-                    <option value="5" >5</option>
-                    <option value="6" >6</option>
-                    <option value="7" >7</option>
-                    <option value="8" >8</option>
-                    <option value="9" >9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                    <option value="25">25</option>
-                    <option value="26">26</option>
-                    <option value="27">27</option>
-                    <option value="28">28</option>
-                    <option value="29">29</option>
-                    <option value="30">30</option>
-                  </select>
-                </div>
-              </div>
-              
-              
-              
-              <div class="form-group">
-                <label for="indexInstitucionais" class="control-label col-sm-4 col-md-3">Index Institucionais:</label>
-                <div class="col-sm-6 col-md-8">
-                  <select class="form-control" id="indexInstitucionais" name="indexInstitucionais">
-                    <option value="0" >Não incluir institucionais</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label for="indexProgrametes" class="control-label col-sm-4 col-md-3">Index Programetes:</label>
-                <div class="col-sm-6 col-md-8">
-                  <select class="form-control" id="indexProgrametes" name="indexProgrametes">
-                    <option value="0" >Não incluir programetes</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="indexHoroscopo" class="control-label col-sm-4 col-md-3">Index Horóscopo:</label>
-                <div class="col-sm-6 col-md-8">
-                  <select class="form-control" id="indexHoroscopo" name="indexHoroscopo">
-                    <option value="0" >Não incluir horóscopo</option>
-                  </select>
-                </div>
-              </div>
-
-            </form>
+          <div class="col-lg-11">
+            <jsp:include page="/WEB-INF/views/ambiente/blocos-template.jsp" />
           </div>
-          
         </div>
       </div>
       <div class="modal-footer">
@@ -417,6 +274,16 @@
     </div>
   </div>
 </div>
+
+
+<script id="viewTmplOpcionais" type="text/x-jsrender"  charset="UTF-8">
+  <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-12">
+    <label>
+      <input type="checkbox" class="checkbox-opcional checkBloco" id="opcional-{{:idOpcional}}" name="opcionais[][idOpcional]" value="{{:idOpcional}}"> {{:nome}}
+    </label>
+  </div> 
+</script>
+
   
 <div id="myModalChamadaFuncionarios" class="modal fade" tabindex="-1" role="dialog" style="display : none;">
   <div class="modal-dialog">
@@ -694,7 +561,7 @@
 
 <script src="${context}/js/required/bootbox.min.js" defer></script>
   
-<script src="${context}/js/player-web/modal-blocos.js" charset="UTF-8" defer></script>
+<script src="${context}/js/ambiente/blocos.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-funcionarios.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-instantanea.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-veiculos.js" charset="UTF-8" defer></script>

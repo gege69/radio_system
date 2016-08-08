@@ -40,7 +40,7 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 
 	List<Transmissao> findByAmbienteAndLinkativoOrderByProgramacao_idProgramacaoAscPosicaoplayAsc( Ambiente ambiente, Boolean linkativo );
 	
-	List<Transmissao> findByAmbienteAndStatusPlaybackAndDiaPlayBetween( Ambiente ambiente, StatusPlayback statusplay, Date diaPlayIni, Date diaPlayFim );
+	List<Transmissao> findByAmbienteAndStatusPlaybackAndDiaPlayBetweenAndMidiaNotNull( Ambiente ambiente, StatusPlayback statusplay, Date diaPlayIni, Date diaPlayFim );
 
 	@Modifying(clearAutomatically=true)
 	@Query("update Transmissao t set t.statusPlayback = 'IGNORADA' where t.ambiente = ?1 and t.linkativo = true ")
@@ -63,6 +63,4 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	@Query("update Transmissao t set t.linkativo = false, t.downloadcompleto = true, t.dataFinishPlay = clock_timestamp(), t.statusPlayback = 'FIM' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao < ?2 ")
 	int setLinkInativoAnteriores( Ambiente ambiente, Long idTransmissao );    
 
-	
-	
 }

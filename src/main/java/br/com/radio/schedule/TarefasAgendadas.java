@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.model.Ambiente;
+import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.EventoService;
-import br.com.radio.service.ProgramacaoMusicalService;
 
 @Component
 public class TarefasAgendadas {

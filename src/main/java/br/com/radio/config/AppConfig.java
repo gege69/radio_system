@@ -25,7 +25,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import br.com.radio.security.config.SecurityConfigMulti;
-import br.com.radio.service.ConverterMidiaComponent;
+import br.com.radio.service.midia.ConverterMidiaComponent;
 import br.com.radio.web.config.WebAppConfig;
 
 import com.zaxxer.hikari.HikariConfig;

@@ -1,4 +1,4 @@
-package br.com.radio.service;
+package br.com.radio.service.midia;
 
 import java.io.File;
 import java.io.FileInputStream;

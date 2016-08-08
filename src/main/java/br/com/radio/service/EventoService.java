@@ -16,6 +16,7 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Transmissao;
+import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.EventoRepository;
 
 @Service

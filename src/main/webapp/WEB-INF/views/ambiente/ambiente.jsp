@@ -44,14 +44,14 @@
           </div>
           
           <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-6 col-md-6 col-sm-6">
               <a class="btn btn-default" href="${context}/ambientes/searches">
                 <i class="fa fa-arrow-left"></i>
               Voltar para Ambientes</a>
             </div>
             
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <div class="pull-right">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
                 <a class="btn btn-default" href="${context}/principal">Painel Gerencial</a>
               </div>
             </div>
@@ -60,7 +60,7 @@
           
           <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">          
-              <div class="pull-right">
+              <div class="pull-right-not-xs">
                 <c:url var="logoutUrl" value="/logout"/>
                 <form action="${logoutUrl}" method="post">
                   <input type="submit" class="btn btn-link" value="Log out" />

@@ -37,14 +37,14 @@ import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Transmissao;
 import br.com.radio.model.Usuario;
+import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.TransmissaoRepository;
-import br.com.radio.service.MidiaService;
-import br.com.radio.service.ProgramacaoMusicalService;
 import br.com.radio.service.UsuarioService;
+import br.com.radio.service.midia.MidiaService;
 
 @Controller
 public class MidiaAPIController extends AbstractController {
@@ -309,6 +309,9 @@ public class MidiaAPIController extends AbstractController {
 		
 		Midia midia = transmissao.getMidia();
 		
+		if ( midia == null )
+			return ResponseEntity.unprocessableEntity().body( null );
+		
 		File arquivo = new File( midia.getFilepath() );
 		
 		FileSystemResource fsr = new FileSystemResource( arquivo );
@@ -400,7 +403,7 @@ public class MidiaAPIController extends AbstractController {
 				Midia m = t.getMidia();
 			
 				JsonObject obj = Json.createObjectBuilder()
-					.add( "nome", m.getNome() )
+					.add( "nome", m != null ? m.getNome() : "silencio" )
 					.add( "ordem", t.getPosicaoplay() )
 					.add( "tipo", t.getCategoria().getDescricao() ).build();
 				
