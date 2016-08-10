@@ -863,17 +863,21 @@ public class ProgramacaoMusicalService {
 
 			if ( qtdMusicasSequencia > 0 ) {
 
-				if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_CADA_MUSICA ) ) {
+				if ( posicaoVinheta.equals( PosicaoVinheta.ANTES_CADA_MUSICA ) ) 
 					result.add( "Vinheta" );
-				}
+
+				if ( posicaoSilencio.equals( PosicaoSilencio.ANTES_MUSICA ))
+					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
 				
 				result.add( geraStringExemploMusica( qtdMusicasSequencia ) );
 				countMusicasInseridas += qtdMusicasSequencia;
 
-				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_MUSICAS ) ) {
-					
-					insereExemploComercial( bloco, result, posicaoVinheta, posicaoSilencio, qtdComerciaisSequencia );
-				}
+				if ( posicaoSilencio.equals( PosicaoSilencio.DEPOIS_MUSICA ))
+					result.add( fmtSilencio( bloco.getTamanhoSilencio() ) );
+
+				if ( posicaoComercial.equals( PosicaoComercial.DEPOIS_MUSICAS ) ) 
+					insereExemploComercial( bloco, result, posicaoVinheta, posicaoSilencio, qtdComerciaisSequencia ); 
+
 			}
 				
 			if ( stepInstitucionais > 0 && countMusicasInseridas % stepInstitucionais == 0 )  // Depois de n músicas
@@ -1150,6 +1154,10 @@ public class ProgramacaoMusicalService {
 			// Talvez mudar isso para o caso onde existam poucas músicas ficar em loop inserindo as mesmas músicas sempre
 			List<Midia> sequenciaMusicas = consomeN( musicasEmbaralhadas, qtdMusicasSequencia );
 			
+
+			if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.ANTES_MUSICA ))
+				addIfNotNull( novaListaMidias, midiaSilencio);
+
 			if ( verificaMomentoVinhetaMerge( posicaoVinheta, PosicaoVinheta.ANTES_CADA_MUSICA, liVinhetas ) )
 			{
 				for ( Midia m : sequenciaMusicas )
@@ -1158,12 +1166,16 @@ public class ProgramacaoMusicalService {
 					novaListaMidias.add( m );
 					countMusicasInseridas++;
 				}
+
 			}
 			else
 			{
 				novaListaMidias.addAll( sequenciaMusicas );
 				countMusicasInseridas = countMusicasInseridas + sequenciaMusicas.size();
 			}
+
+			if ( verificaMomentoSilencioMerge( posicaoSilencio, PosicaoSilencio.DEPOIS_MUSICA ))
+				addIfNotNull( novaListaMidias, midiaSilencio);
 				
 			if ( verificaMomentoComercialMerge( posicaoComercial, PosicaoComercial.DEPOIS_MUSICAS, liComerciais ) )
 				adicionaComercialMerge( posicaoVinheta, posicaoSilencio, midiaSilencio, rnd, liVinhetas, liComerciais, qtdComerciaisSequencia, novaListaMidias );

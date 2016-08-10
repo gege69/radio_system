@@ -2,6 +2,8 @@ package br.com.radio.programacaomusical;
 
 public enum PosicaoSilencio {
 	
+	ANTES_MUSICA("Antes das Músicas"),
+	DEPOIS_MUSICA("Depois das Músicas"),
 	ANTES_BLOCO_COMERCIAL("Antes do bloco Comercial"),
 	DEPOIS_BLOCO_COMERCIAL("Depois do bloco Comercial"),
 	ANTES_INSTITUCIONAL("Antes do Institucional"),

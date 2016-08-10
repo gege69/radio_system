@@ -69,6 +69,8 @@
                           <div class="col-sm-8 col-md-8 col-lg-8">
                             <select class="form-control controleBloco" id="posicaoSilencio" name="posicaoSilencio">
                               <option value="NAO_INCLUIR" selected="selected">Não incluir silêncio</option> 
+                              <option value="ANTES_MUSICA">Antes das Músicas</option>
+                              <option value="DEPOIS_MUSICA">Depois das Músicas</option>
                               <option value="ANTES_BLOCO_COMERCIAL">Antes do bloco Comercial</option>
                               <option value="DEPOIS_BLOCO_COMERCIAL">Depois do bloco Comercial</option>
                               <option value="ANTES_INSTITUCIONAL">Antes do Institucional</option> 
