@@ -457,6 +457,58 @@ var toggleMicrofone = function()
     }
 }
 
+var auth = false;
+
+var registraModalPassword = function( eleModalment, url ){
+    
+    if ( !auth ){
+        $('#btn-generos').click( function() {
+            $("#myModalGenerosAuth").modal({
+                show:true, 
+                backdrop: 'static',              
+                keyboard: false
+            });
+        });
+    }
+    else{
+        $('#btn-generos').off('click');
+        registraModal('#btn-generos', "myModalGeneros");
+    }
+}
+
+var authModal = function(){
+    
+    var url = buildUrl('/api/ambientes/{idAmbiente}/programacoes/autenticar', {
+        idAmbiente : idAmbiente
+    }); 
+    
+    var data = $('#autenticar-form').serializeJSON();
+
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data : JSON.stringify(data)
+    }).done( function( json ){
+
+        if ( json.ok == 1 ){
+            auth = true;
+            // registra...
+            $('#btn-generos').off('click');
+            registraModal('#btn-generos', "myModalGeneros");
+            $("#myModalGenerosAuth").modal('hide');
+            // .. e abre
+            abreModal("myModalGeneros");
+        }
+        else {
+            preencheErros( json.errors, "alertaAuth" );
+        }
+    });
+}
+
+
+
 $(document).ready(function() {
 
     plyr.setup({
@@ -515,11 +567,14 @@ $(document).ready(function() {
     registraModal('#btn-chamada-inst', "myModalChamadaInst");
     registraModal('#btn-horoscopo', "horoscopo");
     
-    registraModal('#btn-generos', "myModalGeneros");
+//    registraModal('#btn-generos', "myModalGeneros");
     registraModal('#btn-blocos', "myModalBlocos");
     registraModal('#btn-downloads', "downloads");
     registraModal('#btn-relatorios', "relatorios");
     registraModal('#btn-atendimento', "myModalConversas");
+
+    registraModalPassword('#btn-generos', "myModalGeneros");
+
     
     getConfiguracoes();
     
@@ -543,6 +598,9 @@ $(document).ready(function() {
         else
             $("#formLogout").submit();
     })
-
+    
+    $("#btnAuth").click(function(){
+        authModal();
+    });
     
 });

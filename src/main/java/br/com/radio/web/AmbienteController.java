@@ -6,6 +6,7 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -51,7 +52,6 @@ import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Programacao;
-import br.com.radio.model.Transmissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
@@ -718,32 +718,6 @@ public class AmbienteController extends AbstractController {
 	}
 
 
-
-//	/**
-//	 * Retorna a lista com as programações do ambiente.
-//	 * 
-//	 * @param idAmbiente
-//	 * @param response
-//	 * @return
-//	 */
-//	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/atual", "/api/ambientes/{idAmbiente}/programacoes/atual" }, 
-//						method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-//	public @ResponseBody Programacao getProgramacaoEmExecucao( @PathVariable Long idAmbiente, HttpServletResponse response )
-//	{
-//		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
-//
-//		List<Programacao> result = programacaoMusicalService.getProgramacaoAtivaByAmbiente( ambiente );
-//
-//		Transmissao transmissao = programacaoMusicalService.getTransmissaoAoVivo( ambiente );
-//		
-//		Programacao programacao = transmissao.getProgramacao();
-//		
-////		JSONListWrapper<Programacao> jsonList = new JSONListWrapper<Programacao>( result, result.size() );
-//		
-//		return jsonList;
-//	}
-
-
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes", "/api/ambientes/{idAmbiente}/programacoes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
@@ -779,8 +753,6 @@ public class AmbienteController extends AbstractController {
 
 
 	
-	
-	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/{idProgramacao}/generos", "/api/ambientes/{idAmbiente}/programacoes/{idProgramacao}/generos" }, 
 			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Genero> getGenerosByProgramacao( @PathVariable Long idAmbiente, @PathVariable Long idProgramacao, HttpServletResponse response )
@@ -797,6 +769,60 @@ public class AmbienteController extends AbstractController {
 	}
 	
 	
+
+
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/generos/total", "/api/ambientes/{idAmbiente}/programacoes/generos/total" }, 
+			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Genero> getGenerosByProgramacaoTotal( @PathVariable Long idAmbiente, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		Set<Genero> generos = programacaoMusicalService.getGenerosProgramacaoMusicalTotal( ambiente );
+
+		JSONListWrapper<Genero> jsonList = new JSONListWrapper<Genero>( generos, generos.size() );
+		
+		return jsonList;
+	}
+
+
+
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/generos/total", "/api/ambientes/{idAmbiente}/programacoes/generos/total" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveProgramacaoMusicalTotal( @PathVariable Long idAmbiente, @RequestBody GeneroListDTO generoList, Principal principal, HttpServletRequest request )
+	{
+		String jsonResult = "";
+		
+		Ambiente ambiente = null;
+		try
+		{
+			ambiente = ambienteRepo.findOne( idAmbiente );
+			if ( ambiente == null )
+				throw new RuntimeException("Ambiente não encontrado");
+
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null )
+				throw new RuntimeException("Usuário não encontrado");
+			
+			programacaoMusicalService.saveProgramacaoMusicalTotal(ambiente, generoList);
+			programacaoMusicalService.geraTransmissao( ambiente );
+				
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			imprimeLogErroAmbiente( "Programação Total", ambiente, request, e );
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Não foi possível gravar : " + e.getMessage() );
+		}
+		
+		return jsonResult;
+	}
+
+
+	
+
+
+
 	
 	
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/configuracoes", "/api/ambientes/{idAmbiente}/configuracoes" }, 
@@ -831,10 +857,7 @@ public class AmbienteController extends AbstractController {
 			if ( usuario == null )
 				throw new RuntimeException("Usuário não encontrado");
 			
-			AmbienteConfiguracao configuracaoAnterior = null;
-			
-			if ( ambienteConfiguracao.getIdAmbConfig() != null && ambienteConfiguracao.getIdAmbConfig() > 0 )
-				configuracaoAnterior = ambienteConfigRepo.findOne( ambienteConfiguracao.getIdAmbConfig() );
+			AmbienteConfiguracao configuracaoAnterior = ambienteConfigRepo.findByAmbiente( ambiente );
 
 			if ( configuracaoAnterior != null )
 			{
@@ -864,7 +887,40 @@ public class AmbienteController extends AbstractController {
 		return jsonResult;
 	}
 	
-	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/configuracoes/resetpass", "/api/ambientes/{idAmbiente}/configuracoes/resetpass" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String resetPasswordProgMusicalConfiguracao( @PathVariable Long idAmbiente, Principal principal, HttpServletRequest request )
+	{
+		String jsonResult = "";
+		
+		Ambiente ambiente = null;
+		try
+		{
+			ambiente = ambienteRepo.findOne( idAmbiente );
+			if ( ambiente == null )
+				throw new RuntimeException("Ambiente não encontrado");
+
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null )
+				throw new RuntimeException("Usuário não encontrado");
+			
+			AmbienteConfiguracao configuracaoAtual = ambienteConfigRepo.findByAmbiente( ambiente );
+
+			configuracaoAtual.setSenhaProgMusicalPlayer("123456");
+
+			ambienteConfigRepo.save( configuracaoAtual );
+				
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			imprimeLogErroAmbiente( "Configurações", ambiente, request, e );
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Não foi possível gravar : " + e.getMessage() );
+		}
+		
+		return jsonResult;
+	}
 
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/expedientes", "/api/ambientes/{idAmbiente}/expedientes" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String saveExpediente( @PathVariable Long idAmbiente, @RequestBody Ambiente ambienteDTO, BindingResult result, HttpServletRequest request )

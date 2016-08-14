@@ -473,9 +473,15 @@
             dataType: 'json'
         }).done( function(json) {
             
-            
+            var custom = false;
+            var dataCriacao = null;
             
             $.each( json.rows, function( index, obj ) {
+                
+                if ( obj.custom === true ) {// se algum já for verdadeiro já vale
+                    custom = true;
+                    dataCriacao = obj.dataCriacao;
+                }
 
                 var $celula = $('#'+obj.horaInicio+'-'+obj.diaSemana);
                 
@@ -501,6 +507,10 @@
                 $celula.attr("idprogramacao", obj.idProgramacao );
 
             });
+            
+            if ( custom && dataCriacao ){
+                preencheAlertGeral("alertArea", "Essa programação customizada foi gerada pelo Cliente às "+dataCriacao+" atráves do menu 'Programação Musical' do player.", "warning");
+            }
         });
     }
 

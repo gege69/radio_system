@@ -154,7 +154,13 @@ public class AmbienteConfiguracao implements Serializable {
 
 	@Column(name="botaoStop", columnDefinition = "BOOL default false")
 	private boolean botaoStop;
+
+	@Column(name="autenticaProgMusicalPlayer", columnDefinition = "BOOL default false")
+	private boolean autenticaProgMusicalPlayer;
 	
+	@Column(name="senhaProgMusicalPlayer", columnDefinition = "TEXT")
+	private String senhaProgMusicalPlayer;
+
 
 	public Long getIdAmbConfig()
 	{
@@ -549,20 +555,38 @@ public class AmbienteConfiguracao implements Serializable {
 		return true;
 	}
 
+
 	@Override
 	public String toString()
 	{
 		return String
 				.format(
-						"AmbienteConfiguracao [idAmbConfig=%s, ambiente=%s, autoplay=%s, selecaoGenero=%s, avancarRetornar=%s, atendimento=%s, chamVeiculo=%s, chamFuncionarios=%s, chamVariosFuncionarios=%s, chamInstantanea=%s, rodoviarias=%s, horoscopo=%s, agendMidia=%s, relatoriosMidia=%s, controleBlocos=%s, controleComerciais=%s, controleInstitucionais=%s, controleProgrametes=%s, nobreak=%s, menuDownloads=%s, locutorVirtual=%s, pedidoMusical=%s, pedidoMusicalVinheta=%s, generosByCC=%s, opcionais=%s, vozLocucao=%s, controleVolumeIndividual=%s, volumeMusicas=%s, volumeChamadas=%s, volumeComerciais=%s, volumeGeral=%s, dataCriacao=%s, usuarioCriacao=%s, dataAlteracao=%s, usuarioAlteracao=%s]",
+						"AmbienteConfiguracao [idAmbConfig=%s, ambiente=%s, autoplay=%s, selecaoGenero=%s, avancarRetornar=%s, atendimento=%s, chamVeiculo=%s, chamFuncionarios=%s, chamVariosFuncionarios=%s, chamInstantanea=%s, rodoviarias=%s, horoscopo=%s, agendMidia=%s, relatoriosMidia=%s, controleBlocos=%s, controleComerciais=%s, controleInstitucionais=%s, controleProgrametes=%s, nobreak=%s, menuDownloads=%s, locutorVirtual=%s, pedidoMusical=%s, pedidoMusicalVinheta=%s, generosByCC=%s, opcionais=%s, vozLocucao=%s, controleVolumeIndividual=%s, volumeMusicas=%s, volumeChamadas=%s, volumeComerciais=%s, volumeGeral=%s, dataCriacao=%s, usuarioCriacao=%s, dataAlteracao=%s, usuarioAlteracao=%s, botaoStop=%s, autenticaProgMusicalPlayer=%s, senhaProgMusicalPlayer=%s]",
 						idAmbConfig, ambiente, autoplay, selecaoGenero, avancarRetornar, atendimento, chamVeiculo, chamFuncionarios, chamVariosFuncionarios, chamInstantanea, rodoviarias, horoscopo,
 						agendMidia, relatoriosMidia, controleBlocos, controleComerciais, controleInstitucionais, controleProgrametes, nobreak, menuDownloads, locutorVirtual, pedidoMusical,
 						pedidoMusicalVinheta, generosByCC, opcionais, vozLocucao, controleVolumeIndividual, volumeMusicas, volumeChamadas, volumeComerciais, volumeGeral, dataCriacao, usuarioCriacao,
-						dataAlteracao, usuarioAlteracao );
+						dataAlteracao, usuarioAlteracao, botaoStop, autenticaProgMusicalPlayer, senhaProgMusicalPlayer );
 	}
 
+	public boolean isAutenticaProgMusicalPlayer()
+	{
+		return autenticaProgMusicalPlayer;
+	}
 
-	
-	
+	public void setAutenticaProgMusicalPlayer( boolean autenticaProgMusicalPlayer )
+	{
+		this.autenticaProgMusicalPlayer = autenticaProgMusicalPlayer;
+	}
+
+	public String getSenhaProgMusicalPlayer()
+	{
+		return senhaProgMusicalPlayer;
+	}
+
+	public void setSenhaProgMusicalPlayer( String senhaProgMusicalPlayer )
+	{
+		this.senhaProgMusicalPlayer = senhaProgMusicalPlayer;
+	}
+
 	
 }

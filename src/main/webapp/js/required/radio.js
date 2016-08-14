@@ -1,5 +1,11 @@
 
 
+
+/**
+ * Search = queryString
+ * 
+ * Exemplo :  /radiosystem?campo=valor
+ */
 var buildUrl = function( path , data, search )
 {
     var url = URI.expand( contextPath + path, data );

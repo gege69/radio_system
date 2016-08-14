@@ -43,7 +43,7 @@
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
                       <input type="checkbox" id="selecaoGenero" name="selecaoGenero" value="true"> 
-                        Habilitar módulo de seleção de Gêneros pelo cliente 
+                        Habilitar programação musical para o cliente.
                       </label>
                     </div>
                     
@@ -54,6 +54,18 @@
                       </label>
                     </div>
 
+                    <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                      <label>
+                      <input type="checkbox" id="autenticaProgMusicalPlayer" name="autenticaProgMusicalPlayer" value="true"> 
+                        Habilitar senha para a programação musical no player 
+                          &nbsp;
+                          <button class="btn btn-default" id="btnResetar">
+                            <i class="icone-main material-icons md-18" style="margin : 0;">autorenew</i> 
+                            Resetar Senha
+                          </button>
+                      </label>
+                    </div>
+                    
                     <div class="checkbox col-lg-6 col-md-6 col-sm-12 col-xs-12">
                       <label>
                       <input type="checkbox" id="botaoStop" name="botaoStop" value="true"> 
@@ -286,6 +298,12 @@
 
 <script type="text/javascript">
 
+    var verificaBotaoResetSenha = function(){
+        if ( $("#autenticaProgMusicalPlayer").is(':checked') )
+            $("#btnResetar").show();
+        else
+            $("#btnResetar").hide();
+    }
 
     var getDados = function( id )
     {
@@ -301,7 +319,9 @@
             
             removeErros();
             $('#ambiente-config-form').populate(json);
-             
+
+            verificaBotaoResetSenha();
+
             $('#slider1').bootstrapSlider('setValue', json.volumeMusicas ? json.volumeMusicas : 0 );
             $('#slider2').bootstrapSlider('setValue', json.volumeChamadas ? json.volumeChamadas : 0 );
             $('#slider3').bootstrapSlider('setValue', json.volumeComerciais ? json.volumeComerciais : 0 );
@@ -351,6 +371,30 @@
     };
     
 
+    var resetarSenha = function(){
+        
+        var url = buildUrl("/ambientes/{idAmbiente}/configuracoes/resetpass", {
+            idAmbiente : $('#idAmbiente').val() 
+        });
+        
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: url,
+            dataType: 'json',
+        }).done( function(json){
+            if (json.ok != null){
+                preencheAlertGeral( "alertArea", "Senha resetada com sucesso para 123456", "success" );
+                jump(''); // topo da pagina
+            }
+            else{
+                preencheErros( json.errors );
+            }
+        } );
+    }
+
+
+
     $(function(){
 
         var token = $("input[name='_csrf']").val();
@@ -379,6 +423,16 @@
         $(".campo-slider").on("slideStop", function(slideEvt) {
             refreshValorSlider(slideEvt);
         });
+
+        $("#autenticaProgMusicalPlayer").change(function(){
+            verificaBotaoResetSenha();
+        })
+        
+        $("#btnResetar").click(function(e){
+            e.preventDefault();
+            resetarSenha();
+        });
+        
     });
 
 </script>

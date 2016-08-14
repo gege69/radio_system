@@ -1,18 +1,15 @@
 
-var listaGeneros = function( doJump ){
+var listaGeneros = function(){
     
-    var urlGeneros = buildUrl( "/api/generos", { 
-        idAmbiente: $("#idAmbiente").val()
-    });
+    var param = { idAmbiente: $("#idAmbiente").val() };
     
-    var urlGenerosAmbiente = buildUrl( "/api/ambientes/{idAmbiente}/generos", { 
-        idAmbiente: $("#idAmbiente").val()
-    });
+    var urlGeneros = buildUrl( "/api/ambientes/{idAmbiente}/generos", param);
+    var urlGenerosTotal = buildUrl( "/api/ambientes/{idAmbiente}/programacoes/generos/total", param);
     
     $.ajax({
         type: 'GET',
         contentType: 'application/json',
-        url: urlGeneros,    // busca a lista de gêneros geral ( não restringe pelo ambiente )
+        url: urlGeneros,    // busca a lista de gêneros possível para o ambiente
         dataType: 'json'
     }).done( function(json){
         makeListTmpl(json);
@@ -20,7 +17,7 @@ var listaGeneros = function( doJump ){
         $.ajax({
             type: 'GET',
             contentType: 'application/json',
-            url: urlGenerosAmbiente,    // busca a lista de generos que está relacionada com o ambiente 
+            url: urlGenerosTotal,    // busca a lista de generos que participam da programação da semana (total)
             dataType: 'json'
         }).done( function(json){
             
@@ -36,7 +33,7 @@ var listaGeneros = function( doJump ){
 }
 
 
-var salvarGeneros = function()
+var salvarProgramacaoMusicalGeneros = function()
 {
     var array_values = [];
     $('.checkbox-genero').each( function() {
@@ -55,10 +52,13 @@ var salvarGeneros = function()
     
     var dados = JSON.stringify( idList );
     
-    var urlGenerosAmbiente = buildUrl( "/api/ambientes/{idAmbiente}/generos", { 
+    var urlGenerosAmbiente = buildUrl( "/api/ambientes/{idAmbiente}/programacoes/generos/total", { 
         idAmbiente: $("#idAmbiente").val()
     });
     
+    $("#btnSalvarProgramacaoMusicalGeneros").prop("disabled",true);
+    $('#ajaxload').show();
+
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
@@ -67,30 +67,18 @@ var salvarGeneros = function()
         data : dados 
     }).done( function(json){
         if (json.ok != null){
-
-            geraNovaProgramacaoMusical();
-
             $('#myModalGeneros').modal('hide');
         }
         else{
             preencheErros( json.errors );
         }
-    } );
-    
-}
 
+        $('#ajaxload').hide();
+        $("#btnSalvarProgramacaoMusicalGeneros").prop("disabled",false);
 
-var geraNovaProgramacaoMusical = function(){
-    
-    var urlTransmissao = buildUrl( "/api/ambientes/{idAmbiente}/transmissoes/new", { 
-        idAmbiente: $("#idAmbiente").val()
-    });
-    
-    $.ajax({
-        type: 'GET',
-        contentType: 'application/json',
-        url: urlTransmissao,  
-        dataType: 'json'
+    }).fail( function(){
+        $('#ajaxload').hide();
+        $("#btnSalvarProgramacaoMusicalGeneros").prop("disabled",false);
     });
 }
 
@@ -107,13 +95,16 @@ var makeListTmpl = function(json){
 };
 
 $(function(){
-
-    $("myModalGeneros").on('shown.bs.modal', function(){
-        listaGeneros(false);
+    
+    /**
+     * Esse modal foi alterado para escolher os gêneros da programação musical e não os gêneros habilitados para o Ambiente.
+     */
+    $("#myModalGeneros").on('shown.bs.modal', function(){
+        listaGeneros();
     });
     
-    $('#btnSalvarGeneros').on('click', function(){
-        salvarGeneros();
+    $('#btnSalvarProgramacaoMusicalGeneros').on('click', function(){
+        salvarProgramacaoMusicalGeneros();
     });
     
 });

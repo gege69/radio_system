@@ -27,11 +27,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
+import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Bloco;
@@ -43,6 +45,7 @@ import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.ProgramacaoGenero;
 import br.com.radio.model.Transmissao;
+import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
@@ -101,6 +104,9 @@ public class ProgramacaoMusicalService {
 	
 	@Autowired
 	private AmbienteGeneroRepository ambienteGeneroRepo;
+	
+	@Autowired
+	private AmbienteConfiguracaoRepository ambienteConfigRepo;
 
 	@Autowired
 	private AudioOpcionalRepository opcionalRepo;
@@ -223,7 +229,7 @@ public class ProgramacaoMusicalService {
 		
 		programacaoOrigemPorDia.forEach( ( dia, list ) -> {
 			list.forEach( original -> {
-				Programacao nova = gravaNovaProgramacao( ambienteAlvo, new Programacao( ambienteAlvo, original.getDiaSemana(), original.getHoraInicio() ), false);
+				Programacao nova = gravaNovaProgramacao( ambienteAlvo, new Programacao( ambienteAlvo, original.getDiaSemana(), original.getHoraInicio(), false ), false);
 				gravaGeneros( original.getGeneros(), nova);
 			});
 		});
@@ -231,6 +237,11 @@ public class ProgramacaoMusicalService {
 	}
 
 	
+
+
+	public boolean gravaGenerosProgramacaoDiaInteiro( Ambiente ambiente, DiaSemana dia, List<Genero> generos){
+		return this.gravaGenerosProgramacaoDiaInteiro( ambiente, dia, generos, false );
+	}
 	
 	
 	/**
@@ -242,7 +253,7 @@ public class ProgramacaoMusicalService {
 	 * @return
 	 */
 	@Transactional
-	public boolean gravaGenerosProgramacaoDiaInteiro( Ambiente ambiente, DiaSemana dia, List<Genero> generos )
+	public boolean gravaGenerosProgramacaoDiaInteiro( Ambiente ambiente, DiaSemana dia, List<Genero> generos, boolean custom )
 	{
 		if ( ambiente.getHoraIniExpediente() == null || 
 			 ambiente.getHoraFimExpediente() == null || 
@@ -276,7 +287,7 @@ public class ProgramacaoMusicalService {
 
 			for ( int hora = horaInicioDia; hora <= horaFimDia; hora++ )
 			{
-				Programacao nova = gravaNovaProgramacao( ambiente, new Programacao( ambiente, dia, hora ), false );
+				Programacao nova = gravaNovaProgramacao( ambiente, new Programacao( ambiente, dia, hora, custom ), false );
 				
 				gravaGeneros( generos, nova );
 			}
@@ -386,6 +397,8 @@ public class ProgramacaoMusicalService {
 		
 		p.setHoraFim( dto.getHoraFim() );
 		p.setMinutoFim( dto.getMinutoFim() );
+		
+		p.setCustom( dto.getCustom() );
 		
 		p.setDateTimeInicio( p.getDate( p.getHoraInicio(), p.getMinutoInicio() ) );
 		p.setDateTimeFim( p.getDate( p.getHoraFim(), p.getMinutoFim() ) );
@@ -1606,5 +1619,39 @@ public class ProgramacaoMusicalService {
 		logger.info( String.format( "Transmissao de evento inserida (%d)", transmissao.getIdTransmissao() ) );
 	}
 	
+	
+	
+	
+	public Set<Genero> getGenerosProgramacaoMusicalTotal(Ambiente ambiente){
+		
+		List<ProgramacaoGenero> progGeneros = programacaoGeneroRepo.findByProgramacao_AmbienteAndProgramacao_AtivoTrue( ambiente );
+		
+		Set<Genero> result = null;
+
+		result = progGeneros.stream().map( p -> p.getGenero() ).collect( Collectors.toSet() );
+		
+		return result;
+	}
+
+	
+	@Transactional
+	public void saveProgramacaoMusicalTotal(Ambiente ambiente, GeneroListDTO generosList){
+		
+		for (DiaSemana dia : DiaSemana.values() ){
+			this.gravaGenerosProgramacaoDiaInteiro( ambiente, dia, generosList.getLista(), true );
+		}
+	}
+	
+
+	public boolean autenticarProgramacaoTotal( Ambiente ambiente, String pass ){
+		
+		AmbienteConfiguracao config = ambienteConfigRepo.findByAmbiente( ambiente );
+		
+		if ( config == null )
+			throw new RuntimeException("Configuração não encontrada!");
+		
+		return config.getSenhaProgMusicalPlayer() != null && config.getSenhaProgMusicalPlayer().equals( pass );
+	}
+
 	
 }

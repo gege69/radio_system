@@ -1,6 +1,7 @@
 package br.com.radio.web;
 
 import java.security.Principal;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,13 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
+import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.service.UsuarioService;
@@ -33,6 +38,9 @@ public class PlayerWebController extends AbstractController {
 	
 	@Autowired
 	private UsuarioService usuarioService;
+
+	@Autowired
+	private ProgramacaoMusicalService programacaoMusicalService;
 
 	@Override
 	protected Logger getLogger()
@@ -356,5 +364,39 @@ public class PlayerWebController extends AbstractController {
 	
 		return "mensagens/template-conversas";
 	}
+	
+	
+	
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/autenticar", "/api/ambientes/{idAmbiente}/programacoes/autenticar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String autenticarProgramacaoTotal( @PathVariable Long idAmbiente, @RequestBody Map<String, String> json, BindingResult result, HttpServletRequest request )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() || json.get( "password" ) == null )
+			jsonResult = writeErrorsAsJSONErroMessage( result );
+		else
+		{
+			Ambiente ambiente = null;
+			try
+			{
+				ambiente = ambienteRepo.findOne( idAmbiente );
+				boolean ok = programacaoMusicalService.autenticarProgramacaoTotal( ambiente, json.get("password") );
+				
+				if ( !ok )
+					throw new RuntimeException("Senha inválida");
+					
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				imprimeLogErroAmbiente( "Autenticar alterar Programação Total", ambiente, request, e );
+
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+		
+		return jsonResult;
+	}	
+	
 	
 }

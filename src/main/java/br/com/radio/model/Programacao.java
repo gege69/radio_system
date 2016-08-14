@@ -254,7 +254,7 @@ public class Programacao implements Serializable {
 		this.dataCriacao = new Date();
 	}
 
-	public Programacao( Ambiente ambiente, DiaSemana diaSemana, Integer horaInicio )
+	public Programacao( Ambiente ambiente, DiaSemana diaSemana, Integer horaInicio, boolean custom )
 	{
 		super();
 		this.ambiente = ambiente;
@@ -262,7 +262,7 @@ public class Programacao implements Serializable {
 		this.horaInicio = horaInicio;
 		this.ativo = true;
 		this.dataCriacao = new Date();
-
+		this.custom = custom;
 	}
 
 
