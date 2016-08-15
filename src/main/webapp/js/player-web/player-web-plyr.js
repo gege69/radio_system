@@ -17,6 +17,8 @@ var volumeGeral = 100;
 
 var volumeIndividual = false;
 
+var autentica = false;
+
 var playlist = [];
 
 var micRetorna = player;
@@ -382,6 +384,11 @@ var getConfiguracoes = function(){
                 alteraVolume(json.volumeGeral);
             }
             volumeGeral = json.volumeGeral;
+            
+            if ( json.autenticaProgMusicalPlayer != null ){
+                autentica = json.autenticaProgMusicalPlayer;
+                registraModalPassword();
+            }
         }
         else 
         {
@@ -457,11 +464,10 @@ var toggleMicrofone = function()
     }
 }
 
-var auth = false;
 
-var registraModalPassword = function( eleModalment, url ){
-    
-    if ( !auth ){
+var registraModalPassword = function(){
+
+    if ( autentica ){
         $('#btn-generos').click( function() {
             $("#myModalGenerosAuth").modal({
                 show:true, 
@@ -493,7 +499,6 @@ var authModal = function(){
     }).done( function( json ){
 
         if ( json.ok == 1 ){
-            auth = true;
             // registra...
             $('#btn-generos').off('click');
             registraModal('#btn-generos', "myModalGeneros");
@@ -573,7 +578,7 @@ $(document).ready(function() {
     registraModal('#btn-relatorios', "relatorios");
     registraModal('#btn-atendimento', "myModalConversas");
 
-    registraModalPassword('#btn-generos', "myModalGeneros");
+    
 
     
     getConfiguracoes();
@@ -602,5 +607,9 @@ $(document).ready(function() {
     $("#btnAuth").click(function(){
         authModal();
     });
+
+    $('#myModalGenerosAuth').on('shown.bs.modal', function() {
+        $("#alertaAuth").empty();
+    })
     
 });

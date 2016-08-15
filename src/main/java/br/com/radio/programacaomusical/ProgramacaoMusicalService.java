@@ -27,6 +27,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.radio.dto.CadastrarSenhaPlayerDTO;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.midia.MidiaFilter;
@@ -1653,5 +1654,17 @@ public class ProgramacaoMusicalService {
 		return config.getSenhaProgMusicalPlayer() != null && config.getSenhaProgMusicalPlayer().equals( pass );
 	}
 
+
+	public void cadastrarSenhaProgramacaoTotal( Ambiente ambiente, CadastrarSenhaPlayerDTO cadastrarSenhaDTO){
+		
+		AmbienteConfiguracao config = ambienteConfigRepo.findByAmbiente( ambiente );
+		
+		if ( config == null )
+			throw new RuntimeException("Configuração não encontrada!");
+		
+		config.setSenhaProgMusicalPlayer( cadastrarSenhaDTO.getPassword() );
+		
+		ambienteConfigRepo.save( config );
+	}
 	
 }

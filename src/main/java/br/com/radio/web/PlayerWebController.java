@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.radio.dto.CadastrarSenhaPlayerDTO;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -398,5 +400,33 @@ public class PlayerWebController extends AbstractController {
 		return jsonResult;
 	}	
 	
+
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/autenticar/new", "/api/ambientes/{idAmbiente}/programacoes/autenticar/new" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String cadastrarAutenticacaoProgramacaoTotal( @PathVariable Long idAmbiente, @RequestBody @Valid CadastrarSenhaPlayerDTO cadastrarSenhaDTO, BindingResult result, HttpServletRequest request )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() )
+			jsonResult = writeErrorsAsJSONErroMessage( result );
+		else
+		{
+			Ambiente ambiente = null;
+			try
+			{
+				ambiente = ambienteRepo.findOne( idAmbiente );
+				programacaoMusicalService.cadastrarSenhaProgramacaoTotal( ambiente, cadastrarSenhaDTO );
+				
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				imprimeLogErroAmbiente( "Autenticar alterar Programação Total", ambiente, request, e );
+
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+		
+		return jsonResult;
+	}	
 	
 }
