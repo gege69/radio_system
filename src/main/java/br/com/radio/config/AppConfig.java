@@ -2,7 +2,6 @@ package br.com.radio.config;
 
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -21,11 +20,9 @@ import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import br.com.radio.security.config.SecurityConfigMulti;
-import br.com.radio.service.midia.ConverterMidiaComponent;
 import br.com.radio.web.config.WebAppConfig;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -35,15 +32,14 @@ import com.zaxxer.hikari.HikariDataSource;
 @ComponentScan( basePackages = { "br.com.radio.*" } )
 @EnableJpaRepositories( basePackages = { "br.com.radio.*" } )
 @EnableTransactionManagement
-@EnableAsync
-@Import( { WebAppConfig.class, SecurityConfigMulti.class, SchedulingConfig.class } )
+@Import( { WebAppConfig.class, SecurityConfigMulti.class, SchedulingConfig.class, AsyncConfig.class } )
 public class AppConfig {
 
 	private static final Logger logger = Logger.getLogger(AppConfig.class);
 	
 	@Autowired
 	private Environment env;
-	
+
 	@Bean( destroyMethod = "close" )
 	@Profile("default")
 	public DataSource getDataSourceDesenvolvimento()

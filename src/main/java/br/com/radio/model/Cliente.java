@@ -16,6 +16,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.Email;
@@ -96,6 +98,7 @@ public class Cliente implements Serializable {
 	
 	@OneToMany( fetch = FetchType.EAGER, mappedBy="cliente" )
 	@NotFound(action=NotFoundAction.IGNORE)
+	@Fetch(FetchMode.SUBSELECT)
     private List<Telefone> telefones;
 	
 	@JsonIgnore

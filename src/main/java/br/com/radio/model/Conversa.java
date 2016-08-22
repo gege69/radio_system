@@ -23,6 +23,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateTimeSerializer;
@@ -63,6 +66,7 @@ public class Conversa implements Serializable {
 	   @JoinTable(name="conversa_usuario", joinColumns = { 
 	        @JoinColumn(name="id_conversa", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_usuario", nullable=false, updatable=false) })
+	@Fetch(FetchMode.SUBSELECT)
 	private List<Usuario> usuarios;
 
 	@JsonDeserialize(using=JSONDateDeserializer.class)
@@ -83,6 +87,7 @@ public class Conversa implements Serializable {
 	@JsonIgnore
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="conversa")
 	@OrderBy("idMensagem")
+	@Fetch(FetchMode.SUBSELECT)
     private List<Mensagem> mensagens;
 	
 	@JsonDeserialize(using=JSONDateDeserializer.class)

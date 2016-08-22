@@ -18,6 +18,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateTimeSerializer;
 import br.com.radio.util.UtilsStr;
@@ -60,8 +63,9 @@ public class Mensagem implements Serializable {
 	@Column(name="conteudo", columnDefinition= "TEXT")
 	private String conteudo;
 	
-	@ManyToOne
+	@ManyToOne()
 	@JoinColumn(name="id_conversa")
+	@Fetch( FetchMode.JOIN )
 	private Conversa conversa;
 
 	@Transient
@@ -171,10 +175,14 @@ public class Mensagem implements Serializable {
 		else
 			mensagemView.put( "usuario", getUsuario().getNome() );
 		
-		if ( getUsuario() != null && getUsuario().getIdUsuario().equals( usuarioLogado.getIdUsuario() ) )
+		if ( getUsuario() != null && getUsuario().getIdUsuario().equals( usuarioLogado.getIdUsuario() ) ){
 			mensagemView.put( "htmlclass", "self" );
-		else
+			mensagemView.put( "alertclass", "alert-success" );
+		}
+		else {
 			mensagemView.put( "htmlclass", "other" );
+			mensagemView.put( "alertclass", "alert-info" );
+		} 
 		
 		mensagemView.put( "conteudoHtml", UtilsStr.replaceNewLineHtml( conteudo ) );
 	}

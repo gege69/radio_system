@@ -161,7 +161,7 @@
       
 <script id="viewTmplMensagem" type="text/x-jsrender">
 <div class="col-lg-12 col-md-12">
-  <div class="well well-sm {{:htmlclass}} col-lg-10 col-md-10 col-sm-10 col-xs-10">
+  <div class="alert {{:alertclass}} {{:htmlclass}} col-lg-10 col-md-10 col-sm-10 col-xs-10">
     <p>{{:conteudoHtml}}</p>
     <div class="nome-tempo {{:htmlclass}}">{{:usuario}} - {{:dataEnvio}}</div>
   </div>

@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.radio.dto.ContatoDTO;
 import br.com.radio.dto.cliente.ClienteRelatorioDTO;
 import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.dto.cliente.ParametroDTO;
@@ -493,6 +494,10 @@ public class ClienteService {
 		return tit;
 	}
 	
+	
+	public void registraContato(ContatoDTO contatoDTO){
+
+	}
 	
 
 }

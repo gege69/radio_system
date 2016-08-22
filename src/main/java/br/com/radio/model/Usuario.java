@@ -25,6 +25,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONDateTimeSerializer;
@@ -88,6 +90,7 @@ public class Usuario implements Serializable {
 	   @JoinTable(name="usuario_perfil", joinColumns = { 
 	        @JoinColumn(name="id_usuario", nullable=false, updatable=false) }, inverseJoinColumns = { 
 	        @JoinColumn(name="id_perfil", nullable=false, updatable=false) })
+	@Fetch(FetchMode.SUBSELECT)
 	private List<Perfil> perfis;
 
 	@Enumerated(EnumType.STRING)

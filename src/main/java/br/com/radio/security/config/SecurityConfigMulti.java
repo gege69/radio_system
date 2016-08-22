@@ -150,11 +150,41 @@ public class SecurityConfigMulti {
 	    }
 
 		
-		
 		@Override
 		protected void configure( HttpSecurity http ) throws Exception
 		{
+
+			RequestMatcher csrfRequestMatcher = new RequestMatcher() 
+        	{
+	    		// Always allow the HTTP GET method
+	    		private Pattern allowedMethods = Pattern.compile("^GET$");
+	    		  
+	    		// Disable CSFR protection on the following urls:
+	    		private AntPathRequestMatcher[] requestMatchers = {
+	    		    new AntPathRequestMatcher("/contato/**"),
+	    		};
+	
+	    		@Override
+	    		public boolean matches(HttpServletRequest request) {
+	    		    // Skip allowed methods
+	    		    if (allowedMethods.matcher(request.getMethod()).matches()) {
+	    		        return false;
+	    		    }   
+	
+	    		    // If the request match one url the CSFR protection will be disabled
+	    		    for (AntPathRequestMatcher rm : requestMatchers) {
+	    		        if (rm.matches(request)) { return false; }
+	    		    }
+	
+	    		    return true;
+	    		} // method matches
+    		};
+
+
 			http
+			
+			.csrf().requireCsrfProtectionMatcher( csrfRequestMatcher )
+			.and()
 
 			// access-denied-page: this is the page users will be
 			// redirected to when they try to access protected areas.
