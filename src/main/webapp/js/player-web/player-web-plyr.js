@@ -17,7 +17,7 @@ var volumeGeral = 100;
 
 var volumeIndividual = false;
 
-var autentica = false;
+var autentica = 0;
 
 var playlist = [];
 
@@ -386,7 +386,12 @@ var getConfiguracoes = function(){
             volumeGeral = json.volumeGeral;
             
             if ( json.autenticaProgMusicalPlayer != null ){
-                autentica = json.autenticaProgMusicalPlayer;
+                if ( json.autenticaProgMusicalPlayer == true && json.cadastrar == true ) {
+                    autentica = 1;
+                }
+                else if ( json.autenticaProgMusicalPlayer == true && json.cadastrar == false ) {
+                    autentica = 2;
+                }
                 registraModalPassword();
             }
         }
@@ -467,7 +472,16 @@ var toggleMicrofone = function()
 
 var registraModalPassword = function(){
 
-    if ( autentica ){
+    if ( autentica == 1 ){
+        $('#btn-generos').click( function() {
+            $("#myModalGenerosCadastroAuth").modal({
+                show:true, 
+                backdrop: 'static',              
+                keyboard: false
+            });
+        });
+    }
+    else if ( autentica == 2 ){
         $('#btn-generos').click( function() {
             $("#myModalGenerosAuth").modal({
                 show:true, 
@@ -503,6 +517,7 @@ var authModal = function(){
             $('#btn-generos').off('click');
             registraModal('#btn-generos', "myModalGeneros");
             $("#myModalGenerosAuth").modal('hide');
+            $("#myModalGenerosCadastroAuth").modal('hide');
             // .. e abre
             abreModal("myModalGeneros");
         }
@@ -513,6 +528,36 @@ var authModal = function(){
 }
 
 
+var cadastrarAuthModal = function(){
+    
+    var url = buildUrl('/api/ambientes/{idAmbiente}/programacoes/autenticar/new', {
+        idAmbiente : idAmbiente
+    }); 
+    
+    var data = $('#cadastrar-autenticar-form').serializeJSON();
+
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data : JSON.stringify(data)
+    }).done( function( json ){
+
+        if ( json.ok == 1 ){
+            // registra...
+            $('#btn-generos').off('click');
+            registraModal('#btn-generos', "myModalGeneros");
+            $("#myModalGenerosAuth").modal('hide');
+            $("#myModalGenerosCadastroAuth").modal('hide');
+            // .. e abre
+            abreModal("myModalGeneros");
+        }
+        else {
+            preencheErros( json.errors, "alertaCadastroAuth" );
+        }
+    });
+}
 
 $(document).ready(function() {
 
@@ -608,7 +653,15 @@ $(document).ready(function() {
         authModal();
     });
 
+    $("#btnCadastroAuth").click(function(){
+        cadastrarAuthModal();
+    });
+
     $('#myModalGenerosAuth').on('shown.bs.modal', function() {
+        $("#alertaAuth").empty();
+    })
+
+    $('#myModalGenerosCadastroAuth').on('shown.bs.modal', function() {
         $("#alertaAuth").empty();
     })
     

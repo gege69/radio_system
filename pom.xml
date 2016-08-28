@@ -14,7 +14,8 @@
 		<version.standard.taglibs>1.1.2</version.standard.taglibs>
 		<version.postgres.jdbc>9.4.1209</version.postgres.jdbc>
 		<version.spring>4.3.2.RELEASE</version.spring>
-		<version.hibernate>5.2.2.Final</version.hibernate>
+<!--     Hibernate 5 depreciou justamente a syntaxe de Criteria que tanto amamos -->
+		<version.hibernate>4.3.5.Final</version.hibernate>
     <version.springsecurity>4.1.2.RELEASE</version.springsecurity>
 
 	</properties>

@@ -836,6 +836,9 @@ public class AmbienteController extends AbstractController {
 		if ( ambiente != null )
 			configuracoes = ambienteConfigRepo.findByAmbiente( ambiente );
 		
+		if ( configuracoes != null )
+			configuracoes.buildView();
+
 		return configuracoes;
 	}
 	
@@ -906,7 +909,7 @@ public class AmbienteController extends AbstractController {
 			
 			AmbienteConfiguracao configuracaoAtual = ambienteConfigRepo.findByAmbiente( ambiente );
 
-			configuracaoAtual.setSenhaProgMusicalPlayer("123456");
+			configuracaoAtual.setSenhaProgMusicalPlayer("");
 
 			ambienteConfigRepo.save( configuracaoAtual );
 				

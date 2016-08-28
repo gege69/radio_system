@@ -368,7 +368,8 @@ public class PlayerWebController extends AbstractController {
 	}
 	
 	
-	
+
+
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/autenticar", "/api/ambientes/{idAmbiente}/programacoes/autenticar" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String autenticarProgramacaoTotal( @PathVariable Long idAmbiente, @RequestBody Map<String, String> json, BindingResult result, HttpServletRequest request )
 	{

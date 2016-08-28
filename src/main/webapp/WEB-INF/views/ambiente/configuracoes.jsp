@@ -384,7 +384,7 @@
             dataType: 'json',
         }).done( function(json){
             if (json.ok != null){
-                preencheAlertGeral( "alertArea", "Senha resetada com sucesso para 123456", "success" );
+                preencheAlertGeral( "alertArea", "Senha resetada com sucesso", "success" );
                 jump(''); // topo da pagina
             }
             else{

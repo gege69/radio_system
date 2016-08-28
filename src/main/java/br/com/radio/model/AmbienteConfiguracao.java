@@ -2,6 +2,8 @@ package br.com.radio.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +17,17 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.StringUtils;
 
 import br.com.radio.enumeration.VozLocucao;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateTimeSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -158,9 +165,13 @@ public class AmbienteConfiguracao implements Serializable {
 	@Column(name="autenticaProgMusicalPlayer", columnDefinition = "BOOL default false")
 	private boolean autenticaProgMusicalPlayer;
 	
+	@JsonIgnore
 	@Column(name="senhaProgMusicalPlayer", columnDefinition = "TEXT")
 	private String senhaProgMusicalPlayer;
 
+	@Transient
+	private Map<String, Object> configView = new HashMap<String,Object>();
+	
 
 	public Long getIdAmbConfig()
 	{
@@ -588,5 +599,20 @@ public class AmbienteConfiguracao implements Serializable {
 		this.senhaProgMusicalPlayer = senhaProgMusicalPlayer;
 	}
 
+	@JsonAnyGetter
+	public Map<String, Object> getMidiaView()
+	{
+		return configView;
+	}
+
+	@JsonAnySetter
+	public void setMidiaView( Map<String, Object> midiaView )
+	{
+		this.configView = midiaView;
+	}
+	
+	public void buildView(){
+		configView.put( "cadastrar", StringUtils.isBlank( this.senhaProgMusicalPlayer ) );
+	}
 	
 }

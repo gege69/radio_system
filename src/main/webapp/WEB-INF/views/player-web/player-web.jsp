@@ -467,6 +467,7 @@
           <div class="col-lg-12 col-md-12">
             <form action="#" id="autenticar-form" method="POST">
               <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
               <div class="form-group">
                 <label for="senha">Senha</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Senha" value="">
@@ -477,7 +478,55 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
-        <button class="btn btn-primary" id="btnAuth" >Autenticar</button>
+        <button class="btn btn-primary" id="btnAuth">Autenticar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="myModalGenerosCadastroAuth" class="modal fade" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h3>
+              Cadastrar Senha
+            </h3>
+          </div>
+          <div class="col-lg-6 col-md-6" id="alertaCadastroAuth">
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="loader" id="ajaxload" style="display : none;"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-12">
+            <form action="#" id="cadastrar-autenticar-form" method="POST">
+              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+              <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Senha" value="">
+              </div>
+
+              <div class="form-group" id="divRepetirSenha">
+                <label for="senha">Repetir Senha</label>
+                <input type="password" class="form-control" id="matchingPassword" name="matchingPassword" placeholder="Repetir Senha" value="">
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
+        <button class="btn btn-primary" id="btnCadastroAuth">Gravar Senha</button>
       </div>
     </div>
   </div>
