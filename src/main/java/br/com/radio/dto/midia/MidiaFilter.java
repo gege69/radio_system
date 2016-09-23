@@ -17,6 +17,7 @@ public class MidiaFilter {
 	private boolean verificaValidade;
 	private boolean verificaDiaAtual;
 	private boolean incluiGeneros;
+	private Boolean ativo;
 	
 	public static MidiaFilter create(){
 		return new MidiaFilter();
@@ -147,9 +148,19 @@ public class MidiaFilter {
 		this.verificaDiaAtual = verificaDiaAtual;
 		return this;
 	}
-	
-	
-	
 
+
+	public Boolean getAtivo()
+	{
+		return ativo;
+	}
+
+
+	public MidiaFilter setAtivo( Boolean ativo )
+	{
+		this.ativo = ativo;
+		return this;
+	}
+	
 	
 }

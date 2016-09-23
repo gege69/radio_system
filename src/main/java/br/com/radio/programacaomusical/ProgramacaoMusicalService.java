@@ -1104,6 +1104,7 @@ public class ProgramacaoMusicalService {
 		MidiaFilter filter = MidiaFilter.create()
 								.setAmbiente( ambiente )
 								.setCategoria( categoria )
+								.setAtivo( true )
 								.setVerificaValidade( true )
 								.setVerificaDiaAtual( true );
 

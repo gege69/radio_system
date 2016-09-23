@@ -38,6 +38,8 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.radio.dto.AlterarSenhaAmbienteDTO;
 import br.com.radio.dto.EspelharAmbienteDTO;
 import br.com.radio.dto.GeneroListDTO;
+import br.com.radio.dto.MidiaListDTO;
+import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.exception.ResourceNotFoundException;
@@ -51,6 +53,7 @@ import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
+import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
 import br.com.radio.model.Usuario;
 import br.com.radio.programacaomusical.ProgramacaoMusicalService;
@@ -1230,4 +1233,57 @@ public class AmbienteController extends AbstractController {
 		 return result;
 	}
 	
+
+
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/midias/block", "/api/ambientes/{idAmbiente}/programacoes/midias/block" }, 
+			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Midia> getMidiasBlock( @PathVariable Long idAmbiente, 
+																 @RequestParam( value = "idCategoria") Long idCategoria, 
+																 HttpServletResponse response )
+	{
+		MidiaFilter filter = MidiaFilter.create()
+										.setIdAmbiente( idAmbiente )
+										.setIdCategoria( idCategoria );
+
+		List<Midia> midias = midiaService.findMidiasCategorias( filter );
+
+		JSONListWrapper<Midia> jsonList = new JSONListWrapper<Midia>( midias, midias.size() );
+		
+		return jsonList;
+	}
+
+
+
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/midias/block", "/api/ambientes/{idAmbiente}/programacoes/midias/block" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveMidiasBlock( @PathVariable Long idAmbiente, @RequestBody MidiaListDTO midiaList, Principal principal, HttpServletRequest request )
+	{
+		String jsonResult = "";
+		
+		Ambiente ambiente = null;
+		try
+		{
+			ambiente = ambienteRepo.findOne( idAmbiente );
+			if ( ambiente == null )
+				throw new RuntimeException("Ambiente não encontrado");
+
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null )
+				throw new RuntimeException("Usuário não encontrado");
+			
+			programacaoMusicalService.saveProgramacaoMusicalTotal(ambiente, generoList);
+			programacaoMusicalService.geraTransmissao( ambiente );
+				
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			imprimeLogErroAmbiente( "Programação Total", ambiente, request, e );
+
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Não foi possível gravar : " + e.getMessage() );
+		}
+		
+		return jsonResult;
+	}
+
 }

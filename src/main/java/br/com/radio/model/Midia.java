@@ -152,7 +152,7 @@ public class Midia implements Serializable {
 	@Column( name="genre", columnDefinition = "TEXT")
 	private String genre;
 	
-	@Column( name="ativo")
+	@Column( name="ativo", columnDefinition = " boolean default true ")
 	private Boolean ativo;
 
 	/**

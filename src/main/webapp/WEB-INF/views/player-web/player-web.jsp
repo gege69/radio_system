@@ -575,6 +575,8 @@
   </div>
 </div>
 
+
+
 <script id="viewTmpl" type="text/x-jsrender">
     
       <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -584,6 +586,62 @@
       </div>
       
 </script>  
+
+
+<div id="myModalMidiaBlock" class="modal fade" tabindex="-1" role="dialog" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h3><span id="idMidiaBlockTitulo"></span></h3>
+          </div>
+
+          <div class="col-lg-6 col-md-6" id="alertAreaMidiaBlock">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="loader" id="ajaxloadMidiaBlock" style="display : none;"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-12">
+            <form action="#" id="midiaBlockForm" method="POST">
+              <input type="hidden" id="idAmbiente" value="${idAmbiente}">
+
+              <div class="form-inline">
+                <div class="col-lg-12 col-md-12 container" id="viewContainerMidiaBlock">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Fechar</button>
+        <button class="btn btn-primary" id="btnSalvarMidiaBlock" >Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script id="viewTmplMidiaBlock" type="text/x-jsrender">
+    
+    <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-12">
+      <label>
+        <input type="checkbox" class="checkbox-midiablock" id="midiablock-{{:idMidia}}" name="midia[idMidia]" value="{{:idMidia}}"> {{:descricao}}
+      </label>
+    </div>
+      
+</script>  
+
 
 
 <div id="myModalConversas" class="modal fade higherWider" tabindex="-1" role="dialog">

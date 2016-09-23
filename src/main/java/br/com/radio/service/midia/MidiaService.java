@@ -1113,6 +1113,9 @@ public class MidiaService {
 			crit.add( Restrictions.eq( "a.idAmbiente", filter.getAmbiente().getIdAmbiente() ) );
 		}
 		crit.add( Restrictions.eq( "valido", true ) );
+		
+		if ( filter.getAtivo() != null )
+			crit.add( Restrictions.eq( "ativo", filter.getAtivo() ) );
 
 		if ( filter.hasSearch() )
 			crit.add( Restrictions.disjunction( Restrictions.ilike( "nome", filter.getPreparedSearch() ), Restrictions.ilike( "descricao", filter.getPreparedSearch() ) ) );
@@ -1128,7 +1131,6 @@ public class MidiaService {
 			crit.add( Restrictions.eq( "dias.diaSemana", diaSemanaHoje ) );
 //			crit.add( Restrictions.disjunction( Restrictions.eq( "dias.diaSemana", diaSemanaHoje ), Restrictions.isNull( "dias.diaSemana" ) ) );
 		}
-
 
 		if ( filter.isVerificaValidade() ){
 			
