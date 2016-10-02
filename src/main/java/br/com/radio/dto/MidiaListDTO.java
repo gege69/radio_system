@@ -2,6 +2,7 @@ package br.com.radio.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import br.com.radio.model.Midia;
 
@@ -11,6 +12,8 @@ public class MidiaListDTO implements Serializable {
 	
 	private List<Midia> lista;
 
+	private Map<Long, Boolean> mapMidiasBlock;
+
 	public List<Midia> getLista()
 	{
 		return lista;
@@ -19,6 +22,16 @@ public class MidiaListDTO implements Serializable {
 	public void setLista( List<Midia> lista )
 	{
 		this.lista = lista;
+	}
+
+	public Map<Long, Boolean> getMapMidiasBlock()
+	{
+		return mapMidiasBlock;
+	}
+
+	public void setMapMidiasBlock( Map<Long, Boolean> mapMidiasBlock )
+	{
+		this.mapMidiasBlock = mapMidiasBlock;
 	}
 
 }

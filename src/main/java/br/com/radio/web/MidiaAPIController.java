@@ -359,9 +359,6 @@ public class MidiaAPIController extends AbstractController {
 
 	
 	
-	
-	
-	
 	@RequestMapping( value = { "/api/ambientes/{idAmbiente}/transmissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Transmissao> listTransmissaoAtiva( @PathVariable Long idAmbiente, Principal principal, HttpServletRequest request )
 	{
@@ -373,7 +370,6 @@ public class MidiaAPIController extends AbstractController {
 
 		return jsonList;
 	}
-	
 	
 	
 	

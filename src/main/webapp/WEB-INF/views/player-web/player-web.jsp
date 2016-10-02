@@ -72,7 +72,7 @@
             </ul>
           </li>
           
-          <li class="dropdown" id="menu-pesquisas">
+          <li class="dropdown" id="menu-blocos">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" id="link-menu-pesquisas">Configurações <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               
@@ -87,6 +87,18 @@
               <c:if test="${configuracao != null && configuracao.menuDownloads}">
                 <li><a href="#"  id="btn-downloads">Downloads</a></li>
               </c:if>
+
+<%--               <c:if test="${configuracao != null && configuracao.controleProgrametes}"> --%>
+<!--                 <li><a href="#"  id="btn-programetes">Controle Programetes</a></li> -->
+<%--               </c:if> --%>
+
+<%--               <c:if test="${configuracao != null && configuracao.controleComerciais}"> --%>
+<!--                 <li><a href="#"  id="btn-comerciais">Controle Comerciais</a></li> -->
+<%--               </c:if> --%>
+
+<%--               <c:if test="${configuracao != null && configuracao.controleInstitucionais}"> --%>
+<!--                 <li><a href="#"  id="btn-institucionais">Controle Institucionais</a></li> -->
+<%--               </c:if> --%>
             </ul>
           </li>          
 
@@ -612,6 +624,13 @@
 
         <div class="row">
           <div class="col-lg-12 col-md-12">
+            <p>As mídias que estiverem marcadas irão tocar na programação.</p>
+            <p>Para evitar que essa mídia toque, basta desmarcá-la e Salvar.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12 col-md-12">
             <form action="#" id="midiaBlockForm" method="POST">
               <input type="hidden" id="idAmbiente" value="${idAmbiente}">
 
@@ -636,7 +655,9 @@
     
     <div class="checkbox col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <label>
-        <input type="checkbox" class="checkbox-midiablock" id="midiablock-{{:idMidia}}" name="midia[idMidia]" value="{{:idMidia}}"> {{:descricao}}
+        <input type="checkbox" class="checkbox-midiablock" id="midiablock-{{:idMidia}}" name="midia[idMidia]" value="{{:idMidia}}"> 
+          {{:descricao}} 
+          <span class="pequenoTexto">(Validade: {{:dataFimValidade}})</span>
       </label>
     </div>
       
@@ -720,6 +741,7 @@
 <script src="${context}/js/player-web/modal-chamada-instantanea.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-veiculos.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-generos.js" charset="UTF-8" defer></script>
+<script src="${context}/js/player-web/modal-midias-block.js" charset="UTF-8" defer></script>
 
 <!-- basicamente necessários para o "Conversas" -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css" rel="stylesheet">

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -22,15 +23,28 @@ import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.radio.dto.CadastrarSenhaPlayerDTO;
 import br.com.radio.dto.GeneroListDTO;
+import br.com.radio.dto.MidiaListDTO;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.midia.MidiaFilter;
+import br.com.radio.dto.midia.TransmissaoFilter;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.model.Ambiente;
@@ -550,7 +564,7 @@ public class ProgramacaoMusicalService {
 				result = transmissaoRepo.findByIdAmbienteAndLinkativoTrueAndPrevisaoAtual( ambiente.getIdAmbiente() );
 			}
 		}
-		
+
 		return result;
 	}
 	
@@ -564,6 +578,8 @@ public class ProgramacaoMusicalService {
 		if ( result != null && result.getIdTransmissao() != null )
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
 		
+		transmissaoRepo.setStatusTocando( ambiente, result.getIdTransmissao() );
+
 		return result;
 	}
 
@@ -596,6 +612,9 @@ public class ProgramacaoMusicalService {
 		if ( idTransmissao != null && usuAmb.isPlayer() )
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, idTransmissao );
 		
+		transmissaoRepo.setStatusIgnorada( ambiente, atual.getIdTransmissao() );
+		transmissaoRepo.setStatusTocando( ambiente, result.getIdTransmissao() );
+
 		//TODO: gerar nova midia incremental aqui
 		
 		return result;
@@ -610,7 +629,7 @@ public class ProgramacaoMusicalService {
 		// melhorar... se estiver quase acabando o dia.. gerar para o dia posterior também
 
 		// Gerar sempre....  inativando os registros de transmissão anteriores		
-		int ignoradas = transmissaoRepo.setStatusIgnorada( ambiente ); // o que não tocou não será mais tocado... vou gerar uma nova playlist
+		int ignoradas = transmissaoRepo.setStatusIgnoradas( ambiente ); // o que não tocou não será mais tocado... vou gerar uma nova playlist
 		int inativos = transmissaoRepo.setLinkInativo( ambiente );  // inativando os registros 
  
 		Bloco bloco = blocoRepo.findByAmbiente( ambiente ); 
@@ -744,8 +763,8 @@ public class ProgramacaoMusicalService {
 		logger.info( dto.getMidias().size() );
 		logger.info( duracaoTotal + " segundos " );
 		logger.info( ( duracaoTotal / 60 ) + " minutos " );
-		logger.error( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
-		logger.warn( dto.getProgramacoes().size() + " programações é (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
+		logger.info( ( ( duracaoTotal / 60 ) / 60 )+ " horas " );
+		logger.info( dto.getProgramacoes().size() + " programações é (1 hora cada) : total " + dto.getProgramacoes().size() + " horas " );
 
 	}
 	
@@ -1666,6 +1685,96 @@ public class ProgramacaoMusicalService {
 		config.setSenhaProgMusicalPlayer( cadastrarSenhaDTO.getPassword() );
 		
 		ambienteConfigRepo.save( config );
+	}
+	
+	
+	@Transactional
+	public void inativarMidias(Ambiente ambiente, MidiaListDTO midiaListDTO){
+		
+		midiaService.atualizaMidiasInativasBlock( midiaListDTO );
+		geraTransmissao( ambiente );
+	}
+	
+	
+	
+	/**
+	 * Por convenção o início do metodo como "filtra" implica que ele é utilizado pela tela (por isso também ele retorna um Page)
+	 * Métodos que são usados por business serão iniciados por "find" e retornam List.
+	 * 
+	 * @param pageable
+	 * @param filter
+	 * @return
+	 */
+	@SuppressWarnings( "unchecked" )
+	@Transactional
+	public Page<Transmissao> filtraTransmissoes( Pageable pageable, TransmissaoFilter filter ){
+		
+		Session session = entityManager.unwrap( Session.class );
+		
+		Criteria critCount = createCriteriaTransmissoes( filter, session );
+		critCount.setProjection( Projections.rowCount() );
+		Long total = (Long)critCount.uniqueResult();
+
+		Criteria crit = createCriteriaTransmissoes( filter, session );
+		
+		if ( pageable != null ){
+			crit.setMaxResults( pageable.getPageSize() );
+			crit.setFirstResult( pageable.getOffset() );
+		}
+		
+		crit.addOrder( Order.asc( "posicaoplay" ) );
+
+		List<Transmissao> listTransmissoes = crit.list();
+
+		PageImpl<Transmissao> paginaTransmissoes = new PageImpl<Transmissao>( listTransmissoes, pageable, total );
+		
+		return paginaTransmissoes;
+	}
+	
+
+	
+	@SuppressWarnings( "unchecked" )
+	@Transactional
+	public List<Midia> findTransmissoes( TransmissaoFilter filter ){
+		
+		Session session = entityManager.unwrap( Session.class );
+		
+		Criteria crit = createCriteriaTransmissoes( filter, session );
+		
+		List<Midia> result = crit.list();
+		
+		return result;
+	}
+
+
+
+	private Criteria createCriteriaTransmissoes( TransmissaoFilter filter, Session session )
+	{
+		Criteria crit = session.createCriteria( Transmissao.class );
+		
+		boolean isIdCategoria = ( filter.getCategoria() != null && filter.getCategoria().getIdCategoria() != null && filter.getCategoria().getIdCategoria() > 0 );
+		boolean isCodigoCategoria = ( filter.getCategoria() != null && filter.getCategoria().getIdCategoria() == null && StringUtils.isNotBlank( filter.getCategoria().getCodigo() ) );
+		
+		if ( isIdCategoria || isCodigoCategoria ){
+			crit.createAlias( "categorias", "c" );
+			
+			if ( isIdCategoria )
+				crit.add( Restrictions.eq( "c.idCategoria", filter.getCategoria().getIdCategoria() ) );
+			else if ( isCodigoCategoria )
+				crit.add( Restrictions.eq( "c.codigo", filter.getCategoria().getCodigo() ) );
+		}
+
+		if ( filter.getAmbiente() != null )
+			crit.add( Restrictions.eq( "ambiente", filter.getAmbiente() ) );
+		
+		crit.add( Restrictions.between( "diaPlay", filter.getDataInicio(), filter.getDataFim() ) );
+		
+		if (filter.isFuturo())
+			crit.add( Restrictions.in( "statusPlayback", Arrays.asList( StatusPlayback.GERADA, StatusPlayback.NAFILA, StatusPlayback.TOCANDO, StatusPlayback.FIM ) ) );
+		else
+			crit.add( Restrictions.in( "statusPlayback", Arrays.asList( StatusPlayback.TOCANDO, StatusPlayback.FIM ) ) );
+
+		return crit;
 	}
 	
 }

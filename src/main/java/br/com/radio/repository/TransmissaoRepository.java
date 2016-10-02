@@ -44,12 +44,19 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 
 	@Modifying(clearAutomatically=true)
 	@Query("update Transmissao t set t.statusPlayback = 'IGNORADA' where t.ambiente = ?1 and t.linkativo = true ")
-	int setStatusIgnorada( Ambiente ambiente );    // Desativando os links para gerar uma nova transmissão
+	int setStatusIgnoradas( Ambiente ambiente );    // Desativando os links para gerar uma nova transmissão
 	
 	@Modifying(clearAutomatically=true)
 	@Query("update Transmissao t set t.linkativo = false where t.ambiente = ?1 and t.linkativo = true ")
 	int setLinkInativo( Ambiente ambiente );    // Desativando os links para gerar uma nova transmissão
 
+	@Modifying(clearAutomatically=true)
+	@Query("update Transmissao t set t.statusPlayback = 'TOCANDO' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao = ?2 ")
+	int setStatusTocando( Ambiente ambiente, Long idTransmissao );  
+
+	@Modifying(clearAutomatically=true)
+	@Query("update Transmissao t set t.statusPlayback = 'IGNORADA' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao = ?2 ")
+	int setStatusIgnorada( Ambiente ambiente, Long idTransmissao );  
 	
 	// Para encontrar a próxima musica
 //	Transmissao findByAmbienteAndLinkativoTrueAndPosicaoplay( Ambiente ambiente, Double posicaoplay );
@@ -60,7 +67,7 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	
 	
 	@Modifying(clearAutomatically=true)
-	@Query("update Transmissao t set t.linkativo = false, t.downloadcompleto = true, t.dataFinishPlay = clock_timestamp(), t.statusPlayback = 'FIM' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao < ?2 ")
+	@Query("update Transmissao t set t.linkativo = false, t.downloadcompleto = true, t.dataFinishPlay = clock_timestamp(), t.statusPlayback = 'IGNORADA' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao < ?2 ")
 	int setLinkInativoAnteriores( Ambiente ambiente, Long idTransmissao );    
 
 }

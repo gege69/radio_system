@@ -48,6 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.conversao.ConverterParameters;
+import br.com.radio.dto.MidiaListDTO;
 import br.com.radio.dto.MusicTags;
 import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.dto.midia.MidiaFilter;
@@ -1528,7 +1529,6 @@ public class MidiaService {
 
 		converterMidiaComponent.setParametros( params );
 
-
 	}
 	
 	
@@ -1539,6 +1539,28 @@ public class MidiaService {
 		result = converterMidiaComponent.estaoNaFila( musicas );
 		
 		return result;
+	}
+	
+	
+	/**
+	 * Vai receber um mapa de IdMidia,Boolean onde o boolean determina se a mídia está ativa
+	 * 
+	 * @param midiaList
+	 */
+	@Transactional
+	public void atualizaMidiasInativasBlock(MidiaListDTO midiaList){
+		
+		Map<Long, Boolean> mapMidiasBlocks = midiaList.getMapMidiasBlock();
+		
+		mapMidiasBlocks.forEach( (i,b) -> {
+			
+			Midia m = midiaRepo.findOne( i );
+			
+			m.setAtivo( b );
+			
+			midiaRepo.save( m );
+		});
+		
 	}
 
 }

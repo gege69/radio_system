@@ -339,12 +339,15 @@ var next = function(){
 
 
 
-var abreModal = function( tela ){ 
+var abreModal = function( tela, extra ){ 
     $("#" + tela).modal({
         show:true, 
         backdrop: 'static',              
         keyboard: false
     });
+    
+    if (extra)
+        $("#"+tela).data("param", extra);
 };
 
 var getConfiguracoes = function(){
@@ -404,9 +407,9 @@ var getConfiguracoes = function(){
 }
 
 
-var registraModal = function( element, url ){
+var registraModal = function( element, url, extra ){
     $(element).click( function() {
-        abreModal( url ); 
+        abreModal( url, extra ); 
     });
 }
 
@@ -623,8 +626,9 @@ $(document).ready(function() {
     registraModal('#btn-relatorios', "relatorios");
     registraModal('#btn-atendimento', "myModalConversas");
 
-    
-
+    registraModal('#btn-programetes', "myModalMidiaBlock", "programete");
+    registraModal('#btn-comerciais', "myModalMidiaBlock", "comercial");
+    registraModal('#btn-institucionais', "myModalMidiaBlock", "inst");
     
     getConfiguracoes();
     

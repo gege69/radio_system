@@ -396,3 +396,11 @@ body {
         float: left;
     }
 }
+
+
+.pequenoTexto {
+    font-weight: 400;
+    line-height: 1;
+    color: #777;  
+    font-size : 75%;
+}

@@ -1,9 +1,10 @@
 
-var listaMidias = function(){
-    
-    var param = { idAmbiente: $("#idAmbiente").val() };
-    
-    var urlMidiablock = buildUrl( "/api/ambientes/{idAmbiente}/programacoes/midias/block", param);
+var listaMidiasBlocks = function(codigoCategoria){
+
+    var pathVar = { idAmbiente: $("#idAmbiente").val() };
+    var search = { codigoCategoria : codigoCategoria };
+
+    var urlMidiablock = buildUrl( "/api/ambientes/{idAmbiente}/programacoes/midias/block", pathVar, search);
     
     $.ajax({
         type: 'GET',
@@ -11,9 +12,14 @@ var listaMidias = function(){
         url: urlMidiablock,    
         dataType: 'json'
     }).done( function(json){
-        makeListTmpl(json);
         
-        $.each( json, function( idx, obj ){
+        var descricao = json.descricaoCategoria;
+        
+        $("#idMidiaBlockTitulo").html("Ativar ou Inativar " + descricao);
+        
+        makeListTmplMidiaBlock(json.midias);
+        
+        $.each( json.midias, function( idx, obj ){
             if ( obj.ativo === true )
                 $('#midiablock-'+obj.idMidia).prop('checked', true);
         });
@@ -23,16 +29,18 @@ var listaMidias = function(){
 
 var salvarMidiaBlocks = function()
 {
-    var array_values = [];
+    var mapMidiasBlock = [];
     $('.checkbox-midiablock').each( function() {
-        if( $(this).is(':checked') ) {
-            array_values.push( {idMidia: $(this).val()} );
-        }
+        var checked = $(this).is(':checked');
+        var idMidia = $(this).val();
+//        mapMidiasBlock[""+idMidia+""] = checked;
     });
     
-    var idList = { lista : array_values };
+    var idList = { mapMidiasBlock : mapMidiasBlock };
     
     var dados = JSON.stringify( idList );
+    
+    console.log(dados);
     
     var urlGenerosAmbiente = buildUrl( "/api/ambientes/{idAmbiente}/programacoes/midias/block", { 
         idAmbiente: $("#idAmbiente").val()
@@ -78,7 +86,12 @@ var makeListTmplMidiaBlock = function(json){
 $(function(){
     
     $("#myModalMidiaBlock").on('shown.bs.modal', function(){
-        listaMidias();
+
+        $("#viewContainerMidiaBlock").empty();
+
+        var codigoCategoria = $("#myModalMidiaBlock").data("param");
+
+        listaMidiasBlocks(codigoCategoria);
     });
     
     $('#btnSalvarMidiaBlock').on('click', function(){

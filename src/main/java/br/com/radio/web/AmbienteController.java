@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +40,9 @@ import br.com.radio.dto.AlterarSenhaAmbienteDTO;
 import br.com.radio.dto.EspelharAmbienteDTO;
 import br.com.radio.dto.GeneroListDTO;
 import br.com.radio.dto.MidiaListDTO;
+import br.com.radio.dto.RetornoMidiasBlockPorCategoria;
 import br.com.radio.dto.midia.MidiaFilter;
+import br.com.radio.dto.midia.TransmissaoFilter;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusAmbiente;
 import br.com.radio.exception.ResourceNotFoundException;
@@ -49,18 +52,21 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
 import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.Bloco;
+import br.com.radio.model.Categoria;
 import br.com.radio.model.Evento;
 import br.com.radio.model.EventoHorario;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
 import br.com.radio.model.Programacao;
+import br.com.radio.model.Transmissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.AmbienteConfiguracaoRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.BlocoRepository;
+import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.EventoHorarioRepository;
 import br.com.radio.repository.EventoRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
@@ -69,6 +75,8 @@ import br.com.radio.service.AmbienteService;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
 import br.com.radio.service.midia.MidiaService;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class AmbienteController extends AbstractController {
@@ -92,6 +100,8 @@ public class AmbienteController extends AbstractController {
 	private EventoRepository eventoRepo;
 	@Autowired
 	private EventoHorarioRepository eventoHorarioRepo;
+	@Autowired
+	private CategoriaRepository categoriaRepo;
 	// DAOs ==================
 	
 	
@@ -107,8 +117,10 @@ public class AmbienteController extends AbstractController {
 	@Autowired
 	private ProgramacaoMusicalService programacaoMusicalService;
 	// Services ==============
-
 	
+	
+	private final ObjectMapper objectMapper = new ObjectMapper();	
+
 	@Override
 	protected Logger getLogger()
 	{
@@ -328,6 +340,24 @@ public class AmbienteController extends AbstractController {
 			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "eventos" ) );	
 
 			return "ambiente/eventos";
+		}
+		else
+			return "HTTPerror/404";
+	}
+
+
+	@RequestMapping( value = "/ambientes/{idAmbiente}/relatorios/view", method = RequestMethod.GET )
+	public String relatorios( @PathVariable Long idAmbiente, ModelMap model, HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			model.addAttribute( "idAmbiente", ambiente.getIdAmbiente() );
+			model.addAttribute( "nome", ambiente.getNome() );
+			model.addAttribute( "func", funcionalidadeRepo.findByCodigo( "relatorios" ) );	
+		
+			return "ambiente/relatorios";
 		}
 		else
 			return "HTTPerror/404";
@@ -1237,19 +1267,23 @@ public class AmbienteController extends AbstractController {
 
 	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/programacoes/midias/block", "/api/ambientes/{idAmbiente}/programacoes/midias/block" }, 
 			method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<Midia> getMidiasBlock( @PathVariable Long idAmbiente, 
-																 @RequestParam( value = "idCategoria") Long idCategoria, 
+	public @ResponseBody RetornoMidiasBlockPorCategoria getMidiasBlock( @PathVariable Long idAmbiente, 
+																 @RequestParam( value = "codigoCategoria") String codigoCategoria, 
 																 HttpServletResponse response )
 	{
 		MidiaFilter filter = MidiaFilter.create()
 										.setIdAmbiente( idAmbiente )
-										.setIdCategoria( idCategoria );
+										.setCodigoCategoria( codigoCategoria );
 
 		List<Midia> midias = midiaService.findMidiasCategorias( filter );
+		
+		Categoria cat = categoriaRepo.findByCodigo( codigoCategoria );
 
 		JSONListWrapper<Midia> jsonList = new JSONListWrapper<Midia>( midias, midias.size() );
-		
-		return jsonList;
+
+		RetornoMidiasBlockPorCategoria result = new RetornoMidiasBlockPorCategoria( cat.getCodigo(), cat.getDescricao(), jsonList );
+
+		return result;
 	}
 
 
@@ -1271,8 +1305,7 @@ public class AmbienteController extends AbstractController {
 			if ( usuario == null )
 				throw new RuntimeException("Usuário não encontrado");
 			
-			programacaoMusicalService.saveProgramacaoMusicalTotal(ambiente, generoList);
-			programacaoMusicalService.geraTransmissao( ambiente );
+			programacaoMusicalService.inativarMidias( ambiente, midiaList );
 				
 			jsonResult = writeOkResponse();
 		}
@@ -1285,5 +1318,37 @@ public class AmbienteController extends AbstractController {
 		
 		return jsonResult;
 	}
+
+
+	@RequestMapping( value = { 	"/ambientes/{idAmbiente}/relatorios", "/api/ambientes/{idAmbiente}/relatorios" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Transmissao> getResultadoRelatorioAmbiente( 
+													 @PathVariable Long idAmbiente,
+													 @RequestParam(value="idCategoria", required = false) Long idCategoria,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
+													 @RequestParam (value="pageNumber", required = false) Integer pageNumber,
+													 @RequestParam(value="limit", required = false) Integer limit, 
+													 @RequestParam(value="offset", required = false) Integer offset, 
+													 HttpServletResponse response )
+	{
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+
+		TransmissaoFilter filter = TransmissaoFilter.create()
+												.setAmbiente( ambiente )
+												.setIdCategoria( idCategoria )
+												.setDataInicio( dataInicio )
+												.setDataFim( dataFim );
+		
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
+		
+		Page<Transmissao> transmissaoPage = programacaoMusicalService.filtraTransmissoes( pageable, filter ); 		
+		
+		JSONListWrapper<Transmissao> jsonList = new JSONListWrapper<Transmissao>( transmissaoPage.getContent() , transmissaoPage.getTotalElements() );
+
+		return jsonList;
+	}
+
+	
+	
 
 }
