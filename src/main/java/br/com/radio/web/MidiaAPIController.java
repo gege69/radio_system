@@ -440,11 +440,13 @@ public class MidiaAPIController extends AbstractController {
 		if ( ambiente == null )
 			throw new RuntimeException( "Ambiente não encontrado" );
 
+		UsuarioAmbienteDTO usuAmb = usuarioService.getUsuarioAmbienteByPrincipal( idAmbiente, principal );
 		
-		Transmissao transmissao = progMusicalService.getTransmissaoAoVivo( ambiente );
+		Transmissao transmissao = progMusicalService.getTransmissaoAoVivo( ambiente, usuAmb );
 
 		if ( transmissao == null )
 			throw new RuntimeException( "Não existe transmissão. Verifique se o expediente já terminou." );
+
 
 		HttpSession session = request.getSession();
 		session.setAttribute( TRANSMISSAO_ATUAL, transmissao.getIdTransmissao() );
@@ -485,7 +487,7 @@ public class MidiaAPIController extends AbstractController {
 		
 		if ( transmissao == null){
 			progMusicalService.geraTransmissao( ambiente );
-			transmissao = progMusicalService.getTransmissaoAoVivo( ambiente );
+			transmissao = progMusicalService.getTransmissaoAoVivo( ambiente, usuAmb );
 		}
 
 		if ( transmissao == null )

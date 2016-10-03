@@ -571,14 +571,16 @@ public class ProgramacaoMusicalService {
 	
 	
 	@Transactional
-	public Transmissao getTransmissaoAoVivo( Ambiente ambiente )
+	public Transmissao getTransmissaoAoVivo( Ambiente ambiente, UsuarioAmbienteDTO usuAmb )
 	{
 		Transmissao result = getTransmissaoAtual( ambiente ); 
 		
-		if ( result != null && result.getIdTransmissao() != null )
+		// Só vai incrementar para música seguinte se for um player legítimo... simulação não vai mudar. Vai pegar pela posição
+		if (  result != null && result.getIdTransmissao() != null && usuAmb.isPlayer() ){
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
 		
-		transmissaoRepo.setStatusTocando( ambiente, result.getIdTransmissao() );
+			transmissaoRepo.setStatus( ambiente, StatusPlayback.TOCANDO, result.getIdTransmissao() );
+		}
 
 		return result;
 	}
@@ -609,11 +611,12 @@ public class ProgramacaoMusicalService {
 			idTransmissao = result.getIdTransmissao();
 
 		// Só vai incrementar para música seguinte se for um player legítimo... simulação não vai mudar. Vai pegar pela posição
-		if ( idTransmissao != null && usuAmb.isPlayer() )
+		if ( idTransmissao != null && usuAmb.isPlayer() ){
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, idTransmissao );
 		
-		transmissaoRepo.setStatusIgnorada( ambiente, atual.getIdTransmissao() );
-		transmissaoRepo.setStatusTocando( ambiente, result.getIdTransmissao() );
+			transmissaoRepo.setStatus( ambiente, StatusPlayback.FIM, atual.getIdTransmissao() );
+			transmissaoRepo.setStatus( ambiente, StatusPlayback.TOCANDO, result.getIdTransmissao() );
+		}
 
 		//TODO: gerar nova midia incremental aqui
 		
@@ -1722,6 +1725,8 @@ public class ProgramacaoMusicalService {
 			crit.setFirstResult( pageable.getOffset() );
 		}
 		
+		crit.addOrder( Order.asc( "diaPlay" ) );
+		crit.addOrder( Order.asc( "programacao.idProgramacao" ) );
 		crit.addOrder( Order.asc( "posicaoplay" ) );
 
 		List<Transmissao> listTransmissoes = crit.list();

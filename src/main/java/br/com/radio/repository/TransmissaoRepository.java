@@ -51,12 +51,8 @@ public interface TransmissaoRepository extends JpaRepository<Transmissao, Long> 
 	int setLinkInativo( Ambiente ambiente );    // Desativando os links para gerar uma nova transmissão
 
 	@Modifying(clearAutomatically=true)
-	@Query("update Transmissao t set t.statusPlayback = 'TOCANDO' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao = ?2 ")
-	int setStatusTocando( Ambiente ambiente, Long idTransmissao );  
-
-	@Modifying(clearAutomatically=true)
-	@Query("update Transmissao t set t.statusPlayback = 'IGNORADA' where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao = ?2 ")
-	int setStatusIgnorada( Ambiente ambiente, Long idTransmissao );  
+	@Query("update Transmissao t set t.statusPlayback = ?1 where t.ambiente = ?1 and t.linkativo = true and t.idTransmissao = ?3 ")
+	int setStatus( Ambiente ambiente, StatusPlayback status, Long idTransmissao );  
 	
 	// Para encontrar a próxima musica
 //	Transmissao findByAmbienteAndLinkativoTrueAndPosicaoplay( Ambiente ambiente, Double posicaoplay );
