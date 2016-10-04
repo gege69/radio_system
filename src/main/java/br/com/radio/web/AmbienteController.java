@@ -2,6 +2,7 @@ package br.com.radio.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -1349,6 +1352,38 @@ public class AmbienteController extends AbstractController {
 	}
 
 	
-	
+	@RequestMapping(value = "/api/ambientes/{idAmbiente}/relatorios/csv", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<String> downloadCSVRelatorio( 
+													 @PathVariable Long idAmbiente,
+													 @RequestParam(value="idCategoria", required = false) Long idCategoria,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
+													 @RequestParam (value="pageNumber", required = false) Integer pageNumber,
+													 @RequestParam(value="limit", required = false) Integer limit, 
+													 @RequestParam(value="offset", required = false) Integer offset, 
+													 HttpServletResponse response ) {
+		
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente == null )
+			return ResponseEntity.badRequest().body( null );
+		
+		TransmissaoFilter filter = TransmissaoFilter.create()
+												.setAmbiente( ambiente )
+												.setIdCategoria( idCategoria )
+												.setDataInicio( dataInicio )
+												.setDataFim( dataFim );
+		
+		String result = programacaoMusicalService.getCSVRelatorioTransmissoes( filter ); 		
+
+		MediaType MEDIA_TYPE = new MediaType("text", "csv", Charset.forName("utf-8"));
+		
+		return ResponseEntity.ok()
+				.header( "Content-Disposition", "attachment; filename=\"relatorio_ambiente_"+ambiente.getLogin()+".csv\"" )
+				.contentLength( result.getBytes().length )
+				.contentType( MEDIA_TYPE )
+				.body( result );
+	}	
 
 }

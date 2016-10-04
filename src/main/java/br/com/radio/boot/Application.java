@@ -37,13 +37,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.threeten.extra.Interval;
 
 import br.com.radio.conversao.BitRateType;
 import br.com.radio.conversao.ConverterParameters;
-import br.com.radio.conversao.VariableBitRateOption;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.enumeration.DiaSemana;
@@ -94,7 +94,11 @@ public class Application {
 	{
 		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
-		
+
+	MediaType x = MediaType.parseMediaType( "text/csv" )	;
+	
+	System.out.println(x.toString());
+
 //		testeCobranca( ctx );
 		
 //		testaCriteriaListaMusica( ctx );
@@ -109,7 +113,7 @@ public class Application {
 		
 //		testeConverteMidia( ctx );
 		
-		testeComponentConverte( ctx );
+//		testeComponentConverte( ctx );
 
 		ctx.close();
 	}

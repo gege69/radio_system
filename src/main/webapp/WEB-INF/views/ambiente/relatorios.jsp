@@ -71,27 +71,36 @@
         
           <div class="spacer-vertical20"></div>
 
+          <div class="row" id="gridExtra">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="">
+                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >
+                  <i class="fa fa-arrow-left"></i>
+                  Voltar para ${nome}
+                </a>
+              </div>            
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="pull-right-not-xs">
+                <a class="btn btn-default" id="btnGeraCsv" href="#">
+                  <i class="material-icons md-18">description</i> Baixar em Excel</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="spacer-vertical20"></div>
+
           <div class="row">
             <div class="col-lg-12 col-md-12">
                 <table  
                  id="tableRelatorio"
                  data-side-pagination="server"
                  data-pagination="true"
-                 data-page-size=9
-                 data-page-list="[5]"
+                 data-page-size=10
+                 data-page-list="[10,25,50,100]"
                  data-locale = "pt_BR"
-                 data-height="500"
                  data-query-params="queryParamsRelatorio" >
                   <thead>
-                    <tr>
-                        <th data-field="idTransmissao">idTransmissao</th>
-                        <th data-field="categoria" data-formatter="categoriaFormatter">Categoria</th>
-                        <th data-field="dataPrevisaoPlay">Data/Hora prevista</th>
-                        <th data-field="dataFinishPlay">Data/Hora término</th>
-                        <th data-field="statusPlayback" data-formatter="statusFormatter">Status</th>
-                        <th data-field="midia.descricao">Descrição</th>
-                        <th data-field="midia.nome">Arquivo</th>
-                    </tr>
                   </thead>
                 </table>
             </div>

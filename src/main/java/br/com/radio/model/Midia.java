@@ -388,6 +388,7 @@ public class Midia implements Serializable {
 	{
 		super();
 		this.dataCriacao = new Date();
+		this.ativo = true;
 	}
 
 

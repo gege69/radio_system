@@ -1,5 +1,6 @@
 package br.com.radio.programacaomusical;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,12 +23,10 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -74,6 +73,7 @@ import br.com.radio.repository.TransmissaoRepository;
 import br.com.radio.service.AmbienteService;
 import br.com.radio.service.midia.MidiaService;
 import br.com.radio.util.UtilsDates;
+import br.com.radio.util.UtilsStr;
 
 import com.google.common.collect.Iterators;
 
@@ -579,7 +579,7 @@ public class ProgramacaoMusicalService {
 		if (  result != null && result.getIdTransmissao() != null && usuAmb.isPlayer() ){
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, result.getIdTransmissao() );
 		
-			transmissaoRepo.setStatus( ambiente, StatusPlayback.TOCANDO, result.getIdTransmissao() );
+			transmissaoRepo.setStatus( StatusPlayback.TOCANDO, result.getIdTransmissao() );
 		}
 
 		return result;
@@ -614,8 +614,8 @@ public class ProgramacaoMusicalService {
 		if ( idTransmissao != null && usuAmb.isPlayer() ){
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, idTransmissao );
 		
-			transmissaoRepo.setStatus( ambiente, StatusPlayback.FIM, atual.getIdTransmissao() );
-			transmissaoRepo.setStatus( ambiente, StatusPlayback.TOCANDO, result.getIdTransmissao() );
+			transmissaoRepo.setStatus( StatusPlayback.FIM, atual.getIdTransmissao() );
+			transmissaoRepo.setStatus( StatusPlayback.TOCANDO, result.getIdTransmissao() );
 		}
 
 		//TODO: gerar nova midia incremental aqui
@@ -1740,13 +1740,13 @@ public class ProgramacaoMusicalService {
 	
 	@SuppressWarnings( "unchecked" )
 	@Transactional
-	public List<Midia> findTransmissoes( TransmissaoFilter filter ){
+	public List<Transmissao> findTransmissoes( TransmissaoFilter filter ){
 		
 		Session session = entityManager.unwrap( Session.class );
 		
 		Criteria crit = createCriteriaTransmissoes( filter, session );
 		
-		List<Midia> result = crit.list();
+		List<Transmissao> result = crit.list();
 		
 		return result;
 	}
@@ -1761,12 +1761,10 @@ public class ProgramacaoMusicalService {
 		boolean isCodigoCategoria = ( filter.getCategoria() != null && filter.getCategoria().getIdCategoria() == null && StringUtils.isNotBlank( filter.getCategoria().getCodigo() ) );
 		
 		if ( isIdCategoria || isCodigoCategoria ){
-			crit.createAlias( "categorias", "c" );
-			
 			if ( isIdCategoria )
-				crit.add( Restrictions.eq( "c.idCategoria", filter.getCategoria().getIdCategoria() ) );
+				crit.add( Restrictions.eq( "categoria.idCategoria", filter.getCategoria().getIdCategoria() ) );
 			else if ( isCodigoCategoria )
-				crit.add( Restrictions.eq( "c.codigo", filter.getCategoria().getCodigo() ) );
+				crit.add( Restrictions.eq( "categoria.codigo", filter.getCategoria().getCodigo() ) );
 		}
 
 		if ( filter.getAmbiente() != null )
@@ -1780,6 +1778,40 @@ public class ProgramacaoMusicalService {
 			crit.add( Restrictions.in( "statusPlayback", Arrays.asList( StatusPlayback.TOCANDO, StatusPlayback.FIM ) ) );
 
 		return crit;
+	}
+	
+	
+	@Transactional
+	public String getCSVRelatorioTransmissoes( TransmissaoFilter filter ){
+
+		List<Transmissao> lista = findTransmissoes( filter );
+		
+		String nl = SystemUtils.LINE_SEPARATOR;
+		
+		StringBuilder result = new StringBuilder();
+
+		String pattern = "dd/MM/yyyy HH:mm";
+		
+		Date agora = new Date();
+		String dataFmt = new SimpleDateFormat( pattern ).format( agora );
+				
+		result.append( "Relatório do Ambiente : ").append(filter.getAmbiente().getNome()).append(nl);
+		result.append( "Gerado às ").append(dataFmt).append(nl).append(nl);
+		result.append( "Categoria;Data/Hora prevista;Data/Hora término;Status;Descrição;Arquivo;").append(nl);
+		
+		for (Transmissao t : lista ){
+			
+			result.append( t.getCategoria().getDescricao() ).append(";");
+			result.append( UtilsStr.notNull( UtilsDates.format( t.getDataPrevisaoPlay(), pattern ) ) ).append(";");
+			result.append( UtilsStr.notNull( UtilsDates.format( t.getDataFinishPlay(), pattern ) ) ).append(";");
+			result.append( t.getStatusPlayback().getDescricao() ).append(";");
+			result.append( UtilsStr.notNull( t.getMidia().getDescricao() ) ).append(";");
+			result.append( t.getMidia().getNome()).append(";");
+			
+			result.append( nl );
+		}
+		
+		return result.toString();
 	}
 	
 }

@@ -404,3 +404,29 @@ body {
     color: #777;  
     font-size : 75%;
 }
+
+
+.alert-custom-grey {
+  color: #757875;
+  background-color: #DDDDDD;
+  border-color: #b4b4b4;
+}
+.alert-custom-grey hr {
+  border-top-color: #CAD2C4;
+}
+.alert-custom-grey .alert-link {
+  color: #545454;
+}
+
+
+.alert-custom-purple {
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+.alert-custom-purple hr {
+  border-top-color: #c9e2b3;
+}
+.alert-custom-purple .alert-link {
+  color: #2b542c;
+}

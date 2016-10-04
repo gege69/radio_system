@@ -25,8 +25,10 @@ function categoriaFormatter(value, row, index){
         clazz = "divCategoria alert alert-danger";
     else if (codigo == "inst")
         clazz = "divCategoria alert alert-warning";
-    else if (codigo == "inst")
+    else if (codigo == "programete")
         clazz = "divCategoria alert alert-info";
+    else if (codigo == "vinheta")
+        clazz = "divCategoria alert alert-custom-grey";
         
     return '<span class="'+clazz+'">'+descricao+'</span>';
 }
@@ -79,6 +81,40 @@ function queryParamsRelatorio( params ){
 }
 
 
+var colunas = [
+//               {
+//                   field : "idTransmissao",
+//                   title : "id"
+//               },
+               {
+                   field : "categoria",
+                   title : "Categoria",
+                   formatter : "categoriaFormatter"
+               },
+               {
+                   field : "dataPrevisaoPlay",
+                   title : "Data/Hora prevista"
+               },
+               {
+                   field : "dataFinishPlay",
+                   title : "Data/Hora término",
+               },
+               {
+                   field : "statusPlayback",
+                   title : "Status",
+                   formatter : "statusFormatter"
+               },
+               {
+                   field : "midia.descricao",
+                   title : "Descrição"
+               },
+               {
+                   field : "midia.nome",
+                   title : "Arquivo"
+               }
+               
+               ];
+
 var buscar = function()
 {
     var datasOk = validaDatas();
@@ -90,8 +126,30 @@ var buscar = function()
         });
 
         $("#tableRelatorio").bootstrapTable("destroy").bootstrapTable({
-            url : url
+            url : url,
+            columns : colunas
         });
+    }
+}
+
+
+var csv = function()
+{
+    var datasOk = validaDatas();
+
+    if ( datasOk )
+    {
+        
+        var path = { idAmbiente : idAmbiente };
+        var search = {
+                idCategoria : $("#combocategoria").val(),
+                dataInicio : $("#dataInicio").val(),
+                dataFim : $("#dataFim").val()
+        };
+        
+        var url = buildUrl( "/api/ambientes/{idAmbiente}/relatorios/csv", path, search );
+        
+        window.open( url, '_blank' );
     }
 }
 
@@ -133,6 +191,11 @@ $(function(){
     $('#btnGerar').on('click', function(){
         buscar();
     });
+
+    $('#btnGeraCsv').on('click', function(){
+        csv();
+    });
+
     
     $('.input-group.date').datepicker({
         format: "dd/mm/yyyy",
@@ -160,5 +223,7 @@ $(function(){
     $('.campoForm').change(function(){
         $("#tableRelatorio").bootstrapTable("destroy");
     });
+
+
     
 });
