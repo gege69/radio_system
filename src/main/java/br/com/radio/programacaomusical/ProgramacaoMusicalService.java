@@ -615,7 +615,8 @@ public class ProgramacaoMusicalService {
 			transmissaoRepo.setLinkInativoAnteriores( ambiente, idTransmissao );
 		
 			transmissaoRepo.setStatus( StatusPlayback.FIM, atual.getIdTransmissao() );
-			transmissaoRepo.setStatus( StatusPlayback.TOCANDO, result.getIdTransmissao() );
+			if (result != null)
+				transmissaoRepo.setStatus( StatusPlayback.TOCANDO, result.getIdTransmissao() );
 		}
 
 		//TODO: gerar nova midia incremental aqui
