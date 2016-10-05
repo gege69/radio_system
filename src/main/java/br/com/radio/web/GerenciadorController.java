@@ -3,6 +3,7 @@ package br.com.radio.web;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +39,6 @@ import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.dto.cliente.ParametroDTO;
 import br.com.radio.enumeration.UsuarioTipo;
-import br.com.radio.json.JSONBootstrapGridWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
@@ -62,8 +62,6 @@ import br.com.radio.repository.PermissaoRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.UsuarioService;
-
-import com.google.common.collect.Lists;
 
 /**
  * Esse controller vai refletir o primeiro nível do sistema. A visão do Gerencial. 
@@ -443,7 +441,7 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping( value = { "/perfis", "/api/perfis" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('USUARIOS') OR hasAuthority('PERFIS')")
-	public @ResponseBody JSONBootstrapGridWrapper<Perfil> listPerfis()
+	public @ResponseBody JSONListWrapper<Perfil> listPerfis()
 	{
 		boolean admSistema = hasAuthority( "ADM_SISTEMA" );
 
@@ -456,7 +454,7 @@ public class GerenciadorController extends AbstractController {
 		
 		int total = perfilList.size();
 		
-		JSONBootstrapGridWrapper<Perfil> jsonList = new JSONBootstrapGridWrapper<Perfil>(perfilList, total);
+		JSONListWrapper<Perfil> jsonList = new JSONListWrapper<Perfil>(perfilList, total);
 
 		return jsonList;
 	}
@@ -464,7 +462,7 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping( value = { "/perfis/permissoes", "/api/perfis/permissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('PERFIS')")
-	public @ResponseBody JSONBootstrapGridWrapper<Permissao> listPermissoes(
+	public @ResponseBody JSONListWrapper<Permissao> listPermissoes(
 																	 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																	 @RequestParam(value="limit", required=false) Integer limit, 
 																	 Principal principal 
@@ -486,7 +484,7 @@ public class GerenciadorController extends AbstractController {
 		else 
 			permissaoPage = permissaoRepo.findByExclusivoFalse( pageable );
 
-		JSONBootstrapGridWrapper<Permissao> jsonList = new JSONBootstrapGridWrapper<Permissao>(permissaoPage.getContent(), permissaoPage.getTotalElements());
+		JSONListWrapper<Permissao> jsonList = new JSONListWrapper<Permissao>(permissaoPage.getContent(), permissaoPage.getTotalElements());
 
 		return jsonList;
 	}
@@ -504,7 +502,7 @@ public class GerenciadorController extends AbstractController {
 	
 	@RequestMapping( value = { "/perfis/{idPerfil}/permissoes", "/api/perfis/{idPerfil}/permissoes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('PERFIS')")
-	public @ResponseBody JSONBootstrapGridWrapper<PerfilPermissao> listPermissoes(
+	public @ResponseBody JSONListWrapper<PerfilPermissao> listPermissoes(
 																	 @PathVariable Long idPerfil,
 																	 Principal principal )
 	{
@@ -519,7 +517,7 @@ public class GerenciadorController extends AbstractController {
 
 		Page<PerfilPermissao> perfilPermissaoPage = perfilPermissaoRepo.findByPerfil( pageable, perfil );
 		
-		JSONBootstrapGridWrapper<PerfilPermissao> jsonList = new JSONBootstrapGridWrapper<PerfilPermissao>(perfilPermissaoPage.getContent(), perfilPermissaoPage.getTotalElements());
+		JSONListWrapper<PerfilPermissao> jsonList = new JSONListWrapper<PerfilPermissao>(perfilPermissaoPage.getContent(), perfilPermissaoPage.getTotalElements());
 
 		return jsonList;
 	}
@@ -613,13 +611,13 @@ public class GerenciadorController extends AbstractController {
 
 
 	@RequestMapping( value = { "/opcionais", "/api/opcionais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<AudioOpcional> listOpcionais()
+	public @ResponseBody JSONListWrapper<AudioOpcional> listOpcionais()
 	{
 		List<AudioOpcional> opcionalList = opcionalRepo.findAll();
 		
 		int total = opcionalList.size();
 		
-		JSONBootstrapGridWrapper<AudioOpcional> jsonList = new JSONBootstrapGridWrapper<AudioOpcional>(opcionalList, total);
+		JSONListWrapper<AudioOpcional> jsonList = new JSONListWrapper<AudioOpcional>(opcionalList, total);
 
 		return jsonList;
 	}
@@ -657,6 +655,30 @@ public class GerenciadorController extends AbstractController {
 	
 
 	
+	@RequestMapping(value="/monitoramento", method=RequestMethod.GET)
+	@PreAuthorize("hasAuthority('USUARIOS')")
+	public String monitoramento( ModelMap model, Principal principal )
+	{
+		return "gerenciador/monitoramento";
+	}
+
 	
+	@RequestMapping( value = { "/monitoramento", "/api/monitoramento" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<String> listOpcionais( 
+													 @PathVariable Long idAmbiente,
+													 @RequestParam(value="tipo", required = false) String tipo,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
+													 @RequestParam (value="pageNumber", required = false) Integer pageNumber,
+													 @RequestParam(value="limit", required = false) Integer limit, 
+													 @RequestParam(value="offset", required = false) Integer offset, 
+													 HttpServletResponse response )
+	{
+		List<AudioOpcional> opcionalList = opcionalRepo.findAll();
+		
+		JSONListWrapper<String> jsonList = null;//new JSONListWrapper<AudioOpcional>(opcionalList, total);
+
+		return jsonList;
+	}
 		
 }

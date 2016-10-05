@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import br.com.radio.dto.cliente.ClienteRelatorioDTO;
 import br.com.radio.dto.cliente.ClienteResumoFinanceiroDTO;
 import br.com.radio.enumeration.UsuarioTipo;
-import br.com.radio.json.JSONBootstrapGridWrapper;
+import br.com.radio.json.JSONListWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
@@ -185,7 +185,7 @@ public class ClienteController extends AbstractController {
 	
 	@RequestMapping( value = { "/clientes", "/api/clientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody JSONBootstrapGridWrapper<Cliente> listClientes( 
+	public @ResponseBody JSONListWrapper<Cliente> listClientes( 
 																 @RequestParam(value="search", required=false) String search, 
 																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
@@ -211,7 +211,7 @@ public class ClienteController extends AbstractController {
 			clientePage = clienteRepo.findByRazaosocialContainingIgnoreCaseOrNomefantasiaContainingIgnoreCaseOrCnpjContaining( pageable, razaosocial, nomefantasia, cnpj );
 		}
 		
-		JSONBootstrapGridWrapper<Cliente> jsonList = new JSONBootstrapGridWrapper<Cliente>( clientePage.getContent(), clientePage.getTotalElements() );
+		JSONListWrapper<Cliente> jsonList = new JSONListWrapper<Cliente>( clientePage.getContent(), clientePage.getTotalElements() );
 
 		return jsonList;
 	}
@@ -273,7 +273,7 @@ public class ClienteController extends AbstractController {
 	
 	@RequestMapping( value = { "/clientes/{idCliente}/condicoescomerciais", "/api/clientes/{idCliente}/condicoescomerciais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody JSONBootstrapGridWrapper<CondicaoComercial> listCondicoesComerciais( @PathVariable Long idCliente,
+	public @ResponseBody JSONListWrapper<CondicaoComercial> listCondicoesComerciais( @PathVariable Long idCliente,
 																@RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																@RequestParam(value="limit", required=false) Integer limit,
 																Principal principal )
@@ -294,7 +294,7 @@ public class ClienteController extends AbstractController {
 		
 		List<CondicaoComercial> list = ccPage.getContent();
 		
-		JSONBootstrapGridWrapper<CondicaoComercial> jsonList = new JSONBootstrapGridWrapper<CondicaoComercial>( list, ccPage.getTotalElements() );
+		JSONListWrapper<CondicaoComercial> jsonList = new JSONListWrapper<CondicaoComercial>( list, ccPage.getTotalElements() );
 
 		return jsonList;
 	}
@@ -381,7 +381,7 @@ public class ClienteController extends AbstractController {
 	
 	@RequestMapping( value = { "/clientes/{idCliente}/titulos", "/api/clientes/{idCliente}/titulos" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('DADOS_CLIENTE') or hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody JSONBootstrapGridWrapper<Titulo> listTitulos( 
+	public @ResponseBody JSONListWrapper<Titulo> listTitulos( 
 																 @PathVariable Long idCliente, 
 																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
@@ -398,7 +398,7 @@ public class ClienteController extends AbstractController {
 		
 		Page<Titulo> titulosPage = tituloRepo.findAll( pageable );
 		
-		JSONBootstrapGridWrapper<Titulo> jsonList = new JSONBootstrapGridWrapper<Titulo>( titulosPage.getContent(), titulosPage.getTotalElements() );
+		JSONListWrapper<Titulo> jsonList = new JSONListWrapper<Titulo>( titulosPage.getContent(), titulosPage.getTotalElements() );
 
 		return jsonList;
 	}
@@ -459,7 +459,7 @@ public class ClienteController extends AbstractController {
 	
 	@RequestMapping( value = { "/admin/clientes/searches/relatorio", "/api/clientes/searches/relatorio" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody JSONBootstrapGridWrapper<ClienteRelatorioDTO> relatorioClientes( 
+	public @ResponseBody JSONListWrapper<ClienteRelatorioDTO> relatorioClientes( 
 																 @RequestParam(value="search", required=false) String search, 
 																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
@@ -474,7 +474,7 @@ public class ClienteController extends AbstractController {
 		
 		Page<ClienteRelatorioDTO> clienteRelatorioPage = clienteService.getRelatorioCliente( pageable, search );
 		
-		JSONBootstrapGridWrapper<ClienteRelatorioDTO> jsonList = new JSONBootstrapGridWrapper<ClienteRelatorioDTO>( clienteRelatorioPage.getContent(), clienteRelatorioPage.getTotalElements() );
+		JSONListWrapper<ClienteRelatorioDTO> jsonList = new JSONListWrapper<ClienteRelatorioDTO>( clienteRelatorioPage.getContent(), clienteRelatorioPage.getTotalElements() );
 
 		return jsonList;
 	}
@@ -482,7 +482,7 @@ public class ClienteController extends AbstractController {
 
 
 	@RequestMapping( value = { "/clientes/{idCliente}/tipotaxas", "/api/clientes/{idCliente}/tipotaxas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<TipoTaxa> listTipoTaxas( 
+	public @ResponseBody JSONListWrapper<TipoTaxa> listTipoTaxas( 
 															     @PathVariable Long idCliente, 
 																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
@@ -499,7 +499,7 @@ public class ClienteController extends AbstractController {
 
 			Page<TipoTaxa> tipotaxaPage = tipoTaxaRepo.findAll( pageable );
 			
-			JSONBootstrapGridWrapper<TipoTaxa> jsonList = new JSONBootstrapGridWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
+			JSONListWrapper<TipoTaxa> jsonList = new JSONListWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
 
 			return jsonList;
 		}
@@ -511,7 +511,7 @@ public class ClienteController extends AbstractController {
 
 	@RequestMapping( value = { "/admin/clientes/{idCliente}/ambientes", "/api/clientes/{idCliente}/ambientes" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	@PreAuthorize("hasAuthority('ADMINISTRAR_AMB')")
-	public @ResponseBody JSONBootstrapGridWrapper<Ambiente> listAmbienteByCliente( 
+	public @ResponseBody JSONListWrapper<Ambiente> listAmbienteByCliente( 
 																 @PathVariable Long idCliente,
 																 @RequestParam(value="search", required=false) String search, 
 																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
@@ -525,7 +525,7 @@ public class ClienteController extends AbstractController {
 		if ( ambientePage == null )
 			return null;
 		
-		JSONBootstrapGridWrapper<Ambiente> jsonList = new JSONBootstrapGridWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
+		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientePage.getContent(), ambientePage.getTotalElements() );
 
 		return jsonList;
 	}

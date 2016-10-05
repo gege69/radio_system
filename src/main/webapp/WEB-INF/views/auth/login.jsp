@@ -46,7 +46,7 @@
 
               <div class="spacer-vertical20"></div>
 
-              <a class="linkcadastro" href="${context}/register">Clique aqui para se cadastrar</a>
+<%--               <a class="linkcadastro" href="${context}/register">Clique aqui para se cadastrar</a> --%>
               
             </form>
           </div>

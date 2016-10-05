@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.com.radio.enumeration.UsuarioTipo;
-import br.com.radio.json.JSONBootstrapGridWrapper;
+import br.com.radio.json.JSONListWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Conversa;
 import br.com.radio.model.Mensagem;
@@ -77,7 +77,7 @@ public class MensagemController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/conversas", "/api/conversas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Conversa> getConversas(  
+	public @ResponseBody JSONListWrapper<Conversa> getConversas(  
 																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
 																 Principal principal )
@@ -91,7 +91,7 @@ public class MensagemController extends AbstractController {
 		
 		Page<Conversa> conversaPage = conversaService.getListaConversasPorUsuario( usuario, pageable );
 		
-		JSONBootstrapGridWrapper<Conversa> jsonList = new JSONBootstrapGridWrapper<Conversa>( conversaPage.getContent(), conversaPage.getTotalElements() );
+		JSONListWrapper<Conversa> jsonList = new JSONListWrapper<Conversa>( conversaPage.getContent(), conversaPage.getTotalElements() );
 
 		return jsonList;
 	}
@@ -169,7 +169,7 @@ public class MensagemController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/conversas/{idConversa}/mensagens", "/api/conversas/{idConversa}/mensagens" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Mensagem> getMensagens( @PathVariable Long idConversa, Principal principal )
+	public @ResponseBody JSONListWrapper<Mensagem> getMensagens( @PathVariable Long idConversa, Principal principal )
 	{
 		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
@@ -190,7 +190,7 @@ public class MensagemController extends AbstractController {
 		
 		mensagens.stream().forEach( m -> m.buildView( usuario ) );
 		
-		JSONBootstrapGridWrapper<Mensagem> jsonList = new JSONBootstrapGridWrapper<Mensagem>(mensagens, mensagens.size() );
+		JSONListWrapper<Mensagem> jsonList = new JSONListWrapper<Mensagem>(mensagens, mensagens.size() );
 
 		return jsonList;
 	}

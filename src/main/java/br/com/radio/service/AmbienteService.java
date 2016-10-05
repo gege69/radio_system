@@ -177,7 +177,7 @@ public class AmbienteService {
 			
 			String mensagemErro = "O login informado não está disponível por favor insira outro." ;
 
-			Usuario usuario = usuarioService.findLogin( login );
+			Usuario usuario = usuarioService.findByLogin( login );
 				
 			// Update
 			if ( ambiente.getIdAmbiente() != null ){

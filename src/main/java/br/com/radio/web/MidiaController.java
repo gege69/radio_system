@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.midia.MidiaFilter;
-import br.com.radio.json.JSONBootstrapGridWrapper;
+import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Midia;
@@ -169,7 +169,7 @@ public class MidiaController extends AbstractController {
 							   "/api/ambientes/{idAmbiente}/midias-por-categoria/{idCategoria}/" }, 
 					 method = RequestMethod.GET, 
 					 produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
+	public @ResponseBody JSONListWrapper<Midia> listMidiaByCategoria(
 																	@PathVariable Long idAmbiente, 
 																	@PathVariable Long idCategoria,
 																	@RequestParam(value="search", required=false) String search, 
@@ -187,7 +187,7 @@ public class MidiaController extends AbstractController {
 		
 		List<Midia> midias = page.getContent();
 		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midias, page.getTotalElements() );
+		JSONListWrapper<Midia> jsonList = new JSONListWrapper<>( midias, page.getTotalElements() );
 
 		return jsonList;
 	}
@@ -201,7 +201,7 @@ public class MidiaController extends AbstractController {
 	   						   "/api/ambientes/{idAmbiente}/midias-por-categoria" }, 
 	   			     method = RequestMethod.GET, 
 	   			     produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoriaString(
+	public @ResponseBody JSONListWrapper<Midia> listMidiaByCategoriaString(
 												@PathVariable Long idAmbiente, 
 												@RequestParam("codigo") String codigo,
 											    @RequestParam(value="search", required=false) String search, 
@@ -217,7 +217,7 @@ public class MidiaController extends AbstractController {
 
 		Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
 
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
+		JSONListWrapper<Midia> jsonList = new JSONListWrapper<>( page.getContent(), page.getTotalElements() );
 
 		return jsonList;
 	}
@@ -229,7 +229,7 @@ public class MidiaController extends AbstractController {
 	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias/searches/", "/api/ambientes/{idAmbiente}/midias/searches/" }, 
 					 method = RequestMethod.GET, 
 					 produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaSearches(
+	public @ResponseBody JSONListWrapper<Midia> listMidiaSearches(
 																	@PathVariable Long idAmbiente,
 																	@RequestParam(value="categorias[]", required=false) Long[] categorias,
 																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
@@ -238,7 +238,7 @@ public class MidiaController extends AbstractController {
 	{
 		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
 		
-		JSONBootstrapGridWrapper<Midia> jsonList = null;
+		JSONListWrapper<Midia> jsonList = null;
 		
 		if ( ambiente != null )
 		{
@@ -253,7 +253,7 @@ public class MidiaController extends AbstractController {
 
 			Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
 
-			jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
+			jsonList = new JSONListWrapper<>( page.getContent(), page.getTotalElements() );
 		}
 		
 		return jsonList;
@@ -275,7 +275,7 @@ public class MidiaController extends AbstractController {
 							   "/api/ambientes/{idAmbiente}/midias/{codigo}/validade" }, 
 					 method = RequestMethod.GET, 
 					 produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Midia> listChamadaInstValidade( @PathVariable Long idAmbiente, @PathVariable String codigo )
+	public @ResponseBody JSONListWrapper<Midia> listChamadaInstValidade( @PathVariable Long idAmbiente, @PathVariable String codigo )
 	{
 		Pageable pageable = getPageable( 0, 1000, "asc", "descricao" ); 
 
@@ -286,7 +286,7 @@ public class MidiaController extends AbstractController {
 		
 		Page<Midia> page = midiaService.filtraMidiasCategorias( pageable, filter );
 
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( page.getContent(), page.getTotalElements() );
+		JSONListWrapper<Midia> jsonList = new JSONListWrapper<>( page.getContent(), page.getTotalElements() );
 
 		return jsonList;
 	}

@@ -1,19 +1,6 @@
 
 var idAmbiente = $('#idAmbiente').val();
 
-function rowStyle(row, index) {
-//    data-row-style="rowStyle"
-    var codigo = row.categoria.codigo;
-
-    if (codigo === "comercial"){
-        return {
-          css: {"color": "blue", "font-size": "50px"}
-        };
-    }
-    else
-        return {};
-}
-
 
 function categoriaFormatter(value, row, index){
     

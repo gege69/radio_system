@@ -387,7 +387,7 @@ public class UsuarioService {
 	}
 	
 
-	public Usuario findLogin( String login )
+	public Usuario findByLogin( String login )
 	{
 		Usuario usuario = usuarioRepo.findByLogin( login );
 		return usuario;

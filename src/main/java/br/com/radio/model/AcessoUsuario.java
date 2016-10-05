@@ -38,6 +38,9 @@ public class AcessoUsuario implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_acesso", nullable = false )
 	private Long idAcesso;
+	
+	@Column( name = "session_id", nullable = false, columnDefinition = "TEXT")
+	private String sessionId;
 
 	@OneToOne
 	@JoinColumn( name="id_usuario" )
@@ -56,6 +59,12 @@ public class AcessoUsuario implements Serializable {
 	@Column( name = "datacriacao", nullable = false )
 	private Date dataCriacao;
 		
+	@JsonDeserialize(using=JSONDateDeserializer.class)
+	@JsonSerialize(using=JSONDateTimeSerializer.class)
+	@Temporal( TemporalType.TIMESTAMP )
+	@Column( name = "datalogout", nullable = true )
+	private Date dataLogout;
+
 	public AcessoUsuario()
 	{
 		super();
@@ -142,9 +151,27 @@ public class AcessoUsuario implements Serializable {
 	@Override
 	public String toString()
 	{
-		return String.format( "AcessoUsuario [idAcesso=%s, usuario=%s]", idAcesso, usuario );
+		return String.format( "AcessoUsuario [idAcesso=%s, sessionId=%s, usuario=%s, enderecoIp=%s, dados=%s, dataCriacao=%s]", idAcesso, sessionId, usuario, enderecoIp, dados, dataCriacao );
 	}
 
-	
+	public String getSessionId()
+	{
+		return sessionId;
+	}
+
+	public void setSessionId( String sessionId )
+	{
+		this.sessionId = sessionId;
+	}
+
+	public Date getDataLogout()
+	{
+		return dataLogout;
+	}
+
+	public void setDataLogout( Date dataLogout )
+	{
+		this.dataLogout = dataLogout;
+	}
 	
 }

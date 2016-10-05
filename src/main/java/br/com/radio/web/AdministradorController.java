@@ -39,7 +39,7 @@ import br.com.radio.conversao.VariableBitRateOption;
 import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.dto.midia.UpdateGenerosMusicasVO;
-import br.com.radio.json.JSONBootstrapGridWrapper;
+import br.com.radio.json.JSONListWrapper;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
@@ -609,7 +609,7 @@ public class AdministradorController extends AbstractController {
 
 
 	@RequestMapping( value = { "/admin/tipotaxas", "/api/admin/tipotaxas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<TipoTaxa> listTipoTaxas( 
+	public @ResponseBody JSONListWrapper<TipoTaxa> listTipoTaxas( 
 																 @RequestParam(value="search", required=false) String search, 
 																 @RequestParam(value="pageNumber", required=false) Integer pageNumber, 
 																 @RequestParam(value="limit", required=false) Integer limit,
@@ -629,7 +629,7 @@ public class AdministradorController extends AbstractController {
 		else
 			tipotaxaPage = tipoTaxaRepo.findByAtivoTrueAndDescricaoContainingIgnoreCase( pageable,  "%" + search + "%" );
 		
-		JSONBootstrapGridWrapper<TipoTaxa> jsonList = new JSONBootstrapGridWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
+		JSONListWrapper<TipoTaxa> jsonList = new JSONListWrapper<TipoTaxa>( tipotaxaPage.getContent(), tipotaxaPage.getTotalElements() );
 
 		return jsonList;
 	}
@@ -675,7 +675,7 @@ public class AdministradorController extends AbstractController {
 	
 	
 	@RequestMapping( value = { "/admin/midias/musicas", "/api/admin/midias/musicas" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMusicas(
+	public @ResponseBody JSONListWrapper<Midia> listMusicas(
 																	@RequestParam(value="search", required = false) String search,  
 																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
 																	@RequestParam(value="limit", required = false) Integer limit,
@@ -701,7 +701,7 @@ public class AdministradorController extends AbstractController {
 			midia.getMidiaView().put( "conversao", mapFilaConversao.get(midia) );
 		});
 		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midiasList, page.getTotalElements() );
+		JSONListWrapper<Midia> jsonList = new JSONListWrapper<>( midiasList, page.getTotalElements() );
 
 		return jsonList;
 	}
@@ -763,7 +763,7 @@ public class AdministradorController extends AbstractController {
 
 	
 	@RequestMapping( value = { "/admin/midias", "/api/admin/midias" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaByCategoria(
+	public @ResponseBody JSONListWrapper<Midia> listMidiaByCategoria(
 																	@RequestParam(value="search", required = false) String search,  
 																	@RequestParam(value="codigo", required = false) String codigo,  
 																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
@@ -807,7 +807,7 @@ public class AdministradorController extends AbstractController {
 			midia.getMidiaView().put( "generosResumo", generos );
 		});
 		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midiasList, page.getTotalElements() );
+		JSONListWrapper<Midia> jsonList = new JSONListWrapper<>( midiasList, page.getTotalElements() );
 
 		return jsonList;
 	}
@@ -817,7 +817,7 @@ public class AdministradorController extends AbstractController {
 
 	
 	@RequestMapping( value = { "/admin/midias/opcionais", "/api/admin/midias/opcionais" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONBootstrapGridWrapper<Midia> listMidiaOpcional(
+	public @ResponseBody JSONListWrapper<Midia> listMidiaOpcional(
 //																	@RequestParam(value="search", required = false) String search,  
 																	@RequestParam(value="idOpcional", required = false) Long idOpcional,  
 																	@RequestParam(value="pageNumber", required = false) Integer pageNumber,  
@@ -844,7 +844,7 @@ public class AdministradorController extends AbstractController {
 				midia.getMidiaView().put( "opcional", opcional.getNome() );
 		}
 		
-		JSONBootstrapGridWrapper<Midia> jsonList = new JSONBootstrapGridWrapper<>( midiasList, page.getTotalElements() );
+		JSONListWrapper<Midia> jsonList = new JSONListWrapper<>( midiasList, page.getTotalElements() );
 
 		return jsonList;
 	}

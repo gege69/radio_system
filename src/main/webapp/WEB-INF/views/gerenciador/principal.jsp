@@ -59,7 +59,7 @@
                     </a>
                   </div>
                   <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
-                    <a class="btn btn-default btn-block btn-md botao-main disabled" data-toggle="modal" href="${context}/fazer">
+                    <a class="btn btn-default btn-block btn-md botao-main" href="${context}/monitoramento">
                       <i class="fa fa-3x icone-main fa-eye"></i>
                       <span class="label-botao-main">Monitoramento</span>
                     </a>
