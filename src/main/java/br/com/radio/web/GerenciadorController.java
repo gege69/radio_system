@@ -656,11 +656,7 @@ public class GerenciadorController extends AbstractController {
 	}
 	
 
-
-	@RequestMapping(value="/fsm", method=RequestMethod.GET)
-	public String fsm( ModelMap model )
-	{
-		return "teste/fsm";
-	}
+	
+	
 		
 }

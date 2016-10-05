@@ -1805,8 +1805,21 @@ public class ProgramacaoMusicalService {
 			result.append( UtilsStr.notNull( UtilsDates.format( t.getDataPrevisaoPlay(), pattern ) ) ).append(";");
 			result.append( UtilsStr.notNull( UtilsDates.format( t.getDataFinishPlay(), pattern ) ) ).append(";");
 			result.append( t.getStatusPlayback().getDescricao() ).append(";");
-			result.append( UtilsStr.notNull( t.getMidia().getDescricao() ) ).append(";");
-			result.append( t.getMidia().getNome()).append(";");
+			
+			if ( t.getMidia() != null ) {
+				if ( t.getMidia().getDescricao() != null ) 
+					result.append( UtilsStr.notNull( t.getMidia().getDescricao() ) ).append(";");
+				else
+					result.append(";");
+				
+				if ( t.getMidia().getNome() != null )
+					result.append( t.getMidia().getNome()).append(";");
+				else
+					result.append(";");
+			}
+			else
+				result.append(";").append( ";" );
+				
 			
 			result.append( nl );
 		}
