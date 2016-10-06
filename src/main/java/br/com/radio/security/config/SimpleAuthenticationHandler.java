@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.UsuarioRepository;
+import br.com.radio.service.UsuarioService;
 
 @Component
 public class SimpleAuthenticationHandler implements AuthenticationSuccessHandler {
@@ -30,6 +31,9 @@ public class SimpleAuthenticationHandler implements AuthenticationSuccessHandler
 	
 	@Autowired
 	private UsuarioRepository usuarioRepo;
+
+	@Autowired
+	private UsuarioService usuarioService;
 	
 	@Override
 	public void onAuthenticationSuccess( HttpServletRequest request, HttpServletResponse response, Authentication authentication ) throws IOException, ServletException
@@ -40,6 +44,10 @@ public class SimpleAuthenticationHandler implements AuthenticationSuccessHandler
 	}
 
 	protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+		
+		// Gravando o acesso dele...
+		usuarioService.registraAcessoUsuario( authentication, request );
+
 		String targetUrl = determineTargetUrl(authentication);
  
         if (response.isCommitted()) {
@@ -64,7 +72,6 @@ public class SimpleAuthenticationHandler implements AuthenticationSuccessHandler
         	isUser = usuario.getUsuarioTipo().equals( UsuarioTipo.GERENCIADOR );
         	isPlayer = usuario.getUsuarioTipo().equals( UsuarioTipo.PLAYER );
         }
-        
         
         // redirect está enviando como se fosse o usuario antigo... mas no chrome incognito funciona
         

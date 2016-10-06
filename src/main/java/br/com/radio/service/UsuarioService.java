@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -15,13 +17,17 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import br.com.radio.dto.AlterarSenhaAdminDTO;
 import br.com.radio.dto.AlterarSenhaDTO;
@@ -31,6 +37,7 @@ import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.exception.EmailExistsException;
+import br.com.radio.model.AcessoUsuario;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 import br.com.radio.model.Perfil;
@@ -39,6 +46,7 @@ import br.com.radio.model.Permissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.UsuarioPerfil;
 import br.com.radio.model.UsuarioPermissao;
+import br.com.radio.repository.AcessoUsuarioRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.ClienteRepository;
 import br.com.radio.repository.PerfilPermissaoRepository;
@@ -84,6 +92,9 @@ public class UsuarioService {
 	
 	@Autowired
 	private UsuarioPermissaoRepository usuarioPermissaoRepo;
+	
+	@Autowired
+	private AcessoUsuarioRepository acessoUsuarioRepo;
 	
 	@Autowired
 	private EntityManager entityManager;
@@ -397,6 +408,10 @@ public class UsuarioService {
 	public Usuario getUsuarioMaisRelevantePorCliente( Cliente cliente ){
 		return null;
 	}
+	
+	public List<Usuario> findAll(){
+		return usuarioRepo.findAll();
+	}
 
 	
 	@Transactional
@@ -558,6 +573,55 @@ public class UsuarioService {
 		List<Perfil> perfis = usuario.getPerfis();
 
 		return ( perfis != null && CollectionUtils.containsAny( perfis, Perfil.DONOS ) );
+	}
+	
+	
+	public boolean registraAcessoUsuario(Authentication auth, HttpServletRequest request){
+		
+        String ipAddr = request.getRemoteAddr();
+
+        HttpSession session = request.getSession();
+        
+        String sessionId = session.getId();
+
+        boolean isAnonymous = auth instanceof AnonymousAuthenticationToken;
+        
+        if ( auth != null && auth.isAuthenticated() && !isAnonymous){
+
+        	String username = auth.getName();
+
+			ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
+			
+			AcessoUsuarioRepository acessoRepo = ctx.getBean( AcessoUsuarioRepository.class );
+			UsuarioService usuarioService = ctx.getBean( UsuarioService.class );
+			
+			Usuario usuario = usuarioService.findByLogin( username );
+
+			AcessoUsuario acesso = new AcessoUsuario();
+			
+			acesso.setDataCriacao( new Date() );
+			acesso.setSessionId( sessionId );
+			acesso.setEnderecoIp( ipAddr );
+			acesso.setUsuario( usuario );
+			
+			acessoRepo.save( acesso );
+			
+			System.out.println(acesso);
+			
+			return true;
+        }
+        else
+        	return false;
+	}
+	
+
+	@Transactional
+	public void finalizaAcessosSemLogout(){
+		List<Long> idsUsuarios = acessoUsuarioRepo.findIdUsuariosSemLogout();
+		
+		for (Long id : idsUsuarios){
+			acessoUsuarioRepo.updateAcessosSemLogout( id );
+		}
 	}
 	
 }

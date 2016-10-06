@@ -14,6 +14,7 @@ import br.com.radio.programacaomusical.ProgramacaoMusicalService;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.service.ClienteService;
 import br.com.radio.service.EventoService;
+import br.com.radio.service.UsuarioService;
 
 @Component
 public class TarefasAgendadas {
@@ -30,6 +31,9 @@ public class TarefasAgendadas {
     
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private UsuarioService usuarioService;
     
     @Autowired
     private AmbienteRepository ambienteRepo;
@@ -78,5 +82,20 @@ public class TarefasAgendadas {
 		logger.info( "Fim task de criação de cobranças..." );
 	}
 	
+
+	/**
+	 *  Se por algum problema o SessionListener não reportar que uma sessão morreu... esse método vai garantir que os registros da tabela AcessoUsuario pelo menos ganhem um desfecho
+	 *  
+	 *  Ele vai buscar por registros perdidos de acesso que não tem dataLogout... entretanto vai ignorar sempre o último de cada usuário (pode ser que esteja logado)
+	 */
+	@Scheduled(cron="0 */30 * * * *")  // a cada 30 minutos
+	public void marcarSessoesAcessosEncerrados(){
+
+		logger.info( "Rodando task de finalização de Acesso sem Logout..." );
+
+		usuarioService.finalizaAcessosSemLogout();
+
+		logger.info( "Fim task de finalização de Acesso sem Logout..." );
+	}
 	
 }

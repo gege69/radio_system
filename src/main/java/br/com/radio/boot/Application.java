@@ -37,7 +37,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.threeten.extra.Interval;
@@ -60,6 +59,7 @@ import br.com.radio.model.Titulo;
 import br.com.radio.model.Usuario;
 import br.com.radio.model.fixture.FixtureAmbiente;
 import br.com.radio.programacaomusical.ProgramacaoMusicalService;
+import br.com.radio.repository.AcessoUsuarioRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
@@ -95,9 +95,7 @@ public class Application {
 		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 
-	MediaType x = MediaType.parseMediaType( "text/csv" )	;
-	
-	System.out.println(x.toString());
+		testeAcessoUsuario( ctx );
 
 //		testeCobranca( ctx );
 		
@@ -116,6 +114,15 @@ public class Application {
 //		testeComponentConverte( ctx );
 
 		ctx.close();
+	}
+	
+	private static void testeAcessoUsuario( ApplicationContext ctx ){
+		
+		AcessoUsuarioRepository aRepo = ctx.getBean( AcessoUsuarioRepository.class );
+		
+		List<Long> ids = aRepo.findIdUsuariosSemLogout();
+		
+		ids.forEach( i -> System.out.println(i) );
 	}
 	
 	public static Scanner s = null;

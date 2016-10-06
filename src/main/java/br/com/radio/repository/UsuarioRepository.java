@@ -32,4 +32,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	// Para poder ignorar o próprio usuário
 	Page<Usuario> findByClienteAndIdUsuarioNot( Pageable pageable, Cliente cliente, Long idUsuario );
 	
+	
+	
+	
 }
