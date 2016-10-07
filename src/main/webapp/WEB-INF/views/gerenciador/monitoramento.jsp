@@ -39,8 +39,8 @@
               <label class="control-label" for="tipo">Seleção de Ambientes:</label>
               <select class="form-control" id="tipo" name="tipo" >
                 <option value="ALL" selected>Todos ambientes</option>
-                <option value="TOCANDO" selected>Apenas os que estiverem tocando</option>
-                <option value="OFF" selected>Apenas os desligados</option>
+                <option value="ON" selected>Apenas ambientes ONLINE</option>
+                <option value="OFF" selected>Apenas ambientes OFFLINE</option>
               </select>
             </div>
             

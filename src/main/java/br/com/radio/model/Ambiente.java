@@ -174,7 +174,7 @@ public class Ambiente implements Serializable {
 	
 	// REST
 	@Transient
-	private Map<String,String> ambienteAPI = new HashMap<String,String>();
+	private Map<String,Object> ambienteView = new HashMap<String,Object>();
 	
 	
 
@@ -470,15 +470,15 @@ public class Ambiente implements Serializable {
 	}
 
 	@JsonAnyGetter
-	public Map<String, String> getAmbienteAPI()
+	public Map<String, Object> getAmbienteView()
 	{
-		return ambienteAPI;
+		return ambienteView;
 	}
 
 	@JsonAnySetter
-	public void setAmbienteAPI( Map<String, String> ambienteAPI )
+	public void setAmbienteView( Map<String, Object> ambienteView )
 	{
-		this.ambienteAPI = ambienteAPI;
+		this.ambienteView = ambienteView;
 	}
 
 	public Integer getHoraIniExpediente()

@@ -35,6 +35,7 @@ import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.RegistroDTO;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
+import br.com.radio.enumeration.TipoMonitoramento;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.exception.EmailExistsException;
 import br.com.radio.model.AcessoUsuario;
@@ -624,4 +625,37 @@ public class UsuarioService {
 		}
 	}
 	
+	
+	@Transactional
+	public List<Ambiente> findAmbientesMonitoramento(TipoMonitoramento tipo, Date dataInicio, Date dataFim){
+		
+		List<Ambiente> result = new ArrayList<Ambiente>();
+		
+		Session session = entityManager.unwrap( Session.class );
+
+		Criteria crit = session.createCriteria( AcessoUsuario.class );
+
+		Disjunction disjunction = Restrictions.disjunction();
+
+		if ( dataInicio != null || dataInicio != null ){
+			
+			if ( dataInicio != null )
+				crit.add( Restrictions.ge( "dataCriacao", dataInicio ) );
+			
+			if ( dataFim != null )
+				crit.add( Restrictions.le( "dataCriacao", dataFim ) );
+		}
+		
+		if ( TipoMonitoramento.ONLINE.equals( tipo ) ){
+			crit.add( Restrictions.isNull( "dataLogout" ) );
+		}
+		else if (TipoMonitoramento.OFFLINE.equals( tipo ))
+		
+
+		crit.add( disjunction );
+
+		
+		
+		return result;
+	}
 }

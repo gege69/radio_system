@@ -38,8 +38,11 @@ import br.com.radio.dto.EndPointDTO;
 import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
 import br.com.radio.dto.cliente.ParametroDTO;
+import br.com.radio.dto.midia.TransmissaoFilter;
+import br.com.radio.enumeration.TipoMonitoramento;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONListWrapper;
+import br.com.radio.model.Ambiente;
 import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
@@ -49,6 +52,7 @@ import br.com.radio.model.Parametro;
 import br.com.radio.model.Perfil;
 import br.com.radio.model.PerfilPermissao;
 import br.com.radio.model.Permissao;
+import br.com.radio.model.Transmissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
@@ -663,22 +667,28 @@ public class GerenciadorController extends AbstractController {
 	}
 
 	
-	@RequestMapping( value = { "/monitoramento", "/api/monitoramento" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	public @ResponseBody JSONListWrapper<String> listOpcionais( 
-													 @PathVariable Long idAmbiente,
-													 @RequestParam(value="tipo", required = false) String tipo,
+		
+
+	@RequestMapping( value = { 	"/monitoramento", "/api/monitoramento" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody JSONListWrapper<Ambiente> getResultadoRelatorioAmbiente( 
+													 @RequestParam TipoMonitoramento tipo,
 													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
 													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
-													 @RequestParam (value="pageNumber", required = false) Integer pageNumber,
+													 @RequestParam(value="pageNumber", required = false) Integer pageNumber,
 													 @RequestParam(value="limit", required = false) Integer limit, 
 													 @RequestParam(value="offset", required = false) Integer offset, 
 													 HttpServletResponse response )
 	{
-		List<AudioOpcional> opcionalList = opcionalRepo.findAll();
+
+		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
 		
-		JSONListWrapper<String> jsonList = null;//new JSONListWrapper<AudioOpcional>(opcionalList, total);
+		Page<Transmissao> transmissaoPage = programacaoMusicalService.filtraTransmissoes( pageable, filter ); 		
+		
+		JSONListWrapper<Transmissao> jsonList = new JSONListWrapper<Transmissao>( transmissaoPage.getContent() , transmissaoPage.getTotalElements() );
 
 		return jsonList;
 	}
-		
+
+
+
 }

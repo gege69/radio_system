@@ -20,6 +20,25 @@ var validaDatas = function(){
 }
 
 
+function statusFormatter(value, row, index){
+    
+    var descricao = value.descricao;
+    var codigo = value.codigo;
+
+    var clazz = "";
+    if (codigo == "comercial")
+        clazz = "divCategoria alert alert-danger";
+    else if (codigo == "inst")
+        clazz = "divCategoria alert alert-warning";
+    else if (codigo == "programete")
+        clazz = "divCategoria alert alert-info";
+    else if (codigo == "vinheta")
+        clazz = "divCategoria alert alert-custom-grey";
+        
+    return '<span class="'+clazz+'">'+descricao+'</span>';
+}
+
+
 function queryParamsMonitoramento( params ){
     
     params.pageNumber = $("#tableMonitoramento").bootstrapTable('getOptions').pageNumber;
@@ -34,37 +53,41 @@ function queryParamsMonitoramento( params ){
 
 var colunas = [
 //               {
-//                   field : "idTransmissao",
+//                   field : "idAmbiente",
 //                   title : "id"
 //               },
                {
-                   field : "categoria",
-                   title : "Categoria",
-                   formatter : "categoriaFormatter"
+                   field : "nome",
+                   title : "Ambiente"
                },
                {
-                   field : "dataPrevisaoPlay",
-                   title : "Data/Hora prevista"
+                   field : "login",
+                   title : "Login"
                },
                {
-                   field : "dataFinishPlay",
-                   title : "Data/Hora término",
+                   field : "telefone1",
+                   title : "Telefone"
                },
                {
-                   field : "statusPlayback",
+                   field : "idAmbiente",
                    title : "Status",
                    formatter : "statusFormatter"
-               },
-               {
-                   field : "midia.descricao",
-                   title : "Descrição"
-               },
-               {
-                   field : "midia.nome",
-                   title : "Arquivo"
                }
                
                ];
+
+
+function expandTable(index, row, $detail){
+    
+    var $el = $detail.html('<table></table>').find('table');
+    
+    $el.bootstrapTable({
+        data : row.
+    });
+    
+    
+}
+
 
 var buscar = function()
 {
@@ -76,7 +99,10 @@ var buscar = function()
 
         $("#tableMonitoramento").bootstrapTable("destroy").bootstrapTable({
             url : url,
-            columns : colunas
+            columns : colunas,
+            onExpandRow: function (index, row, $detail) {
+                expandTable(index, row, $detail);
+            }
         });
     }
 }
