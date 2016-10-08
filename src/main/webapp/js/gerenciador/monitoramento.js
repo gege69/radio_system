@@ -22,20 +22,14 @@ var validaDatas = function(){
 
 function statusFormatter(value, row, index){
     
-    var descricao = value.descricao;
-    var codigo = value.codigo;
-
-    var clazz = "";
-    if (codigo == "comercial")
-        clazz = "divCategoria alert alert-danger";
-    else if (codigo == "inst")
-        clazz = "divCategoria alert alert-warning";
-    else if (codigo == "programete")
-        clazz = "divCategoria alert alert-info";
-    else if (codigo == "vinheta")
-        clazz = "divCategoria alert alert-custom-grey";
+    var result = "";
+    
+    if (value == true)
+        result = '<span class="divAlerta alert alert-danger">OFFLINE</span>';
+    else if (value == false)
+        result = '<span class="divAlerta alert alert-success">ONLINE</span>';
         
-    return '<span class="'+clazz+'">'+descricao+'</span>';
+    return result;
 }
 
 
@@ -43,7 +37,7 @@ function queryParamsMonitoramento( params ){
     
     params.pageNumber = $("#tableMonitoramento").bootstrapTable('getOptions').pageNumber;
     
-    params.idCategoria = $("#tipo").val();
+    params.tipo = $("#tipo").val();
     params.dataInicio = $("#dataInicio").val();
     params.dataFim = $("#dataFim").val();
     
@@ -52,10 +46,6 @@ function queryParamsMonitoramento( params ){
 
 
 var colunas = [
-//               {
-//                   field : "idAmbiente",
-//                   title : "id"
-//               },
                {
                    field : "nome",
                    title : "Ambiente"
@@ -69,22 +59,33 @@ var colunas = [
                    title : "Telefone"
                },
                {
-                   field : "idAmbiente",
+                   field : "offline",
                    title : "Status",
                    formatter : "statusFormatter"
                }
                
                ];
 
+var colunasDetalhe = [
+               {
+                   field : "dataCriacao",
+                   title : "Data Login"
+               },
+               {
+                   field : "dataLogout",
+                   title : "Data Logout"
+               }
+               ];
+
 
 function expandTable(index, row, $detail){
     
-    var $el = $detail.html('<table></table>').find('table');
+    var $el = $detail.html('<div class="col-lg-6 col-md-6"></div><div class="col-lg-6 col-md-6"><div class="pull-right"><table></table></div></div>').find('table');
     
     $el.bootstrapTable({
-        data : row.
+        data : row.detalhesMonitoramento,
+        columns : colunasDetalhe
     });
-    
     
 }
 
@@ -95,7 +96,7 @@ var buscar = function()
 
     if ( datasOk )
     {
-        var url = buildUrl( "/ambientes/monitoramento" );
+        var url = buildUrl( "/monitoramento" );
 
         $("#tableMonitoramento").bootstrapTable("destroy").bootstrapTable({
             url : url,

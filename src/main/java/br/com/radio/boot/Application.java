@@ -47,6 +47,7 @@ import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.enumeration.DiaSemana;
 import br.com.radio.enumeration.StatusAmbiente;
+import br.com.radio.enumeration.TipoMonitoramento;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
@@ -70,6 +71,7 @@ import br.com.radio.repository.ProgramacaoGeneroRepository;
 import br.com.radio.repository.ProgramacaoRepository;
 import br.com.radio.repository.UsuarioRepository;
 import br.com.radio.service.AmbienteService;
+import br.com.radio.service.UsuarioService;
 import br.com.radio.service.midia.ConverterMidiaComponent;
 import br.com.radio.service.midia.MidiaService;
 import br.com.radio.util.UtilsDates;
@@ -83,11 +85,11 @@ import de.jollyday.HolidayManager;
 
 
 
-//@SpringBootApplication
-//@ComponentScan( basePackages = { "br.com.radio.*" } )
-//@ActiveProfiles({"default"})
-//@EnableConfigurationProperties
-//@EnableTransactionManagement
+@SpringBootApplication
+@ComponentScan( basePackages = { "br.com.radio.*" } )
+@ActiveProfiles({"default"})
+@EnableConfigurationProperties
+@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)
@@ -95,7 +97,9 @@ public class Application {
 		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, aaaa);
 		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
 
-		testeAcessoUsuario( ctx );
+		testeMonitoramentoSelect( ctx );
+
+//		testeAcessoUsuario( ctx );
 
 //		testeCobranca( ctx );
 		
@@ -115,6 +119,31 @@ public class Application {
 
 		ctx.close();
 	}
+
+	
+	private static void testeMonitoramentoSelect( ApplicationContext ctx ){
+		
+		AcessoUsuarioRepository aRepo = ctx.getBean( AcessoUsuarioRepository.class );
+		UsuarioService usuService = ctx.getBean( UsuarioService.class );
+		
+		List<Ambiente> ambientes = aRepo.findAmbientesPorAcessoSemLogout();
+		
+		ambientes.forEach( a -> System.out.println(a) );
+		
+		System.out.println("XXXXX");
+
+		List<Ambiente> ambientesOff = aRepo.findAmbientesPorAcessoComLogout();
+
+		ambientesOff.forEach( a -> System.out.println(a) );
+		
+		Date inicio = UtilsDates.toDate( "01/10/2016" );
+		Date fim = UtilsDates.toDate( "08/10/2016" ); 
+		
+		List<Ambiente> ambientesResultado = usuService.findAmbientesMonitoramento( TipoMonitoramento.ONLINE, inicio, fim );
+		
+		ambientesResultado.forEach( ar -> System.out.println(ar) );
+	}
+
 	
 	private static void testeAcessoUsuario( ApplicationContext ctx ){
 		

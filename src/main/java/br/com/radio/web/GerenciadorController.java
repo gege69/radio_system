@@ -679,12 +679,12 @@ public class GerenciadorController extends AbstractController {
 													 @RequestParam(value="offset", required = false) Integer offset, 
 													 HttpServletResponse response )
 	{
-
-		Pageable pageable = getPageable( pageNumber, limit, "asc", "nome" );
 		
-		Page<Transmissao> transmissaoPage = programacaoMusicalService.filtraTransmissoes( pageable, filter ); 		
+		List<Ambiente> ambientes = usuarioService.findAmbientesMonitoramento( tipo, dataInicio, dataFim );
 		
-		JSONListWrapper<Transmissao> jsonList = new JSONListWrapper<Transmissao>( transmissaoPage.getContent() , transmissaoPage.getTotalElements() );
+		System.out.println(ambientes);
+		
+		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientes, ambientes.size());
 
 		return jsonList;
 	}

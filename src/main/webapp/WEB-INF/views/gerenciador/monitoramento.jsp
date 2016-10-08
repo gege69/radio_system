@@ -39,8 +39,8 @@
               <label class="control-label" for="tipo">Seleção de Ambientes:</label>
               <select class="form-control" id="tipo" name="tipo" >
                 <option value="ALL" selected>Todos ambientes</option>
-                <option value="ON" selected>Apenas ambientes ONLINE</option>
-                <option value="OFF" selected>Apenas ambientes OFFLINE</option>
+                <option value="ONLINE" selected>Apenas ambientes ONLINE</option>
+                <option value="OFFLINE" selected>Apenas ambientes OFFLINE</option>
               </select>
             </div>
             
@@ -101,6 +101,7 @@
                  data-page-size=10
                  data-page-list="[10,25,50,100]"
                  data-locale = "pt_BR"
+                 data-detail-view = "true"
                  data-query-params="queryParamsMonitoramento" >
                   <thead>
                   </thead>
@@ -141,12 +142,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/locales/bootstrap-datepicker.pt-BR.min.js"></script>
 
-<script src="${context}/js/ambiente/monitoramento.js"  charset="UTF-8"></script>
+<script src="${context}/js/gerenciador/monitoramento.js"  charset="UTF-8"></script>
 
 
 <style type="text/css">
 
-.divCategoria {
+.divAlerta {
   min-height: 22px;
   line-height: 22px;
   display: block;

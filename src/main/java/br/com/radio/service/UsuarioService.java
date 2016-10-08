@@ -4,7 +4,10 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
@@ -56,6 +60,7 @@ import br.com.radio.repository.PermissaoRepository;
 import br.com.radio.repository.UsuarioPerfilRepository;
 import br.com.radio.repository.UsuarioPermissaoRepository;
 import br.com.radio.repository.UsuarioRepository;
+import br.com.radio.util.UtilsDates;
 import br.com.radio.util.UtilsStr;
 
 import com.nulabinc.zxcvbn.Strength;
@@ -626,36 +631,75 @@ public class UsuarioService {
 	}
 	
 	
+	@SuppressWarnings( "unchecked" )
 	@Transactional
 	public List<Ambiente> findAmbientesMonitoramento(TipoMonitoramento tipo, Date dataInicio, Date dataFim){
 		
 		List<Ambiente> result = new ArrayList<Ambiente>();
 		
 		Session session = entityManager.unwrap( Session.class );
+		
+		List<Ambiente> ambientes = null;
 
+		if ( tipo.equals( TipoMonitoramento.ONLINE ) )
+			ambientes = acessoUsuarioRepo.findAmbientesPorAcessoSemLogout(); 
+		else if ( tipo.equals( TipoMonitoramento.OFFLINE ))
+			ambientes = acessoUsuarioRepo.findAmbientesPorAcessoComLogout(); 
+		
 		Criteria crit = session.createCriteria( AcessoUsuario.class );
-
-		Disjunction disjunction = Restrictions.disjunction();
 
 		if ( dataInicio != null || dataInicio != null ){
 			
 			if ( dataInicio != null )
-				crit.add( Restrictions.ge( "dataCriacao", dataInicio ) );
+				crit.add( Restrictions.ge( "dataCriacao", UtilsDates.asUtilMidnightDate( dataInicio ) ) );
 			
 			if ( dataFim != null )
-				crit.add( Restrictions.le( "dataCriacao", dataFim ) );
+				crit.add( Restrictions.le( "dataCriacao", UtilsDates.asUtilLastSecondDate( dataFim ) ) );
+		}
+
+		crit.setFetchMode("usuario", FetchMode.JOIN);
+		crit.createAlias( "usuario", "u" );
+		crit.add( Restrictions.eq( "u.usuarioTipo", UsuarioTipo.PLAYER ) );
+		
+		if ( !tipo.equals( TipoMonitoramento.ALL ) )
+			crit.add( Restrictions.in( "u.ambiente", ambientes ) );
+		
+		List<AcessoUsuario> acessos = crit.list();
+		
+		Map<Ambiente, List<AcessoUsuario>> mapaResultado = new HashMap<>();
+		
+		for (AcessoUsuario acesso : acessos){
+
+			Ambiente amb = acesso.getUsuario().getAmbiente();
+			
+			amb.getIdAmbiente();  // tentativa de forçar o JPA Lazy
+
+			List<AcessoUsuario> subList = mapaResultado.getOrDefault( amb, new ArrayList<AcessoUsuario>() );
+			
+			subList.add( acesso );
+			
+			if ( acesso.getDataLogout() == null )
+				amb.getAmbienteView().put( "offline", false );
+			
+			mapaResultado.put( amb, subList );
 		}
 		
-		if ( TipoMonitoramento.ONLINE.equals( tipo ) ){
-			crit.add( Restrictions.isNull( "dataLogout" ) );
-		}
-		else if (TipoMonitoramento.OFFLINE.equals( tipo ))
-		
+		mapaResultado.forEach( ( a, list ) -> {
+			a.getAmbienteView().put( "detalhesMonitoramento", list );
+			
+			if ( !a.getAmbienteView().containsKey( "offline" ) )
+				a.getAmbienteView().put( "offline", true );
 
-		crit.add( disjunction );
-
-		
+			result.add( a );
+		});
 		
 		return result;
 	}
+
+	@Transactional
+	public void updateTodosAcessosAbertos(){
+		acessoUsuarioRepo.updateTodosAcessosAbertos();
+	}
+
+
 }
