@@ -1,5 +1,6 @@
 package br.com.radio.web;
 
+import java.io.File;
 import java.security.Principal;
 import java.util.List;
 
@@ -8,8 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -109,6 +113,24 @@ public class MidiaController extends AbstractController {
 			model.addAttribute( "nome", ambiente.getNome() );
 			model.addAttribute( "func", funcionalidadeRepo.findByCodigo("chamada_func") );	
 			
+			Categoria categoria_nome = categoriaRepo.findByCodigo( "chamada_func_nome" );
+			
+			if ( categoria_nome != null )
+			{
+				model.addAttribute( "idCategoria_nome",  categoria_nome.getIdCategoria() );
+				model.addAttribute( "nomeCategoria_nome",  categoria_nome.getNome() );
+				model.addAttribute( "codigo_nome",  categoria_nome.getCodigo() );
+			}
+			
+			Categoria categoria_frase = categoriaRepo.findByCodigo( "chamada_func_frase" );
+			
+			if ( categoria_frase != null )
+			{
+				model.addAttribute( "idCategoria_frase",  categoria_frase.getIdCategoria() );
+				model.addAttribute( "nomeCategoria_frase",  categoria_frase.getNome() );
+				model.addAttribute( "codigo_frase",  categoria_frase.getCodigo() );
+			}
+
 			return "ambiente/chamada-funcionarios";
 		}
 		else
@@ -297,10 +319,9 @@ public class MidiaController extends AbstractController {
 
 	
 
-	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias/{codigo}/nome", 
-							   "/api/ambientes/{idAmbiente}/midias/{codigo}/nome" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
-	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
-	public @ResponseBody String saveNomeMidia( @RequestBody Midia midiaVO, BindingResult result, Principal principal, HttpServletRequest request )
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias/nome", 
+							   "/api/ambientes/{idAmbiente}/midias/nome" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	public @ResponseBody String saveNomeMidia( @PathVariable Long idAmbiente, @RequestBody Midia midiaVO, BindingResult result, Principal principal, HttpServletRequest request )
 	{
 		String jsonResult = null;
 	
@@ -323,5 +344,29 @@ public class MidiaController extends AbstractController {
 
 		return jsonResult;
 	}
+
+
+	@RequestMapping(value = { "/ambientes/{idAmbiente}/midias/{idMidia}", "/api/admin/midias/{idMidia}" }, method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<FileSystemResource> downloadMidia(@PathVariable Long idAmbiente, @PathVariable Long idMidia, Principal principal) {
+		
+		Midia midia = midiaRepo.findOne( idMidia );
+		
+		if ( midia == null )
+			return ResponseEntity.unprocessableEntity().body( null );
+		
+		File arquivo = new File( midia.getFilepath() );
+		
+		FileSystemResource fsr = new FileSystemResource( arquivo );
+
+		String name = Integer.valueOf( midia.getNome().hashCode() ).toString();
+		
+		return ResponseEntity.ok()
+				.header( "Content-Disposition", "attachment; filename=\""+ name +"\"" )
+				.contentLength( midia.getFilesize() )
+				.contentType( MediaType.parseMediaType( midia.getMimetype() ) )
+				.body( fsr );
+	}
+
+
 
 }

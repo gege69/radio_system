@@ -85,11 +85,11 @@ import de.jollyday.HolidayManager;
 
 
 
-@SpringBootApplication
-@ComponentScan( basePackages = { "br.com.radio.*" } )
-@ActiveProfiles({"default"})
-@EnableConfigurationProperties
-@EnableTransactionManagement
+//@SpringBootApplication
+//@ComponentScan( basePackages = { "br.com.radio.*" } )
+//@ActiveProfiles({"default"})
+//@EnableConfigurationProperties
+//@EnableTransactionManagement
 public class Application {
 				
 	public static void main(String[] aaaa)

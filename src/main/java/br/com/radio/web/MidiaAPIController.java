@@ -241,6 +241,66 @@ public class MidiaAPIController extends AbstractController {
 
 
 
+
+
+
+	/**
+	 * 
+	 * Método criado especialmente para o upload de Chamada de Funcionários pois as Datas não são obrigatórias e o @DateTimeFormat estava dando problema com null
+	 * 
+	 */
+	@RequestMapping(value="/api/ambientes/{idAmbiente}/upload-midia-chamada-funcionario", method=RequestMethod.POST)
+    public ResponseEntity<String> uploadMultiCategoriasChamadaFuncionario(
+    		@PathVariable Long idAmbiente,
+    		@RequestParam("file") MultipartFile file,
+    		@RequestParam(value="descricao", required = false) String descricao,
+    		@RequestParam("categoria") String codigoCategoria,
+    		Principal principal, 
+    		Model model,
+    		HttpServletRequest request)
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException("Usuário não encontrado ou Cliente não encontrada." );
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			if ( file != null && !file.isEmpty() )
+			{
+				try
+				{
+					midiaService.saveUpload( file, codigoCategoria, usuario.getCliente(), ambiente, descricao);
+					
+					jsonResult = writeOkResponse();
+				}
+				catch ( Exception e )
+				{
+					imprimeLogErroAmbiente( ambiente, request, e );
+
+					jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+					return respondeErro500( jsonResult );
+				}
+			}
+			else
+			{
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", "Arquivo está vazio" );
+				return respondeErro500( jsonResult );
+			}
+		}
+
+		return respondeOk200( jsonResult );
+    }
+
+
+
+
+
+
 	
 	@RequestMapping(value= { "/api/upload-musica", 
 							 "/admin/upload-musica" }, method=RequestMethod.POST)

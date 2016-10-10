@@ -76,10 +76,6 @@
           <div class="row" id="gridExtra">
             <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="">
-                <a class="btn btn-default" href="${context}/ambientes/${idAmbiente}/view" >
-                  <i class="fa fa-arrow-left"></i>
-                  Voltar para ${nome}
-                </a>
               </div>            
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6">

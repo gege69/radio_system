@@ -25,13 +25,24 @@ function statusFormatter(value, row, index){
     var result = "";
     
     if (value == false)
-        result = '<span class="divAlerta alert alert-danger">OFFLINE</span>';
+        result = '<div class="divAlerta alert alert-danger">OFFLINE</div>';
     else if (value == true)
-        result = '<span class="divAlerta alert alert-success">ONLINE</span>';
+        result = '<div class="divAlerta alert alert-success">ONLINE</div>';
         
     return result;
 }
 
+
+function nomeFormatter(value, row, index) {
+
+    var texto = value;
+    if ( row.ativo == false )
+        texto = texto + " (inativo)";
+    
+    var url = buildUrl( "/ambientes/{idAmbiente}/view", { idAmbiente : row.idAmbiente } );
+    
+    return '<a class="" href="'+url+'">' + texto + '</a>';
+}
 
 function queryParamsMonitoramento( params ){
     
@@ -48,7 +59,8 @@ function queryParamsMonitoramento( params ){
 var colunas = [
                {
                    field : "nome",
-                   title : "Ambiente"
+                   title : "Ambiente",
+                   formatter : "nomeFormatter"
                },
                {
                    field : "login",
