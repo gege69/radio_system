@@ -35,7 +35,7 @@ public class UtilsDates {
 	public static String format(Date date, String pattern){
 		
 		if ( date == null )
-			return null;
+			return "";
 		
 		if ( StringUtils.isBlank(pattern) )
 			pattern = "dd/MM/yyyy";
@@ -48,7 +48,7 @@ public class UtilsDates {
 			value = sdf.format(date);
 		}
 		catch( Exception ex ){
-			value = null;
+			value = "";
 		}
 		
 		return value;

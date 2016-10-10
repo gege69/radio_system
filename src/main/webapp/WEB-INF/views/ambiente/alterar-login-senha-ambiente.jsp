@@ -29,12 +29,13 @@
               <form class="form-horizontal" id="alterar-senha-form" action="#">
               
                 <input type="hidden" name="idAmbiente" id="idAmbiente" value="${idAmbiente}" />
+                <input type="hidden" name="login" id="login" value="${login}" />
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
                 <div class="form-group">
                   <label for="login" class="control-label col-sm-2 col-md-4">Login:</label>
                   <div class="col-sm-3 col-md-5">
-                    <input type="text" class="form-control" id="login" name="login" placeholder="Login" style="text-transform: lowercase;" value="${login}">
+                    <input type="text" class="form-control" placeholder="Login" style="text-transform: lowercase;" disabled="disabled" value="${login}">
                   </div>
                 </div>
                 

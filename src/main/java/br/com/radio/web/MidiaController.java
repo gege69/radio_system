@@ -10,10 +10,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -293,4 +296,32 @@ public class MidiaController extends AbstractController {
 
 
 	
+
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/midias/{codigo}/nome", 
+							   "/api/ambientes/{idAmbiente}/midias/{codigo}/nome" }, method = { RequestMethod.POST }, consumes = "application/json", produces = APPLICATION_JSON_CHARSET_UTF_8 )
+	@PreAuthorize("hasAuthority('ADM_SISTEMA')")
+	public @ResponseBody String saveNomeMidia( @RequestBody Midia midiaVO, BindingResult result, Principal principal, HttpServletRequest request )
+	{
+		String jsonResult = null;
+	
+		try
+		{
+			Usuario usuario = usuarioService.getUserByPrincipal( principal );
+			
+			if ( usuario == null || usuario.getCliente().getIdCliente() == null )
+				throw new RuntimeException("Usuário não encontrado");
+			
+			midiaService.alteraNomeMidia( midiaVO );
+			
+			jsonResult = writeOkResponse();
+		}
+		catch ( Exception e )
+		{
+			imprimeLogErro( "Salvar nome Mídia", request, e );
+			jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+		}
+
+		return jsonResult;
+	}
+
 }

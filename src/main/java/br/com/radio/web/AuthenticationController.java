@@ -53,6 +53,19 @@ public class AuthenticationController extends AbstractController {
 		return "auth/login";
 	}
 	
+
+	@RequestMapping(value="/loginplayer", method=RequestMethod.GET)
+	public String loginPlayer( HttpServletRequest request, ModelMap model )
+	{
+		CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        if (csrfToken != null) {
+            model.addAttribute("csrfParameterName", csrfToken.getParameterName());
+            model.addAttribute("csrfToken", csrfToken.getToken());
+        }
+	        
+		return "auth/loginplayer";
+	}
+
 	@RequestMapping(value="/403", method=RequestMethod.GET)
 	public String acessoNegado( HttpServletRequest request, ModelMap model )
 	{

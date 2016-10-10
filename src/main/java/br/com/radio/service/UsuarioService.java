@@ -1,23 +1,26 @@
 package br.com.radio.service;
 
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +112,6 @@ public class UsuarioService {
 	private final int FORCA_MIN_PLAYER = 0;
 	private final int FORCA_MIN_GERENCIADOR = 0;
 	private final int FORCA_MIN_ADM = 3;
-		
 
 
 	
@@ -612,8 +614,6 @@ public class UsuarioService {
 			
 			acessoRepo.save( acesso );
 			
-			System.out.println(acesso);
-			
 			return true;
         }
         else
@@ -633,18 +633,11 @@ public class UsuarioService {
 	
 	@SuppressWarnings( "unchecked" )
 	@Transactional
-	public List<Ambiente> findAmbientesMonitoramento(TipoMonitoramento tipo, Date dataInicio, Date dataFim){
+	public List<Ambiente> findAmbientesMonitoramento(Cliente cliente, TipoMonitoramento tipo, Date dataInicio, Date dataFim){
 		
 		List<Ambiente> result = new ArrayList<Ambiente>();
 		
 		Session session = entityManager.unwrap( Session.class );
-		
-		List<Ambiente> ambientes = null;
-
-		if ( tipo.equals( TipoMonitoramento.ONLINE ) )
-			ambientes = acessoUsuarioRepo.findAmbientesPorAcessoSemLogout(); 
-		else if ( tipo.equals( TipoMonitoramento.OFFLINE ))
-			ambientes = acessoUsuarioRepo.findAmbientesPorAcessoComLogout(); 
 		
 		Criteria crit = session.createCriteria( AcessoUsuario.class );
 
@@ -660,45 +653,121 @@ public class UsuarioService {
 		crit.setFetchMode("usuario", FetchMode.JOIN);
 		crit.createAlias( "usuario", "u" );
 		crit.add( Restrictions.eq( "u.usuarioTipo", UsuarioTipo.PLAYER ) );
+
+		crit.createAlias( "u.ambiente", "amb" );
+		crit.add( Restrictions.eq( "amb.cliente", cliente ) );
 		
-		if ( !tipo.equals( TipoMonitoramento.ALL ) )
-			crit.add( Restrictions.in( "u.ambiente", ambientes ) );
+		crit.addOrder( Order.asc( "usuario" ) );
+		crit.addOrder( Order.asc( "dataCriacao" ) );
 		
 		List<AcessoUsuario> acessos = crit.list();
 		
 		Map<Ambiente, List<AcessoUsuario>> mapaResultado = new HashMap<>();
-		
-		for (AcessoUsuario acesso : acessos){
 
+		for (AcessoUsuario acesso : acessos){
+			
 			Ambiente amb = acesso.getUsuario().getAmbiente();
 			
-			amb.getIdAmbiente();  // tentativa de forçar o JPA Lazy
-
 			List<AcessoUsuario> subList = mapaResultado.getOrDefault( amb, new ArrayList<AcessoUsuario>() );
 			
 			subList.add( acesso );
-			
-			if ( acesso.getDataLogout() == null )
-				amb.getAmbienteView().put( "offline", false );
-			
+
 			mapaResultado.put( amb, subList );
 		}
-		
+	
 		mapaResultado.forEach( ( a, list ) -> {
-			a.getAmbienteView().put( "detalhesMonitoramento", list );
-			
-			if ( !a.getAmbienteView().containsKey( "offline" ) )
-				a.getAmbienteView().put( "offline", true );
 
-			result.add( a );
+			boolean isOnline = list.stream().anyMatch( acesso -> acesso.getDataLogout() == null );
+			
+			boolean apenasOnline = tipo.equals( TipoMonitoramento.ONLINE );
+			boolean apenasOffLine = tipo.equals( TipoMonitoramento.OFFLINE );
+			boolean todos = tipo.equals( TipoMonitoramento.ALL );
+
+			boolean incluir = todos || ( isOnline && apenasOnline ) || ( !isOnline && apenasOffLine );
+
+			if ( incluir ){
+				a.getAmbienteView().put( "detalhesMonitoramento", list );
+				a.getAmbienteView().put( "statusMonitoramento", isOnline );
+
+				result.add( a );
+			}
+
 		});
-		
+
 		return result;
 	}
 
 	@Transactional
 	public void updateTodosAcessosAbertos(){
 		acessoUsuarioRepo.updateTodosAcessosAbertos();
+	}
+
+
+	@Transactional
+	public String getCSVRelatorioMonitoramento(Cliente cliente, TipoMonitoramento tipo, Date dataInicio, Date dataFim){
+		
+		List<Ambiente> ambientes = this.findAmbientesMonitoramento( cliente, tipo, dataInicio, dataFim );
+		
+		String nl = SystemUtils.LINE_SEPARATOR;
+		
+		StringBuilder result = new StringBuilder();
+
+		String pattern = "dd/MM/yyyy HH:mm";
+		
+		Date agora = new Date();
+		String dataFmt = new SimpleDateFormat( pattern ).format( agora );
+				
+		result.append( "Relatório de Monitoramento").append(nl);
+		
+		
+		if ( TipoMonitoramento.ALL.equals( tipo ))
+			result.append( "Todos os Ambientes").append(nl);
+		else if (TipoMonitoramento.ONLINE.equals(tipo))
+			result.append( "Apenas ambientes ONLINE" ).append(nl);
+		else if (TipoMonitoramento.OFFLINE.equals(tipo))
+			result.append( "Apenas ambientes OFFLINE" ).append(nl);
+		
+		result.append( "Data Início : " ).append( UtilsDates.format(dataInicio, pattern) ).append(nl);
+		result.append( "Data Fim : " ).append( UtilsDates.format(dataFim, pattern) ).append(nl);
+
+		result.append( "Gerado às ").append(dataFmt).append(nl).append(nl);
+
+		result.append( "Nome Ambiente;Login;Telefone 1;Telefone 2;Status;").append(nl);
+		
+		for (Ambiente amb : ambientes ){
+			
+			result.append( amb.getNome() ).append(";");
+			result.append( amb.getLogin() ).append(";");
+			result.append( UtilsStr.notNull( amb.getTelefone1() ) ).append(";");
+			result.append( UtilsStr.notNull( amb.getTelefone2() ) ).append(";");
+
+			boolean statusMonitoramento = (Boolean) amb.getAmbienteView().get( "statusMonitoramento" );
+
+			if ( statusMonitoramento )
+				result.append( "ONLINE" ).append(";");
+			else
+				result.append( "OFFLINE" ).append(";");
+			
+			result.append( nl );
+			
+			List<AcessoUsuario> acessos = (List<AcessoUsuario>) amb.getAmbienteView().get( "detalhesMonitoramento" );
+		
+			if ( acessos != null && acessos.size() > 0 ){
+				
+				result.append( nl );
+				result.append(";;;;;Data Login;Data Logout;").append(nl);
+				
+				for ( AcessoUsuario acesso : acessos ){
+					
+					result.append( UtilsStr.notNull( UtilsDates.format( acesso.getDataCriacao(), pattern ) )).append(";");
+					result.append( UtilsStr.notNull( UtilsDates.format( acesso.getDataLogout(), pattern ) )).append(";");
+					
+					result.append( nl ).append( nl );
+				}
+			}
+		}
+		
+		return result.toString();
 	}
 
 

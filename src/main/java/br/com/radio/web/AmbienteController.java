@@ -1357,9 +1357,6 @@ public class AmbienteController extends AbstractController {
 													 @RequestParam(value="idCategoria", required = false) Long idCategoria,
 													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
 													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
-													 @RequestParam (value="pageNumber", required = false) Integer pageNumber,
-													 @RequestParam(value="limit", required = false) Integer limit, 
-													 @RequestParam(value="offset", required = false) Integer offset, 
 													 HttpServletResponse response ) {
 		
 		

@@ -1,6 +1,7 @@
 package br.com.radio.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -33,6 +34,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class AcessoUsuario implements Serializable {
 	
 	private static final long serialVersionUID = 454354660695909060L;
+
+    public static final Comparator<AcessoUsuario> ORDER_BY_DATA_LOGIN = ( left, right ) -> left.getDataCriacao().compareTo( right.getDataCriacao() );
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

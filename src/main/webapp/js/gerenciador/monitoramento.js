@@ -24,9 +24,9 @@ function statusFormatter(value, row, index){
     
     var result = "";
     
-    if (value == true)
+    if (value == false)
         result = '<span class="divAlerta alert alert-danger">OFFLINE</span>';
-    else if (value == false)
+    else if (value == true)
         result = '<span class="divAlerta alert alert-success">ONLINE</span>';
         
     return result;
@@ -59,7 +59,7 @@ var colunas = [
                    title : "Telefone"
                },
                {
-                   field : "offline",
+                   field : "statusMonitoramento",
                    title : "Status",
                    formatter : "statusFormatter"
                }
@@ -80,7 +80,7 @@ var colunasDetalhe = [
 
 function expandTable(index, row, $detail){
     
-    var $el = $detail.html('<div class="col-lg-6 col-md-6"></div><div class="col-lg-6 col-md-6"><div class="pull-right"><table></table></div></div>').find('table');
+    var $el = $detail.html('<div class="col-lg-6 col-md-6"><table></table></div><div class="col-lg-6 col-md-6"><div class="pull-right"></div></div>').find('table');
     
     $el.bootstrapTable({
         data : row.detalhesMonitoramento,
@@ -108,6 +108,24 @@ var buscar = function()
     }
 }
 
+var csv = function()
+{
+    var datasOk = validaDatas();
+
+    if ( datasOk )
+    {
+        var path = { idAmbiente : idAmbiente };
+        var search = {
+                tipo : $("#tipo").val(),
+                dataInicio : $("#dataInicio").val(),
+                dataFim : $("#dataFim").val()
+        };
+        
+        var url = buildUrl( "/api/monitoramento/csv", path, search );
+        
+        window.open( url, '_blank' );
+    }
+}
 
 
 $(function(){
@@ -128,6 +146,10 @@ $(function(){
         language: "pt-BR",
         todayBtn : "linked",
         autoclose : true
+    });
+
+    $('#btnGeraCsv').on('click', function(){
+        csv();
     });
 
     $('.input-group.date').datepicker('update', new Date());

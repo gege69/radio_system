@@ -15,8 +15,8 @@ public class SpringContextListener {
 	
 	@EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-//		usuarioService.updateTodosAcessosAbertos();
-		System.out.println("SpringContextListener"  + ( usuarioService != null));
+		usuarioService.updateTodosAcessosAbertos();
+		System.out.println("SpringContextListener : Atualizando acessos abertos"  + ( usuarioService != null));
 		
     }
 

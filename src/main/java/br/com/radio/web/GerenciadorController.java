@@ -1,5 +1,6 @@
 package br.com.radio.web;
 
+import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,7 +55,6 @@ import br.com.radio.model.Parametro;
 import br.com.radio.model.Perfil;
 import br.com.radio.model.PerfilPermissao;
 import br.com.radio.model.Permissao;
-import br.com.radio.model.Transmissao;
 import br.com.radio.model.Usuario;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
@@ -677,12 +679,18 @@ public class GerenciadorController extends AbstractController {
 													 @RequestParam(value="pageNumber", required = false) Integer pageNumber,
 													 @RequestParam(value="limit", required = false) Integer limit, 
 													 @RequestParam(value="offset", required = false) Integer offset, 
-													 HttpServletResponse response )
+													 HttpServletResponse response,
+													 Principal principal )
 	{
 		
-		List<Ambiente> ambientes = usuarioService.findAmbientesMonitoramento( tipo, dataInicio, dataFim );
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
 		
-		System.out.println(ambientes);
+		Cliente cliente = usuario.getCliente();
+		
+		if ( usuario == null || cliente == null )
+			return null;
+
+		List<Ambiente> ambientes = usuarioService.findAmbientesMonitoramento( cliente, tipo, dataInicio, dataFim );
 		
 		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientes, ambientes.size());
 
@@ -690,5 +698,32 @@ public class GerenciadorController extends AbstractController {
 	}
 
 
+
+	@RequestMapping(value = "/api/monitoramento/csv", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<String> downloadCSVMonitoramento( 
+													 @RequestParam TipoMonitoramento tipo,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
+													 HttpServletResponse response,
+													 Principal principal ) 
+	{
+		
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		Cliente cliente = usuario.getCliente();
+		
+		if ( usuario == null || cliente == null )
+			return ResponseEntity.badRequest().body( null );
+		
+		String result = usuarioService.getCSVRelatorioMonitoramento( cliente, tipo, dataInicio, dataFim );
+
+		MediaType MEDIA_TYPE = new MediaType("text", "csv", Charset.forName("utf-8"));
+		
+		return ResponseEntity.ok()
+				.header( "Content-Disposition", "attachment; filename=\"relatorio_monitoramento.csv\"" )
+				.contentLength( result.getBytes().length )
+				.contentType( MEDIA_TYPE )
+				.body( result );
+	}	
 
 }

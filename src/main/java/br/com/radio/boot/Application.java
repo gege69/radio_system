@@ -125,21 +125,24 @@ public class Application {
 		
 		AcessoUsuarioRepository aRepo = ctx.getBean( AcessoUsuarioRepository.class );
 		UsuarioService usuService = ctx.getBean( UsuarioService.class );
+		ClienteRepository clienteRepo = ctx.getBean( ClienteRepository.class );
 		
-		List<Ambiente> ambientes = aRepo.findAmbientesPorAcessoSemLogout();
+		Cliente cli = clienteRepo.findOne( 1L );
 		
-		ambientes.forEach( a -> System.out.println(a) );
-		
-		System.out.println("XXXXX");
-
-		List<Ambiente> ambientesOff = aRepo.findAmbientesPorAcessoComLogout();
-
-		ambientesOff.forEach( a -> System.out.println(a) );
-		
+//		List<Ambiente> ambientes = aRepo.findAmbientesPorAcessoSemLogoutAndCliente(cli);
+//		
+//		ambientes.forEach( a -> System.out.println(a) );
+//		
+//		System.out.println("XXXXX");
+//
+//		List<Ambiente> ambientesOff = aRepo.findAmbientesPorAcessoComLogoutAndCliente(cli);
+//
+//		ambientesOff.forEach( a -> System.out.println(a) );
+//		
 		Date inicio = UtilsDates.toDate( "01/10/2016" );
 		Date fim = UtilsDates.toDate( "08/10/2016" ); 
 		
-		List<Ambiente> ambientesResultado = usuService.findAmbientesMonitoramento( TipoMonitoramento.ONLINE, inicio, fim );
+		List<Ambiente> ambientesResultado = usuService.findAmbientesMonitoramento( cli, TipoMonitoramento.ONLINE, inicio, fim );
 		
 		ambientesResultado.forEach( ar -> System.out.println(ar) );
 	}
