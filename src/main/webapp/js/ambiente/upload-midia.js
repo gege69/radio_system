@@ -169,6 +169,9 @@ var configuraUploader = function()
             
             var array_values = getCategoriasSelecionadas();
             var array_values_dias = getDiasSelecionados();
+
+            var dataIniISO = moment($("#dataInicio").val(), 'DD/MM/YYYY').format("YYYY-MM-DD");
+            var dataFimISO = moment($("#dataFim").val(), 'DD/MM/YYYY').format("YYYY-MM-DD");
             
             data.formData = { 
                               _csrf: $("#csrf").val(), 

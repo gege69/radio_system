@@ -1,9 +1,11 @@
 package br.com.radio.dto.midia;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.Categoria;
+import br.com.radio.util.UtilsDates;
 
 public class TransmissaoFilter {
 	
@@ -56,6 +58,11 @@ public class TransmissaoFilter {
 		this.dataInicio = dataInicio;
 		return this;
 	}
+	public TransmissaoFilter setDataInicio( LocalDate dataInicio )
+	{
+		this.dataInicio = UtilsDates.asUtilMidnightDate( dataInicio );
+		return this;
+	}
 	public Date getDataFim()
 	{
 		return dataFim;
@@ -65,7 +72,11 @@ public class TransmissaoFilter {
 		this.dataFim = dataFim;
 		return this;
 	}
-	
+	public TransmissaoFilter setDataFim( LocalDate dataFim )
+	{
+		this.dataFim = UtilsDates.asUtilLastSecondDate( dataFim );
+		return this;
+	}
 	public TransmissaoFilter setCodigoCategoria( String codigo ){
 		
 		if ( this.categoria == null ){

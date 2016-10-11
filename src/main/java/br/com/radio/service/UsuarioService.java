@@ -2,14 +2,15 @@ package br.com.radio.service;
 
 import java.security.Principal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -42,6 +43,7 @@ import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.RegistroDTO;
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
+import br.com.radio.dto.cliente.MonitoramentoFilter;
 import br.com.radio.enumeration.TipoMonitoramento;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.exception.EmailExistsException;
@@ -631,23 +633,19 @@ public class UsuarioService {
 	}
 	
 	
-	@SuppressWarnings( "unchecked" )
-	@Transactional
-	public List<Ambiente> findAmbientesMonitoramento(Cliente cliente, TipoMonitoramento tipo, Date dataInicio, Date dataFim){
-		
-		List<Ambiente> result = new ArrayList<Ambiente>();
-		
+	private Criteria createCriteriaMonitoramento(MonitoramentoFilter filter ){
+
 		Session session = entityManager.unwrap( Session.class );
 		
 		Criteria crit = session.createCriteria( AcessoUsuario.class );
 
-		if ( dataInicio != null || dataInicio != null ){
+		if ( filter.getDataInicio() != null || filter.getDataFim() != null ){
 			
-			if ( dataInicio != null )
-				crit.add( Restrictions.ge( "dataCriacao", UtilsDates.asUtilMidnightDate( dataInicio ) ) );
+			if ( filter.getDataInicio() != null )
+				crit.add( Restrictions.ge( "dataCriacao", UtilsDates.asUtilMidnightDate( filter.getDataInicio() ) ) );
 			
-			if ( dataFim != null )
-				crit.add( Restrictions.le( "dataCriacao", UtilsDates.asUtilLastSecondDate( dataFim ) ) );
+			if ( filter.getDataFim() != null )
+				crit.add( Restrictions.le( "dataCriacao", UtilsDates.asUtilLastSecondDate( filter.getDataFim() ) ) );
 		}
 
 		crit.setFetchMode("usuario", FetchMode.JOIN);
@@ -655,10 +653,43 @@ public class UsuarioService {
 		crit.add( Restrictions.eq( "u.usuarioTipo", UsuarioTipo.PLAYER ) );
 
 		crit.createAlias( "u.ambiente", "amb" );
-		crit.add( Restrictions.eq( "amb.cliente", cliente ) );
+		crit.add( Restrictions.eq( "amb.cliente", filter.getCliente() ) );
 		
 		crit.addOrder( Order.asc( "usuario" ) );
 		crit.addOrder( Order.asc( "dataCriacao" ) );
+		
+		return crit;
+	}
+	
+
+
+	@Transactional
+	public Page<Ambiente> filtraAmbientesMonitoramento(MonitoramentoFilter filter, Pageable pageable ){
+
+		List<Ambiente> result = findAmbientesMonitoramento( filter, pageable );
+		
+		int total = result.size();
+		
+		if ( pageable != null ){
+			int last = Math.min( pageable.getOffset() + pageable.getPageSize(), result.size() );
+			int first = Math.max( 0, pageable.getOffset() );
+			
+			result = result.subList( first, last);
+		}
+		
+		PageImpl<Ambiente> paginaMonitoramento = new PageImpl<Ambiente>( result, pageable, total);
+		
+		return paginaMonitoramento;
+	}
+
+
+
+	
+	@SuppressWarnings( "unchecked" )
+	@Transactional
+	public List<Ambiente> findAmbientesMonitoramento(MonitoramentoFilter filter, Pageable pageable ){
+		
+		Criteria crit = createCriteriaMonitoramento( filter );
 		
 		List<AcessoUsuario> acessos = crit.list();
 		
@@ -674,14 +705,16 @@ public class UsuarioService {
 
 			mapaResultado.put( amb, subList );
 		}
-	
+
+		boolean apenasOnline = filter.getTipo().equals( TipoMonitoramento.ONLINE );
+		boolean apenasOffLine = filter.getTipo().equals( TipoMonitoramento.OFFLINE );
+		boolean todos = filter.getTipo().equals( TipoMonitoramento.ALL );
+
+		List<Ambiente> result = new ArrayList<Ambiente>();
+
 		mapaResultado.forEach( ( a, list ) -> {
 
 			boolean isOnline = list.stream().anyMatch( acesso -> acesso.getDataLogout() == null );
-			
-			boolean apenasOnline = tipo.equals( TipoMonitoramento.ONLINE );
-			boolean apenasOffLine = tipo.equals( TipoMonitoramento.OFFLINE );
-			boolean todos = tipo.equals( TipoMonitoramento.ALL );
 
 			boolean incluir = todos || ( isOnline && apenasOnline ) || ( !isOnline && apenasOffLine );
 
@@ -693,7 +726,9 @@ public class UsuarioService {
 			}
 
 		});
-
+		
+		Collections.sort( result, Ambiente.ORDER_BY_NOME );
+		
 		return result;
 	}
 
@@ -704,9 +739,9 @@ public class UsuarioService {
 
 
 	@Transactional
-	public String getCSVRelatorioMonitoramento(Cliente cliente, TipoMonitoramento tipo, Date dataInicio, Date dataFim){
+	public String getCSVRelatorioMonitoramento(MonitoramentoFilter filter ){
 		
-		List<Ambiente> ambientes = this.findAmbientesMonitoramento( cliente, tipo, dataInicio, dataFim );
+		List<Ambiente> ambientes = this.findAmbientesMonitoramento(filter, null);
 		
 		String nl = SystemUtils.LINE_SEPARATOR;
 		
@@ -720,15 +755,18 @@ public class UsuarioService {
 		result.append( "Relatório de Monitoramento").append(nl);
 		
 		
-		if ( TipoMonitoramento.ALL.equals( tipo ))
+		if ( TipoMonitoramento.ALL.equals( filter.getTipo() ))
 			result.append( "Todos os Ambientes").append(nl);
-		else if (TipoMonitoramento.ONLINE.equals(tipo))
+		else if (TipoMonitoramento.ONLINE.equals(filter.getTipo()))
 			result.append( "Apenas ambientes ONLINE" ).append(nl);
-		else if (TipoMonitoramento.OFFLINE.equals(tipo))
+		else if (TipoMonitoramento.OFFLINE.equals(filter.getTipo()))
 			result.append( "Apenas ambientes OFFLINE" ).append(nl);
 		
-		result.append( "Data Início : " ).append( UtilsDates.format(dataInicio, pattern) ).append(nl);
-		result.append( "Data Fim : " ).append( UtilsDates.format(dataFim, pattern) ).append(nl);
+		Date dataInicioUtil = UtilsDates.asUtilLastSecondDate( filter.getDataInicio() );
+		Date dataFimUtil = UtilsDates.asUtilLastSecondDate( filter.getDataFim() );
+		
+		result.append( "Data Início : " ).append( UtilsDates.format(dataInicioUtil, pattern) ).append(nl);
+		result.append( "Data Fim : " ).append( UtilsDates.format(dataFimUtil, pattern) ).append(nl);
 
 		result.append( "Gerado às ").append(dataFmt).append(nl).append(nl);
 

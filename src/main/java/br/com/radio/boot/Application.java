@@ -139,12 +139,12 @@ public class Application {
 //
 //		ambientesOff.forEach( a -> System.out.println(a) );
 //		
-		Date inicio = UtilsDates.toDate( "01/10/2016" );
-		Date fim = UtilsDates.toDate( "08/10/2016" ); 
-		
-		List<Ambiente> ambientesResultado = usuService.findAmbientesMonitoramento( cli, TipoMonitoramento.ONLINE, inicio, fim );
-		
-		ambientesResultado.forEach( ar -> System.out.println(ar) );
+//		Date inicio = UtilsDates.toDate( "01/10/2016" );
+//		Date fim = UtilsDates.toDate( "08/10/2016" ); 
+//		
+//		List<Ambiente> ambientesResultado = usuService.findAmbientesMonitoramento( cli, TipoMonitoramento.ONLINE, inicio, fim );
+//		
+//		ambientesResultado.forEach( ar -> System.out.println(ar) );
 	}
 
 	

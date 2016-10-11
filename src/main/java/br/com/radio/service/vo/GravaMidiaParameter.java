@@ -1,8 +1,10 @@
 package br.com.radio.service.vo;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import br.com.radio.model.Cliente;
+import br.com.radio.util.UtilsDates;
 
 public class GravaMidiaParameter {
 
@@ -42,6 +44,20 @@ public class GravaMidiaParameter {
 		this.dataFimValidade = dataFimValidade;
 	}
 	
+	public GravaMidiaParameter( String originalName, Cliente cliente, Long[] categorias, String hash, String contentType, String descricao, Integer fileSize, LocalDate dataInicioValidade, LocalDate dataFimValidade )
+	{
+		this.originalName = originalName;
+		this.cliente = cliente;
+		this.categorias = categorias;
+		this.hash = hash;
+		this.contentType = contentType;
+		this.descricao = descricao;
+		this.fileSize = fileSize;
+		
+		this.dataInicioValidade = UtilsDates.asUtilDate( dataInicioValidade );
+		this.dataFimValidade = UtilsDates.asUtilDate( dataFimValidade );
+	}
+
 	public void validar(){
 		if ( dataInicioValidade != null && dataFimValidade != null && dataInicioValidade.compareTo( dataFimValidade ) > 0 )
 			throw new RuntimeException( "Data de Início da Validade não pode ser superior ao Fim da Validade." );

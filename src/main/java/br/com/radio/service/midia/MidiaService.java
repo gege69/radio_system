@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -429,7 +430,7 @@ public class MidiaService {
 
 
 	@Transactional
-	public void saveUploadMulti( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Long[] ambientes, Date dataInicioValidade, Date dataFimValidade ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
+	public void saveUploadMulti( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Long[] ambientes, LocalDate dataInicioValidade, LocalDate dataFimValidade ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException
 	{
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
@@ -699,7 +700,7 @@ public class MidiaService {
 	
 
 	@Transactional
-	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente, String descricao, Date dataInicioValidade, Date dataFimValidade, Long[] dias ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException {
+	public Midia saveUpload( MultipartFile multiPartFile, Long[] categorias, Cliente cliente, Ambiente ambiente, String descricao, LocalDate dataInicioValidade, LocalDate dataFimValidade, Long[] dias ) throws IOException, FileNotFoundException, UnsupportedTagException, InvalidDataException {
 		if ( categorias == null || categorias.length <= 0 )
 			throw new RuntimeException("Nenhuma categoria foi definida para a Mídia. Escolha pelo menos uma categoria.");
 		

@@ -1,6 +1,7 @@
 package br.com.radio.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +52,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class Ambiente implements Serializable {
 
 	private static final long serialVersionUID = -703457623897298000L;
+
+    public static final Comparator<Ambiente> ORDER_BY_NOME = ( left, right ) -> left.getNome().compareTo( right.getNome() );
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

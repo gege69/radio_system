@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -1326,8 +1327,8 @@ public class AmbienteController extends AbstractController {
 	public @ResponseBody JSONListWrapper<Transmissao> getResultadoRelatorioAmbiente( 
 													 @PathVariable Long idAmbiente,
 													 @RequestParam(value="idCategoria", required = false) Long idCategoria,
-													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
-													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate dataInicio,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate dataFim,
 													 @RequestParam (value="pageNumber", required = false) Integer pageNumber,
 													 @RequestParam(value="limit", required = false) Integer limit, 
 													 @RequestParam(value="offset", required = false) Integer offset, 
@@ -1355,8 +1356,8 @@ public class AmbienteController extends AbstractController {
 	public @ResponseBody ResponseEntity<String> downloadCSVRelatorio( 
 													 @PathVariable Long idAmbiente,
 													 @RequestParam(value="idCategoria", required = false) Long idCategoria,
-													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
-													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate dataInicio,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate dataFim,
 													 HttpServletResponse response ) {
 		
 		

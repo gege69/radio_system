@@ -2,6 +2,7 @@ package br.com.radio.web;
 
 import java.nio.charset.Charset;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -40,8 +41,8 @@ import br.com.radio.dto.AlterarSenhaDTO;
 import br.com.radio.dto.EndPointDTO;
 import br.com.radio.dto.PerfilPermissaoDTO;
 import br.com.radio.dto.UsuarioGerenciadorDTO;
+import br.com.radio.dto.cliente.MonitoramentoFilter;
 import br.com.radio.dto.cliente.ParametroDTO;
-import br.com.radio.dto.midia.TransmissaoFilter;
 import br.com.radio.enumeration.TipoMonitoramento;
 import br.com.radio.enumeration.UsuarioTipo;
 import br.com.radio.json.JSONListWrapper;
@@ -669,13 +670,11 @@ public class GerenciadorController extends AbstractController {
 	}
 
 	
-		
-
 	@RequestMapping( value = { 	"/monitoramento", "/api/monitoramento" }, method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody JSONListWrapper<Ambiente> getResultadoRelatorioAmbiente( 
 													 @RequestParam TipoMonitoramento tipo,
-													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
-													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate dataInicio,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate dataFim,
 													 @RequestParam(value="pageNumber", required = false) Integer pageNumber,
 													 @RequestParam(value="limit", required = false) Integer limit, 
 													 @RequestParam(value="offset", required = false) Integer offset, 
@@ -689,10 +688,18 @@ public class GerenciadorController extends AbstractController {
 		
 		if ( usuario == null || cliente == null )
 			return null;
-
-		List<Ambiente> ambientes = usuarioService.findAmbientesMonitoramento( cliente, tipo, dataInicio, dataFim );
 		
-		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(ambientes, ambientes.size());
+		MonitoramentoFilter filter = MonitoramentoFilter.create()
+				.setCliente( cliente )
+				.setTipo( tipo )
+				.setDataInicio( dataInicio )
+				.setDataFim( dataFim );
+
+		Pageable pageable = getPageable( pageNumber, limit );
+
+		Page<Ambiente> pageAmbientes = usuarioService.filtraAmbientesMonitoramento( filter, pageable );
+		
+		JSONListWrapper<Ambiente> jsonList = new JSONListWrapper<Ambiente>(pageAmbientes.getContent(), pageAmbientes.getTotalElements());
 
 		return jsonList;
 	}
@@ -702,8 +709,8 @@ public class GerenciadorController extends AbstractController {
 	@RequestMapping(value = "/api/monitoramento/csv", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<String> downloadCSVMonitoramento( 
 													 @RequestParam TipoMonitoramento tipo,
-													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataInicio,
-													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") Date dataFim,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate dataInicio,
+													 @RequestParam @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate dataFim,
 													 HttpServletResponse response,
 													 Principal principal ) 
 	{
@@ -714,8 +721,14 @@ public class GerenciadorController extends AbstractController {
 		
 		if ( usuario == null || cliente == null )
 			return ResponseEntity.badRequest().body( null );
-		
-		String result = usuarioService.getCSVRelatorioMonitoramento( cliente, tipo, dataInicio, dataFim );
+
+		MonitoramentoFilter filter = MonitoramentoFilter.create()
+				.setCliente( cliente )
+				.setTipo( tipo )
+				.setDataInicio( dataInicio )
+				.setDataFim( dataFim );
+
+		String result = usuarioService.getCSVRelatorioMonitoramento( filter );
 
 		MediaType MEDIA_TYPE = new MediaType("text", "csv", Charset.forName("utf-8"));
 		

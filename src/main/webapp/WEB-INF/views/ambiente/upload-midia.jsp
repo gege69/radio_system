@@ -247,6 +247,10 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css" rel="stylesheet">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/locale/pt-br.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+
+
 <script id="viewTmpl" type="text/x-jsrender">
 <label class="checkbox-inline">
   <input type="checkbox" class="checkbox-categoria" id="inlineCheck{{:idCategoria}}" name="categorias[idCategoria]" value="{{:idCategoria}}"> {{:nome}}

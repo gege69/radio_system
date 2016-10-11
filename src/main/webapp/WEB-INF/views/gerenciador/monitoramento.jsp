@@ -94,7 +94,6 @@
                  id="tableMonitoramento"
                  data-side-pagination="server"
                  data-pagination="true"
-                 data-page-size=10
                  data-page-list="[10,25,50,100]"
                  data-locale = "pt_BR"
                  data-detail-view = "true"

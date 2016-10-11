@@ -2,6 +2,7 @@ package br.com.radio.web;
 
 import java.io.File;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,7 @@ import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.TransmissaoRepository;
 import br.com.radio.service.UsuarioService;
 import br.com.radio.service.midia.MidiaService;
+import br.com.radio.util.UtilsDates;
 
 @Controller
 public class MidiaAPIController extends AbstractController {
@@ -149,8 +151,8 @@ public class MidiaAPIController extends AbstractController {
     		@RequestParam("file") MultipartFile file,
     		@RequestParam("ambientes[]") Long[] ambientes,    		
     		@RequestParam("categorias[]") Long[] categorias,
-    		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") Date inicioValidade,
-    		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") Date fimValidade,
+    		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate inicioValidade,
+    		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") LocalDate fimValidade,
     		Principal principal, 
     		Model model,
     		HttpServletRequest request)
@@ -196,8 +198,8 @@ public class MidiaAPIController extends AbstractController {
     		@RequestParam(value="descricao", required = false) String descricao,
     		@RequestParam("categorias[]") Long[] categorias,
     		@RequestParam(value="dias[]", required=false) Long[] dias,
-    		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") Date inicioValidade,
-    		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") Date fimValidade,
+    		@RequestParam(value="iniciovalidade", required=false)     @DateTimeFormat(pattern="dd/MM/yyyy") LocalDate inicioValidade,
+    		@RequestParam(value="fimvalidade", required=false)     	@DateTimeFormat(pattern="dd/MM/yyyy") LocalDate fimValidade,
     		Principal principal, 
     		Model model,
     		HttpServletRequest request)
@@ -243,12 +245,6 @@ public class MidiaAPIController extends AbstractController {
 
 
 
-
-	/**
-	 * 
-	 * Método criado especialmente para o upload de Chamada de Funcionários pois as Datas não são obrigatórias e o @DateTimeFormat estava dando problema com null
-	 * 
-	 */
 	@RequestMapping(value="/api/ambientes/{idAmbiente}/upload-midia-chamada-funcionario", method=RequestMethod.POST)
     public ResponseEntity<String> uploadMultiCategoriasChamadaFuncionario(
     		@PathVariable Long idAmbiente,
