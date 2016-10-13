@@ -186,10 +186,6 @@ var play = function(){
                 next();
             });
 
-            player.getMedia().addEventListener("error", function(event) {
-                trataErro(event);
-            });
-
         }
         else {
             console.log("silencio!" + content.idTransmissao );
@@ -341,10 +337,6 @@ var next = function(){
                 next();
             });
 
-            player.getMedia().addEventListener("error", function(event) {
-                console.log("erro");
-                trataErro(event);
-            });
         }
         else {
             console.log("silencio!" + content.idTransmissao );
