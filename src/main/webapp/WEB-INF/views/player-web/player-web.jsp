@@ -157,20 +157,20 @@
 
               <div class="row row-centered">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-centered" >
-                  <div class="plyr player" id="player1" style="display : none;">
-                      <audio controls>
+                  <div style="display : none;">
+                      <audio controls id="player1">
                           <source src="" type="audio/ogg">
                       </audio>
                   </div>
 
-                  <div class="plyr player" id="player2" style="display : none;">
-                      <audio controls>
+                  <div style="display : none;">
+                      <audio controls id="player2" >
                           <source src="" type="audio/ogg">
                       </audio>
                   </div>
                 
-                  <div class="plyr player" id="playerDing" style="display : none;">
-                      <audio controls>
+                  <div style="display : none;">
+                      <audio controls id="playerDing">
                           <source src="${context}/static_sound/ding.mp3" type="audio/ogg">
                       </audio>
                   </div>
@@ -721,9 +721,8 @@
 
 <jsp:include page="/WEB-INF/views/scripts.jsp" />
 
-
-<link rel="stylesheet" href="https://cdn.plyr.io/1.6.16/plyr.css">
-<script src="https://cdn.plyr.io/1.6.16/plyr.js"></script>
+<link rel="stylesheet" href="https://cdn.plyr.io/2.0.7/plyr.css">
+<script src="https://cdn.plyr.io/2.0.7/plyr.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
 

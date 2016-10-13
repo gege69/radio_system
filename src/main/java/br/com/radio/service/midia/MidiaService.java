@@ -1447,17 +1447,47 @@ public class MidiaService {
 	}
 
 	
+
 	@Transactional
-	public void deleteMusicasSelecao(DeleteMusicasVO generosMidiaVO){
+	public void deleteMusicasSelecaoAmbiente(Ambiente ambiente, DeleteMusicasVO deleteMusicasVO){
 		
-		List<Midia> musicas = midiaRepo.findByIdMidiaIn( Arrays.asList( generosMidiaVO.getIdMidias() ) );
+		List<Long> musicasIds = Arrays.asList( deleteMusicasVO.getIdMidias() );
 
 		int count = 0;
 		
 		try
 		{
-			for ( Midia m : musicas ){
-				deleteMidiaSePossivel( m.getIdMidia() );
+			for ( Long id : musicasIds ){
+				
+				Midia midia = midiaRepo.findByAmbientesAndIdMidia( ambiente, id );
+				
+				if ( midia != null ){
+					deleteMidiaSePossivel( midia );
+					count++;
+				}
+			}
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			throw new RuntimeException(String.format("Não foi possível remover todas as músicas da seleção. Músicas deletadas : %d .", count));
+		}
+	}
+
+
+	
+	
+	@Transactional
+	public void deleteMusicasSelecao(DeleteMusicasVO deleteMusicasVO){
+		
+		List<Long> musicasIds = Arrays.asList( deleteMusicasVO.getIdMidias() );
+
+		int count = 0;
+		
+		try
+		{
+			for ( Long id : musicasIds ){
+				deleteMidiaSePossivel( id );
 				count++;
 			}
 		}

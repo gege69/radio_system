@@ -163,6 +163,14 @@
                    
                   <div class="row">
                     <div class="col-lg-12 col-md-12">
+                      <div id="toolbar">
+                        <div class="form-inline" role="form">
+                          <button type="button" class="btn btn-default" id="btnDeletarSelecao" title="Deletar TODAS as músicas que estão sendo listadas pela Grid">
+                            <i class="material-icons md-18">delete_forever</i>
+                            Deletar Mídias
+                          </button>
+                        </div>
+                      </div>
                       <table  
                          id="tabelaMidiaUpload"
                          data-toggle="table"
@@ -170,14 +178,16 @@
                          data-height="400"
                          data-side-pagination="server"
                          data-pagination="true"
-                         data-page-size=7
-                         data-page-list="[7]"
+                         data-page-size=6
+                         data-page-list="[6, 15, 25, 70]"
                          data-locale = "pt_BR"
                          data-unique-id="idMidia"
+                         data-toolbar="#toolbar"
                          data-search="true"
                          data-query-params="queryParams" >
                         <thead>
                           <tr>
+                              <th data-field="state" data-checkbox="true" style="width: 36px;"></th>
                               <th data-field="nome">Nome</th>
                               <th data-field="descricao">Descrição</th>
                               <th data-field="dataInicioValidade">Início Validade</th>
@@ -225,7 +235,45 @@
       </div>
     </div>
     
+    <div class="modal" id="dialogDeletarSelecao">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="titulo-modal">Remover <span class="tamanhoSelecao"></span> Mídia(s)</h4>
+          </div>
+          <div class="modal-body">
+            <form action="#" class="form-horizontal" id="remove-midia-form" method="POST">
 
+              <div class="row">
+                <div class="loader" id="ajaxload" style="display : none;"></div>
+              </div>
+
+              <div class="spacer-vertical10"></div>
+
+              <div class="row">
+                <div class="col-lg-12 col-md-12" id="alertAreaModalDeletar">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12 col-md-12">
+                  <div class="alert alert-danger" id="divWarningGeneros" role="alert">
+                    <i class="material-icons md-48 animated infinite bounce">error</i>
+                    &nbsp;Deseja realmente remover a(s) <span class="tamanhoSelecao"></span> mídias(s) selecionada(s)?
+                  </div>
+                </div>
+              </div>
+            </form>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Não</button>
+            <button type="button" class="btn btn-default" id="btnConfirmarDeleteSelecao">Sim</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
       
   </div> <!-- /container -->
 

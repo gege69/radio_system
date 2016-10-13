@@ -294,6 +294,66 @@ var listaFuncionalidadesCategorias = function(){
 }
 
 
+var openDialogDeletarSelecao = function( element )
+{
+    var selections = $("#tabelaMidiaUpload").bootstrapTable('getSelections');
+    
+    var size = 0;
+    if ( selections != null )
+        size = selections.length;
+
+    $(".tamanhoSelecao").html(size);
+
+    $('#dialogDeletarSelecao').modal('show');
+}
+
+
+var deletarSelecao = function()
+{
+    var url = buildUrl( "/api/ambientes/{idAmbiente}/midia", { idAmbiente : idAmbiente });
+    
+    var selections = $("#tabelaMidiaUpload").bootstrapTable('getSelections');
+
+    if ( selections == null || selections.length == 0 ){
+        preencheAlertGeral( "alertAreaModalDeletar", "Nenhuma mídia selecionada. É necessário selecionar pelo menos 1 registro.", "danger" );
+        return;
+    }
+
+    var idsMidias_values = [];
+    $.each(selections, function(i, el){
+        idsMidias_values.push(el.idMidia);
+    });
+    
+    var dadosForm = { idMidias : idsMidias_values };
+
+    $('#ajaxload').show();
+
+    $("#btnConfirmarDeleteSelecao").prop("disabled",true);
+
+    $.ajax({
+        type: 'DELETE',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data:  JSON.stringify(dadosForm)
+    }).done( function(json){ 
+
+        if (json.ok == 1){
+            preencheAlertGeral( "alertArea", "Mídias removidas com sucesso.", "success" );
+            $("#tabelaMidiaUpload").bootstrapTable('refresh');
+            $('#dialogDeletarSelecao').modal('hide');
+        }
+        else{
+            preencheErros( json.errors, "alertAreaModal" );
+        }
+
+        $("#btnConfirmarDeleteSelecao").prop("disabled",false);
+        $('#ajaxload').hide();
+    }).fail( function(){
+        $('#ajaxload').hide();
+        $("#btnConfirmarDeleteSelecao").prop("disabled",false);
+    });
+} 
 
 
 $(function(){
@@ -371,6 +431,17 @@ $(function(){
     $("#btnIniciar").click( function(){
         iniciarUpload();  
     });
+
+
+    $("#btnDeletarSelecao").click( function(){
+        openDialogDeletarSelecao();
+    });
+
+
+    $("#btnConfirmarDeleteSelecao").click( function(){
+        deletarSelecao();
+    });
+    
 
 
 });

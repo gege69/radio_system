@@ -3,7 +3,6 @@ package br.com.radio.web;
 import java.io.File;
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import javax.json.Json;
@@ -24,7 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.UsuarioAmbienteDTO;
+import br.com.radio.dto.midia.DeleteMusicasVO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -46,7 +48,6 @@ import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.TransmissaoRepository;
 import br.com.radio.service.UsuarioService;
 import br.com.radio.service.midia.MidiaService;
-import br.com.radio.util.UtilsDates;
 
 @Controller
 public class MidiaAPIController extends AbstractController {
@@ -589,6 +590,35 @@ public class MidiaAPIController extends AbstractController {
     }	
 
 	
+	@RequestMapping( value = { "/ambientes/{idAmbiente}/midia", "/api/ambientes/{idAmbiente}/midia" }, method = { RequestMethod.DELETE },  produces = APPLICATION_JSON_CHARSET_UTF_8  )
+	public @ResponseBody String deleteMusicasSelecao( @PathVariable Long idAmbiente, @RequestBody DeleteMusicasVO deleteMusicasVO, BindingResult result, HttpServletRequest request )
+	{
+		String jsonResult = "";
+		
+		if ( result.hasErrors() )
+			jsonResult = writeErrorsAsJSONErroMessage( result );
+		else
+		{
+			try
+			{
+				Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+				
+				if ( ambiente == null )
+					throw new RuntimeException("Ambiente não encontrado");
+				
+				midiaService.deleteMusicasSelecaoAmbiente(ambiente, deleteMusicasVO);
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				imprimeLogErro( "Erro ao deletar uma seleção de músicas", request, e );
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+			}
+		}
+
+		return jsonResult;
+	}
+
 	
 	@RequestMapping( value = "/api/syncfilesystem", method = RequestMethod.GET, produces = APPLICATION_JSON_CHARSET_UTF_8 )
 	public @ResponseBody String sync()

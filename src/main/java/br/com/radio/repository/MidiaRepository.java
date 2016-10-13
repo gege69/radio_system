@@ -58,4 +58,6 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	Long countByExtensao( String extensao );
 
 	List<Midia> findByExtensao( String extensao );
+	
+	Midia findByAmbientesAndIdMidia( Ambiente ambiente, Long idMidia );
 }

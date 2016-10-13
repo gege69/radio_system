@@ -38,10 +38,10 @@ var schedulePlay = function()
     pararEventosSilencio();
 
     var musicaAtual = playlist[0];
-    
+   
     if ( musicaAtual == null || musicaAtual == undefined )
     {
-        var src = player.media.currentSrc;
+        var src = player.getMedia().currentSrc;
         if ( src == null || src == "" )
             play();
         else
@@ -52,7 +52,7 @@ var schedulePlay = function()
     
     playlist.splice(0, 1);
     
-    if ( player.media.paused == false )
+    if ( player.getMedia().paused == false )
         player.pause();
     
     var url = buildUrl( "/api/ambientes/{idAmbiente}/midia/{musicaAtual}", { 
@@ -71,7 +71,7 @@ var schedulePlay = function()
     player2.source( fonte );
     player2.play();
 
-    player2.media.addEventListener("ended", function() {
+    player2.getMedia().addEventListener("ended", function() {
         schedulePlay();
     });
 }
@@ -90,7 +90,7 @@ var alteraVolume = function( valor ) {
     if ( valor != null && valor >= 0 && valor <= 100 )
         volume = valor / 100;
     
-    player.media.volume = volume;
+    player.getMedia().volume = volume;
 };
 
 var determinaVolume = function( json ){
@@ -130,10 +130,10 @@ var determinaVolume = function( json ){
 
 var play = function(){
     
-    if ( player2.media.paused == false )
+    if ( player2.getMedia().paused == false )
         return;
     
-    if ( player.media.paused == false )
+    if ( player.getMedia().paused == false )
         return;
 
     pararEventosSilencio();
@@ -178,11 +178,18 @@ var play = function(){
             player.source(fonte);
             player.play();
             
+            console.log(player.getDuration());
+            
             registraTempos();
 
-            player.media.addEventListener("ended", function() {
+            player.getMedia().addEventListener("ended", function() {
                 next();
             });
+
+            player.getMedia().addEventListener("error", function(event) {
+                trataErro(event);
+            });
+
         }
         else {
             console.log("silencio!" + content.idTransmissao );
@@ -191,6 +198,12 @@ var play = function(){
         }
     });
 };
+
+
+function trataErro(event){
+    console.log(event);
+    next();
+}
 
 
 function pararEventosSilencio(){
@@ -249,15 +262,15 @@ var tocaSilencio = function( duracao ){
 
 var registraTempos = function(){
 
-    player.media.addEventListener("playing", function() {
+    player.getMedia().addEventListener("playing", function() {
         $("#spanTempoTotal").empty();
-        $("#spanTempoTotal").html( processaTempo( player.media.duration ) ); 
+        $("#spanTempoTotal").html( processaTempo( player.getMedia().duration ) ); 
     });
 
-    player.media.addEventListener("timeupdate", function() {
-        if ( player.media.currentTime != null && player.media.currentTime > 0 ){
+    player.getMedia().addEventListener("timeupdate", function() {
+        if ( player.getMedia().currentTime != null && player.getMedia().currentTime > 0 ){
             $("#spanTempoCorrido").empty();
-            $("#spanTempoCorrido").html( processaTempo(player.media.currentTime) );
+            $("#spanTempoCorrido").html( processaTempo(player.getMedia().currentTime) );
         }
     });
 }
@@ -273,7 +286,7 @@ var processaTempo = function( time ){
 
 var next = function(){
     
-    if ( player2.media.paused == false ){
+    if ( player2.getMedia().paused == false ){
         console.log('player2-paused');
         return;
     }
@@ -324,8 +337,13 @@ var next = function(){
 
             registraTempos();
 
-            player.media.addEventListener("ended", function() {
+            player.getMedia().addEventListener("ended", function() {
                 next();
+            });
+
+            player.getMedia().addEventListener("error", function(event) {
+                console.log("erro");
+                trataErro(event);
             });
         }
         else {
@@ -336,7 +354,6 @@ var next = function(){
     });
     
 };
-
 
 
 var abreModal = function( tela, extra ){ 
@@ -445,12 +462,12 @@ var ligaMicrofone = function()
     iconMic.removeClass("player-mic-off");
     iconMic.addClass("player-mic-on");
    
-    if ( player.media.paused == false )
+    if ( player.getMedia().paused == false )
     {
         player.pause();
         micRetorna = player;
     }
-    else if ( player2.media.paused == false )
+    else if ( player2.getMedia().paused == false )
     {
         player2.pause();
         micRetorna = player2;
