@@ -1,6 +1,8 @@
 
 var idAmbiente = $('#idAmbiente').val();
 
+var buscou = false;
+
 var validaDatas = function(){
     
     var dataInicioVal = $("#dataInicio").val();
@@ -115,6 +117,9 @@ var buscar = function()
             columns : colunas,
             onExpandRow: function (index, row, $detail) {
                 expandTable(index, row, $detail);
+            },
+            onPostBody : function(data){
+                buscou = true;
             }
         });
     }
@@ -137,6 +142,18 @@ var csv = function()
         
         window.open( url, '_blank' );
     }
+}
+
+
+
+function timeout() {
+    setTimeout(function () {
+        
+        if (buscou)
+            buscar();
+        
+        timeout();
+    }, 60000);
 }
 
 
@@ -165,5 +182,8 @@ $(function(){
     });
 
     $('.input-group.date').datepicker('update', new Date());
+    
+    
+    timeout();
 
 });

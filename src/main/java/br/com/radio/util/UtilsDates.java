@@ -199,8 +199,18 @@ public class UtilsDates {
     {
     	Date result = asUtilDate(date, ZoneId.systemDefault());
 
-    	result = DateUtils.setHours( result, 0 );
+    	try
+		{
+			result = DateUtils.setHours( result, 0 );
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			result = DateUtils.setHours( result, 1 );
+		}
+
     	result = DateUtils.setMinutes( result, 0 );
+
     	result = DateUtils.setSeconds( result, 0 );
     	result = DateUtils.setMilliseconds( result, 0 );
     	

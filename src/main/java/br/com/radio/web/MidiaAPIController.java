@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.radio.dto.UsuarioAmbienteDTO;
 import br.com.radio.dto.midia.DeleteMusicasVO;
+import br.com.radio.dto.midia.MediaErrorVO;
 import br.com.radio.json.JSONListWrapper;
 import br.com.radio.model.Ambiente;
 import br.com.radio.model.AmbienteConfiguracao;
@@ -628,5 +629,44 @@ public class MidiaAPIController extends AbstractController {
 		return writeOkResponse();
 	}
 		
+
+
+	@RequestMapping(value="/api/ambientes/{idAmbiente}/reporta-erro", consumes = "application/json", method=RequestMethod.POST)
+	public ResponseEntity<String> reportaErro(
+    		@PathVariable Long idAmbiente,
+    		@RequestBody MediaErrorVO mediaErrorVO,  
+    		Principal principal, 
+    		Model model,
+    		HttpServletRequest request )
+	{
+		String jsonResult = "";
+
+		Usuario usuario = usuarioService.getUserByPrincipal( principal );
+		
+		if ( usuario == null || usuario.getCliente() == null )
+			throw new RuntimeException( "Usuário não encontrado ou Cliente não encontrada."  );
+		
+		Ambiente ambiente = ambienteRepo.findOne( idAmbiente );
+		
+		if ( ambiente != null )
+		{
+			try
+			{
+				midiaService.saveErroTransmissao( mediaErrorVO, ambiente );
+						
+				jsonResult = writeOkResponse();
+			}
+			catch ( Exception e )
+			{
+				imprimeLogErroAmbiente( ambiente, request, e );
+
+				jsonResult = writeSingleErrorAsJSONErroMessage( "alertArea", e.getMessage() );
+				return respondeErro500( jsonResult );
+			}
+		}
+
+		return respondeOk200( jsonResult );
+    }	
+
 	
 }

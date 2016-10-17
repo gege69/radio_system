@@ -21,10 +21,8 @@ import javax.persistence.TemporalType;
 import br.com.radio.enumeration.StatusPlayback;
 import br.com.radio.json.JSONDateDeserializer;
 import br.com.radio.json.JSONDateTimeSerializer;
-import br.com.radio.json.views.TransmissaoView;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -45,7 +43,6 @@ public class Transmissao implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column( name = "id_transmissao", nullable = false )
-	@JsonView(TransmissaoView.Sumario.class)
 	private Long idTransmissao;
 	
 	@JsonIgnore
@@ -59,7 +56,6 @@ public class Transmissao implements Serializable {
 	
 	@OneToOne
 	@JoinColumn(name="id_midia" )
-	@JsonView(TransmissaoView.Sumario.class)
 	private Midia midia;
 	
 	@Column( name = "posicaoplay", nullable = false )
@@ -75,7 +71,6 @@ public class Transmissao implements Serializable {
 	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "dataprevisaoplay" )
-	@JsonView(TransmissaoView.Sumario.class)
 	private Date dataPrevisaoPlay;
 
 	// * Duração da midia em segundos... 
@@ -87,7 +82,6 @@ public class Transmissao implements Serializable {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="statusplayback")
-	@JsonView(TransmissaoView.Sumario.class)
 	private StatusPlayback statusPlayback;
 	
 	@Column( name= "link" )
@@ -102,7 +96,6 @@ public class Transmissao implements Serializable {
 	@JsonSerialize(using=JSONDateTimeSerializer.class)
 	@Temporal( TemporalType.TIMESTAMP )
 	@Column( name = "datafinishplay" )
-	@JsonView(TransmissaoView.Sumario.class)
 	private Date dataFinishPlay;
 	
 	@JsonIgnore

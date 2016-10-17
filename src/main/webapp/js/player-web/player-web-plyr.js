@@ -23,6 +23,47 @@ var playlist = [];
 
 var micRetorna = player;
 
+
+
+
+
+// fila pra ficar tentando mandar novamente o erro
+
+var queue = new Queue();
+
+function timeoutErrosEmpilhados() {
+    setTimeout(function () {
+        
+        while (!queue.isEmpty()){
+            var erro = queue.dequeue();
+
+            var request = postaErro(erro.mediaError, erro.idTransmissao, erro.idMidia);
+            
+            request.done(function(){
+                console.log("conseguiu mandar")
+            }).fail(function(retorno){
+                console.log("tentou mandar e não conseguiu, empilhando novamente");
+                queue.enqueue(erro);
+            });
+        }
+        
+        timeoutErrosEmpilhados();
+    }, 15000);
+}
+
+
+// **************************************
+
+
+
+
+
+
+
+
+
+
+
 var playSequence = function( array ){
     
     if ( array == null || array.length <= 0 )
@@ -35,6 +76,8 @@ var playSequence = function( array ){
 
 var schedulePlay = function()
 {
+    window.clearInterval(intervalErro);
+
     pararEventosSilencio();
 
     var musicaAtual = playlist[0];
@@ -130,6 +173,8 @@ var determinaVolume = function( json ){
 
 var play = function(){
     
+    window.clearInterval(intervalErro);
+
     if ( player2.getMedia().paused == false )
         return;
     
@@ -148,52 +193,10 @@ var play = function(){
         url: url,
         dataType: 'json',
     }).done( function( content ){
-        
-        if ( content.midia != null )
-        {
-            if ( content.midia.title == null || content.midia.title == '' )
-                $('#nome-musica').html( content.midia.nome );
-            else
-                $('#nome-musica').html( content.midia.title );
-            
-            $('#artista').html("");
-            if ( content.midia.artist != null && content.midia.artist != '' )
-                $('#artista').html( ' - ' + content.midia.artist );
-        }
-        
-        if ( content.link != null && content.link != '' && content.midia != null )
-        {
-            determinaVolume( content );
-
-            var urlMidia = buildUrl( content.link );
-
-            var fonte = { 
-                type : 'audio' ,
-                sources : [{
-                   src : urlMidia,
-                   type : content.midia.mimetype
-                }]
-            };
-            
-            player.source(fonte);
-            player.play();
-            
-            console.log(player.getDuration());
-            
-            registraTempos();
-
-            player.getMedia().addEventListener("ended", function() {
-                next();
-            });
-
-        }
-        else {
-            console.log("silencio!" + content.idTransmissao );
-            stop();
-            tocaSilencio( content.duracao );
-        }
+        tocaMidia(content);
     });
 };
+
 
 
 function trataErro(event){
@@ -280,8 +283,110 @@ var processaTempo = function( time ){
 }
 
 
+
+function trataErroMidia(mediaError, content) {
+    var media = player.getMedia();
+    timeoutNext();
+    var request = postaErro(media.networkState, content.idTransmissao, content.midia.idMidia);
+    
+    request.done(function(){
+        console.log("Gravou erro de primeira");
+    }).fail(function(){
+        var erroObj = { idTransmissao : content.idTransmissao, idMidia : content.midia.idMidia, mediaError : media.networkState };
+        queue.enqueue(erroObj);
+    });
+}
+
+
+
+function tocaMidia(content){
+    
+    if ( !content ){
+        content = {};
+        content.link = "/api/ambientes/2/midia/76";
+        content.idTransmissao = 1457;
+//        content.link = "/api/ambientes/2/transmissoes/14856948572/midia";
+//        content.link = "/api/ambientes/2/transmissoes/12/midia";
+        content.midia = {mimetype : "audio/ogg", idMidia : 76};
+    }
+     
+    if ( content.midia != null && content.midia.title != null )
+    {
+        if ( content.midia.title == null || content.midia.title == '' )
+            $('#nome-musica').html( content.midia.nome );
+        else
+            $('#nome-musica').html( content.midia.title );
+
+        $('#artista').empty();
+        if ( content.midia.artist != null && content.midia.artist != '' )
+            $('#artista').html( ' - ' + content.midia.artist );
+    }
+    
+    if ( content.link != null && content.link != '' && content.midia != null )
+    {
+        determinaVolume( content );
+
+        var urlMidia = buildUrl( content.link );
+        
+        var fonte = { 
+            type : 'audio' ,
+            sources : [{
+               src : urlMidia,
+               type : content.midia.mimetype
+            }]
+        };
+
+        player.source(fonte);
+
+        player.getMedia().addEventListener("error", function(mediaError){
+            trataErroMidia(mediaError, content);
+        }, true);
+
+        player.play();
+
+        registraTempos();
+
+        player.getMedia().addEventListener("ended", function() {
+            next();
+        });
+    }
+    else {
+        console.log("silencio!" + content.idTransmissao );
+        stop();
+        tocaSilencio( content.duracao );
+    }   
+}
+
+
+
+var intervalErro;
+
+function timeoutNext() {
+    window.clearInterval(intervalErro);
+    intervalErro = setTimeout(next, 5000);
+}
+
+
+var nextBugado = function(){
+    
+    window.clearInterval(intervalErro);
+
+    if ( player2.getMedia().paused == false ){
+        console.log('player2-paused');
+        return;
+    }
+
+    pararEventosSilencio();
+   
+    tocaMidia();
+    
+};
+
+
 var next = function(){
     
+    window.clearInterval(intervalErro);
+
     if ( player2.getMedia().paused == false ){
         console.log('player2-paused');
         return;
@@ -299,52 +404,8 @@ var next = function(){
         url: url,
         dataType: 'json',
     }).done( function( content ){
-        
-        if ( content.midia != null )
-        {
-            if ( content.midia.title == null || content.midia.title == '' )
-                $('#nome-musica').html( content.midia.nome );
-            else
-                $('#nome-musica').html( content.midia.title );
-
-            $('#artista').empty();
-            if ( content.midia.artist != null && content.midia.artist != '' )
-                $('#artista').html( ' - ' + content.midia.artist );
-        }
-        
-        if ( content.link != null && content.link != '' && content.midia != null )
-        {
-            console.log(content.link);
-            
-            determinaVolume( content );
-
-            var urlMidia = buildUrl( content.link );
-            
-            var fonte = { 
-                type : 'audio' ,
-                sources : [{
-                   src : urlMidia,
-                   type : content.midia.mimetype
-                }]
-            };
-
-            player.source(fonte);
-            player.play();
-
-            registraTempos();
-
-            player.getMedia().addEventListener("ended", function() {
-                next();
-            });
-
-        }
-        else {
-            console.log("silencio!" + content.idTransmissao );
-            stop();
-            tocaSilencio( content.duracao );
-        }
-    });
-    
+        tocaMidia(content);
+    });   
 };
 
 
@@ -571,6 +632,31 @@ var cadastrarAuthModal = function(){
     });
 }
 
+
+
+function postaErro(codigoErro, idTransmissao, idMidia){
+    
+    var url = buildUrl('/api/ambientes/{idAmbiente}/reporta-erro', {
+        idAmbiente : idAmbiente
+    }); 
+    
+    var data = { 
+                 idTransmissao : idTransmissao, 
+                 idMidia : idMidia,
+                 mediaError : codigoErro
+             };
+
+    return $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: url,
+        dataType: 'json',
+        data : JSON.stringify(data)
+    });
+}
+
+
+
 $(document).ready(function() {
 
     plyr.setup({
@@ -615,6 +701,11 @@ $(document).ready(function() {
         desligaMicrofone();
         next();
     });
+
+    $('#btnNextBugado').click( function(){
+        nextBugado();
+    });
+
     
     $(".campo-slider").on("slide", function(slideEvt) {
         alteraVolume(slideEvt.value);
@@ -678,4 +769,5 @@ $(document).ready(function() {
         $("#alertaAuth").empty();
     })
     
+    timeoutErrosEmpilhados();
 });

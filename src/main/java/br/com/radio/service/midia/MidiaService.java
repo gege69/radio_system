@@ -52,6 +52,7 @@ import br.com.radio.conversao.ConverterParameters;
 import br.com.radio.dto.MidiaListDTO;
 import br.com.radio.dto.MusicTags;
 import br.com.radio.dto.midia.DeleteMusicasVO;
+import br.com.radio.dto.midia.MediaErrorVO;
 import br.com.radio.dto.midia.MidiaFilter;
 import br.com.radio.dto.midia.RelatorioMidiaGeneroVO;
 import br.com.radio.dto.midia.UpdateGenerosMusicasVO;
@@ -64,6 +65,7 @@ import br.com.radio.model.AmbienteGenero;
 import br.com.radio.model.AudioOpcional;
 import br.com.radio.model.Categoria;
 import br.com.radio.model.Cliente;
+import br.com.radio.model.ErroTransmissao;
 import br.com.radio.model.Funcionalidade;
 import br.com.radio.model.Genero;
 import br.com.radio.model.Midia;
@@ -72,12 +74,14 @@ import br.com.radio.model.MidiaDiaExecucao;
 import br.com.radio.model.MidiaGenero;
 import br.com.radio.model.MidiaOpcional;
 import br.com.radio.model.Parametro;
+import br.com.radio.model.Transmissao;
 import br.com.radio.repository.AlfanumericoMidiaRepository;
 import br.com.radio.repository.AmbienteGeneroRepository;
 import br.com.radio.repository.AmbienteRepository;
 import br.com.radio.repository.AudioOpcionalRepository;
 import br.com.radio.repository.CategoriaRepository;
 import br.com.radio.repository.ClienteRepository;
+import br.com.radio.repository.ErroTransmissaoRepository;
 import br.com.radio.repository.FuncionalidadeRepository;
 import br.com.radio.repository.GeneroRepository;
 import br.com.radio.repository.MidiaAmbienteRepository;
@@ -87,6 +91,7 @@ import br.com.radio.repository.MidiaGeneroRepository;
 import br.com.radio.repository.MidiaOpcionalRepository;
 import br.com.radio.repository.MidiaRepository;
 import br.com.radio.repository.ParametroRepository;
+import br.com.radio.repository.TransmissaoRepository;
 import br.com.radio.service.SaveUploadParameter;
 import br.com.radio.service.vo.GravaMidiaParameter;
 
@@ -150,8 +155,13 @@ public class MidiaService {
 	private ConverterMidiaComponent converterMidiaComponent;
 
 	@Autowired
+	private ErroTransmissaoRepository erroRepo;
+
+	@Autowired
+	private TransmissaoRepository transmissaoRepo;
+
+	@Autowired
 	private EntityManager entityManager;
-	
 	
 	
 	@PostConstruct
@@ -1592,6 +1602,38 @@ public class MidiaService {
 			midiaRepo.save( m );
 		});
 		
+	}
+	
+	
+	@Transactional
+	public void saveErroTransmissao(MediaErrorVO mediaErrorVO, Ambiente ambiente){
+		
+		ErroTransmissao erro = new ErroTransmissao();
+		
+		erro.setAmbiente( ambiente );
+		
+		if ( mediaErrorVO.getData() == null )
+			mediaErrorVO.setData( new Date() );
+		erro.setDataCriacao( mediaErrorVO.getData() );
+
+		erro.setMediaError( mediaErrorVO.getMediaError() );
+		
+		Transmissao transmissao = null;
+		Midia midia = null;
+		
+		if ( mediaErrorVO.getIdMidia() != null && mediaErrorVO.getIdMidia() > 0 )
+			midia = midiaRepo.findOne( mediaErrorVO.getIdMidia() );
+
+		if ( mediaErrorVO.getIdTransmissao() != null && mediaErrorVO.getIdTransmissao() > 0 )
+			transmissao = transmissaoRepo.findOne(mediaErrorVO.getIdTransmissao()) ;
+
+		if (midia != null)
+			erro.setMidia( midia );
+		
+		if (midia != null)
+			erro.setTransmissao( transmissao );
+		
+		erroRepo.save(erro);
 	}
 
 }

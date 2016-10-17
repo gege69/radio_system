@@ -245,6 +245,11 @@
                   <i class="fa fa-forward"></i>
                 </a>
               </td>
+              <td>
+                <a class="btn btn-default" href="#" id="btnNextBugado" role="button">
+                  <i class="fa fa-rewind</i>
+                </a>
+              </td>
             </c:if>
           </tr>
         </table>
@@ -724,6 +729,8 @@
 <link rel="stylesheet" href="https://cdn.plyr.io/2.0.7/plyr.css">
 <script src="https://cdn.plyr.io/2.0.7/plyr.js"></script>
 
+<script src="${context}/js/required/queue/Queue.js" charset="UTF-8" ></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
 
 <link href="${context}/css/bootstrap-slider.min.css" rel="stylesheet">
@@ -734,7 +741,7 @@
 
 
 <script src="${context}/js/required/bootbox.min.js" defer></script>
-  
+
 <script src="${context}/js/ambiente/blocos.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-funcionarios.js" charset="UTF-8" defer></script>
 <script src="${context}/js/player-web/modal-chamada-instantanea.js" charset="UTF-8" defer></script>
