@@ -367,21 +367,6 @@ function timeoutNext() {
 }
 
 
-var nextBugado = function(){
-    
-    window.clearInterval(intervalErro);
-
-    if ( player2.getMedia().paused == false ){
-        console.log('player2-paused');
-        return;
-    }
-
-    pararEventosSilencio();
-   
-    tocaMidia();
-    
-};
-
 
 var next = function(){
     
@@ -700,10 +685,6 @@ $(document).ready(function() {
     $('#btnNext').click( function(){
         desligaMicrofone();
         next();
-    });
-
-    $('#btnNextBugado').click( function(){
-        nextBugado();
     });
 
     

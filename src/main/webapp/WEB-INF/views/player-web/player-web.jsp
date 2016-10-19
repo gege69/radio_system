@@ -245,11 +245,6 @@
                   <i class="fa fa-forward"></i>
                 </a>
               </td>
-              <td>
-                <a class="btn btn-default" href="#" id="btnNextBugado" role="button">
-                  <i class="fa fa-rewind</i>
-                </a>
-              </td>
             </c:if>
           </tr>
         </table>
