@@ -301,15 +301,6 @@ function trataErroMidia(mediaError, content) {
 
 function tocaMidia(content){
     
-    if ( !content ){
-        content = {};
-        content.link = "/api/ambientes/2/midia/76";
-        content.idTransmissao = 1457;
-//        content.link = "/api/ambientes/2/transmissoes/14856948572/midia";
-//        content.link = "/api/ambientes/2/transmissoes/12/midia";
-        content.midia = {mimetype : "audio/ogg", idMidia : 76};
-    }
-     
     if ( content.midia != null && content.midia.title != null )
     {
         if ( content.midia.title == null || content.midia.title == '' )
@@ -339,7 +330,10 @@ function tocaMidia(content){
         player.source(fonte);
 
         player.getMedia().addEventListener("error", function(mediaError){
-            trataErroMidia(mediaError, content);
+            
+            if ( mediaError.networkState = HTMLMediaElement.NETWORK_NO_SOURCE )
+                trataErroMidia(mediaError, content);
+
         }, true);
 
         player.play();
