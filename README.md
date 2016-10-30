@@ -93,10 +93,9 @@ Por exemplo se vier `http://rdcenter.com.br/app` ele redireciona para a aplicaç
 
 Se vier `http://rdcenter.com.br/` apenas, ele redireciona para o site institucional instalado na pasta `/var/www/rdcenter.com.br/` do próprio nginx.
 
+O nginx está utilizando SSL com o certificado do letsencrypt. O tutorial utilizado foi o seguinte : [Nginx com Lets Encrypt no Ubuntu 14-04](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-14-04)
 
 ### Postgres
-
-O Postgres foi instalado como serviço no servidor.
 
 A instalação do Postgres seguiu o seguinte tutorial : [Postgre 9 no Ubuntu](http://www.unixmen.com/install-postgresql-9-4-and-phppgadmin-on-ubuntu-15-10/)
 
