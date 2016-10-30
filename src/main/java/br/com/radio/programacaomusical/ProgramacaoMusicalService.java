@@ -619,8 +619,6 @@ public class ProgramacaoMusicalService {
 				transmissaoRepo.setStatus( StatusPlayback.TOCANDO, result.getIdTransmissao() );
 		}
 
-		//TODO: gerar nova midia incremental aqui
-		
 		return result;
 	}
 	

@@ -329,12 +329,18 @@ function tocaMidia(content){
 
         player.source(fonte);
 
-        player.getMedia().addEventListener("error", function(mediaError){
-            
-            if ( mediaError.networkState = HTMLMediaElement.NETWORK_NO_SOURCE )
-                trataErroMidia(mediaError, content);
-
-        }, true);
+        // PROBLEMAS NO FIREFOX... fica sempre disparando e sempre avançando pra próxima música
+//        player.getMedia().addEventListener("error", function(mediaError){
+//            
+//            debugger;
+//            console.log(player);
+//            
+//            var source = player.source();
+//            
+//            if ( mediaError.networkState = HTMLMediaElement.NETWORK_NO_SOURCE && ( source != null && source != "" ) )
+//                trataErroMidia(mediaError, content);
+//
+//        }, true);
 
         player.play();
 

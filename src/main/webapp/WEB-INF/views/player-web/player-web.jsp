@@ -159,13 +159,11 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-centered" >
                   <div style="display : none;">
                       <audio controls id="player1">
-                          <source src="" type="audio/ogg">
                       </audio>
                   </div>
 
                   <div style="display : none;">
                       <audio controls id="player2" >
-                          <source src="" type="audio/ogg">
                       </audio>
                   </div>
                 
