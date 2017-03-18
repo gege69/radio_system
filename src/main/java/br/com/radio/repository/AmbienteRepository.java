@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.radio.enumeration.StatusAmbiente;
@@ -11,6 +12,8 @@ import br.com.radio.model.Ambiente;
 import br.com.radio.model.Cliente;
 
 public interface AmbienteRepository extends JpaRepository<Ambiente, Long> {
+
+	Slice<Ambiente> findByClienteAndStatus( Pageable pageable, Cliente cliente, StatusAmbiente status );
 
 	Page<Ambiente> findByCliente( Pageable pageable, Cliente cliente );
 

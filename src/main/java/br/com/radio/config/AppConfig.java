@@ -32,7 +32,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @ComponentScan( basePackages = { "br.com.radio.*" } )
 @EnableJpaRepositories( basePackages = { "br.com.radio.*" } )
 @EnableTransactionManagement
-@Import( { WebAppConfig.class, SecurityConfigMulti.class, SchedulingConfig.class, AsyncConfig.class } )
+@Import( { WebAppConfig.class, SecurityConfigMulti.class, SchedulingConfig.class, AsyncConfig.class, PropertiesWithJavaConfig.class } )
 public class AppConfig {
 
 	private static final Logger logger = Logger.getLogger(AppConfig.class);
@@ -89,7 +89,10 @@ public class AppConfig {
 		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactoryBean.setDataSource( ds );
 		entityManagerFactoryBean.setPackagesToScan( "br.com.radio.model" );
-		entityManagerFactoryBean.setJpaVendorAdapter( new HibernateJpaVendorAdapter() );
+		
+		HibernateJpaVendorAdapter jpaAdapter = new HibernateJpaVendorAdapter();
+		
+		entityManagerFactoryBean.setJpaVendorAdapter( jpaAdapter );
 		entityManagerFactoryBean.setLoadTimeWeaver( new InstrumentationLoadTimeWeaver() );
 
 		Properties jpaProperties = new Properties();
