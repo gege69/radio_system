@@ -12,6 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -32,7 +34,9 @@ import com.zaxxer.hikari.HikariDataSource;
 @ComponentScan( basePackages = { "br.com.radio.*" } )
 @EnableJpaRepositories( basePackages = { "br.com.radio.*" } )
 @EnableTransactionManagement
-@Import( { WebAppConfig.class, SecurityConfigMulti.class, SchedulingConfig.class, AsyncConfig.class, PropertiesWithJavaConfig.class } )
+@PropertySource({"classpath:application.properties", "classpath:db.properties"})
+@PropertySource(value="file:${path.pird}/pird.properties")
+@Import( { WebAppConfig.class, SecurityConfigMulti.class, SchedulingConfig.class, AsyncConfig.class} )
 public class AppConfig {
 
 	private static final Logger logger = Logger.getLogger(AppConfig.class);
@@ -40,10 +44,21 @@ public class AppConfig {
 	@Autowired
 	private Environment env;
 
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+		return configurer;
+	}
+
+
+
 	@Bean( destroyMethod = "close" )
 	@Profile("default")
 	public DataSource getDataSourceDesenvolvimento()
 	{
+		String path = env.getRequiredProperty("path.pird");
+		logger.info(path);
+
 		HikariConfig dataSourceConfig = new HikariConfig();
 		dataSourceConfig.setDriverClassName( env.getRequiredProperty( "dev.db.driver" ) );
 		dataSourceConfig.setJdbcUrl( env.getRequiredProperty( "dev.db.url" ) );
