@@ -1,5 +1,6 @@
 package br.com.radio.config;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -13,9 +14,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.PropertiesPropertySource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
@@ -34,30 +39,36 @@ import com.zaxxer.hikari.HikariDataSource;
 @ComponentScan( basePackages = { "br.com.radio.*" } )
 @EnableJpaRepositories( basePackages = { "br.com.radio.*" } )
 @EnableTransactionManagement
-@PropertySource({"classpath:application.properties", "classpath:db.properties"})
-@PropertySource(value="file:${path.pird}/pird.properties")
+@PropertySource({"classpath:pird.properties", "classpath:db.properties"})
 @Import( { WebAppConfig.class, SecurityConfigMulti.class, SchedulingConfig.class, AsyncConfig.class} )
 public class AppConfig {
 
 	private static final Logger logger = Logger.getLogger(AppConfig.class);
 	
+	private ConfigurableEnvironment env;
+
+
+    // Esse é o Setter do Environment
 	@Autowired
-	private Environment env;
+	public void setEnv( ConfigurableEnvironment env )
+	{
+		PropertiesPropertySource props = new PIRDBusiness().getDuxusPropertySource();
 
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-		PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-		return configurer;
+		env.getPropertySources().addFirst(props);
+		
+		this.env = env;
 	}
-
 
 
 	@Bean( destroyMethod = "close" )
 	@Profile("default")
 	public DataSource getDataSourceDesenvolvimento()
 	{
-		String path = env.getRequiredProperty("path.pird");
+		String path = env.getRequiredProperty("doido");
 		logger.info(path);
+
+		String fdp = env.getRequiredProperty("fdp.path");
+		logger.info(fdp);
 
 		HikariConfig dataSourceConfig = new HikariConfig();
 		dataSourceConfig.setDriverClassName( env.getRequiredProperty( "dev.db.driver" ) );
@@ -73,6 +84,8 @@ public class AppConfig {
 	}
 
 	
+
+
 	@Bean( destroyMethod = "close" )
 	@Profile("prod")
 	public DataSource getDataSourceProducao()
@@ -92,15 +105,10 @@ public class AppConfig {
 	}
 
 	
-
-	@Autowired
-	private DataSource dataSource;
 	
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory()
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource ds)
 	{
-		DataSource ds = this.dataSource;
-
 		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactoryBean.setDataSource( ds );
 		entityManagerFactoryBean.setPackagesToScan( "br.com.radio.model" );
@@ -146,6 +154,12 @@ public class AppConfig {
 
 	@Bean  
     public ResourceBundleMessageSource messageSource() {  
+		String path = env.getRequiredProperty("doido");
+		logger.info(path);
+
+		String fdp = env.getRequiredProperty("fdp.path");
+		logger.info(fdp);
+
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();  
         source.setBasenames( "application", "messages" );
         source.setUseCodeAsDefaultMessage(true);  

@@ -45,13 +45,6 @@ public class SpringConfigurationInitializer extends AbstractAnnotationConfigDisp
     }
  
 	
-//	@Override
-//    protected DispatcherServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
-//        final DispatcherServlet dispatcherServlet = super.createDispatcherServlet(servletAppContext);
-//        dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
-//        return dispatcherServlet;
-//    }
-	
     private MultipartConfigElement getMultipartConfigElement() {
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement( LOCATION, MAX_FILE_SIZE, MAX_REQUEST_SIZE, FILE_SIZE_THRESHOLD);
         return multipartConfigElement;
